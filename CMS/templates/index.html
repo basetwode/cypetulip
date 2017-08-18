@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>{{ page.page_name }}</title>
+
+
+{% endblock %}
+
+
+{% block body %}
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+
+    <div class="container theme-showcase" role="main" id="main">
+            <h1>{{ page.page_name }}</h1>
+
+        {% for section in sections %}
+
+            <div class="section">
+                {{ section.content | safe }}
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

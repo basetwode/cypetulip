@@ -1,0 +1,12 @@
+<div class="input-group">
+
+        <div class="form-group">
+            <select name="[{{ order.id }}][{{ order_details.id }}][selected_item]{{ sub_product.selectsubitem.id }}"
+                    {% if sub_product.is_required %} required {% endif %}
+                    class="form-control">{% for item in sub_product.selectsubitem.selectitem_set.all %}
+                <option value="{{ item.id }}">{{ item.name }}</option>
+            {% endfor %}
+            </select>
+
+        </div>
+</div>

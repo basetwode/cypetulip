@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% load recurse %}
+{% block head %}
+    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
+    <script src="{% static 'utils.js' %}"></script>
+    <title>{{ product.name }}</title>
+{% endblock %}
+
+{% block body %}
+    <div class="main">
+        <div class="content col-md-12">
+            <div class="col-md-3">
+
+                <div style="margin: auto;align-content: center;text-align:
+                center;border: 1px solid #efefef;background-color:#fafafa;
+                padding: 20px">
+                    <h4>{% trans "Your shoppingcart" %}</h4>
+                    <i class="fa fa-shopping-cart fa-3x"></i>
+                </div>
+            </div>
+            <div class="col-md-9 ">
+
+
+                <table id="cart" class="table table-hover table-condensed">
+                    <thead>
+                    <tr>
+                        <th style="width:50%">{% trans 'Product' %}</th>
+                        <th style="width:10%">{% trans 'Price' %}</th>
+
+                        <th style="width:22%" class="text-center">{% trans 'Subtotal' %}</th>
+                        <th style="width:10%"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in open_orders %}
+                        <tr>
+                            <td data-th="Product">
+                                <div class="row">
+                                    <div class="col-sm-2 hidden-xs"><img
+                                            src="/media/{{ order.product.product.product_picture.url }}" alt="..."
+                                            class="img-responsive"/></div>
+                                    <div class="col-sm-10">
+                                        <h4 class="nomargin">{{ order.product.name }}</h4>
+
+                                        <p>{{ order.product.description|truncatechars:100 }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td data-th="Price">{{ order.product.price }}</td>
+
+                            <td data-th="Subtotal" class="text-center">{{ order.product.price }} &euro;</td>
+                            <td class="actions" data-th="">
+                                <button class="btn btn-info btn-sm"><i class="fa fa-refresh"></i></button>
+                                <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr class="visible-xs">
+                        <td class="text-center"><strong>{% trans 'Total' %} 1.99</strong></td>
+                    </tr>
+                    <tr>
+                        <td><a href="/shop/products/" class="btn btn-warning"><i
+                                class="fa fa-angle-left"></i> {% trans 'Continue Shopping' %}</a></td>
+                        <td colspan="1" class="hidden-xs"></td>
+                        <td class="hidden-xs text-center"><strong>{% trans 'Total: ' %}{{ total_cart }} &euro;</strong>
+                        </td>
+                        <td><a href="/shop/checkout/{{ order_details.order_hash }}"
+                               class="btn btn-success btn-block">{% trans 'Checkout ' %}<i
+                                class="fa fa-angle-right"></i></a></td>
+                    </tr>
+                    </tfoot>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

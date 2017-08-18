@@ -1,0 +1,56 @@
+{% load staticfiles %}
+{% load i18n %}
+
+
+<a href="#" style="text-transform: capitalize;" class="dropdown-toggle" data-toggle="dropdown" role="button"
+   aria-haspopup="true"
+   aria-expanded="false"><i class="fa fa-shopping-cart"></i><span>{% trans ' Shoppingcart ' %}
+
+    {% if number_items > 0 %}
+    ({{ number_items }})
+    {% endif %}
+    </span><span
+        class="caret"> </span></a>
+<ul class="dropdown-menu">
+    <li class="dropdown-header"> {% trans 'Your shoppingcart' %}</li>
+
+
+
+    {% for order in open_orders %}
+
+        <li role="separator" class="divider"></li>
+        <li style="width: 500px">
+            <div class="cart-item row">
+                <div class="col-md-12 col-lg-12 col-sm-12" style="min-height: 30px">
+                    <div class="col-md-5 col-lg-5 col-sm-3">
+                        <div style="max-height: 50px; overflow: hidden" class="col-md-4 content-img">
+                            <img style="width: 100%" src="/media/{{ order.product.product.product_picture.url }}">
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-lg-5 col-sm-7">
+                        <h5>{{ order.product.name }}</h5>
+                    </div>
+                    <div class="col-md-2 col-lg-2 col-sm-2">
+                        {{ order.product.price }} &euro;
+                    </div>
+                </div>
+            </div>
+        </li>
+
+    {% endfor %}
+    <li role="separator" class="divider"></li>
+    <li style="overflow: auto">
+        <div style="overflow: auto; float: right;margin-right: 10px;padding-bottom: 10px">
+            <h4>
+            {% trans 'Total: ' %} {{ total_cart }} &euro;</h4>
+        </div>
+    </li>
+
+    <li style="overflow: auto">
+        <div style="overflow: auto; float: right;margin-right: 10px">
+
+            <a href="/shop/cart" class="btn btn-default">Open cart</a>
+        </div>
+    </li>
+
+</ul>

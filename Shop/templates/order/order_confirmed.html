@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load recurse %}
+
+{% load i18n %}
+{% block head %}
+    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
+    <title>Products</title>
+{% endblock %}
+
+{% block body %}
+    <div class="main">
+        <div class="content">
+
+            <div class="col-md-12">
+
+                <h4>{% trans "We've received your order."%}</h4>
+                <h5>{% trans "Thanks for choosing our shop!" %}</h5>
+                <p>You may want to check your profile for the current state of your order <a href="{% url 'detail_order' order.order_hash%}" >Your order {{ order.order_hash }}</a></p>
+            </div>
+        </div>
+</div>
+
+
+{% endblock %}
