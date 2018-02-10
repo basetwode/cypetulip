@@ -12,7 +12,7 @@ __author__ = ''
 urlpatterns = [
     url(r"^(?P<order>[a-zA-Z0-9\\s\- ]+)/$", PaymentView.as_view(),name="payment"),
     url(r"^(?P<order>[a-zA-Z0-9\\s\- ]+)/create/$",
-       PaymentCreationView.as_view()),
+       PaymentCreationView.as_view(), name="payment_create"),
     url(r"^(?P<order>[a-zA-Z0-9\\s\- ]+)/confirm/$",
        PaymentConfirmationView.as_view(),name="blabla"),
     url(r"^(?P<order>[a-zA-Z0-9\\s\- ]+)/", include(method_urls,namespace="payment"),name="bla"),

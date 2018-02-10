@@ -125,11 +125,11 @@ class SearchOrders(View):
 
 
     @staticmethod
-    def filter_orders(request):
+    def filter_orders(request, admin=False):
         contact = Contact.objects.get(user=request.user)
         company = contact.company
 
-        _orders = Order.objects.filter(is_send=True, company=company)
+        _orders = Order.objects.filter(is_send=True, company=company) if not admin else Order.objects.filter(is_send=True)
         _orders_copy = _orders
         search = None
         if 'search' in request.GET:
@@ -141,4 +141,4 @@ class SearchOrders(View):
                 _orders = _orders_copy.filter(Q(orderdetail__date_added__year=search) |
                                               Q(orderdetail__date_added__month=search))
 
-        return (_orders, search)
+        return (_orders.order_by('-orderdetail__date_added'), search)

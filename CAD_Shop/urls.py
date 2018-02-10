@@ -32,7 +32,7 @@ admin.autodiscover()
 urlpatterns = [
     url(r'^$', RedirectView.as_view(url='/cms/Home/')),
     url(r'^admin/', include(admin.site.urls),name='admin'),
-    url(r'^administration/', include(admin_urls)),
+    url(r'^administration/', include(admin_urls.urlpatterns)),
    # url(r'^accounting/', include(accounting_urls.urlpatterns)),
     url(r'^media/', include(media_urls.urlpatterns)),
     url(r'^shop/', include(shop_urls.urlpatterns)),

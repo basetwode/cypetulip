@@ -122,8 +122,12 @@ class OrderItemState(models.Model):
 '''
 class OrderState(models.Model):
     name = models.CharField(max_length=20)
+    initial=models.BooleanField(default=False)
     next_state = models.ForeignKey('self',null=True, blank=True,related_name='previous_state')
     #todo states have corresponding actions that also need to be linked!
+
+    def __str__(self):
+        return self.name
 
 # A product can be whatever one needs, like a plan or a surcharge or hours worked..
 class Product(ProductSubItem):
