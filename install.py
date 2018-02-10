@@ -1,14 +1,12 @@
-import ConfigParser
+import configparser
 import os
 import re
 import sys
-
 
 from CAD_Shop import settings
 
 from CAD_Shop.settings import BASE_DIR
 from os import sep
-
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CAD_Shop.settings")
 
@@ -17,11 +15,11 @@ __author__ = ''
 
 def install():
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CAD_Shop.settings")
-    print 'Thanks for choosing EasyShop\n'
+    print('Thanks for choosing EasyShop\n')
     # First select directory for data
-    data_dir = raw_input("Please choose directory for storing shop data [/var/easyshop/]: ")
+    data_dir = input("Please choose directory for storing shop data [/var/easyshop/]: ")
 
-    config = ConfigParser.RawConfigParser()
+    config = configparser.RawConfigParser()
     config.add_section('data')
     config.add_section('db')
     if data_dir:
@@ -30,44 +28,44 @@ def install():
         config.set('data', 'DATA_DIR', '/var/easyshop/')
 
     # Select database
-    db_tech = raw_input("Please choose database technologie\nOptions are [mysql,sqlite]: ")
+    db_tech = input("Please choose database technologie\nOptions are [mysql,sqlite]: ")
     if db_tech:
         config.set('db', 'engine', db_tech)
     else:
         config.set('db', 'engine', 'sqlite')
 
     if 'mysql' in db_tech:
-        name = raw_input("Please choose database name : ")
-        host = raw_input("Please choose database host [localhost]: ")
-        port = raw_input("Please choose database port [3306]: ")
-        user = raw_input("Please enter database user:")
-        pwd = raw_input("Please enter database password:")
+        name = input("Please choose database name : ")
+        host = input("Please choose database host [localhost]: ")
+        port = input("Please choose database port [3306]: ")
+        user = input("Please enter database user:")
+        pwd = input("Please enter database password:")
         config.set('db', 'host', host or 'localhost')
         config.set('db', 'port', port or '3306')
         config.set('db', 'user', user)
         config.set('db', 'pwd', pwd)
         config.set('db', 'name', name)
-    print 'Setting up database...'
+    print('Setting up database...')
     # Then select dir for static stuff
 
     # Then collect the static stuff
 
     # Then initialize database
 
-    with open(BASE_DIR + sep + 'settings.conf', 'wb') as configfile:
+    with open(BASE_DIR + sep + 'settings.conf', 'w') as configfile:
         config.write(configfile)
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CAD_Shop.settings")
 
     from django.core.management import execute_from_command_line
-    print '#######Initializing Database########'
+    print('#######Initializing Database########')
     execute_from_command_line(['', 'makemigrations'])
     apps = settings.INSTALLED_APPS
     for app in apps:
         if 'django' not in app:
             execute_from_command_line(['', 'makemigrations', app])
     execute_from_command_line(['', 'migrate'])
-    print '####Creating a superuser account####'
+    print('####Creating a superuser account####')
     execute_from_command_line(['', 'createsuperuser'])
     from django.contrib.auth.models import User
     from Shop.models import Contact
@@ -96,33 +94,34 @@ def populate_permissions():
     urls = {}
     show_urls(urlpatterns, urls=urls)
     old_urls = AppUrl.objects.all().delete()
-    for app, app_urls in urls.iteritems() :
+    for app, app_urls in urls.items():
         if len(app) > 2:
             app_name = rgx.search(app).group()
 
             app_instance = App(is_public=True, name=app_name) if len(
                 App.objects.filter(name=app_name)) == 0 else App.objects.get(name=app_name)
             app_instance.save()
-            for url_name, url in app_urls.iteritems():
-                #complete_url = ('/%s%s' % (app, url)).replace("^","")
-                app_url = AppUrl(app=app_instance,name=url_name, url="/"+url.replace("^",""))
+            for url_name, url in app_urls.items():
+                # complete_url = ('/%s%s' % (app, url)).replace("^","")
+                app_url = AppUrl(app=app_instance, name=url_name, url="/" + url.replace("^", ""))
                 app_url.save()
 
-def create_app_perms_for_user(user_name):
 
+def create_app_perms_for_user(user_name):
     import django
     django.setup()
     from django.contrib.auth.models import User
     from Permissions.models import AppUrl, AppUrlPermission
     user = User.objects.get(username=user_name)
     for app_url in AppUrl.objects.all():
-        perm = AppUrlPermission(url=app_url,user=user,post_access=True,get_access=True)
+        perm = AppUrlPermission(url=app_url, user=user, post_access=True, get_access=True)
         perm.save()
+
 
 if __name__ == "__main__":
     if sys.argv[1] == '--populateperms':
         populate_permissions()
-    elif sys.argv[1]=='--grantaccess':
+    elif sys.argv[1] == '--grantaccess':
         create_app_perms_for_user(sys.argv[2])
-    elif sys.argv[1]=='--install':
+    elif sys.argv[1] == '--install':
         install()

@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from views import *
+from CMS.views import *
 
 __author__ = ''
 

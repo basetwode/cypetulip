@@ -1,4 +1,6 @@
 from django.forms import ModelForm
+from requests.compat import basestring
+
 from ..models import *
 
 __author__ = 'Anselm'

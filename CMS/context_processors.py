@@ -1,5 +1,5 @@
 from CAD_Shop import settings
-from models import Page
+from CMS.models import Page
 
 __author__ = ''
 

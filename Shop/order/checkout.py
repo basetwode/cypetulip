@@ -88,6 +88,7 @@ class CheckoutView(View):
             if form:
                 all_forms.setdefault("{}-{}{}".format(order_item.get("order_item"), order_item['product'],
                                                       '-{}'.format(kwargs.get('index')) if kwargs.get(
+                                                          'index') and kwargs.get(
                                                           'index') > 0 else ''), form)
             return form
 

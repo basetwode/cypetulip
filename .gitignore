@@ -11,3 +11,4 @@ settings.py
 migrations/
 .idea/
 db.sqlite3
+venv/

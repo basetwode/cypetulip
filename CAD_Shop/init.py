@@ -1,14 +1,16 @@
-from settings import BASE_DIR
-import settings
+
+
 from os import sep
 __author__ = ''
 
 
 def load_settings():
-    import ConfigParser
 
-    config = ConfigParser.RawConfigParser()
-    config.read(BASE_DIR+sep+'settings.conf')
+    from configparser import RawConfigParser
+
+    config = RawConfigParser()
+    from CAD_Shop import settings
+    config.read(settings.BASE_DIR + sep + 'settings.conf')
 
     # getfloat() raises an exception if the value is not a float
     # getint() and getboolean() also do this for their respective types

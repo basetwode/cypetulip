@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 def create_hash():
     gen_hash = hashlib.sha1()
-    gen_hash.update(str(time.time()))
+    gen_hash.update(str(time.time()).encode('utf-8'))
     return gen_hash.hexdigest()[:-25]
 
 

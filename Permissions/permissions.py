@@ -74,7 +74,7 @@ def check_serve_perms2(func):
         if 'order' in kwargs:
             order = kwargs.get('order')
             order_access = __check_order_access(request.user, order)
-            print order
+            print(order)
         elif 'company' in request.path:
             company = __get_string_from_url(request.path,'company')
             order_access = __check_company_access(request.user, company)
@@ -119,7 +119,7 @@ def check_serve_perms(func):
         if 'order' in kwargs and access:
             order = kwargs.get('order')
             access = __check_order_access(request.user, order)
-            print order
+            print(order)
         elif 'company' in request.path and access:
             company = __get_string_from_url(request.path, 'company')
             access = __check_company_access(request.user, company)

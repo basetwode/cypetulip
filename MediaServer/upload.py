@@ -29,15 +29,15 @@ def public_files_upload_handler(instance, filename):
 
 def __create_hash(orig_filename):
     gen_hash = hashlib.sha1()
-    gen_hash.update(str(time.time()))
+    gen_hash.update(str(time.time()).encode('utf-8'))
     return gen_hash.hexdigest()[:-25] + os.path.splitext(orig_filename)[1]
 
 
 def guid(*args):
     i = random.randrange(12, 25600)
-    t = long(time.time() * 1000)
-    r = long(random.random() * 100000000000000000L)
-    a = random.random() * 100000000000000000L
+    t = (time.time() * 1000)
+    r = (random.random() * 100000000000000000)
+    a = random.random() * 100000000000000000
 
     data = str(i) + ' ' + str(t) + ' ' + str(r) + ' ' + str(a) + ' ' + str(args)
     data = hashlib.md5(data).hexdigest()[10:]

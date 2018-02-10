@@ -1,5 +1,5 @@
 __author__ = 'Anselm'
-from  models import Order, OrderDetail, Contact,Company,OrderItem, Product
+from  Shop.models import Order, OrderDetail, Contact,Company,OrderItem, Product
 
 
 def get_open_orders(request):

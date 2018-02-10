@@ -7,7 +7,7 @@ class App(models.Model):
     is_public = models.BooleanField(default=False)
     name = models.CharField(max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -27,7 +27,7 @@ class AppUrl(models.Model):
     url = models.CharField(max_length=200)
     name = models.CharField(max_length=30, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.name) + " | " + str(self.url)
 
 
@@ -41,5 +41,5 @@ class AppUrlPermission(models.Model):
     get_message = models.CharField(max_length=400,
                                    default="You don't have the required permissions to show this view. If you think this is wrong please contact our support")
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s - P:%s G:%s - %s" % (self.user.username, self.post_access, self.get_access, self.url.url)

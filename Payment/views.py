@@ -1,7 +1,7 @@
-from string import lower
 
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.defaultfilters import lower
 from django.views.generic import View
 
 from Payment.models import PaymentMethod, PaymentDetails
@@ -55,7 +55,7 @@ class PaymentConfirmationView(View):
     def find_view_by_payment(self, payment_detail):
         payment_method = payment_detail.method
 
-        print payment_method
+        print(payment_method)
 
 
 class PaymentCreationView(View):

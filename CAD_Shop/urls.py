@@ -17,7 +17,7 @@ from django.conf.urls import include, url, patterns
 from django.contrib import admin
 from django.views.generic import RedirectView
 
-from Accounting import urls as accounting_urls
+#from Accounting import urls as accounting_urls
 from CAD_Shop import settings
 from MediaServer import urls as media_urls
 from Shop import urls as shop_urls
@@ -33,7 +33,7 @@ urlpatterns = [
     url(r'^$', RedirectView.as_view(url='/cms/Home/')),
     url(r'^admin/', include(admin.site.urls),name='admin'),
     url(r'^administration/', include(admin_urls)),
-    url(r'^accounting/', include(accounting_urls.urlpatterns)),
+   # url(r'^accounting/', include(accounting_urls.urlpatterns)),
     url(r'^media/', include(media_urls.urlpatterns)),
     url(r'^shop/', include(shop_urls.urlpatterns)),
     url(r'^permissions/', include(perm_urls.urlpatterns)),

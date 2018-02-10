@@ -53,7 +53,7 @@ class CSSView(View):
             green = int('0x'+main_color_lighter[2:4], 16) + 6
             blue = int('0x'+main_color_lighter[4:6], 16) + 6
             main_color_lighter = ("0x%0.2X" % red )[2:4] + ("0x%0.2X" % green )[2:4] + ("0x%0.2X" % blue )[2:4]
-            print main_color_lighter
+            print(main_color_lighter)
             color_dict.setdefault('main_color', css_settings.main_color)
             color_dict.setdefault('main_color_lighter',main_color_lighter)
             color_dict.setdefault('second_color', css_settings.second_color)

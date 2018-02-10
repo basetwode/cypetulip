@@ -5,8 +5,8 @@ from Shop.authentification.views import LoginView, LogoutView
 from Shop.my_account.views import OrderDetailView, OrdersView, MyAccountView, SearchOrders, AccountSettingsView, \
     CompanySettingsView
 from Shop.order.overview import OverviewView
-from order.shoppingcart import ShoppingCartView,ShoppingCartDetailView
-from order.checkout import CheckoutView
+from Shop.order.shoppingcart import ShoppingCartView,ShoppingCartDetailView
+from Shop.order.checkout import CheckoutView
 from Shop.views import *
 from django.conf.urls import url, include
 

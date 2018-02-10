@@ -22,7 +22,7 @@ class Company(models.Model):
             self.company_id = rand_key(12)
         models.Model.save(self, force_insert, force_update, using, update_fields)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -37,7 +37,7 @@ class Contact(models.Model):
     email = models.EmailField()
     language = models.CharField(max_length=2, default='en')
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.company) + ' - ' + self.last_name
 
 
@@ -49,7 +49,7 @@ class ProductCategory(models.Model):
                                               related_name='ChildCategories')
     is_main_category = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -73,7 +73,7 @@ class ProductSubItem(models.Model):
     is_multiple_per_item = models.BooleanField(default=False)
     is_once_per_order = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name + ' - required ' + str(self.is_required)
 
 
@@ -136,7 +136,7 @@ class Product(ProductSubItem):
                                                    symmetrical=False,
                                                    related_name='sub_products')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name + ' - public ' + str(self.is_public)
 
 
@@ -160,7 +160,7 @@ class Order(models.Model):
 
         models.Model.save(self, force_insert, force_update, using, update_fields)
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.order_id)
 
 
