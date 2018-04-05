@@ -82,11 +82,11 @@
                                         <div class="col-md-2 col-xs-2">
                                             {% trans 'State' %}
                                         </div>
-                                        <div class="col-md-3 col-xs-3">
+                                        <div class="col-md-2 col-xs-2">
                                             {% trans 'Total' %}
                                         </div>
-                                        <div class="col-md-4 col-xs-4">
-                                            Ordernr.: {{ order.order_hash }}
+                                        <div class="col-md-5 col-xs-5">
+                                            Ordernr.: <small>{{ order.order_hash }}</small>
                                         </div>
                                     </div>
                                     <div style="overflow: auto; font-size: small" class="col-md-12">
@@ -105,7 +105,7 @@
                                         </div>
                                         <div class="col-md-4  col-xs-4">
                                             <div class="col-md-6">
-                                                <a href="{% url 'detail_order' order.order_hash %}">Bestelldetails</a>
+                                                <a href="{% url 'admin_detail_order' order.order_hash %}">Bestelldetails</a>
 
                                             </div>
                                             <div class="col-md-6">
@@ -160,8 +160,8 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
-                                        <a href="{% url 'detail_order_cancel_order' order.order_hash %}"
-                                           class="btn btn-fw btn-success">{% trans 'Edit order' %}</a>
+                                        <a href="{% url 'admin_detail_order' order.order_hash %}"
+                                           class="btn btn-fw btn-success">{% trans 'Open order' %}</a>
                                     </div>
                                 </div>
                                 <div class="panel-body">

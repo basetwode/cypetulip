@@ -6,12 +6,12 @@ from django.shortcuts import render
 from django.views.generic import View
 
 from Permissions.permissions import check_serve_perms
-from Shop.models import Contact, Order
+from Shop.models import Contact, Order, OrderItem, Product
 from Shop.my_account.views import SearchOrders
+from Shop.order.utils import get_orderitems_once_only
 
 
 class AdminView(View):
-
     template_name = 'administration.html'
 
     def get(self, request):
@@ -22,13 +22,13 @@ class AdminView(View):
     def post(self, request):
         pass
 
-class AdminOrderView(View):
 
+class AdminOrderOverviewView(View):
     template_name = 'admin_orders.html'
 
     def get(self, request, number_of_orders, page=1):
         contact = Contact.objects.get(user=request.user)
-        _orders, search = SearchOrders.filter_orders(request,True)
+        _orders, search = SearchOrders.filter_orders(request, True)
         number_of_orders = '5' if number_of_orders is None else number_of_orders
         paginator = Paginator(_orders, number_of_orders)
         for order in _orders:
@@ -51,6 +51,29 @@ class AdminOrderView(View):
     def post(self, request):
         pass
 
+
+class AdminOrderDetailView(View):
+    template_name = 'admin_order_detail.html'
+
+    @check_serve_perms
+    def get(self, request, order):
+        contact = Contact.objects.get(user=request.user)
+        company = contact.company
+        _order = Order.objects.get(order_hash=order)
+        if _order:
+            total = 0
+            for order_item in _order.orderitem_set.all():
+                total += order_item.product.price
+            _order.total = total
+            order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True,
+                                                   product__in=Product.objects.all())
+            return render(request, self.template_name,
+                          {'order_details': _order, 'order': _order, 'contact': contact,
+                           'order_items': order_items,
+                           'order_items_once_only': get_orderitems_once_only(_order)})
+
+    def post(self, request):
+        pass
 
 
 class SettingsView(View):

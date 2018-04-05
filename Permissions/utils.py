@@ -3,7 +3,7 @@
 def show_urls(urllist, depth=0, name="",url_prefix="", urls={}):
 
     for entry in urllist:
-        if 'admin' not in entry.regex.pattern:
+        if 'admin/' not in entry.regex.pattern:
             if depth == 0:
                 name = entry.regex.pattern
                 urls[name]={}
