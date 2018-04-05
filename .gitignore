@@ -9,5 +9,4 @@
 ;;directories to ignore
 migrations/
 .idea/
-db.sqlite3
 venv/
