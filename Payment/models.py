@@ -22,7 +22,7 @@ class PaymentProvider(models.Model):
 class PaymentMethod(models.Model):
     name = models.CharField(max_length=30)
     details = models.CharField(max_length=500,default='')
-    provider = models.ForeignKey(PaymentProvider,blank=True,null=True)
+    provider = models.ForeignKey(PaymentProvider, on_delete=models.CASCADE, blank=True,null=True)
 
 class CardType(models.Model):
     name = models.CharField(max_length=20)
@@ -32,13 +32,13 @@ class CardType(models.Model):
 
 
 class PaymentDetails(models.Model):
-    order = models.ForeignKey(Order)
-    method = models.ForeignKey(PaymentMethod)
-    user = models.ForeignKey(Contact,blank=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    method = models.ForeignKey(PaymentMethod, on_delete=models.CASCADE)
+    user = models.ForeignKey(Contact,on_delete=models.CASCADE,blank=True)
 
 #TODO: a credit card should belong to an user or company
 class CreditCard(PaymentDetails):
-    card_type = models.ForeignKey(CardType)
+    card_type = models.ForeignKey(CardType,on_delete=models.CASCADE)
     name = models.CharField(max_length=70)
     card_number = models.CharField(max_length=20)
     expiry_year = models.IntegerField(  choices=YEAR_CHOICES, default=datetime.datetime.now().year)
@@ -54,4 +54,4 @@ class Bill(PaymentDetails):
 class Payment(models.Model):
     is_paid = models.BooleanField()
     token = models.CharField(max_length=30)
-    details =models.ForeignKey(PaymentDetails)
+    details =models.ForeignKey(PaymentDetails, on_delete=models.CASCADE)

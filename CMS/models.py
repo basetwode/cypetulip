@@ -12,7 +12,7 @@ class Page(models.Model):
 
 
 class Section(models.Model):
-    page = models.ForeignKey(Page)
+    page = models.ForeignKey(Page, on_delete=models.CASCADE)
     content = models.CharField(max_length=4000)
     picture = models.FileField(default=None, null=True, blank=True,
                             upload_to=public_files_upload_handler,

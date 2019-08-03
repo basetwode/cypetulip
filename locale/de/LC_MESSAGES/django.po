@@ -18,11 +18,11 @@ msgstr ""
 "Language: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\CAD_Shop\settings.py:106
+#: .\Home\settings.py:106
 msgid "German"
 msgstr "Deutsch"
 
-#: .\CAD_Shop\settings.py:107
+#: .\Home\settings.py:107
 msgid "English"
 msgstr "Englisch"
 

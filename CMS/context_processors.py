@@ -1,4 +1,4 @@
-from CAD_Shop import settings
+from Home import settings
 from CMS.models import Page
 
 __author__ = ''

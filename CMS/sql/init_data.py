@@ -1,5 +1,5 @@
 from CMS.models import *
-from CAD_Shop.settings import VERSION
+from Home.settings import VERSION
 
 __author__ = ''
 
@@ -17,7 +17,7 @@ def create_home_site():
     page = Page(page_name='Home',position=0,is_enabled=True)
     page.save()
     section = Section(page=page,content="Thanks for installing "
-                                        "EasyShop "+VERSION)
+                                        "Cypetulip "+VERSION)
     section2 = Section(page=page,content="Configure this site !")
     section.save()
     section2.save()

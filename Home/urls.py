@@ -1,4 +1,4 @@
-"""CAD_Shop URL Configuration
+"""Home URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.8/topics/http/urls/
@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.views.generic import RedirectView
 
 #from Accounting import urls as accounting_urls
-from CAD_Shop import settings
+from Home import settings
 from MediaServer import urls as media_urls
 from Shop import urls as shop_urls
 from Permissions import urls as perm_urls
