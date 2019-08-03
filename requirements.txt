@@ -23,7 +23,7 @@ django-simple-history==1.6.3
 django-tinymce==1.5.3
 django-toolbelt==0.0.1
 django-wkhtmltopdf==3.0.0
-djangorestframework==3.3.2
+djangorestframework==3.9.1
 djangorestframework-oauth==1.0.1
 filebrowser-safe==0.3.8
 future==0.9.0
