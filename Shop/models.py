@@ -30,8 +30,8 @@ class Company(models.Model):
 
 
 class Contact(models.Model):
-    user = models.OneToOneField(User, default=None)
-    company = models.ForeignKey(Company, on_delete=models.Cascade)
+    user = models.OneToOneField(User,on_delete=models.CASCADE , default=None)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     title = models.CharField(max_length=20)
@@ -48,7 +48,7 @@ class ProductCategory(models.Model):
     description = models.CharField(max_length=300)
     name = models.CharField(max_length=50)
     mother_category = models.ForeignKey(
-        'self', on_delete=models.Cascade, default=None, blank=True, null=True)
+        'self', on_delete=models.CASCADE, default=None, blank=True, null=True)
     child_categories = models.ManyToManyField('self', default=None, blank=True, symmetrical=False,
                                               related_name='ChildCategories')
     is_main_category = models.BooleanField(default=False)
@@ -58,7 +58,7 @@ class ProductCategory(models.Model):
 
 
 class Employee(models.Model):
-    user = models.OneToOneField(User, default=None)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
 
@@ -88,7 +88,7 @@ class FileSubItem(ProductSubItem):
 
 class FileExtensionItem(models.Model):
     extension = models.CharField(max_length=30)
-    file = models.ForeignKey(FileSubItem, on_delete=models.Cascade)
+    file = models.ForeignKey(FileSubItem, on_delete=models.CASCADE)
 
 
 # can be used for sizes for example
@@ -100,7 +100,7 @@ class SelectSubItem(ProductSubItem):
 # different options for sizes for example
 class SelectItem(models.Model):
     name = models.CharField(max_length=50)
-    select = models.ForeignKey(SelectSubItem, on_delete=models.Cascade)
+    select = models.ForeignKey(SelectSubItem, on_delete=models.CASCADE)
 
 
 # can be used for number of this item like 4 trousers
@@ -123,7 +123,7 @@ class CheckBoxSubItem(ProductSubItem):
 class OrderItemState(models.Model):
     name = models.CharField(max_length=20)
     next_state = models.ForeignKey(
-        'self', on_delete=models.Cascade, null=True, blank=True, related_name='previous_state',)
+        'self', on_delete=models.CASCADE, null=True, blank=True, related_name='previous_state',)
 
 
 '''
@@ -135,7 +135,7 @@ class OrderState(models.Model):
     name = models.CharField(max_length=20)
     initial = models.BooleanField(default=False)
     next_state = models.ForeignKey(
-        'self', on_delete=models.Cascade, null=True, blank=True, related_name='previous_state', )
+        'self', on_delete=models.CASCADE, null=True, blank=True, related_name='previous_state', )
     # todo states have corresponding actions that also need to be linked!
 
     def __str__(self):
@@ -148,7 +148,7 @@ class Product(ProductSubItem):
     product_picture = models.FileField(default=None, null=True, blank=True,
                                        upload_to=public_files_upload_handler,
                                        storage=fs)
-    category = models.ForeignKey(ProductCategory, on_delete=models.Cascade)
+    category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
     is_public = models.BooleanField()
     assigned_sub_products = models.ManyToManyField(ProductSubItem, default=None, blank=True,
                                                    symmetrical=False,
@@ -162,7 +162,7 @@ class Order(models.Model):
     order_id = models.IntegerField(null=True, blank=True)
     order_hash = models.CharField(max_length=20, null=True, blank=True)
     is_send = models.BooleanField(default=False)
-    company = models.ForeignKey(Company, on_delete=models.Cascade)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     token = models.CharField(max_length=25, blank=True, null=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
@@ -185,29 +185,29 @@ class Order(models.Model):
 
 
 class OrderDetail(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.Cascade)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     order_number = models.CharField(max_length=20)
     date_added = models.DateTimeField(auto_now_add=True)
     assigned_employee = models.ForeignKey(
-        Employee, on_delete=models.Cascade, null=True, blank=True, )
-    state = models.ForeignKey(OrderState, on_delete=models.Cascade, null=True,
+        Employee, on_delete=models.CASCADE, null=True, blank=True, )
+    state = models.ForeignKey(OrderState, on_delete=models.CASCADE, null=True,
                               blank=True, )
     date_bill = models.DateTimeField(null=True, blank=True)
-    contact = models.ForeignKey(Contact, on_delete=models.Cascade)
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
 
 # Like a surcharge or discount or product or whatever.
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.Cascade)
-    product = models.ForeignKey(ProductSubItem, on_delete=models.Cascade)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(ProductSubItem, on_delete=models.CASCADE)
     order_item = models.ForeignKey(
-        'OrderItem', on_delete=models.Cascade, null=True, blank=True,)
+        'OrderItem', on_delete=models.CASCADE, null=True, blank=True,)
     employee = models.ForeignKey(
-        Employee, on_delete=models.Cascade, null=True, blank=True, )
+        Employee, on_delete=models.CASCADE, null=True, blank=True, )
     additional_text = models.CharField(max_length=200, null=True, blank=True)
     state = models.ForeignKey(
-        OrderItemState, on_delete=models.Cascade, null=True, blank=True, )
+        OrderItemState, on_delete=models.CASCADE, null=True, blank=True, )
     count = models.IntegerField(default=1)
 
 
@@ -220,7 +220,7 @@ class FileOrderItem(OrderItem):
 
 
 class SelectOrderItem(OrderItem):
-    selected_item = models.ForeignKey(SelectItem, on_delete=models.Cascade)
+    selected_item = models.ForeignKey(SelectItem, on_delete=models.CASCADE)
 
 
 class CheckBoxOrderItem(OrderItem):
@@ -236,7 +236,7 @@ class Discount(models.Model):
 
 
 class WorkingTime(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.Cascade)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
 
 
 # Delete files not only db object

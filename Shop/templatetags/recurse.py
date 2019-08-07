@@ -69,7 +69,7 @@ def do_recurse(parser, token):
 
 
 from django.contrib.auth.models import Group
-from django.template import resolve_variable
+from django.template import Variable
 
 
 @register.tag()
@@ -95,7 +95,7 @@ class GroupCheckNode(template.Node):
         self.nodelist = nodelist
 
     def render(self, context):
-        user = resolve_variable('user', context)
+        user = Variable('user').resolve(context)
         if not user.is_authenticated:
             return ''
         try:

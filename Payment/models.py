@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.core.validators import MaxValueValidator
 import datetime
 
 from MediaServer.upload import rand_key
@@ -43,7 +44,7 @@ class CreditCard(PaymentDetails):
     card_number = models.CharField(max_length=20)
     expiry_year = models.IntegerField(  choices=YEAR_CHOICES, default=datetime.datetime.now().year)
     expiry_month = models.IntegerField(  choices=MONTH_CHOICES, default=datetime.datetime.now().month)
-    cvv = models.IntegerField(max_length=3)
+    cvv = models.PositiveIntegerField(validators=[MaxValueValidator(999)])
 
 class Bill(PaymentDetails):
     pass
