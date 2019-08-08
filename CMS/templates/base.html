@@ -109,7 +109,7 @@
                             <li><a href="{% url 'account_settings' %}">{% trans 'Settings' %}</a></li>
                             {% if user.is_staff %}
                                 <li role="separator" class="divider"></li>
-                                <li><a href="{% url 'admin_index' %}">{% trans 'Administration' %}</a></li>
+                                <li><a href="{% url 'management_index' %}">{% trans 'Management' %}</a></li>
                                 {% endif %}
                             <li role="separator" class="divider"></li>
                             <li><a href="/shop/logout">{% trans 'Logout' %}</a></li>

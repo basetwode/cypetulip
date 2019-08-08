@@ -8,3 +8,9 @@ First of all install wheel and the requirements:
 pip install wheel
 pip install -r requirements.txt
 ```
+
+Create a new django admin user
+
+```
+python3 manage.py createsuperuser
+```

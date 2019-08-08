@@ -10,3 +10,4 @@
 migrations/
 .idea/
 venv/
+.vscode/

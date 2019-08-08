@@ -18,7 +18,7 @@
 
 
                 <div class="col-md-3 hidden-xs">
-                    <h4 class="h-bold">{% trans "Administration" %}</h4>
+                    <h4 class="h-bold">{% trans "Management" %}</h4>
                     <div class="panel">
                         <div style="overflow: auto" class="panel-heading">
                             <div class="col-md-12"><span>{{ contact.first_name }} {{ contact.last_name }}</span></div>
@@ -27,8 +27,8 @@
                         </div>
                         <div class="panel-body">
                             <p>{% trans 'Manage orders' %}</p>
-                            <a href="{% url 'admin_index' %}"
-                               class="btn btn-fw btn-primary">{% trans 'Go back to Administration' %}</a>
+                            <a href="{% url 'management_index' %}"
+                               class="btn btn-fw btn-primary">{% trans 'Go back to Management' %}</a>
                         </div>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                                         </div>
                                         <div class="col-md-4  col-xs-4">
                                             <div class="col-md-6">
-                                                <a href="{% url 'admin_detail_order' order.order_hash %}">Bestelldetails</a>
+                                                <a href="{% url 'management_detail_order' order.order_hash %}">Bestelldetails</a>
 
                                             </div>
                                             <div class="col-md-6">
@@ -160,7 +160,7 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
-                                        <a href="{% url 'admin_detail_order' order.order_hash %}"
+                                        <a href="{% url 'management_detail_order' order.order_hash %}"
                                            class="btn btn-fw btn-success">{% trans 'Open order' %}</a>
                                     </div>
                                 </div>
@@ -203,7 +203,7 @@
                                 <li class="previous ">
                                     {% if orders.has_previous %}
                                         <a class="" href="
-                                        {% url 'admin_all_orders' %}{{ number_of_orders }}/{{ orders.previous_page_number }}{% if search %}/?search={{ search }}{% endif %}">previous</a>
+                                        {% url 'management_all_orders' %}{{ number_of_orders }}/{{ orders.previous_page_number }}{% if search %}/?search={{ search }}{% endif %}">previous</a>
 
                                     {% else %}
                                         <a class="disabled" href="">-</a>
@@ -217,7 +217,7 @@
                                 <li class="next ">
                                     {% if orders.has_next %}
                                         <a href="
-                                            {% url 'admin_all_orders' %}{{ number_of_orders }}/{{ orders.next_page_number }}{% if search %}/?search={{ search }}{% endif %}">next</a>
+                                            {% url 'management_all_orders' %}{{ number_of_orders }}/{{ orders.next_page_number }}{% if search %}/?search={{ search }}{% endif %}">next</a>
                                     {% else %}
                                         <a class="disabled" href="">-</a>
                                     {% endif %}
@@ -231,7 +231,7 @@
                             <input hidden value="{% if search %}{{ search }}{% endif %}" type="text" name="search">
                                 <select class="form-control"
                                         onchange=
-                                                "changeNumberOfOrders(this,'{% url 'admin_all_orders' %}{0}/{{ orders.number }}/')">
+                                                "changeNumberOfOrders(this,'{% url 'management_all_orders' %}{0}/{{ orders.number }}/')">
                                     <option value="1" {% if number_of_orders == '1' %}selected{% endif %}>
                                         1 Entry
                                     </option>

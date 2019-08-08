@@ -11,8 +11,8 @@ from Shop.my_account.views import SearchOrders
 from Shop.order.utils import get_orderitems_once_only
 
 
-class AdminView(View):
-    template_name = 'administration.html'
+class ManagementView(View):
+    template_name = 'management.html'
 
     def get(self, request):
         contact = Contact.objects.filter(user=request.user)
@@ -23,8 +23,8 @@ class AdminView(View):
         pass
 
 
-class AdminOrderOverviewView(View):
-    template_name = 'admin_orders.html'
+class ManagementOrderOverviewView(View):
+    template_name = 'management_orders.html'
 
     def get(self, request, number_of_orders, page=1):
         contact = Contact.objects.get(user=request.user)
@@ -52,8 +52,8 @@ class AdminOrderOverviewView(View):
         pass
 
 
-class AdminOrderDetailView(View):
-    template_name = 'admin_order_detail.html'
+class ManagementOrderDetailView(View):
+    template_name = 'management_order_detail.html'
 
     @check_serve_perms
     def get(self, request, order):

@@ -23,15 +23,15 @@ from Shop import urls as shop_urls
 from Permissions import urls as perm_urls
 from CMS import urls as cms_urls
 from Billing import urls as billing_urls
-from Administration import urls as admin_urls
+from Management import urls as admin_urls
 from Payment import urls as payment_urls
 admin.autodiscover()
 
 
 urlpatterns = [
-    url(r'^$', RedirectView.as_view(url='/cms/Home/')),
+    url(r'^$', RedirectView.as_view(url='/cms/home/')),
     url(r'^admin/', admin.site.urls),
-    url(r'^administration/', include(admin_urls.urlpatterns)),
+    url(r'^management/', include(admin_urls.urlpatterns)),
    # url(r'^accounting/', include(accounting_urls.urlpatterns)),
     url(r'^media/', include(media_urls.urlpatterns)),
     url(r'^shop/', include(shop_urls.urlpatterns)),
