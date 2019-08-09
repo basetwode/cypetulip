@@ -16,8 +16,8 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic import RedirectView
 
-#from Accounting import urls as accounting_urls
-from Home import settings
+# from Accounting import urls as accounting_urls
+# from Home import settings
 from MediaServer import urls as media_urls
 from Shop import urls as shop_urls
 from Permissions import urls as perm_urls

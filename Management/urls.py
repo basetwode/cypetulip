@@ -6,7 +6,6 @@ from Shop.my_account.views import SearchOrders
 
 __author__ = ''
 
-
 urlpatterns = [
     url(r'^$', ManagementView.as_view(),name="management_index"),
     url(r'^settings/$', SettingsView.as_view()),
@@ -14,5 +13,4 @@ urlpatterns = [
     url(r"^settings/(?P<app_name>[a-zA-Z0-9_.-]+)$", SettingsDetailView.as_view()),
     url(r'^orders/search/', SearchOrders.as_view(), name="search_orders"),
     url(r'^orders/(?P<order>[a-zA-Z0-9\\s\- ]+)/$', ManagementOrderDetailView.as_view(), name="management_detail_order"),
-
 ]

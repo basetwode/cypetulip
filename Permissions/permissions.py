@@ -81,7 +81,7 @@ def check_serve_perms2(func):
         else:
             order_access = True
 
-        if request.user.is_authenticated() and \
+        if request.user.is_authenticated and \
                 __has_access(request.user,
                              __get_app_from_url(request.path)) \
                 and order_access:

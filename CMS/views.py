@@ -22,11 +22,16 @@ class GenericView(View):
     def get(self, request, site):
         page = Page.objects.filter(page_name=site)
         all_pages = Page.objects.all()
+        print('page 1' + page[0].link)
+        print(page.count())
         if page.count() == 1:
             page = page[0]
+            print(page.is_enabled)
             if page.is_enabled:
+                print(page.link)
                 if page.link:
-                    pass
+                    sections = Section.objects.filter(page=page)
+                    return render(request, 'index.html', {'page': page, 'sections': sections, 'all_pages': all_pages})
                 else:
                     sections = Section.objects.filter(page=page)
                     return render(request, 'index.html', {'page': page, 'sections': sections, 'all_pages': all_pages})

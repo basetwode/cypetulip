@@ -16,7 +16,10 @@ class ManagementView(View):
 
     def get(self, request):
         contact = Contact.objects.filter(user=request.user)
-        company = contact[0].company
+        try:
+            company = contact[0].company
+        except IndexError:
+            pass
         return render(request, self.template_name, {'contact': contact})
 
     def post(self, request):
@@ -88,11 +91,12 @@ class SettingsView(View):
 
 
 class SettingsDetailView(View):
+    template_name = 'management_settings_details.html'
     app_name = None
 
     def get(self, request, app_name):
         # <view logic>
-        return HttpResponse('SettingsDetailView')
+        return render(request, self.template_name)
 
     def post(self, request):
         # <view logic>

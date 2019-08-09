@@ -8,7 +8,7 @@
     <title>Products</title>
     <script src="{% static 'autocomplete.js' %}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-        <link href="{% static 'admin.css' %}" rel="stylesheet">
+        <link href="{% static 'management.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
@@ -101,6 +101,7 @@
                                     <a href="{% url 'all_orders' %}" class="btn btn-fw btn-primary">{% trans 'Manage Permissions' %}</a>
                                     <a href="{% url 'company_settings' %}" class="btn btn-fw btn-primary">{% trans 'Manage Shop' %}</a>
                                     <a href="{% url 'company_settings' %}" class="btn btn-fw btn-primary">{% trans 'Manage pages' %}</a>
+                                    <a href="settings/mail_settings" class="btn btn-fw btn-primary">{% trans 'Manage Mail Settings' %}</a>
 
                                 </div>
 
