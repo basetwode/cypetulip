@@ -18,12 +18,12 @@ class AppPermission(models.Model):
     is_shop_employee = models.BooleanField(default=False)
     # user can access the normal sites of this app.
     can_access_app = models.BooleanField(default=False)
-    app = models.ForeignKey(App)
-    user = models.ForeignKey(User)
+    app = models.ForeignKey(App, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class AppUrl(models.Model):
-    app = models.ForeignKey(App)
+    app = models.ForeignKey(App, on_delete=models.CASCADE)
     url = models.CharField(max_length=200)
     name = models.CharField(max_length=30, blank=True, null=True)
 
@@ -32,8 +32,8 @@ class AppUrl(models.Model):
 
 
 class AppUrlPermission(models.Model):
-    url = models.ForeignKey(AppUrl)
-    user = models.ForeignKey(User)
+    url = models.ForeignKey(AppUrl, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     post_access = models.BooleanField(default=True)
     get_access = models.BooleanField(default=True)
     post_message = models.CharField(max_length=400,

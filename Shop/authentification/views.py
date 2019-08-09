@@ -14,7 +14,7 @@ class LoginView(View):
     template_name = 'authentification/login.html'
 
     def get(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return HttpResponseRedirect('/shop/home')
         return render(request, self.template_name)
 
@@ -33,14 +33,14 @@ class LoginView(View):
                 auth_login(request, user)
 
                 contact = Contact.objects.filter(user=request.user)
-                language = contact[0].language
-                request.LANGUAGE_CODE = language
+                # language = contact[0].language
+                # request.LANGUAGE_CODE = language
 
 
                 if 'next' in request.POST:
                     next_site = request.POST['next']
                     return HttpResponseRedirect(next_site)
-                return HttpResponseRedirect('/cms/Home')
+                return HttpResponseRedirect('/cms/home')
             else:
                 # An inactive account was used - no logging in!
                 return HttpResponse("Your account is disabled.")
@@ -63,7 +63,7 @@ class LoginView(View):
 class LogoutView(View):
 
     def get(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             auth_logout(request)
         return HttpResponseRedirect('/shop/login')
 

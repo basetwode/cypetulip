@@ -3,7 +3,7 @@ import secrets
 import string
 
 from django.core.files.storage import FileSystemStorage
-from CAD_Shop import settings
+from Home import settings
 import os
 import time
 import hashlib

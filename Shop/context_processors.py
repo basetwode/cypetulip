@@ -4,7 +4,7 @@ from  Shop.models import Order, OrderDetail, Contact,Company,OrderItem, Product
 
 def get_open_orders(request):
     open_orders = {}
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         contact = Contact.objects.filter(user=request.user)
         if contact.count() > 0:
             order = Order.objects.filter(is_send=False,company=contact[0].company)
@@ -24,6 +24,6 @@ def get_open_orders(request):
 
 def language(request):
 
-    return {'language':request.LANGUAGE_CODE}
+    return {'language':'de'}
 
 

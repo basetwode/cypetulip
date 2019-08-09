@@ -12,12 +12,12 @@ class ShoppingCartView(View):
     template_name = 'order/shopping_cart.html'
 
     def get(self, request, product):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return render(request, self.template_name)
 
     def post(self, request, product):
         # <view logic>
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             product_obj = Product.objects.filter(name=product)
             contact = Contact.objects.filter(user=request.user)
 
@@ -45,7 +45,7 @@ class ShoppingCartDetailView(View):
     template_name = 'order/shopping_cart_detail.html'
 
     def get(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             contact = Contact.objects.filter(user=request.user)
             company = contact[0].company
             order = Order.objects.filter(is_send=False,company=company)

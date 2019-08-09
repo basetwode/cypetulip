@@ -9,7 +9,7 @@ from django.views.generic import View
 
 from Permissions.error_handler import raise_404
 from Permissions.permissions import check_serve_perms
-from Shop.models import Product, ProductCategory, Contact, Order, OrderItem
+from Shop.models import Product, ProductCategory, Contact, Order, OrderItem, OrderDetail, OrderState
 
 
 class IndexView(View):
@@ -93,6 +93,8 @@ class OrderConfirmedView(View):
         company = contact[0].company
         _order = Order.objects.get(order_hash=order, is_send=False, company=company)
         _order.is_send = True
+        order_detail = OrderDetail.objects.get(order=_order.id)
+        order_detail.state = OrderState.objects.get(initial=True)
         _order.save()
         return render(request, self.template_name,{'order':_order} )
 

@@ -81,7 +81,7 @@ def check_serve_perms2(func):
         else:
             order_access = True
 
-        if request.user.is_authenticated() and \
+        if request.user.is_authenticated and \
                 __has_access(request.user,
                              __get_app_from_url(request.path)) \
                 and order_access:
@@ -115,8 +115,9 @@ def check_serve_perms(func):
                 elif method =='GET':
                     message = app_url_permission.get_message
                     access = app_url_permission.get_access
-
-        if 'order' in kwargs and access:
+        if request.user.is_authenticated and request.user.is_staff:
+            access = True
+        elif 'order' in kwargs and access:
             order = kwargs.get('order')
             access = __check_order_access(request.user, order)
             print(order)

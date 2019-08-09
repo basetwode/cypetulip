@@ -1,0 +1,21 @@
+.panel-heading {
+    color: white;
+    background-color: #265a88 ;
+    border: 1px solid #eeeeee;
+    font-weight: bold;
+}
+.navbar {
+    background-color: #265a88;
+    background-image: linear-gradient(to bottom, #337ab7 0,#265a88 100%);
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: white;
+}
+.navbar-default .navbar-brand {
+    color: white;
+}
+
+.panel-body{
+    background-color: #e3ebf1;
+}

@@ -1,7 +1,7 @@
 import os
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.views.generic import View
-from CAD_Shop import settings
+from Home import settings
 # Todo: check permissions and raise 401 AND check if file exists and if not raise 404 then
 from Permissions.error_handler import raise_404
 from Permissions.permissions import check_serve_perms

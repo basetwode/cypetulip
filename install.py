@@ -3,21 +3,21 @@ import os
 import re
 import sys
 
-from CAD_Shop import settings
+from Home import settings
 
-from CAD_Shop.settings import BASE_DIR
+from Home.settings import BASE_DIR
 from os import sep
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CAD_Shop.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Home.settings")
 
 __author__ = ''
 
 
 def install():
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CAD_Shop.settings")
-    print('Thanks for choosing EasyShop\n')
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Home.settings")
+    print('Thanks for choosing Cypetulip\n')
     # First select directory for data
-    data_dir = input("Please choose directory for storing shop data [/var/easyshop/]: ")
+    data_dir = input("Please choose directory for storing shop data [/var/Cypetulip/]: ")
 
     config = configparser.RawConfigParser()
     config.add_section('data')
@@ -25,7 +25,7 @@ def install():
     if data_dir:
         config.set('data', 'DATA_DIR', data_dir)
     else:
-        config.set('data', 'DATA_DIR', '/var/easyshop/')
+        config.set('data', 'DATA_DIR', '/var/Cypetulip/')
 
     # Select database
     db_tech = input("Please choose database technologie\nOptions are [mysql,sqlite]: ")
@@ -55,7 +55,7 @@ def install():
     with open(BASE_DIR + sep + 'settings.conf', 'w') as configfile:
         config.write(configfile)
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CAD_Shop.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Home.settings")
 
     from django.core.management import execute_from_command_line
     print('#######Initializing Database########')
@@ -90,7 +90,7 @@ def populate_permissions():
 
     from Permissions.models import AppUrl, App
     from Permissions.utils import show_urls
-    from CAD_Shop.urls import urlpatterns
+    from Home.urls import urlpatterns
     urls = {}
     show_urls(urlpatterns, urls=urls)
     old_urls = AppUrl.objects.all().delete()
