@@ -71,7 +71,7 @@ msgstr ""
 #: .\Payment\templates\payment.html:43 .\Payment\templates\payment.html:51
 #: .\Shop\templates\order\overview.html:42
 #: .\Shop\templates\order\overview.html:210
-msgid "Payment"
+msgid "payment"
 msgstr "Bezahlung"
 
 #: .\Payment\templates\payment.html:55

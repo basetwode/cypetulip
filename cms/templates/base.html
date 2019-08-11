@@ -1,0 +1,188 @@
+{% load staticfiles %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Theme Template for Bootstrap</title>
+    <script src="{% static 'js/functions.js' %}"></script>
+    <script src="{% static 'cms/js/siteLoader.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css"
+          media="screen">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- Custom styles for this template -->
+    <link href="/cms/theme.css" rel="stylesheet">
+
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    {% block head %}
+    {% endblock %}
+</head>
+
+<body role="document">
+<!-- Modal -->
+<div id="wait-modal" class="modal fade" id="pleaseWaitDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>Processing...</h1>
+            </div>
+            <div class="modal-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-success progress-bar-striped" id="progressbar"
+                         role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                        <span class="sr-only">40% Complete (success)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fixed navbar -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">{{ title }}</a>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav navbar-left">
+                {% for page in sites %}
+                    <li class="nav-item">
+                    <li><a class="nav-link"
+                           href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}/">{% endif %}
+                           {% trans page.page_name %}</a></li>
+                    </li>
+                {% endfor %}
+
+            </ul>
+            <ul id="lang" class="ml-auto nav navbar-nav navbar-right ">
+                <li class="dropdown">
+                    <a href="#" style="text-transform: uppercase; font-size: smaller" class="dropdown-toggle"
+                       data-toggle="dropdown"
+                       role="button" aria-haspopup="true"
+                       aria-expanded="false"><img class="flag flag-{{ language }}"/> {{ language }} </a>
+                    <ul class="dropdown-menu">
+                        <form id="lang-form">
+                            {% csrf_token %}
+                        </form>
+                        <li><a onclick="setLanguage('de')"><img class="flag flag-de"/> Deutsch</a></li>
+                        <li><a onclick="setLanguage('en')"><img class="flag flag-en"/> English</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul id="cart" class="nav navbar-nav navbar-right ">
+                {% if user.is_authenticated %}
+                    <li id="shopping-cart" class="dropdown cart">
+                        {% include 'order/shopping_cart.html' %}
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" style="text-transform: capitalize;" class="dropdown-toggle" data-toggle="dropdown"
+                           role="button" aria-haspopup="true"
+                           aria-expanded="false">{{ user.username }} <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">{{ user.first_name }} {{ user.last_name }}</li>
+                            <li><a href="{% url 'my_account' %}">{% trans 'My account' %}</a></li>
+                            <li><a href="{% url 'all_orders' %}">{% trans 'All orders' %}</a></li>
+                            <li><a href="{% url 'account_settings' %}">{% trans 'Settings' %}</a></li>
+                            {% if user.is_staff %}
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'management_index' %}">{% trans 'management' %}</a></li>
+                            {% endif %}
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/shop/logout">{% trans 'Logout' %}</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li><a href="/shop/login">{% trans 'Login' %}</a></li>
+
+                {% endif %}
+            </ul>
+
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+
+<main role="main" id="main" style="margin-top: 50px;min-height: 600px">
+    <div id="noty-holder">
+
+        <div id="alert-danger" class="alert alert-danger alert-dismissable page-alert" hidden>
+            <button type="button" class="close" onclick="$(this).parent().hide()"><span aria-hidden="true">×</span><span
+                    class="sr-only">Close</span>
+            </button>
+            <div id="danger-text">
+                Ups, something went wrong. Please try again later or contact an administrator.
+            </div>
+        </div>
+        <div id="alert-success" class="alert alert-success alert-dismissable page-alert" hidden>
+            <button type="button" class="close" onclick="$(this).parent().hide()"><span aria-hidden="true">×</span><span
+                    class="sr-only">Close</span>
+            </button>
+            <div id="success-text">
+                {% trans 'Sent' %} {% trans 'successfully' %}</div>
+        </div>
+        <div id="alert-warning" class="alert alert-warning alert-dismissable page-alert" hidden>
+            <button type="button" class="close" onclick="$(this).parent().hide()"><span aria-hidden="true">×</span><span
+                    class="sr-only">Close</span>
+            </button>
+            <div id="warning-text">
+                Looks like you've missed some fields
+            </div>
+        </div>
+    </div>
+    {% block body %}
+    {% endblock %}
+
+</main>
+<footer class="col-md-12 footer">
+    <div class="cold-md-4">
+        <p class="text">
+            <i>CypeTulip - Shopsystem</i><br>
+
+            <span>BWK Technik GbR</span>
+        </p>
+    </div>
+    <div class="col-md-4 center">
+        <p style="font-size: smaller" class="text">Version<br>
+            CypeTulip <span>{{ version }}</span><br>
+        </p>
+    </div>
+    <div class="cold-md-4">
+        <img class="center" width="100" src="{% static 'images/test_small.png' %}">
+    </div>
+</footer>
+
+
+<!-- /container -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+<script src="{% static 'dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/js/docs.min.js' %}"></script>
+</body>
+</html>

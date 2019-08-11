@@ -3,18 +3,18 @@ import os
 import re
 import sys
 
-from Home import settings
+from home import settings
 
-from Home.settings import BASE_DIR
+from home.settings import BASE_DIR
 from os import sep
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Home.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "home.settings")
 
 __author__ = ''
 
 
 def install():
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Home.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "home.settings")
     print('Thanks for choosing Cypetulip\n')
     # First select directory for data
     data_dir = input("Please choose directory for storing shop data [/var/Cypetulip/]: ")
@@ -55,7 +55,7 @@ def install():
     with open(BASE_DIR + sep + 'settings.conf', 'w') as configfile:
         config.write(configfile)
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Home.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "home.settings")
 
     from django.core.management import execute_from_command_line
     print('#######Initializing Database########')
@@ -68,7 +68,7 @@ def install():
     print('####Creating a superuser account####')
     execute_from_command_line(['', 'createsuperuser'])
     from django.contrib.auth.models import User
-    from Shop.models import Contact
+    from shop.models import Contact
     users = User.objects.all()
     for user in users:
         contact = Contact()
@@ -77,8 +77,8 @@ def install():
     # from django.core.management import execute_from_command_line
     #
     # execute_from_command_line(sys.argv)
-    from CMS.sql.init_data import populate_db as cms_populate
-    from Shop.sql.init_data import populate_db as shop_populate
+    from cms.sql.init_data import populate_db as cms_populate
+    from shop.sql.init_data import populate_db as shop_populate
     cms_populate()
     shop_populate()
 
@@ -88,9 +88,9 @@ def populate_permissions():
     import django
     django.setup()
 
-    from Permissions.models import AppUrl, App
-    from Permissions.utils import show_urls
-    from Home.urls import urlpatterns
+    from permissions.models import AppUrl, App
+    from permissions.utils import show_urls
+    from home.urls import urlpatterns
     urls = {}
     show_urls(urlpatterns, urls=urls)
     old_urls = AppUrl.objects.all().delete()
@@ -111,7 +111,7 @@ def create_app_perms_for_user(user_name):
     import django
     django.setup()
     from django.contrib.auth.models import User
-    from Permissions.models import AppUrl, AppUrlPermission
+    from permissions.models import AppUrl, AppUrlPermission
     user = User.objects.get(username=user_name)
     for app_url in AppUrl.objects.all():
         perm = AppUrlPermission(url=app_url, user=user, post_access=True, get_access=True)

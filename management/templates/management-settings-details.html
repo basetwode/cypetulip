@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load recurse %}
+{% load static %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{% load i18n %}
+{% bootstrap_messages %}
+{% block head %}
+    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
+    <script src="{% static 'onchange.js' %}"></script>
+    <script src="{% static 'utils.js' %}"></script>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+
+    <title>Settings</title>
+{% endblock %}
+
+{% block body %}
+    <div class="main">
+        <div class="content col-md-8">
+            <form method="post">{% csrf_token %}
+                {% bootstrap_form form layout='horizontal'%}
+                {% buttons %}
+                    <button type="submit" value="Save"  class="btn btn-primary float-right">{% trans 'Save' %}</button>
+                {% endbuttons %}
+            </form>
+        </div>
+    </div>
+
+
+{% endblock %}
