@@ -5,11 +5,11 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView
 
 # Create your views here.
-from django.views.generic import View, DetailView
+from django.views.generic import View, DetailView, ListView
 
 from management.models import MailSettings, LdapSettings
 from permissions.permissions import check_serve_perms
-from shop.models import Contact, Order, OrderItem, Product
+from shop.models import Contact, Order, OrderItem, Product, ProductCategory
 from shop.my_account.views import SearchOrders
 from shop.order.utils import get_orderitems_once_only
 from utils.views import CreateUpdateView
@@ -33,7 +33,7 @@ class ManagementView(View):
 
 
 class ManagementOrderOverviewView(View):
-    template_name = 'management_orders.html'
+    template_name = 'management-orders.html'
 
     def get(self, request, number_of_orders, page=1):
         contact = Contact.objects.get(user=request.user)
@@ -62,7 +62,7 @@ class ManagementOrderOverviewView(View):
 
 
 class ManagementOrderDetailView(DetailView):
-    template_name = 'management_order_detail.html'
+    template_name = 'management-order-details.html'
     slug_url_kwarg = 'order'
     slug_field = 'order_hash'
 
@@ -106,7 +106,6 @@ class MailSettingsDetailView(CreateUpdateView):
     model = MailSettings
     fields = '__all__'
 
-
     def get_success_url(self):
         return reverse_lazy('mail_settings_details', kwargs={'mail_settings_id': self.object.id})
 
@@ -119,6 +118,23 @@ class LdapSettingsDetailView(CreateUpdateView):
     model = LdapSettings
     fields = '__all__'
 
-
     def get_success_url(self):
         return reverse_lazy('ldap_settings_details', kwargs={'ldap_settings_id': self.object.id})
+
+
+class CategoriesOverviewView(ListView):
+    template_name = 'categories-overview.html'
+    context_object_name = 'categories'
+    model = ProductCategory
+
+
+class ProductsOverviewView(ListView):
+    template_name = 'products-overview.html'
+    context_object_name = 'products'
+    model = Product
+
+
+class CustomersOverviewView(ListView):
+    template_name = 'customers-overview.html'
+    context_object_name = 'customers'
+    model = Contact

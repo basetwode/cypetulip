@@ -27,7 +27,8 @@ footer {
 
 .navbar {
     background-color: #{{main_color}};
-    zbackground-image:linear-gradient(to bottom, #{{main_color_lighter}} 0,#{{main_color}} 100%);}
+    zbackground-image:linear-gradient(to bottom, #{{main_color_lighter}} 0,#{{main_color}} 100%);
+}
 
 #sidebar-wrapper {
     background: #{{main_color}};

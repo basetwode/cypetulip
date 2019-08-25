@@ -1,8 +1,5 @@
 from django.db import models
 
-def get_ldap_server_config():
-    Ldap.objects.all()
-
 
 class Ldap(models.Model):
     server_uri = models.CharField(max_length=100)

@@ -17,7 +17,7 @@
 
     <title>Theme Template for Bootstrap</title>
     <script src="{% static 'js/functions.js' %}"></script>
-    <script src="{% static 'cms/js/siteLoader.js' %}"></script>
+    <script src="{% static 'cms/js/site-loader.js' %}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css"
@@ -37,7 +37,7 @@
 
 <body role="document">
 <!-- Modal -->
-<div id="wait-modal" class="modal fade" id="pleaseWaitDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+<div id="wait-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -56,7 +56,7 @@
     </div>
 </div>
 <!-- Fixed navbar -->
-<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="main-nav">
     <div class="container">
         <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#navbar"
                 aria-expanded="false" aria-controls="navbar">
