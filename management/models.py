@@ -9,6 +9,7 @@ class MailSettings(models.Model):
     stmp_use_tls = models.BooleanField(max_length=100)
     smtp_default_from = models.CharField(max_length=100)
 
+
 class LdapSettings(models.Model):
     ldap_server = models.CharField(max_length=100)
     ldap_port = models.IntegerField()

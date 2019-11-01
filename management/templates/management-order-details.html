@@ -231,7 +231,7 @@
 
                                                                     {% if sub_product.is_multiple_per_item %}
                                                                         <button onclick="duplicateProduct(this,{{ order.id }},{{ sub_product.price }})"
-                                                                                class="btn btn-default btn-sm"><i
+                                                                                class="btn btn-secondary btn-sm"><i
                                                                                 class="fa fa-plus-circle"></i>
                                                                         </button>
                                                                         {#                                        <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>#}
@@ -300,11 +300,11 @@
                                         <div class="col-sm-3">
                                             <h5 class="h-bold">{% trans 'Options' %}</h5>
                                             <a href="{% url 'detail_order_cancel_order' order.order_hash %}"
-                                               class="btn btn-fw btn-default">{% trans 'Cancel order' %}</a>
+                                               class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</a>
                                             <a href="{% url 'detail_order_show_bill' order.order_hash %}"
-                                               class="btn btn-fw btn-default">{% trans 'Show bill' %}</a>
+                                               class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
                                             <a href="{% url 'detail_order_write_review' order.order_hash %}"
-                                               class="btn btn-fw btn-default">{% trans 'Write review' %}</a>
+                                               class="btn btn-fw btn-secondary">{% trans 'Write review' %}</a>
                                         </div>
                                     </div>
                                 </div>

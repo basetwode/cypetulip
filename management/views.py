@@ -138,3 +138,10 @@ class CustomersOverviewView(ListView):
     template_name = 'customers-overview.html'
     context_object_name = 'customers'
     model = Contact
+
+
+class ProductCreationView(CreateView):
+    template_name = 'products-create.html'
+    context_object_name = 'products'
+    model = Product
+    fields = '__all__'

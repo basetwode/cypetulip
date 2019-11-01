@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load recurse %}
+{% load staticfiles %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
 
 {% load i18n %}
 {% block head %}
@@ -36,9 +42,9 @@
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span
-                                                    class="glyphicon glyphicon-folder-close">
-                    </span>{% trans 'Categories' %}</a>
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                                <span class="glyphicon glyphicon-folder-close">
+                                                </span>{% trans 'Categories' %}</a>
                                         </h4>
                                     </div>
                                     <div id="collapseOne" class="panel-collapse collapse in">
@@ -127,6 +133,6 @@
             </div>
         </div>
 
-
+    </div>
 
 {% endblock %}

@@ -13,4 +13,5 @@ Create a new django admin user
 
 ```
 python3 manage.py createsuperuser
+(dbadmin/password)
 ```

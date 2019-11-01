@@ -14,7 +14,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import logging
 import os
 
-from django_auth_ldap.config import GroupOfNamesType, LDAPSearch
+# from django_auth_ldap.config import GroupOfNamesType, LDAPSearch
 
 
 
@@ -83,7 +83,6 @@ TEMPLATES = [
                 'cms.context_processors.get_version',
                 'cms.context_processors.get_page_title',
                 'django.template.context_processors.i18n',
-                'shop.context_processors.get_open_orders',
                 'shop.context_processors.language'
             ],
         },
@@ -129,7 +128,7 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = "/var/Cypetulip/static"
 
-MEDIA_ROOT = '/var/Cypetulip/'
+MEDIA_ROOT = '/var/Cypetulip'
 
 SHOP_NAME = u'Cypetulip'
 

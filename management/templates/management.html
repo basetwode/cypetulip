@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base-mgmt.html' %}
 {% load staticfiles %}
 {% load recurse %}
 {% load static %}
@@ -20,126 +20,158 @@
 {% block body %}
     <div class="main">
         <div class="content container">
-            <h4><strong>{% trans "management" %}</strong></h4>
-            <div class="card-group">
-                <div class="card mb-auto">
-                    <div class="card-header orders-overview">
-                        <p><strong>{% trans 'Orders' %}</strong></p>
-                    </div>
-                    {#                <img class="card-img card-img-top" src="{% static 'images/package.png' %}">#}
-                    <div class="card-body">
-                        <p class="card-text">{% trans 'Show orders, track or cancel them' %}</p>
-                        <a href="{% url 'management_all_orders' %}"
-                           class="btn btn-primary">{% trans 'All orders' %}</a>
-                        <p>{% trans 'Search orders' %}</p>
-                        <form action="{% url 'search_orders' %}">
-                            <div class="input-group">
-                                                  <span class="input-group-btn">
-                                                    <button class="btn btn-primary" type="button">Go!</button>
-                                                  </span>
-                                <input id="order-search" type="text" class="form-control"
-                                       placeholder="Search for...">
+            <div>
+                <h1>
+                    <strong>{% trans "management" %}</strong>
+                </h1>
+            </div>
+
+            <div>
+                <div class="card-deck">
+                    <div class="card">
+                        <div class="card-header text-align-center">
+                            <div>
+                                <img src="{% static 'images/package.png' %}">
                             </div>
-                        </form>
+                            <div>
+                                <strong>{% trans 'Orders' %}</strong>
+                            </div>
+
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{% trans 'Show orders, track or cancel them' %}</p>
+                            <a href="{% url 'management_all_orders' %}"
+                               class="btn btn-primary">{% trans 'All orders' %}</a>
+                            <p>{% trans 'Search orders' %}</p>
+                            <form action="{% url 'search_orders' %}">
+                                <div class="input-group">
+
+                                    <input id="order-search" type="text" class="form-control"
+                                           placeholder="Search for...">
+                                    <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button">Go!</button>
+                                  </span>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-                <div class="card mb-auto">
-                    <div class="row no-gutters">
-                        <div style="overflow: auto" class="card-heading orders-overview">
-                            <p><strong>{% trans 'Customers' %}</strong></p>
+                    <div class="card">
+                        <div class="card-header text-align-center">
+                            <div>
+                                <img src="{% static 'images/support.png' %}">
+                            </div>
+                            <div>
+                                <strong>{% trans 'Customers' %}</strong>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <img class="card-img" src="{% static 'images/support.png' %}">
-                        </div>
-                        <div class="col-md-4">
+
+                        <div class="card-body">
                             <p>{% trans 'Show and edit customers' %}</p>
                             <a href="{% url 'customers_overview' %}"
                                class="btn btn-primary">{% trans 'Customers' %}</a>
                             <a href="{% url 'create_customer' %}"
                                class="btn btn-primary">{% trans 'Add customer' %}</a>
-                        </div>
-                        <div class="col-md-4">
                             <p>{% trans 'Search customers' %}</p>
                             <form action="{% url 'search_orders' %}">
                                 <div class="input-group">
-                                                  <span class="input-group-btn">
-                                                    <button class="btn btn-primary" type="button">Go!</button>
-                                                  </span>
+
                                     <input id="order-search" type="text" class="form-control"
                                            placeholder="Search for...">
+                                    <span class="input-group-btn">
+                                                    <button class="btn btn-primary" type="button">Go!</button>
+                                                  </span>
                                 </div>
                             </form>
                         </div>
+
                     </div>
-                </div>
-                <div class="card mb-auto">
-                    <div class="row no-gutters">
-                        <div style="overflow: auto" class="card-heading orders-overview">
-                            <p><strong>{% trans 'Products and Categories' %}</strong></p>
+                    <div class="card">
+                        <div style="overflow: auto" class="card-header text-align-center">
+                            <div>
+                                <img src="{% static 'images/package.png' %}">
+                            </div>
+                            <div>
+                                <strong>{% trans 'Products and Categories' %}</strong>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <img class="card-img-overlay" src="{% static 'images/package.png' %}">
-                        </div>
-                        <div class="col-md-4">
+                        <div class="card-body">
                             <p>{% trans 'Categories' %}</p>
                             <a href="{% url 'categories_overview' %}"
-                               class="btn btn-primary">{% trans 'Categories' %}</a>
-                        </div>
-                        <div class="col-md-4">
+                               class="btn btn-primary">{% trans 'Show' %}</a>
                             <p>{% trans 'Products' %}</p>
                             <a href="{% url 'products_overview' %}"
-                               class="btn btn-primary">{% trans 'Products' %}</a>
+                               class="btn btn-primary">{% trans 'Show' %}</a>
                             <a href="{% url 'create_product' %}"
                                class="btn btn-primary">{% trans 'Create new Product' %}</a>
                         </div>
-                    </div>
-                </div>
-
-
-                <div class="card mb-auto">
-                    <div class="row no-gutters">
-                        <p><strong>{% trans 'Settings' %}</strong></p>
-                    </div>
-                    <div class="col-md-4">
-
-                        <img class="card-img-overlay" src="{% static 'images/laptop.png' %}">
-                    </div>
-                    <div class="col-md-4">
-                        <p>{% trans 'All shop related settings. Manaage permissions, staff and products and pages' %}</p>
-                        <a href="{% url 'account_settings' %}"
-                           class="btn btn-primary">{% trans 'Manage Staff' %}</a>
-
-                        <a href="{% url 'all_orders' %}"
-                           class="btn btn-primary">{% trans 'Manage permissions' %}</a>
-                        <a href="{% url 'company_settings' %}"
-                           class="btn btn-primary">{% trans 'Manage shop' %}</a>
-                        <a href="{% url 'company_settings' %}"
-                           class="btn btn-primary">{% trans 'Manage pages' %}</a>
-                        <a href="{% url 'mail_settings_details' mail_settings.id %}"
-                           class="btn btn-primary">{% trans 'Manage Mail Settings' %}</a>
-                        <a href="{% url 'ldap_settings_details'  ldap_settings.id %}"
-                           class="btn btn-primary">{% trans 'Manage Ldap Settings' %}</a>
 
                     </div>
                 </div>
-
-                <div class="card mb-auto">
-                    <div class="row no-gutters">
-                        <p><strong>{% trans 'Accounting' %}</strong></p>
-                    </div>
-                    <div class="col-md-4">
-                        <img class="card-img-overlay" src="{% static 'images/accounting.png' %}">
-                    </div>
-                    <div class="col-md-4">
-                        <p>{% trans 'Create or review accounting information' %}</p>
-                        <a href="{% url 'account_settings' %}"
-                           class="btn btn-primary">{% trans 'Open Accounting' %}</a>
-
-                    </div>
-                </div>
-
             </div>
+            <div>
+                <div class="card-deck">
+                    <div class="card">
+                        <div class="card-header text-align-center">
+                            <div>
+                                <img src="{% static 'images/laptop.png' %}">
+                            </div>
+                            <div><strong>{% trans 'Settings' %}</strong></div>
+                        </div>
 
+                        <div class="card-body">
+                            <div class="card-text">
+                                <p>{% trans 'All shop related settings. Manage permissions, staff and products and pages' %}</p>
+                            </div>
+                            <div class="card-text btn-toolbar">
+                                <div class="btn-group">
+                                    <a href="{% url 'account_settings' %}"
+                                       class="btn btn-primary mr-1">{% trans 'Staff' %}</a>
+                                    <a href="{% url 'all_orders' %}"
+                                       class="btn btn-primary mr-1">{% trans 'permissions' %}</a>
+                                </div>
+                                <div class="btn-group">
+                                    <a href="{% url 'company_settings' %}"
+                                       class="btn btn-primary mr-1">{% trans 'shop' %}</a>
+                                    <a href="{% url 'company_settings' %}"
+                                       class="btn btn-primary mr-1">{% trans 'pages' %}</a>
+                                </div>
+                                <div class="btn-group">
+                                    <a href="{% url 'mail_settings_details' mail_settings.id %}"
+                                       class="btn btn-primary mr-1">{% trans 'mail' %}</a>
+                                    <a href="{% url 'ldap_settings_details'  ldap_settings.id %}"
+                                       class="btn btn-primary mr-1">{% trans 'ldap' %}</a>
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header text-align-center">
+                            <div>
+                                <img src="{% static 'images/accounting.png' %}">
+                            </div>
+                            <div>
+                                <strong>{% trans 'Accounting' %}</strong>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="card-text">
+                                <p>{% trans 'Create or review accounting information' %}</p>
+                                <a href="{% url 'account_settings' %}"
+                                   class="btn btn-primary">{% trans 'Open Accounting' %}</a>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
 
         </div>
     </div>

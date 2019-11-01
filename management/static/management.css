@@ -5,10 +5,10 @@
     font-weight: bold;
 }
 
-.navbar {
-    background-color: #265a88;
-    background-image: linear-gradient(to bottom, #337ab7 0, #265a88 100%);
-}
+/*.navbar {*/
+/*    background-color: #265a88;*/
+/*    background-image: linear-gradient(to bottom, #337ab7 0, #265a88 100%);*/
+/*}*/
 
 .navbar-default .navbar-nav > li > a {
     color: white;
@@ -20,4 +20,19 @@
 
 .panel-body {
     background-color: #e3ebf1;
+}
+
+.text-align-center{
+    text-align: center;
+}
+.text-align-right{
+    text-align: right;
+}
+
+.padding-1rem{
+    padding: 1rem;
+}
+
+.uppercase-text{
+    text-transform: uppercase;
 }

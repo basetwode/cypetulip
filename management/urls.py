@@ -1,12 +1,11 @@
 from management.views import MailSettingsDetailView, SettingsView, ManagementView, ManagementOrderOverviewView, \
     ManagementOrderDetailView, LdapSettingsDetailView, CategoriesOverviewView, ProductsOverviewView, \
-    CustomersOverviewView
+    CustomersOverviewView, ProductCreationView
 from django.conf.urls import url
 
 from shop.my_account.views import SearchOrders
 
 __author__ = ''
-
 urlpatterns = [
     url(r'^$', ManagementView.as_view(), name="management_index"),
     url(r'^settings/$', SettingsView.as_view()),
@@ -20,8 +19,9 @@ urlpatterns = [
     url(r'^orders/(?P<order>[a-zA-Z0-9\\s\- ]+)/$', ManagementOrderDetailView.as_view(),
         name="management_detail_order"),
     url(r'^categories/', CategoriesOverviewView.as_view(), name="categories_overview"),
+    url(r'^products/create/', ProductCreationView.as_view(), name="create_product"),
     url(r'^products/', ProductsOverviewView.as_view(), name="products_overview"),
-    url(r'^products/create/', ProductsOverviewView.as_view(), name="create_product"),
-    url(r'^customers/', CustomersOverviewView.as_view(), name="customers_overview"),
     url(r'^customers/create/', CustomersOverviewView.as_view(), name="create_customer"),
+    url(r'^customers/', CustomersOverviewView.as_view(), name="customers_overview"),
 ]
+

@@ -109,7 +109,7 @@
                                 <br>
                                 <form id="add-cart-form">
                                     {% csrf_token %}
-                                <button type="button" data-toggle="dropdown" data-target="#shopping-cart" onclick="addToCart('{{ product.name }}')" class="btn btn-default btn-md">{% trans 'Add to cart' %}</button>
+                                <button type="button" data-toggle="dropdown" data-target="#shopping-cart" onclick="addToCart('{{ product.name }}')" class="btn btn-secondary btn-md">{% trans 'Add to cart' %}</button>
                                 </form>
                             </div>
                             <div class="col-md-12 product-details">

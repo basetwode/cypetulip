@@ -2,7 +2,7 @@
 
 
 body {
-    padding-top: 50px;
+    /*padding-top: 50px;*/
     /*padding-bottom: 30px;*/
     font-family: "Raleway", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -25,10 +25,10 @@ footer {
     width: auto;
 }
 
-.navbar {
-    background-color: #{{main_color}};
-    zbackground-image:linear-gradient(to bottom, #{{main_color_lighter}} 0,#{{main_color}} 100%);
-}
+/*.navbar {*/
+/*    background-color: #{{main_color}};*/
+/*    zbackground-image:linear-gradient(to bottom, #{{main_color_lighter}} 0,#{{main_color}} 100%);*/
+/*}*/
 
 #sidebar-wrapper {
     background: #{{main_color}};
@@ -237,11 +237,6 @@ footer .box {
     margin-top: 25px;
 }
 
-.container {
-    padding-left: 0px;
-    padding-right: 0px;
-    max-width: 100%;
-}
 
 /*********************************************
 				ITEM
@@ -442,6 +437,7 @@ footer .box {
 }
 
 .footer {
+    width: 100%;
     border-top: 1px solid #cccccc;
     margin-top: 40px;
     height: auto;
@@ -450,7 +446,7 @@ footer .box {
     left: 0;
     padding: 1rem;
 
-    background-color: #{{main_color}};
+    background-color: slategray;
 }
 
 .center {
@@ -666,6 +662,22 @@ footer .box {
     align-content: center;
     text-align: center;
 }
+.customers-overview  {
+    align-content: center;
+    text-align: center;
+}
+.categories-overview  {
+    align-content: center;
+    text-align: center;
+}
+.settings-overview  {
+    align-content: center;
+    text-align: center;
+}
+.accounts-overview  {
+    align-content: center;
+    text-align: center;
+}
 
 .payment .active label {
         font-weight: normal;
@@ -727,4 +739,12 @@ footer .box {
     text-decoration: none;
     color: #000000;
     background-color: #f0f0f0;
+}
+
+
+
+.shop-header {
+    line-height: 1;
+    background-color: lightgray !important;
+    border-bottom: 1px solid #e5e5e5;
 }

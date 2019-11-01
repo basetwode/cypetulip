@@ -30,7 +30,7 @@ class Company(models.Model):
 
 
 class Contact(models.Model):
-    user = models.OneToOneField(User,on_delete=models.CASCADE , default=None)
+    user = models.ForeignKey(User,on_delete=models.CASCADE, default=None)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
