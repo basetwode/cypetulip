@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base-mgmt.html' %}
 {% load staticfiles %}
 {% load recurse %}
 {% load static %}
@@ -20,24 +20,73 @@
 {% block body %}
     <div class="main">
         <div class="content">
-
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            ...
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-12">
-
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% trans 'Filter by Category' %}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% for category in categories %}
+                            <a class="dropdown-item" href="#">{{ category.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <br>
                 <table class="table table-striped">
                     <thead class="thead-dark">
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">{% trans 'Category' %}</th>
+                        <th scope="col">{% trans 'Thumbnail' %}</th>
                         <th scope="col">{% trans 'Name' %}</th>
                         <th scope="col">{% trans 'Price' %}</th>
-                        <th scope="col">{% trans 'Thumbnail' %}</th>
+                        <th scope="col">{% trans 'Configuration' %}</th>
+                        <th scope="col">{% trans 'Active' %}</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for product in products %}
                         <tr>
                             <td>{{ product.id }}</td>
+                            <td>{{ product.category }}</td>
+                            <td class="thumbnail">
+                                <div>
+                                    <img style="height: 5rem" src="/media/{{ product.product_picture.url }}"
+                                         class="img-thumbnail">
+                                </div>
+                            </td>
                             <td>{{ product.name }}</td>
                             <td>{{ product.price }} €</td>
+
+                            <td class="">
+                                <div>
+                                    <a class="btn btn-outline-dark" href="products/{{product.id}}">{% trans 'Edit' %}</a>
+                                    <button class="btn btn-outline-dark" data-toggle="modal" data-target="#exampleModal">{% trans 'Delete' %}</button>
+                                </div>
+
+                            </td>
+                            <td><input type="checkbox" class="form-check-input">
+                                {{ product.is_required }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

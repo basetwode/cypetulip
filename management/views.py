@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.forms.widgets import Input
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
@@ -130,8 +131,14 @@ class CategoriesOverviewView(ListView):
 
 class ProductsOverviewView(ListView):
     template_name = 'products-overview.html'
+    # extra_context = 'categories'
     context_object_name = 'products'
     model = Product
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context['categories'] = ProductCategory.objects.all()
+        return context
 
 
 class CustomersOverviewView(ListView):
@@ -141,7 +148,29 @@ class CustomersOverviewView(ListView):
 
 
 class ProductCreationView(CreateView):
-    template_name = 'products-create.html'
+    template_name = 'product-create.html'
     context_object_name = 'products'
     model = Product
+    fields = '__all__'
+
+
+class ProductEditView(UpdateView):
+    template_name = 'product-edit.html'
+    context_object_name = 'products'
+    model = Product
+    fields = '__all__'
+
+    product_id = None
+    slug_field = 'id'
+    slug_url_kwarg = 'product_id'
+
+    def get_success_url(self):
+        return reverse_lazy('product_edit', kwargs={'product_id': self.object.id})
+
+
+
+class CategoryCreationView(CreateView):
+    template_name = 'category-create.html'
+    context_object_name = 'categories'
+    model = ProductCategory
     fields = '__all__'

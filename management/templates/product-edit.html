@@ -22,26 +22,10 @@
         <div class="content">
 
             <div class="col-md-12">
-
-                <table class="table table-striped">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">{% trans 'Name' %}</th>
-                        <th scope="col">{% trans 'Description' %}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for category in categories %}
-                        <tr>
-                            <td>{{ category.id }}</td>
-                            <td>{{ category.name }}</td>
-                            <td>{{ category.description }} €</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-
-                </table>
+                <form method="post">{% csrf_token %}
+                    {% bootstrap_form form layout='horizontal'%}
+                    <input class="btn btn-primary" type="submit" value="Save">
+                </form>
 
             </div>
         </div>
