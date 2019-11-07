@@ -20,25 +20,7 @@
 {% block body %}
     <div class="main">
         <div class="content">
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            ...
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% include 'delete-modal.html' %}
             <div class="col-md-12">
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
@@ -71,8 +53,14 @@
                             <td>{{ product.category }}</td>
                             <td class="thumbnail">
                                 <div>
-                                    <img style="height: 5rem" src="/media/{{ product.product_picture.url }}"
-                                         class="img-thumbnail">
+                                    {% if product.product_picture %}
+                                        <img style="height: 5rem" alt="..."
+                                             src="/media/{{ product.product_picture.url }}"
+                                             class="img-thumbnail">
+                                    {% else %}
+                                        <i class="fa fa-image img-thumbnail"></i>
+                                    {% endif %}
+
                                 </div>
                             </td>
                             <td>{{ product.name }}</td>
@@ -80,8 +68,9 @@
 
                             <td class="">
                                 <div>
-                                    <a class="btn btn-outline-dark" href="products/{{product.id}}">{% trans 'Edit' %}</a>
-                                    <button class="btn btn-outline-dark" data-toggle="modal" data-target="#exampleModal">{% trans 'Delete' %}</button>
+                                    <a class="btn btn-outline-dark" href="{% url 'product_edit' product.id %}">{% trans 'Edit' %}</a>
+                                    <button class="btn btn-outline-dark" data-toggle="modal"
+                                            data-target="#exampleModal">{% trans 'Delete' %}</button>
                                 </div>
 
                             </td>
@@ -93,6 +82,7 @@
 
                 </table>
 
+                <a class="btn btn-secondary" href="{% url 'management_index'  %}">{% trans 'Back' %}</a>
             </div>
         </div>
     </div>

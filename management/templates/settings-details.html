@@ -24,6 +24,7 @@
                 {% bootstrap_form form layout='horizontal'%}
                 {% buttons %}
                     <button type="submit" value="Save"  class="btn btn-primary float-right">{% trans 'Save' %}</button>
+                    <a class="btn btn-secondary float-right" href="{% url 'management_index'  %}">{% trans 'Back' %}</a>
                 {% endbuttons %}
             </form>
         </div>

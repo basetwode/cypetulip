@@ -13,9 +13,10 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import logging
 import os
+from django.utils.translation import ugettext_lazy as _, gettext
+from home.init import load_settings
 
 # from django_auth_ldap.config import GroupOfNamesType, LDAPSearch
-
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -51,10 +52,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
 )
 
-
 MIDDLEWARE = (
-    # 'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    # 'django.middleware.locale.LocaleMiddleware'
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -106,8 +105,6 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-from django.utils.translation import ugettext_lazy as _, gettext
-
 LANGUAGES = [
     ('de', _('German')),
     ('en', _('English')),
@@ -126,9 +123,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = "/var/Cypetulip/static"
+STATIC_ROOT = "/var/cypetulip/static"
 
-MEDIA_ROOT = '/var/Cypetulip'
+MEDIA_ROOT = '/var/cypetulip'
 
 SHOP_NAME = u'Cypetulip'
 
@@ -172,8 +169,6 @@ VERSION = "2.0 - BUILD #" + build.readline()
 build.close()
 
 print(VERSION)
-
-from home.init import load_settings
 
 load_settings()
 

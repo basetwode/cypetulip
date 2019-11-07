@@ -3,6 +3,7 @@
 {% load bootstrap4 %}
 {% bootstrap_css %}
 {% bootstrap_javascript jquery='full' %}
+{% get_current_language as language %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +23,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css"
           media="screen">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/c143d589dd.js" crossorigin="anonymous"></script>
+{#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/5.11.2/css/font-awesome.min.css">#}
     <!-- Custom styles for this template -->
     <link href="/cms/theme.css" rel="stylesheet">
 
@@ -94,8 +96,8 @@
                         <a href="#shopping-cart" class="dropdown-toggle nav-link"
                            data-target="#shopping-cart" data-toggle="dropdown" role="button"
                            aria-haspopup="true"
-                           aria-expanded="false"><i class="fa fa-shopping-cart"></i>
-                            <span>{% trans ' Shoppingcart ' %}
+                           aria-expanded="false"><i class="fas fa-shopping-cart"></i>
+                            <span>{% trans 'Shoppingcart' %}
                                 {% if number_items > 0 %}
                                     ({{ number_items }})
                                 {% endif %}

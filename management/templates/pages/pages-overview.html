@@ -26,26 +26,28 @@
                     <thead class="thead-dark">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">{% trans 'Name' %}</th>
-                        <th scope="col">{% trans 'Description' %}</th>
-                        <th scope="col">{% trans 'Parent Category' %}</th>
+                        <th scope="col">{% trans 'Position' %}</th>
+                        <th scope="col">{% trans 'Pagename' %}</th>
+                        <th scope="col">{% trans 'Enabled' %}</th>
+                        <th scope="col">{% trans 'Link' %}</th>
                         <th scope="col">{% trans 'Configuration' %}</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for category in categories %}
+                    {% for page in pages %}
                         <tr>
-                            <td>{{ category.id }}</td>
-                            <td>{{ category.name }}</td>
-                            <td>{{ category.description }}</td>
-                            <td>{{ category.mother_category }}</td>
+                            <td>{{ page.id }}</td>
+                            <td>{{ page.position }}</td>
+                            <td>{{ page.page_name }}</td>
+                            <td>{{ page.is_enabled }}</td>
+                            <td>{{ page.link }}</td>
                             <td class="">
                             <div>
-                                <a class="btn btn-outline-dark" href="{% url 'category_edit' category.id %}">{% trans 'Edit' %}</a>
+                                <a class="btn btn-outline-dark" href="{% url 'page_edit' page.id %}">{% trans 'Edit' %}</a>
                                 <button class="btn btn-outline-dark" data-toggle="modal"
                                         data-target="#exampleModal">{% trans 'Delete' %}</button>
 
-                                {% include 'delete-modal.html' with model=category %}
+                                {% include 'delete-modal.html' %}
                             </div>
 
                         </td>

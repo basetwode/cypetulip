@@ -31,7 +31,7 @@
                     <div class="card">
                         <div class="card-header text-align-center">
                             <div>
-                                <img src="{% static 'images/package.png' %}">
+                                <i class="fas fa-shopping-basket fa-4x"></i>
                             </div>
                             <div>
                                 <strong>{% trans 'Orders' %}</strong>
@@ -58,7 +58,7 @@
                     <div class="card">
                         <div class="card-header text-align-center">
                             <div>
-                                <img src="{% static 'images/support.png' %}">
+                                <i class="fa fa-user-circle fa-4x"></i>
                             </div>
                             <div>
                                 <strong>{% trans 'Customers' %}</strong>
@@ -88,7 +88,7 @@
                     <div class="card">
                         <div style="overflow: auto" class="card-header text-align-center">
                             <div>
-                                <img src="{% static 'images/package.png' %}">
+                                <i class="fa fa-box-open fa-4x"></i>
                             </div>
                             <div>
                                 <strong>{% trans 'Products and Categories' %}</strong>
@@ -115,7 +115,7 @@
                     <div class="card">
                         <div class="card-header text-align-center">
                             <div>
-                                <img src="{% static 'images/laptop.png' %}">
+                                <i class="fa fa-cog fa-4x"></i>
                             </div>
                             <div><strong>{% trans 'Settings' %}</strong></div>
                         </div>
@@ -134,8 +134,7 @@
                                 <div class="btn-group">
                                     <a href="{% url 'company_settings' %}"
                                        class="btn btn-primary mr-1">{% trans 'shop' %}</a>
-                                    <a href="{% url 'company_settings' %}"
-                                       class="btn btn-primary mr-1">{% trans 'pages' %}</a>
+
                                 </div>
                                 <div class="btn-group">
                                     <a href="{% url 'mail_settings_details' mail_settings.id %}"
@@ -150,11 +149,30 @@
 
                         </div>
                     </div>
-
                     <div class="card">
                         <div class="card-header text-align-center">
                             <div>
-                                <img src="{% static 'images/accounting.png' %}">
+                                <i class="fas fa-laptop-medical fa-4x"></i>
+                            </div>
+                            <div>
+                                <strong>{% trans 'CMS' %}</strong>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <p>{% trans 'Show and edit pages' %}</p>
+                            <a href="{% url 'pages' %}"
+                               class="btn btn-primary mr-1">{% trans 'Pages' %}</a>
+                            <a href="{% url 'pages' %}"
+                               class="btn btn-primary">{% trans 'Add Page' %}</a>
+
+                        </div>
+
+                    </div>
+                    <div class="card">
+                        <div class="card-header text-align-center">
+                            <div>
+                                <i class="fas fa-balance-scale fa-4x"></i>
                             </div>
                             <div>
                                 <strong>{% trans 'Accounting' %}</strong>

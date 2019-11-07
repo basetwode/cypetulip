@@ -36,13 +36,14 @@
                         <tr>
                             <td>{{ contact.id }}</td>
                             <td>{{ contact.first_name }} {{ contact.last_name}}</td>
-                            <td>{{ contact.company }} €</td>
+                            <td>{{ contact.company }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
 
                 </table>
 
+                <a class="btn btn-secondary" href="{% url 'management_index'  %}">{% trans 'Back' %}</a>
             </div>
         </div>
     </div>

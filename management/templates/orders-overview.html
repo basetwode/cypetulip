@@ -124,7 +124,7 @@
                                         </div>
                                         <div class="col-4">
 
-                                            <h4>{% trans 'Status' %}</h4>
+                                            <h4>{% trans 'State' %}</h4>
 
                                             {% for order_detail in order.orderdetail_set.all %}
                                                 <div>
@@ -155,7 +155,7 @@
                                                 {% for order_item in order.orderitem_set.all %}
                                                     <div class="row">
                                                         <div class="col-sm-1 col-xs-4">
-                                                            {% if  order_item.product.product.product_picture.url %}
+                                                            {% if  order_item.product.product.product_picture %}
                                                                 <img
                                                                         src="/media/{{ order_item.product.product.product_picture.url }}"
                                                                         class="img-thumbnail"/>{% endif %}

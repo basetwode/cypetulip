@@ -106,9 +106,12 @@
 
 
                                                     <a href="/shop/product/{{ product.name }}">
-                                                        <img
-                                                                src="/media/{{ product.product_picture.url }}"
-                                                                alt=""/></a>
+                                                        {% if product.product_picture %}
+                                                            <img
+                                                                    src="/media/{{ product.product_picture.url }}"
+                                                                    alt=""/>
+                                                        {%  endif %}
+                                                       </a>
                                                 </div>
                                                 <div class="price-details">
                                                     <div class="price-number">

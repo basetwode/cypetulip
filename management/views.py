@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.forms.widgets import Input
 from django.http import HttpResponse
@@ -6,8 +7,9 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView
 
 # Create your views here.
-from django.views.generic import View, DetailView, ListView
+from django.views.generic import View, DetailView, ListView, DeleteView
 
+from cms.models import Page, Section
 from management.models import MailSettings, LdapSettings
 from permissions.permissions import check_serve_perms
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory
@@ -34,7 +36,7 @@ class ManagementView(View):
 
 
 class ManagementOrderOverviewView(View):
-    template_name = 'management-orders.html'
+    template_name = 'orders-overview.html'
 
     def get(self, request, number_of_orders, page=1):
         contact = Contact.objects.get(user=request.user)
@@ -63,7 +65,7 @@ class ManagementOrderOverviewView(View):
 
 
 class ManagementOrderDetailView(DetailView):
-    template_name = 'management-order-details.html'
+    template_name = 'order-details.html'
     slug_url_kwarg = 'order'
     slug_field = 'order_hash'
 
@@ -100,7 +102,7 @@ class SettingsView(View):
 
 
 class MailSettingsDetailView(CreateUpdateView):
-    template_name = 'management-settings-details.html'
+    template_name = 'settings-details.html'
     mail_settings_id = None
     slug_field = 'id'
     slug_url_kwarg = 'mail_settings_id'
@@ -112,7 +114,7 @@ class MailSettingsDetailView(CreateUpdateView):
 
 
 class LdapSettingsDetailView(CreateUpdateView):
-    template_name = 'management-settings-details.html'
+    template_name = 'settings-details.html'
     ldap_settings_id = None
     slug_field = 'id'
     slug_url_kwarg = 'ldap_settings_id'
@@ -131,7 +133,6 @@ class CategoriesOverviewView(ListView):
 
 class ProductsOverviewView(ListView):
     template_name = 'products-overview.html'
-    # extra_context = 'categories'
     context_object_name = 'products'
     model = Product
 
@@ -142,20 +143,43 @@ class ProductsOverviewView(ListView):
 
 
 class CustomersOverviewView(ListView):
-    template_name = 'customers-overview.html'
+    template_name = 'customers/customers-overview.html'
     context_object_name = 'customers'
     model = Contact
 
 
+class CustomerCreationView(CreateView):
+    template_name = 'customers/contact-create.html'
+    context_object_name = 'customers'
+    model = Contact
+    fields = '__all__'
+
+    def get_success_url(self):
+        return reverse_lazy('costumer_edit', kwargs={'costumer_id': self.object.id})
+
+
+class UserCreationView(CreateView):
+    template_name = 'customers/create-modal.html'
+    context_object_name = 'customers'
+    model = User
+    fields = '__all__'
+
+    def get_success_url(self):
+        return reverse_lazy('costumer_edit', kwargs={'costumer_id': self.object.id})
+
+
 class ProductCreationView(CreateView):
-    template_name = 'product-create.html'
+    template_name = 'generic-create.html'
     context_object_name = 'products'
     model = Product
     fields = '__all__'
 
+    def get_success_url(self):
+        return reverse_lazy('product_edit', kwargs={'product_id': self.object.id})
+
 
 class ProductEditView(UpdateView):
-    template_name = 'product-edit.html'
+    template_name = 'generic-edit.html'
     context_object_name = 'products'
     model = Product
     fields = '__all__'
@@ -168,9 +192,57 @@ class ProductEditView(UpdateView):
         return reverse_lazy('product_edit', kwargs={'product_id': self.object.id})
 
 
-
 class CategoryCreationView(CreateView):
-    template_name = 'category-create.html'
+    template_name = 'generic-create.html'
     context_object_name = 'categories'
     model = ProductCategory
     fields = '__all__'
+
+    def get_success_url(self):
+        return reverse_lazy('categories_overview', kwargs={'category_id': self.object.id})
+
+
+class CategoryEditView(UpdateView):
+    template_name = 'generic-edit.html'
+    context_object_name = 'categories'
+    model = ProductCategory
+    fields = '__all__'
+
+    product_id = None
+    slug_field = 'id'
+    slug_url_kwarg = 'category_id'
+
+    def get_success_url(self):
+        return reverse_lazy('category_edit', kwargs={'category_id': self.object.id})
+
+
+class PagesOverviewView(ListView):
+    template_name = 'pages/pages-overview.html'
+    context_object_name = 'pages'
+    model = Page
+
+
+class PageCreateView(CreateView):
+    template_name = 'pages/pages-create.html'
+    context_object_name = 'page'
+    model = Page
+    fields = '__all__'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context['sections'] = Section.objects.all()
+        return context
+
+
+class PageEditView(UpdateView):
+    template_name = 'generic-edit.html'
+    context_object_name = 'pages'
+    model = Page
+    fields = '__all__'
+
+    product_id = None
+    slug_field = 'id'
+    slug_url_kwarg = 'page_id'
+
+    def get_success_url(self):
+        return reverse_lazy('page_edit', kwargs={'page_id': self.object.id})

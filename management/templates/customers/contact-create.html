@@ -1,0 +1,46 @@
+{% extends 'base-mgmt.html' %}
+{% load staticfiles %}
+{% load recurse %}
+{% load static %}
+{% load bootstrap4 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{% load i18n %}
+{% bootstrap_messages %}
+{% block head %}
+    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
+    <title>Products</title>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="main">
+        <div class="content">
+            {% include '' %}
+            <div class="col-md-12">
+                <form method="post">{% csrf_token %}
+                    {% bootstrap_field form.user layout='horizontal' addon_after="<span data-toggle='modal' data-target='#exampleModal'>New</span>" %}
+
+                    {% bootstrap_field form.company layout='horizontal' addon_after="<span data-toggle='modal' data-target='#exampleModal'>New</span>" %}
+                    {% bootstrap_field form.first_name layout='horizontal' %}
+                    {% bootstrap_field form.last_name layout='horizontal' %}
+                    {% bootstrap_field form.title layout='horizontal' %}
+                    {% bootstrap_field form.gender layout='horizontal' %}
+                    {% bootstrap_field form.telephone layout='horizontal' %}
+                    {% bootstrap_field form.email layout='horizontal' %}
+                    {% bootstrap_field form.language layout='horizontal' %}
+                    <input class="btn btn-primary" type="submit" value="Save">
+                    <a class="btn btn-secondary" href="{% url 'management_index' %}">{% trans 'Back' %}</a>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <script>
+
+    </script>
+{% endblock %}

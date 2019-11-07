@@ -1,0 +1,18 @@
+{% load staticfiles %}
+{% load recurse %}
+{% load static %}
+{% load bootstrap4 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{% load i18n %}
+{% bootstrap_messages %}
+
+
+
+<form method="post">{% csrf_token %}
+    {% bootstrap_form form layout='horizontal' %}
+    <input class="btn btn-primary" type="submit" value="Save">
+    <a class="btn btn-secondary" href="{% url 'management_index' %}">{% trans 'Back' %}</a>
+</form>

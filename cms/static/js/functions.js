@@ -3,16 +3,15 @@
  */
 
 
-function setLanguage(lang){
+function setLanguage(lang) {
     $.ajax(
         {
             url: '/shop/i18n/setlang/',
             method: 'post',
-            data: $('#lang-form').serialize()+'&language='+lang,
-            success: function(){
+            data: $('#lang-form').serialize() + '&language=' + lang,
+            success: function () {
                 location.reload()
             }
         }
-
     )
 }
