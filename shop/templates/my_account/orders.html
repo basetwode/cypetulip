@@ -122,7 +122,7 @@
                                             {% for order_item in order.orderitem_set.all %}
                                                 <div class="row">
                                                     <div class="col-sm-2 col-xs-4">
-                                                        {% if  order_item.product.product.product_picture.url %}
+                                                        {% if  order_item.product.product.product_picture %}
                                                             <img
                                                                     src="/media/{{ order_item.product.product.product_picture.url }}"
                                                                     alt="..."

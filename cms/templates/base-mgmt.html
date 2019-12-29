@@ -113,8 +113,10 @@
                                         <div class="col-md-5 col-lg-5 col-sm-3">
                                             <div style="max-height: 50px; overflow: hidden"
                                                  class="col-md-4 content-img">
+                                                {% if order.product.product.product_picture %}
                                                 <img style="width: 100%"
                                                      src="/media/{{ order.product.product.product_picture.url }}">
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="col-md-5 col-lg-5 col-sm-7">
@@ -218,6 +220,6 @@
 
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
 <script src="{% static 'dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'assets/js/docs.min.js' %}"></script>
+{#<script src="{% static 'assets/js/docs.min.js' %}"></script>#}
 </body>
 </html>

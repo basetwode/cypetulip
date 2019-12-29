@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-07 17:09+0100\n"
+"POT-Creation-Date: 2019-12-29 11:12+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,35 +18,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\cms\templates\base-mgmt.html:99 .\cms\templates\base.html:119
+#: .\cms\templates\base-mgmt.html:100 .\cms\templates\base.html:120
 #: .\shop\templates\order\checkout.html:25
 #: .\shop\templates\order\shopping_cart.html:11
 msgid "Shoppingcart"
 msgstr "Einkaufswagen"
 
-#: .\cms\templates\base-mgmt.html:107 .\cms\templates\base.html:127
+#: .\cms\templates\base-mgmt.html:108 .\cms\templates\base.html:128
 #: .\shop\templates\order\shopping_cart.html:20
 #: .\shop\templates\order\shopping_cart_detail.html:19
 msgid "Your shoppingcart"
 msgstr "Ihr Einkaufswagen"
 
-#: .\cms\templates\base-mgmt.html:131 .\cms\templates\base.html:151
+#: .\cms\templates\base-mgmt.html:132 .\cms\templates\base.html:152
 #: .\shop\templates\order\checkout.html:203
 #: .\shop\templates\order\overview.html:222
 #: .\shop\templates\order\shopping_cart.html:43
-#: .\shop\templates\order\shopping_cart_detail.html:69
+#: .\shop\templates\order\shopping_cart_detail.html:74
 msgid "Total: "
 msgstr "Gesamt: "
 
-#: .\cms\templates\base-mgmt.html:139 .\cms\templates\base.html:159
+#: .\cms\templates\base-mgmt.html:140 .\cms\templates\base.html:160
 msgid "Open cart"
 msgstr "Einkaufswagen öffnen"
 
-#: .\cms\templates\base-mgmt.html:152 .\cms\templates\base.html:172
+#: .\cms\templates\base-mgmt.html:153 .\cms\templates\base.html:173
 msgid "My account"
 msgstr "Mein Konto"
 
-#: .\cms\templates\base-mgmt.html:154 .\cms\templates\base.html:174
+#: .\cms\templates\base-mgmt.html:155 .\cms\templates\base.html:175
 #: .\management\templates\management.html:44
 #: .\management\templates\orders-overview.html:22
 #: .\shop\templates\my_account\account_settings.html:28
@@ -55,46 +55,46 @@ msgstr "Mein Konto"
 msgid "All orders"
 msgstr "Alle Bestellungen"
 
-#: .\cms\templates\base-mgmt.html:156 .\cms\templates\base.html:176
+#: .\cms\templates\base-mgmt.html:157 .\cms\templates\base.html:177
 #: .\management\templates\management.html:120
 #: .\management\templates\settings-details.html:17
 #: .\shop\templates\my_account\my_account.html:85
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: .\cms\templates\base-mgmt.html:160 .\management\templates\management.html:25
+#: .\cms\templates\base-mgmt.html:161 .\management\templates\management.html:25
 msgid "management"
 msgstr "Administration"
 
-#: .\cms\templates\base-mgmt.html:163 .\cms\templates\base.html:183
+#: .\cms\templates\base-mgmt.html:164 .\cms\templates\base.html:184
 msgid "Logout"
 msgstr "Abmelden"
 
-#: .\cms\templates\base-mgmt.html:168 .\cms\templates\base.html:188
+#: .\cms\templates\base-mgmt.html:169 .\cms\templates\base.html:189
 msgid "Login"
 msgstr "Anmelden"
 
-#: .\cms\templates\base-mgmt.html:195 .\cms\templates\base.html:215
+#: .\cms\templates\base-mgmt.html:196 .\cms\templates\base.html:216
 msgid "Sent"
 msgstr "Gesendet"
 
-#: .\cms\templates\base-mgmt.html:195 .\cms\templates\base.html:215
+#: .\cms\templates\base-mgmt.html:196 .\cms\templates\base.html:216
 msgid "successfully"
 msgstr "erfolgreich"
 
-#: .\cms\templates\base.html:63
+#: .\cms\templates\base.html:64
 msgid "Payment Methods"
 msgstr "Bezahlung"
 
-#: .\cms\templates\base.html:66
+#: .\cms\templates\base.html:67
 msgid "Ship Methods"
 msgstr "Lieferung"
 
-#: .\cms\templates\base.html:67
+#: .\cms\templates\base.html:68
 msgid "Free Ship"
 msgstr "Kostenfreie Lieferung"
 
-#: .\cms\templates\base.html:180 .\management\templates\orders-overview.html:47
+#: .\cms\templates\base.html:181 .\management\templates\orders-overview.html:47
 msgid "Management"
 msgstr "Administration"
 
@@ -312,7 +312,6 @@ msgstr "Status"
 #: .\payment\templates\payment.html:114
 #: .\shop\templates\my_account\orders.html:87
 #: .\shop\templates\my_account\orders_detail.html:66
-#: .\shop\templates\order\shopping_cart_detail.html:63
 msgid "Total"
 msgstr "Gesamt"
 
@@ -344,8 +343,8 @@ msgstr "Preis"
 msgid "Subtotal"
 msgstr "Zwischensumme"
 
-#: .\management\templates\order-details.html:195
-#: .\management\templates\order-details.html:256
+#: .\management\templates\order-details.html:199
+#: .\management\templates\order-details.html:260
 #: .\shop\templates\my_account\orders_detail.html:156
 #: .\shop\templates\my_account\orders_detail.html:215
 #: .\shop\templates\order\overview.html:113
@@ -353,8 +352,8 @@ msgstr "Zwischensumme"
 msgid "File"
 msgstr "Datei"
 
-#: .\management\templates\order-details.html:208
-#: .\management\templates\order-details.html:268
+#: .\management\templates\order-details.html:212
+#: .\management\templates\order-details.html:272
 #: .\shop\templates\my_account\orders_detail.html:168
 #: .\shop\templates\my_account\orders_detail.html:226
 #: .\shop\templates\order\overview.html:124
@@ -362,24 +361,24 @@ msgstr "Datei"
 msgid "Yes"
 msgstr "Ja"
 
-#: .\management\templates\order-details.html:301
+#: .\management\templates\order-details.html:305
 #: .\shop\templates\my_account\orders_detail.html:258
 msgid "Options"
 msgstr "Optionen"
 
-#: .\management\templates\order-details.html:303
+#: .\management\templates\order-details.html:307
 #: .\shop\templates\my_account\orders.html:142
 #: .\shop\templates\my_account\orders_detail.html:260
 msgid "Cancel order"
 msgstr "Bestellung stornieren"
 
-#: .\management\templates\order-details.html:305
+#: .\management\templates\order-details.html:309
 #: .\shop\templates\my_account\orders.html:144
 #: .\shop\templates\my_account\orders_detail.html:262
 msgid "Show bill"
 msgstr "Rechnung anzeigen"
 
-#: .\management\templates\order-details.html:307
+#: .\management\templates\order-details.html:311
 #: .\shop\templates\my_account\orders.html:146
 #: .\shop\templates\my_account\orders_detail.html:264
 msgid "Write review"
@@ -395,7 +394,7 @@ msgstr "Zurück"
 
 #: .\management\templates\orders-overview.html:101
 msgid "Customer Information"
-msgstr "Kindeninformationen"
+msgstr "Kundeninformationen"
 
 #: .\management\templates\orders-overview.html:144
 msgid "Open order"
@@ -449,13 +448,13 @@ msgstr "Speichern"
 
 #: .\payment\templates\bill\confirm.html:26 .\payment\templates\payment.html:26
 #: .\shop\templates\order\overview.html:29
-#: .\shop\templates\order\shopping_cart_detail.html:72
+#: .\shop\templates\order\shopping_cart_detail.html:77
 msgid "Checkout"
 msgstr "Checkout"
 
 #: .\payment\templates\bill\confirm.html:34 .\payment\templates\payment.html:34
 #: .\shop\templates\order\checkout.html:42
-#: .\shop\templates\order\checkout.html:205
+#: .\shop\templates\order\checkout.html:206
 #: .\shop\templates\order\overview.html:37
 msgid "Overview"
 msgstr "Übersicht"
@@ -590,7 +589,7 @@ msgstr "Neue Bezahlart hinzufügen"
 
 #: .\shop\templates\my_account\my_account.html:98
 msgid "Change account settings"
-msgstr "Kontoeinstellungen bearbeitne"
+msgstr "Kontoeinstellungen bearbeiten"
 
 #: .\shop\templates\my_account\my_account.html:100
 msgid "Change personal settings"
@@ -624,7 +623,11 @@ msgstr "Danke, dass Sie uns gewählt haben."
 msgid "Back to checkout"
 msgstr "Zurück zum Checkout"
 
-#: .\shop\templates\order\shopping_cart_detail.html:67
+#: .\shop\templates\order\shopping_cart_detail.html:64
+msgid "Empty Cart"
+msgstr "Leerer Einkaufswagen"
+
+#: .\shop\templates\order\shopping_cart_detail.html:72
 msgid "Continue Shopping"
 msgstr "Weiter einkaufen"
 

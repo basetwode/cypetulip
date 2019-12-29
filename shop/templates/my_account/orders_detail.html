@@ -115,10 +115,14 @@
                                                                    name="[{{ order.id }}][prod]{{ order.product.id }}">
 
                                                             <div class="row">
-                                                                <div class="col-sm-2 hidden-xs"><img
+                                                                <div class="col-sm-2 hidden-xs">
+                                                                    {%  if order.product.product.product_picture %}
+                                                                    <img
                                                                         src="/media/{{ order.product.product.product_picture.url }}"
                                                                         alt="..."
-                                                                        class="img-responsive"/></div>
+                                                                        class="img-responsive"/>
+                                                                    {%  endif %}
+                                                                </div>
                                                                 <div class="col-sm-10">
                                                                     <h4 class="nomargin">{{ order.product.name }}</h4>
 

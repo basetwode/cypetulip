@@ -8,8 +8,8 @@ def get_open_orders(request):
         contact = Contact.objects.filter(user=request.user)
         if contact.count() > 0:
             order = Order.objects.filter(is_send=False, company=contact[0].company)
-            items = OrderItem.objects.filter(order=order, product__id__in=Product.objects.all())
-            all_items = OrderItem.objects.filter(order=order)
+            items = OrderItem.objects.filter(order=order[0], product__id__in=Product.objects.all())
+            all_items = OrderItem.objects.filter(order=order[0])
             sum = 0
             for item in all_items:
                 sum += item.product.price

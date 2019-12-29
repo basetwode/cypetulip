@@ -56,7 +56,7 @@ function submitForm(url, form) {
             }
             nextForm.find('#next-step-token').val(data.token);
             nextForm.submit();
-            //window.location.href = "/shop/overview/"+data['order']+"/"+data['token']
+            window.location.href = "/shop/overview/"+data['order']+"/"+data['token']
         },
         error: function (data) {
 

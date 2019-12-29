@@ -23,9 +23,11 @@
             <div class="cart-item row dropdown-item">
                 <div class="col-md-12 col-lg-12 col-sm-12" style="min-height: 30px">
                     <div class="col-md-5 col-lg-5 col-sm-3">
+                        {% if order.product.product_picture %}
                         <div style="max-height: 50px; overflow: hidden" class="col-md-4 content-img">
                             <img style="width: 100%" src="/media/{{ order.product.product.product_picture.url }}">
                         </div>
+                        {% endif %}
                     </div>
                     <div class="col-md-5 col-lg-5 col-sm-7">
                         <h5>{{ order.product.name }}</h5>

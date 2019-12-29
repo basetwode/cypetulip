@@ -20,10 +20,10 @@ class OverviewView(View):
             ord = _order[0]
             # ord.token = None
             ord.save()
-            order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True,product__in=Product.objects.all())
+            order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True,
+                                                   product__in=Product.objects.all())
             return render(request, self.template_name, {'order_details': _order[0],
                                                         'order_items': order_items,
                                                         'order_items_once_only': get_orderitems_once_only(ord)})
         else:
             return redirect('/shop/checkout/' + order)
-

@@ -12,8 +12,8 @@
     <div class="main">
         <div class="content">
 
-            <div class="col-md-12 ">
-                <div class="col-md-12 path">
+            <div class="row">
+                <div class="col-md-9 path">
                     <a href="/cms/home">
                         Home
                     </a>
@@ -83,8 +83,13 @@
                             </div>
 
                             <div style="max-height: 400px;" class="col-md-4 content-img">
-                                <a class="thumbnail fancybox" rel="ligthbox" href="/media/{{ product.product_picture.url }}">
-                                    <img class="img-responsive" src="/media/{{ product.product_picture.url }}">
+                                {% if product.product_picture %}
+                                    <a class="thumbnail fancybox" rel="ligthbox" href="/media/{{ product.product_picture.url }}">
+                                    <img
+                                            src="/media/{{ product.product_picture.url }}"
+                                            alt="..."
+                                            class="img-responsive"/>
+                                {% endif %}
 
                                     <div class='text-right'>
                                         <small class='text-muted'>{{ product.name }}</small>

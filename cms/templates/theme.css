@@ -548,8 +548,7 @@ footer .box {
 	background:url({% static 'images/flags.png' %}) no-repeat
 }
 .order-step {
-    padding: 0px;
-    padding-bottom: 40px;
+    padding: 0px 0px 40px;
 }
 .left-step-normal,.left-step-curr,.left-step-last, .left-step {
     padding: 0px;

@@ -133,8 +133,14 @@
                                         <div class="col-md-5 col-lg-5 col-sm-3">
                                             <div style="max-height: 50px; overflow: hidden"
                                                  class="col-md-4 content-img">
-                                                <img style="width: 100%"
-                                                     src="/media/{{ order.product.product.product_picture.url }}">
+                                                {% if order.product.product_picture %}
+                                                    <a class="thumbnail fancybox" rel="ligthbox" href="/media/{{ product.product_picture.url }}">
+                                                    <img
+                                                            src="/media/{{ order.product.product_picture.url }}"
+                                                            alt="..."
+                                                            class="img-responsive"/>
+                                                {% endif %}
+
                                             </div>
                                         </div>
                                         <div class="col-md-5 col-lg-5 col-sm-7">
