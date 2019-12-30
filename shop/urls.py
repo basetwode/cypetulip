@@ -1,7 +1,7 @@
 from django.contrib.auth import logout
 
 
-from shop.authentification.views import LoginView, LogoutView
+from shop.authentification.views import LoginView, LogoutView, RegisterView
 from shop.my_account.views import OrderDetailView, OrdersView, MyAccountView, SearchOrders, AccountSettingsView, \
     CompanySettingsView
 from shop.order.overview import OverviewView
@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^index/', IndexView.as_view()),
     url(r'^login/', LoginView.as_view()),
+    url(r'^register/', RegisterView.signup, name='register'),
     url(r'^logout/',  LogoutView.as_view()),
 
     url(r'^cart/add/(?P<product>[\S0-9_.-\\s\- ]*)$', ShoppingCartView.as_view()),

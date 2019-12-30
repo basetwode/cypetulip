@@ -1,10 +1,13 @@
-from django.contrib.auth import authenticate
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import UserCreationForm
+from django.http import HttpResponse, HttpResponseRedirect, request
+from django.shortcuts import render, redirect
 from django.template import RequestContext
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.views.generic import View
+
+from shop.authentification.forms import SignUpForm
 from shop.models import Contact
 
 __author__ = ''
@@ -36,7 +39,6 @@ class LoginView(View):
                 # language = contact[0].language
                 # request.LANGUAGE_CODE = language
 
-
                 if 'next' in request.POST:
                     next_site = request.POST['next']
                     return HttpResponseRedirect(next_site)
@@ -56,7 +58,7 @@ class LoginView(View):
             else:
                 if 'next' in request.POST:
                     next_site = request.POST['next']
-                    return render(request, 'authentification/login.html', { 'next': next_site})
+                    return render(request, 'authentification/login.html', {'next': next_site})
                 return render(request, 'authentification/login.html')
 
 
@@ -70,3 +72,21 @@ class LogoutView(View):
     def post(self, request):
         auth_logout(request)
         return HttpResponseRedirect('/shop/login')
+
+
+class RegisterView(SignUpForm):
+
+    def signup(request):
+        if request.method == 'POST':
+            form = SignUpForm(request.POST)
+            if form.is_valid():
+                form.save()
+                email = form.cleaned_data.get('email')
+                username = email
+                raw_password = form.cleaned_data.get('password')
+                user = authenticate(username=username, password=raw_password)
+                login(request, user)
+                return redirect('/shop/home')
+        else:
+            form = SignUpForm()
+        return render(request, 'authentification/register.html', {'form': form})

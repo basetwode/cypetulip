@@ -64,6 +64,8 @@
                                             <img
                                                 src="/media/{{ order.product.product.product_picture.url }}" alt="..."
                                                 class="img-responsive img-thumbnail"/>
+                                            {% else %}
+                                                <i class="fa fa-image img-thumbnail"></i>
                                             {%  endif %}
                                         </div>
                                         <div class="col-sm-10">

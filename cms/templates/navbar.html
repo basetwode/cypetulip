@@ -1,0 +1,127 @@
+{% load staticfiles %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% get_current_language as language %}
+
+<nav class="navbar navbar-expand-sm navbar-light bg-light sticky-top">
+    <div class="container">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="#">{{ title }}</a>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="navbar-nav navbar-left">
+                {% for page in sites %}
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}/">{% endif %}
+                           {% trans page.page_name %}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <ul class="ml-auto nav navbar-nav navbar-right ">
+                <li id="lang-dropdown" class="nav-item dropdown">
+                    <a href="#lang-dropdown" style="text-transform: uppercase" class="dropdown-toggle nav-link"
+                       data-toggle="dropdown" data-target="#lang-dropdown"
+                       role="button" aria-haspopup="true"
+                       aria-expanded="false"><img class="flag flag-{{ language }}"/> {{ language }} </a>
+                    <div class="dropdown-menu  dropdown-menu-right ">
+                        <form id="lang-form">
+                            {% csrf_token %}
+                        </form>
+                        <a class="dropdown-item" onclick="setLanguage('de')"><img class="flag flag-de"/> Deutsch</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" onclick="setLanguage('en')"><img class="flag flag-en"/> English</a>
+                    </div>
+                </li>
+                {% if user.is_authenticated %}
+
+                    <li id="shopping-cart" class="cart nav-item dropdown">
+                        <a href="#shopping-cart" class="dropdown-toggle nav-link"
+                           data-target="#shopping-cart" data-toggle="dropdown" role="button"
+                           aria-haspopup="true"
+                           aria-expanded="false"><i class="fa fa-shopping-cart"></i>
+                            <span class="hidden-sm">{% trans 'Shoppingcart' %}
+                                {% if number_items > 0 %}
+                                    ({{ number_items }})
+                                {% endif %}
+                            </span>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right padding-1rem" id="shoppingcart">
+                            <span class="dropdown-header ">
+                            <a href="/shop/cart"
+                               class="btn btn-secondary btn-sm text-align-right">{% trans 'Open cart' %}</a>
+                            </span>
+
+                            {% for order in open_orders %}
+                                <div class="dropdown-divider hidden-sm"></div>
+                                <div class="dropdown-item hidden-sm">
+                                    <div class="row" style="min-height: 30px; width: 450px; max-height: 50px;">
+                                        <div class="col-md-5 col-lg-5 col-sm-3">
+                                            <div class="col-8">
+                                                {% if order.product.product.product_picture %}
+                                                    <img src="/media/{{ order.product.product.product_picture.url }}"
+                                                         alt="..."
+                                                         class="img-responsive img-thumbnail"/>
+                                                {% else %}
+                                                    <i class="fa fa-image img-thumbnail"></i>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5 col-lg-5 col-sm-7" style="overflow: hidden">
+                                            <h5>{{ order.product.name }}</h5>
+                                        </div>
+                                        <div class="col-md-2 col-lg-2 col-sm-2">
+                                            {{ order.product.price }} &euro;
+                                        </div>
+                                    </div>
+                                </div>
+
+                            {% endfor %}
+                            <div class="dropdown-divider"></div>
+                            <div class="row" style="padding: 0.25rem 0.5rem 0rem 2.5rem">
+                                <span class="col-4">{% trans 'Total: ' %}</span>
+                                <span class="col-8 text-align-right">{{ total_cart }} &euro;</span>
+
+                            </div>
+
+                        </div>
+                    </li>
+                    <li id="usermenu" class="nav-item dropdown">
+                        <a href="#usermenu" style="text-transform: capitalize;" class="dropdown-toggle nav-link"
+                           data-toggle="dropdown"
+                           role="button" aria-haspopup="true" data-target="#usermenu"
+                           aria-expanded="false"><i class="fa fa-user"></i> {{ user.username }} <span
+                                class="caret"></span></a>
+                        <div class="dropdown-menu  dropdown-menu-right ">
+                            <span class="dropdown-header">{{ user.first_name }} {{ user.last_name }}</span>
+                            <a class="dropdown-item" href="{% url 'my_account' %}">{% trans 'My account' %}</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'all_orders' %}">{% trans 'All orders' %}</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'account_settings' %}">{% trans 'Settings' %}</a>
+                            {% if user.is_staff %}
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item"
+                                   href="{% url 'management_index' %}">{% trans 'Management' %}</a>
+                            {% endif %}
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/shop/logout">{% trans 'Logout' %}</a>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/shop/login">{% trans 'Login' %}</a>
+                    </li>
+
+                {% endif %}
+            </ul>
+
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>

@@ -42,14 +42,14 @@
                         <h4 class="h-bold">{% trans "Customer" %}</h4>
                         <div class="panel">
 
-                                {% for order_detail in order.orderdetail_set.all %}
-                            <div style="overflow: auto" class="panel-heading">
-                                <div class="col-md-12"><span>{{ order.company }}</span></div>
-                                <div class="col-md-12"><span
-                                        style="font-size: small; font-weight: bold">{{ order_detail.contact.first_name }} {{ order_detail.contact.last_name }}</span>
+                            {% for order_detail in order.orderdetail_set.all %}
+                                <div style="overflow: auto" class="panel-heading">
+                                    <div class="col-md-12"><span>{{ order.company }}</span></div>
+                                    <div class="col-md-12"><span
+                                            style="font-size: small; font-weight: bold">{{ order_detail.contact.first_name }} {{ order_detail.contact.last_name }}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="panel-body">
+                                <div class="panel-body">
 
 
                                     <div class="col-sm-12">
@@ -64,10 +64,10 @@
                                     <div class="col-sm-12">
                                         {{ order_detail.contact.email }}
                                     </div>
-                            </div>
-                        </div>
+                                </div>
+                                </div>
 
-                                {% endfor %}
+                            {% endfor %}
                     </div>
 
 
@@ -154,10 +154,12 @@
                                                                 <div class="row">
                                                                     <div class="col-sm-2 hidden-xs">
                                                                         {% if order.product.product_picture %}
-                                                                        <img
-                                                                            src="/media/{{ order.product.product_picture.url }}"
-                                                                            alt="..."
-                                                                            class="img-responsive"/>
+                                                                            <img
+                                                                                    src="/media/{{ order.product.product_picture.url }}"
+                                                                                    alt="..."
+                                                                                    class="img-responsive"/>
+                                                                        {% else %}
+                                                                            <i class="fa fa-image img-thumbnail"></i>
                                                                         {% endif %}
                                                                     </div>
                                                                     <div class="col-sm-10">
@@ -206,11 +208,11 @@
                                                                                                     alt="..."
                                                                                                     class="img-responsive"/>
                                                                                         </div>
-                                                                                        {% elif sub_item.selectorderitem %}
+                                                                                    {% elif sub_item.selectorderitem %}
                                                                                         {{ sub_item.selectorderitem.selected_item }}
                                                                                     {% elif sub_item.checkboxorderitem %}
                                                                                         {% trans 'Yes' %}
-                                                                                        {% elif sub_item.numberorderitem %}
+                                                                                    {% elif sub_item.numberorderitem %}
                                                                                         {{ sub_item.numberorderitem.number }}
                                                                                     {% endif %}
                                                                                     </p>
@@ -266,11 +268,11 @@
                                                                                             alt="..."
                                                                                             class="img-responsive"/>
                                                                                     </div>
-                                                                                    {% elif sub_item.selectorderitem %}
+                                                                                {% elif sub_item.selectorderitem %}
                                                                                     {{ sub_item.selectorderitem.selected_item.name }}
                                                                                 {% elif sub_item.checkboxorderitem %}
                                                                                     {% trans 'Yes' %}
-                                                                                    {% elif sub_item.numberorderitem %}
+                                                                                {% elif sub_item.numberorderitem %}
                                                                                     {{ sub_item.numberorderitem.number }}
                                                                                 {% endif %}
                                                                             </div>

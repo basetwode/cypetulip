@@ -26,15 +26,15 @@
                     <a href="/shop/products/">
                         Products
                     </a>
-
+                    {% if selected_category %}
+                        >
+                    {% endif %}
                     <a href="/shop/products/{{ selected_category }}">
                         {{ selected_category }}
                     </a>
                 </div>
                 <div class="col-md-3 categories">
                     <div class="categories-list">
-
-
                         <div class="panel-group" id="accordion">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -44,10 +44,8 @@
                                                 </span>{% trans 'Categories' %}</a>
                                     </h4>
                                 </div>
-                                <div id="collapseOne" class="panel-collapse collapse in">
+                                <div id="collapseOne" class="panel-collapse collapse show">
                                     <ul class="list-group">
-
-
                                         {% recurse category.child_categories.all with categories as category %}
 
                                             {% loop %}
@@ -57,7 +55,6 @@
                                                         <a class="link"
                                                            href="/shop/products/{{ category.name }}">{{ category.name }}</a>
                                                     </div>
-
                                                     <ul class="list-group sub">{% child %}</ul>
 
                                                 </li>
@@ -74,40 +71,39 @@
                     </div>
                 </div>
                 <div class="col-md-9 products">
-                    <div class="row products-img">
-                        <div class="col-md-12">
-
+                    <div class="products-img">
+                        <div class="col-12">
                             <img src="http://www.freelargeimages.com/wp-content/uploads/2014/12/Landscape_01.jpg">
                         </div>
                     </div>
-                    <div class="row products-list">
-                        <div class="col-md-12">
-
+                    <div class="col-12 products-list">
+                        <div class="row col-12">
                             <h3>{% trans 'Products' %}</h3>
-
+                        </div>
+                        <div class="row col-12">
                             {% for product in products %}
                                 <div class="col-md-6 item">
                                     <div class="heading item">
-                                        <div class="col-md-12">
                                             <div class="col-md-9">
-                                                <h4><a href="/shop/product/{{ product.name }}">{{ product.name }}</a></h4>
+                                                <h4><a href="/shop/product/{{ product.name }}">{{ product.name }}</a>
+                                                </h4>
                                             </div>
                                             <div class="col-md-3">
                                                 <h4>{{ product.price }} &euro;</h4>
                                             </div>
-                                        </div>
                                     </div>
                                     <div class="product">
                                         <div class="content">
                                             <div class="content-img">
-
-
                                                 <a href="/shop/product/{{ product.name }}">
                                                     {% if product.product_picture %}
                                                         <img
                                                                 src="/media/{{ product.product_picture.url }}"
                                                                 alt=""/>
+                                                    {% else %}
+                                                        <i class="fa fa-image img-thumbnail"></i>
                                                     {% endif %}
+
                                                 </a>
                                             </div>
                                             <div class="price-details">

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load bootstrap4 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{% block head %}
+    <title>Register</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="card">
+            <h2>Sign up</h2>
+            <form method="post">
+                {% csrf_token %}
+                {% bootstrap_form form layout='horizontal' %}
+                <button class="btn btn-primary" type="submit">Sign up</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
