@@ -4,10 +4,6 @@
 {% load staticfiles %}
 {% load i18n %}
 {% load bootstrap4 %}
-{% bootstrap_css %}
-{% bootstrap_javascript jquery='full' %}
-
-
 {% load i18n %}
 {% block head %}
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
@@ -36,7 +32,7 @@
                 <div class="col-md-3 categories">
                     <div class="categories-list">
                         <div class="panel-group" id="accordion">
-                            <div class="panel panel-default">
+                            <div class="card panel panel-default margin-none">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
                                         <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">

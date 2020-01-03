@@ -181,22 +181,17 @@ BOOTSTRAP4 = {
     # or a dict like the default value below.
     "css_url": {
         "href": "https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css",
-        "integrity": "sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB",
-        "crossorigin": "anonymous",
+        "href": "/static/css/bootstrap.min.css",
     },
     # The complete URL to the Bootstrap JavaScript file
     "javascript_url": {
-        "url": "https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js",
-        "integrity": "sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T",
-        "crossorigin": "anonymous",
+        "url": "/static/js/bootstrap.bundle.min.js",
     },
     # The complete URL to the Bootstrap CSS file (None means no theme)
     "theme_url": None,
     # The URL to the jQuery JavaScript file (full)
     "jquery_url": {
-        "url": "https://code.jquery.com/jquery-3.3.1.min.js",
-        "integrity": "sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT",
-        "crossorigin": "anonymous",
+        "url": "/static/js/jquery.min.js",
     },
     # The URL to the jQuery JavaScript file (slim)
     "jquery_slim_url": {
