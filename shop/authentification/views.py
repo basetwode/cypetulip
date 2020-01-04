@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect, request
 from django.shortcuts import render, redirect
 from django.template import RequestContext
@@ -7,7 +8,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.views.generic import View
 
-from shop.authentification.forms import SignUpForm
+from shop.authentification.forms import SignUpForm, CompleteCompanyForm
 from shop.models import Contact
 
 __author__ = ''
@@ -80,13 +81,35 @@ class RegisterView(SignUpForm):
         if request.method == 'POST':
             form = SignUpForm(request.POST)
             if form.is_valid():
-                form.save()
+                user = User.objects.create_user(form.cleaned_data.get('email'), form.cleaned_data.get('email'),
+                                                form.cleaned_data.get('password1'),
+                                                first_name=form.cleaned_data.get('first_name'),
+                                                last_name=form.cleaned_data.get('last_name'))
+                user.save()
                 email = form.cleaned_data.get('email')
-                username = email
-                raw_password = form.cleaned_data.get('password')
-                user = authenticate(username=username, password=raw_password)
+                raw_password = form.cleaned_data.get('password1')
+                user = authenticate(username=email, password=raw_password)
                 login(request, user)
-                return redirect('/shop/home')
+                return redirect('/shop/create-company')
         else:
             form = SignUpForm()
-        return render(request, 'authentification/register.html', {'form': form})
+        return render(request, 'authentification/register.html', {'form': form, 'buttonText': 'Sign Up'})
+
+
+class CompanyView(CompleteCompanyForm):
+
+    def create(request):
+        if request.user.is_authenticated:
+            if request.method == 'POST':
+                form = CompleteCompanyForm(request.POST)
+                if form.is_valid():
+                    company = form.save()
+                    Contact.objects.create(user=request.user, company=company, first_name=request.user.first_name,
+                                           last_name=request.user.last_name, title='',
+                                           gender='', telephone='', email=request.user.email, language='de')
+                    return redirect('/cms/home')
+            else:
+                form = CompleteCompanyForm(initial={'term_of_payment': 10, 'name': request.user.username})
+        else:
+            return HttpResponseRedirect('/shop/login')
+        return render(request, 'authentification/register.html', {'form': form, 'buttonText': 'Complete Account'})

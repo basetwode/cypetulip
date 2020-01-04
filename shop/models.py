@@ -1,5 +1,5 @@
 from django.dispatch.dispatcher import receiver
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, post_save
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -13,7 +13,7 @@ class Company(models.Model):
     term_of_payment = models.IntegerField()
     street = models.CharField(max_length=40, default=None)
     number = models.CharField(max_length=5, default=None)
-    zipcode = models.CharField(max_length=40, default=None)
+    zipcode = models.CharField(max_length=5, default=None)
     city = models.CharField(max_length=30, default=None)
     logo = models.FileField(default=None, null=True, blank=True,
                             upload_to=company_files_upload_handler, storage=fs)
@@ -30,7 +30,7 @@ class Company(models.Model):
 
 
 class Contact(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -123,7 +123,7 @@ class CheckBoxSubItem(ProductSubItem):
 class OrderItemState(models.Model):
     name = models.CharField(max_length=20)
     next_state = models.ForeignKey(
-        'self', on_delete=models.CASCADE, null=True, blank=True, related_name='previous_state',)
+        'self', on_delete=models.CASCADE, null=True, blank=True, related_name='previous_state', )
 
 
 '''
@@ -136,10 +136,12 @@ class OrderState(models.Model):
     initial = models.BooleanField(default=False)
     next_state = models.ForeignKey(
         'self', on_delete=models.CASCADE, null=True, blank=True, related_name='previous_state', )
+
     # todo states have corresponding actions that also need to be linked!
 
     def __str__(self):
         return self.name
+
 
 # A product can be whatever one needs, like a plan or a surcharge or hours worked..
 
@@ -160,7 +162,7 @@ class Product(ProductSubItem):
 
 class Order(models.Model):
     order_id = models.IntegerField(null=True, blank=True)
-    order_hash = models.CharField(max_length=20, null=True, blank=True)
+    order_hash = models.CharField(max_length=30, null=True, blank=True)
     is_send = models.BooleanField(default=False)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     token = models.CharField(max_length=25, blank=True, null=True)
@@ -195,6 +197,7 @@ class OrderDetail(models.Model):
     date_bill = models.DateTimeField(null=True, blank=True)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
 
+
 # Like a surcharge or discount or product or whatever.
 
 
@@ -202,7 +205,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(ProductSubItem, on_delete=models.CASCADE)
     order_item = models.ForeignKey(
-        'OrderItem', on_delete=models.CASCADE, null=True, blank=True,)
+        'OrderItem', on_delete=models.CASCADE, null=True, blank=True, )
     employee = models.ForeignKey(
         Employee, on_delete=models.CASCADE, null=True, blank=True, )
     additional_text = models.CharField(max_length=200, null=True, blank=True)

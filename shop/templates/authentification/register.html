@@ -2,17 +2,19 @@
 {% load staticfiles %}
 {% load bootstrap4 %}
 {% block head %}
-    <title>Register</title>
+    <title>Register Account</title>
 {% endblock %}
 
 {% block body %}
     <div class="container">
         <div class="card">
-            <h2>Sign up</h2>
+            <h2>{{ buttonText | upper }}</h2>
+            <br>
             <form method="post">
                 {% csrf_token %}
                 {% bootstrap_form form layout='horizontal' %}
-                <button class="btn btn-primary" type="submit">Sign up</button>
+                {% bootstrap_form_errors form layout='horizontal' %}
+                <button class="btn btn-primary" type="submit">{{ buttonText }}</button>
             </form>
         </div>
     </div>
