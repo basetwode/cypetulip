@@ -37,9 +37,11 @@ class AppUrlPermission(models.Model):
     post_access = models.BooleanField(default=True)
     get_access = models.BooleanField(default=True)
     post_message = models.CharField(max_length=400,
-                                    default="You don't have the required permissions to do any changes in this view. If you think this is wrong please contact our support")
+                                    default="You don't have the required permissions to do any changes in this view. "
+                                            "If you think this is wrong please contact our support")
     get_message = models.CharField(max_length=400,
-                                   default="You don't have the required permissions to show this view. If you think this is wrong please contact our support")
+                                   default="You don't have the required permissions to show this view. If you think "
+                                           "this is wrong please contact our support")
 
     def __str__(self):
         return "%s - P:%s G:%s - %s" % (self.user.username, self.post_access, self.get_access, self.url.url)

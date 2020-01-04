@@ -34,20 +34,19 @@ def __check_company_access(user, company_id):
         return True
     company = Company.objects.filter(company_id=company_id)
     if company:
-        user_filtered = Contact.objects.filter(company=company,user=user.id)
+        user_filtered = Contact.objects.filter(company=company, user=user.id)
         if user_filtered:
             return True
     return False
 
 
 def __check_order_access(user, order_id):
-    #if user.is_superuser:
-      #  return True
+    # if user.is_superuser:
+    #  return True
     contact = Contact.objects.filter(user=user.id)
     company = contact[0].company
     _order = Order.objects.filter(order_hash=order_id, company=company)
     if _order.count() > 0:
-
         return True
     return False
 
@@ -59,7 +58,7 @@ def __get_app_from_url(request):
     return url
 
 
-def __get_string_from_url(request,string_to_find):
+def __get_string_from_url(request, string_to_find):
     url = request[1:]
     url = url[url.find(string_to_find):]
     url = url[url.find('/') + 1:]
@@ -76,7 +75,7 @@ def check_serve_perms2(func):
             order_access = __check_order_access(request.user, order)
             print(order)
         elif 'company' in request.path:
-            company = __get_string_from_url(request.path,'company')
+            company = __get_string_from_url(request.path, 'company')
             order_access = __check_company_access(request.user, company)
         else:
             order_access = True
@@ -85,7 +84,6 @@ def check_serve_perms2(func):
                 __has_access(request.user,
                              __get_app_from_url(request.path)) \
                 and order_access:
-
             # User is allowed
             return func(self, *args, **kwargs)
 
@@ -93,6 +91,7 @@ def check_serve_perms2(func):
         return raise_401(request)
 
     return decorator
+
 
 def check_serve_perms(func):
     def decorator(self, *args, **kwargs):
@@ -104,15 +103,15 @@ def check_serve_perms(func):
         access = False
         app_url = [app_url for app_url in urls if re.compile(app_url.url).match(url)]
         message = None
-        if len(app_url)==1:
-            app_url=app_url[0]
-            app_url_permission = AppUrlPermission.objects.filter(url=app_url,user=request.user)
-            if len(app_url_permission)==1:
+        if len(app_url) == 1:
+            app_url = app_url[0]
+            app_url_permission = AppUrlPermission.objects.filter(url=app_url, user=request.user)
+            if len(app_url_permission) == 1:
                 app_url_permission = app_url_permission[0]
                 if method == 'POST':
                     message = app_url_permission.post_message
                     access = app_url_permission.post_access
-                elif method =='GET':
+                elif method == 'GET':
                     message = app_url_permission.get_message
                     access = app_url_permission.get_access
         if request.user.is_authenticated and request.user.is_staff:
@@ -128,7 +127,6 @@ def check_serve_perms(func):
         if access:
             return func(self, *args, **kwargs)
         else:
-            return raise_401(request,{'message':message})
+            return raise_401(request, {'message': message})
 
     return decorator
-

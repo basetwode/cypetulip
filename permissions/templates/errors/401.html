@@ -5,13 +5,13 @@
 {% load i18n %}
 {% block head %}
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
-    <title>Products</title>
+    <title>{% trans "Permission denied" %}</title>
 {% endblock %}
 
 {% block body %}
     <div class="main">
         <div class="content">
-
+            {% csrf_token %}
             <div class="col-md-12">
                 <h4 class="h-bold">{% trans "Permission denied" %}</h4>
                 <p>
