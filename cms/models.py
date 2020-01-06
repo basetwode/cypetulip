@@ -1,6 +1,8 @@
 from django.db import models
 
 # Create your models here.
+from tinymce import HTMLField
+
 from mediaserver.upload import public_files_upload_handler, fs
 
 
@@ -10,10 +12,13 @@ class Page(models.Model):
     is_enabled = models.BooleanField(default=True)
     link = models.CharField(max_length=20, null=True, blank=True)
 
+    def __str__(self):
+        return self.page_name
+
 
 class Section(models.Model):
     page = models.ForeignKey(Page, on_delete=models.CASCADE)
-    content = models.CharField(max_length=4000)
+    content = HTMLField('Content')
     picture = models.FileField(default=None, null=True, blank=True,
                                upload_to=public_files_upload_handler,
                                storage=fs)

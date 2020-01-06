@@ -40,10 +40,10 @@ class OrdersView(View):
     template_name = 'my_account/orders.html'
 
     @check_serve_perms
-    def get(self, request, number_of_orders, page=1):
+    def get(self, request, page=1):
         contact = Contact.objects.get(user=request.user)
         _orders, search = SearchOrders.filter_orders(request)
-        number_of_orders = '5' if number_of_orders is None else number_of_orders
+        number_of_orders = '5'
         paginator = Paginator(_orders, number_of_orders)
         for order in _orders:
             total = 0
@@ -59,7 +59,7 @@ class OrdersView(View):
             # If page is out of range (e.g. 9999), deliver last page of results.
             _orders = paginator.page(paginator.num_pages)
         return render(request, self.template_name,
-                      {'orders': _orders, 'number_of_orders': number_of_orders, 'contact': contact, 'search': search})
+                      {'orders': _orders, 'contact': contact, 'search': search})
 
     @check_serve_perms
     def post(self, request):

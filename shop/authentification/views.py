@@ -8,6 +8,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.views.generic import View
 
+from install import create_app_perms_for_user
 from shop.authentification.forms import SignUpForm, CompleteCompanyForm
 from shop.models import Contact
 
@@ -86,6 +87,7 @@ class RegisterView(SignUpForm):
                                                 first_name=form.cleaned_data.get('first_name'),
                                                 last_name=form.cleaned_data.get('last_name'))
                 user.save()
+                create_app_perms_for_user(username=user.username)
                 email = form.cleaned_data.get('email')
                 raw_password = form.cleaned_data.get('password1')
                 user = authenticate(username=email, password=raw_password)

@@ -1,9 +1,7 @@
 {% extends 'base-mgmt.html' %}
-{% load staticfiles %}
 {% load recurse %}
 {% load static %}
 {% load bootstrap4 %}
-
 {% load i18n %}
 {% bootstrap_messages %}
 {% block head %}
@@ -23,171 +21,172 @@
                 </h1>
             </div>
 
-            <div>
-                <div class="card-deck">
-                    <div class="card">
-                        <div class="card-header text-align-center">
-                            <div>
-                                <i class="fas fa-shopping-basket fa-4x"></i>
-                            </div>
-                            <div>
-                                <strong>{% trans 'Orders' %}</strong>
-                            </div>
-
+            <div class="card-deck">
+                <div class="card">
+                    <div class="card-header text-align-center">
+                        <div>
+                            <i class="fas fa-shopping-basket fa-4x"></i>
                         </div>
-                        <div class="card-body">
-                            <p class="card-text">{% trans 'Show orders, track or cancel them' %}</p>
-                            <a href="{% url 'management_all_orders' %}"
-                               class="btn btn-primary">{% trans 'All orders' %}</a>
-                            <p>{% trans 'Search orders' %}</p>
-                            <form action="{% url 'search_orders' %}">
-                                <div class="input-group">
+                        <div>
+                            <strong>{% trans 'Orders' %}</strong>
+                        </div>
 
-                                    <input id="order-search" type="text" class="form-control"
-                                           placeholder="Search for...">
-                                    <span class="input-group-btn">
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{% trans 'Show orders, track or cancel them' %}</p>
+                        <a href="{% url 'management_all_orders' %}"
+                           class="btn btn-primary">{% trans 'All orders' %}</a>
+                        <p>{% trans 'Search orders' %}</p>
+                        <form action="{% url 'search_orders' %}">
+                            <div class="input-group">
+
+                                <input id="order-search" type="text" class="form-control"
+                                       placeholder="Search for...">
+                                <span class="input-group-btn">
                                     <button class="btn btn-primary" type="button">Go!</button>
                                   </span>
-                                </div>
-                            </form>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header text-align-center">
+                        <div>
+                            <i class="fa fa-user-circle fa-4x"></i>
+                        </div>
+                        <div>
+                            <strong>{% trans 'Customers' %}</strong>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-header text-align-center">
-                            <div>
-                                <i class="fa fa-user-circle fa-4x"></i>
-                            </div>
-                            <div>
-                                <strong>{% trans 'Customers' %}</strong>
-                            </div>
-                        </div>
 
-                        <div class="card-body">
-                            <p>{% trans 'Show and edit customers' %}</p>
-                            <a href="{% url 'customers_overview' %}"
-                               class="btn btn-primary">{% trans 'Customers' %}</a>
-                            <a href="{% url 'create_customer' %}"
-                               class="btn btn-primary">{% trans 'Add customer' %}</a>
-                            <p>{% trans 'Search customers' %}</p>
-                            <form action="{% url 'search_orders' %}">
-                                <div class="input-group">
+                    <div class="card-body">
+                        <p>{% trans 'Show and edit customers' %}</p>
+                        <a href="{% url 'customers_overview' %}"
+                           class="btn btn-primary">{% trans 'Customers' %}</a>
+                        <a href="{% url 'create_customer' %}"
+                           class="btn btn-primary">{% trans 'Add customer' %}</a>
+                        <p>{% trans 'Search customers' %}</p>
+                        <form action="{% url 'search_orders' %}">
+                            <div class="input-group">
 
-                                    <input id="order-search" type="text" class="form-control"
-                                           placeholder="Search for...">
-                                    <span class="input-group-btn">
+                                <input id="order-search" type="text" class="form-control"
+                                       placeholder="Search for...">
+                                <span class="input-group-btn">
                                                     <button class="btn btn-primary" type="button">Go!</button>
                                                   </span>
-                                </div>
-                            </form>
-                        </div>
-
-                    </div>
-                    <div class="card">
-                        <div style="overflow: auto" class="card-header text-align-center">
-                            <div>
-                                <i class="fa fa-box-open fa-4x"></i>
                             </div>
-                            <div>
-                                <strong>{% trans 'Products and Categories' %}</strong>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <p>{% trans 'Categories' %}</p>
-                            <a href="{% url 'categories_overview' %}"
-                               class="btn btn-primary">{% trans 'Show' %}</a>
-                            <a href="{% url 'create_category' %}"
-                               class="btn btn-primary">{% trans 'Create new Category' %}</a>
-                            <p>{% trans 'Products' %}</p>
-                            <a href="{% url 'products_overview' %}"
-                               class="btn btn-primary">{% trans 'Show' %}</a>
-                            <a href="{% url 'create_product' %}"
-                               class="btn btn-primary">{% trans 'Create new Product' %}</a>
-                        </div>
-
+                        </form>
                     </div>
+
+                </div>
+                <div class="card">
+                    <div style="overflow: auto" class="card-header text-align-center">
+                        <div>
+                            <i class="fa fa-box-open fa-4x"></i>
+                        </div>
+                        <div>
+                            <strong>{% trans 'Products and Categories' %}</strong>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>{% trans 'Categories' %}</p>
+                        <a href="{% url 'categories_overview' %}"
+                           class="btn btn-primary">{% trans 'Show' %}</a>
+                        <a href="{% url 'create_category' %}"
+                           class="btn btn-primary">{% trans 'Create new Category' %}</a>
+                        <p>{% trans 'Products' %}</p>
+                        <a href="{% url 'products_overview' %}"
+                           class="btn btn-primary">{% trans 'Show' %}</a>
+                        <a href="{% url 'create_product' %}"
+                           class="btn btn-primary">{% trans 'Create new Product' %}</a>
+                    </div>
+
                 </div>
             </div>
-            <div>
-                <div class="card-deck">
-                    <div class="card">
-                        <div class="card-header text-align-center">
-                            <div>
-                                <i class="fa fa-cog fa-4x"></i>
-                            </div>
-                            <div><strong>{% trans 'Settings' %}</strong></div>
+            <div class="card-deck">
+                <div class="card">
+                    <div class="card-header text-align-center">
+                        <div>
+                            <i class="fa fa-cog fa-4x"></i>
                         </div>
-
-                        <div class="card-body">
-                            <div class="card-text">
-                                <p>{% trans 'All shop related settings. Manage permissions, staff and products and pages' %}</p>
-                            </div>
-                            <div class="card-text btn-toolbar">
-                                <div class="btn-group">
-                                    <a href="{% url 'account_settings' %}"
-                                       class="btn btn-primary mr-1">{% trans 'Staff' %}</a>
-                                    <a href="{% url 'all_orders' %}"
-                                       class="btn btn-primary mr-1">{% trans 'permissions' %}</a>
-                                </div>
-                                <div class="btn-group">
-                                    <a href="{% url 'company_settings' %}"
-                                       class="btn btn-primary mr-1">{% trans 'shop' %}</a>
-
-                                </div>
-                                <div class="btn-group">
-                                    <a href="{% url 'mail_settings_details' mail_settings.id %}"
-                                       class="btn btn-primary mr-1">{% trans 'mail' %}</a>
-                                    <a href="{% url 'ldap_settings_details'  ldap_settings.id %}"
-                                       class="btn btn-primary mr-1">{% trans 'ldap' %}</a>
-                                </div>
-
-
-                            </div>
-
-
-                        </div>
+                        <div><strong>{% trans 'Settings' %}</strong></div>
                     </div>
-                    <div class="card">
-                        <div class="card-header text-align-center">
-                            <div>
-                                <i class="fas fa-laptop-medical fa-4x"></i>
-                            </div>
-                            <div>
-                                <strong>{% trans 'CMS' %}</strong>
-                            </div>
+
+                    <div class="card-body">
+                        <div class="card-text">
+                            <p>{% trans 'All shop related settings. Manage permissions, staff and products and pages' %}</p>
                         </div>
-
-                        <div class="card-body">
-                            <p>{% trans 'Show and edit pages' %}</p>
-                            <a href="{% url 'pages' %}"
-                               class="btn btn-primary mr-1">{% trans 'Pages' %}</a>
-                            <a href="{% url 'pages' %}"
-                               class="btn btn-primary">{% trans 'Add Page' %}</a>
-
-                        </div>
-
-                    </div>
-                    <div class="card">
-                        <div class="card-header text-align-center">
-                            <div>
-                                <i class="fas fa-balance-scale fa-4x"></i>
-                            </div>
-                            <div>
-                                <strong>{% trans 'Accounting' %}</strong>
-                            </div>
-                        </div>
-
-                        <div class="card-body">
-                            <div class="card-text">
-                                <p>{% trans 'Create or review accounting information' %}</p>
+                        <div class="card-text btn-toolbar">
+                            <div class="btn-group">
                                 <a href="{% url 'account_settings' %}"
-                                   class="btn btn-primary">{% trans 'Open Accounting' %}</a>
+                                   class="btn btn-primary mr-1">{% trans 'Staff' %}</a>
+                                <a href="{% url 'all_orders' %}"
+                                   class="btn btn-primary mr-1">{% trans 'permissions' %}</a>
+                            </div>
+                            <div class="btn-group">
+                                <a href="{% url 'company_settings' %}"
+                                   class="btn btn-primary mr-1">{% trans 'shop' %}</a>
+
+                            </div>
+                            <div class="btn-group">
+                                <a href="{% url 'mail_settings_details' mail_settings.id %}"
+                                   class="btn btn-primary mr-1">{% trans 'mail' %}</a>
+                                <a href="{% url 'ldap_settings_details'  ldap_settings.id %}"
+                                   class="btn btn-primary mr-1">{% trans 'ldap' %}</a>
                             </div>
 
 
                         </div>
+
+
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header text-align-center">
+                        <div>
+                            <i class="fas fa-laptop-medical fa-4x"></i>
+                        </div>
+                        <div>
+                            <strong>{% trans 'CMS' %}</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <p>{% trans 'Show and edit pages' %}</p>
+                        <a href="{% url 'pages' %}"
+                           class="btn btn-primary mr-1">{% trans 'Pages' %}</a>
+                        <a href="{% url 'create_page' %}"
+                           class="btn btn-primary">{% trans 'Add Page' %}</a>
+                        <p>{% trans 'Show and edit Sections' %}</p>
+                        <a href="{% url 'sections' %}"
+                           class="btn btn-primary mr-1">{% trans 'Sections' %}</a>
+                        <a href="{% url 'create_section' %}"
+                           class="btn btn-primary">{% trans 'Add Section' %}</a>
+
                     </div>
 
                 </div>
+                <div class="card">
+                    <div class="card-header text-align-center">
+                        <div>
+                            <i class="fas fa-balance-scale fa-4x"></i>
+                        </div>
+                        <div>
+                            <strong>{% trans 'Accounting' %}</strong>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="card-text">
+                            <p>{% trans 'Create or review accounting information' %}</p>
+                            <a href="{% url 'account_settings' %}"
+                               class="btn btn-primary">{% trans 'Open Accounting' %}</a>
+                        </div>
+
+
+                    </div>
+                </div>
+
             </div>
 
         </div>

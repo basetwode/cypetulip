@@ -17,7 +17,7 @@ def install():
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "home.settings")
     print('Thanks for choosing Cypetulip\n')
     # First select directory for data
-    data_dir = input("Please choose directory for storing shop data [/var/Cypetulip/]: ")
+    data_dir = input("Please choose directory for storing shop data [/var/cypetulip/]: ")
 
     config = configparser.RawConfigParser()
     config.add_section('data')
@@ -25,7 +25,7 @@ def install():
     if data_dir:
         config.set('data', 'DATA_DIR', data_dir)
     else:
-        config.set('data', 'DATA_DIR', '/var/Cypetulip/')
+        config.set('data', 'DATA_DIR', '/var/cypetulip/')
 
     # Select database
     db_tech = input("Please choose database technologie\nOptions are [mysql,sqlite]: ")
@@ -107,12 +107,12 @@ def populate_permissions():
                 app_url.save()
 
 
-def create_app_perms_for_user(user_name):
+def create_app_perms_for_user(username):
     import django
     django.setup()
     from django.contrib.auth.models import User
     from permissions.models import AppUrl, AppUrlPermission
-    user = User.objects.get(username=user_name)
+    user = User.objects.get(username=username)
     for app_url in AppUrl.objects.all():
         perm = AppUrlPermission(url=app_url, user=user, post_access=True, get_access=True)
         perm.save()

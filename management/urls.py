@@ -1,13 +1,16 @@
+from django.urls import include
+
 from management.views import MailSettingsDetailView, SettingsView, ManagementView, ManagementOrderOverviewView, \
     ManagementOrderDetailView, LdapSettingsDetailView, CategoriesOverviewView, ProductsOverviewView, \
     CustomersOverviewView, ProductCreationView, CategoryCreationView, ProductEditView, PageCreateView, CategoryEditView, \
-    CustomerCreationView, PagesOverviewView, PageEditView
+    CustomerCreationView, PagesOverviewView, PageEditView, SectionsOverviewView, SectionCreateView, SectionEditView
 from django.conf.urls import url
 
 from shop.my_account.views import SearchOrders
 
 __author__ = ''
 urlpatterns = [
+    url(r'^tinymce/', include('tinymce.urls')),
     url(r'^$', ManagementView.as_view(), name="management_index"),
     url(r'^settings/$', SettingsView.as_view()),
     url(r'^orders(/(?P<number_of_orders>[0-9]*)/(?P<page>[0-9]*))?/$', ManagementOrderOverviewView.as_view(),
@@ -30,5 +33,8 @@ urlpatterns = [
     url(r'^pages/create/$', PageCreateView.as_view(), name="create_page"),
     url(r'^pages/$', PagesOverviewView.as_view(), name="pages"),
     url(r'^pages/(?P<page_id>[a-zA-Z0-9_.-]+)/$', PageEditView.as_view(), name="page_edit"),
+    url(r'^sections/create/$', SectionCreateView.as_view(), name="create_section"),
+    url(r'^sections/$', SectionsOverviewView.as_view(), name="sections"),
+    url(r'^sections/(?P<section_id>[a-zA-Z0-9_.-]+)/$', SectionEditView.as_view(), name="section_edit"),
 ]
 

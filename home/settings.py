@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import logging
 import os
 from django.utils.translation import ugettext_lazy as _, gettext
+
 from home.init import load_settings
 
 # from django_auth_ldap.config import GroupOfNamesType, LDAPSearch
@@ -49,7 +50,9 @@ INSTALLED_APPS = (
     'mediaserver',
     'permissions',
     'utils',
+    'filebrowser',
     'django.contrib.admin',
+    'tinymce',
 )
 
 MIDDLEWARE = (
@@ -127,6 +130,10 @@ STATIC_URL = '/static/'
 STATIC_ROOT = "/var/cypetulip/static"
 
 MEDIA_ROOT = '/var/cypetulip'
+
+MEDIA_URL = '/media/'
+
+FILEBROWSER_DIRECTORY = 'public/'
 
 SHOP_NAME = u'Cypetulip'
 

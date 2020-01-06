@@ -15,20 +15,23 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic import RedirectView
-
 # from Accounting import urls as accounting_urls
 # from home import settings
-from mediaserver import urls as media_urls
-from shop import urls as shop_urls
-from permissions import urls as perm_urls
-from cms import urls as cms_urls
+from filebrowser.sites import site
+
 from billing import urls as billing_urls
+from cms import urls as cms_urls
+from home.settings import MEDIA_ROOT
 from management import urls as admin_urls
+from mediaserver import urls as media_urls
 from payment import urls as payment_urls
+from permissions import urls as perm_urls
+from shop import urls as shop_urls
+
 admin.autodiscover()
 
-
 urlpatterns = [
+    url('admin/filebrowser/', site.urls),
     url(r'^$', RedirectView.as_view(url='/cms/home/')),
     url(r'^admin/', admin.site.urls),
     url(r'^management/', include(admin_urls.urlpatterns)),

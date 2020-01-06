@@ -1,6 +1,5 @@
 from django.contrib.auth import logout
 
-
 from shop.authentification.views import LoginView, LogoutView, RegisterView, CompanyView
 from shop.my_account.views import OrderDetailView, OrdersView, MyAccountView, SearchOrders, AccountSettingsView, \
     CompanySettingsView

@@ -1,12 +1,12 @@
+import hashlib
+import os
 import random
 import secrets
-import string
+import time
 
 from django.core.files.storage import FileSystemStorage
+
 from home import settings
-import os
-import time
-import hashlib
 
 __author__ = ''
 

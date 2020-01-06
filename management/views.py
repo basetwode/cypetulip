@@ -10,6 +10,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import View, DetailView, ListView, DeleteView
 
 from cms.models import Page, Section
+from home.settings import MEDIA_ROOT
 from management.models import MailSettings, LdapSettings
 from permissions.permissions import check_serve_perms
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory
@@ -38,10 +39,10 @@ class ManagementView(View):
 class ManagementOrderOverviewView(View):
     template_name = 'orders-overview.html'
 
-    def get(self, request, number_of_orders, page=1):
+    def get(self, request, page=1):
         contact = Contact.objects.get(user=request.user)
         _orders, search = SearchOrders.filter_orders(request, True)
-        number_of_orders = '5' if number_of_orders is None else number_of_orders
+        number_of_orders = '5'
         paginator = Paginator(_orders, number_of_orders)
         for order in _orders:
             total = 0
@@ -57,7 +58,7 @@ class ManagementOrderOverviewView(View):
             # If page is out of range (e.g. 9999), deliver last page of results.
             _orders = paginator.page(paginator.num_pages)
         return render(request, self.template_name,
-                      {'orders': _orders, 'number_of_orders': number_of_orders, 'contact': contact, 'search': search})
+                      {'orders': _orders, 'contact': contact, 'search': search})
 
     @check_serve_perms
     def post(self, request):
@@ -246,3 +247,40 @@ class PageEditView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('page_edit', kwargs={'page_id': self.object.id})
+
+
+class SectionsOverviewView(ListView):
+    template_name = 'pages/sections-overview.html'
+    context_object_name = 'sections'
+    model = Section
+
+
+class SectionCreateView(CreateView):
+    from filebrowser.sites import site
+    site.directory = '/var/cypetulip/uploads/'
+    template_name = 'pages/sections-create.html'
+    context_object_name = 'sections'
+    model = Section
+    fields = '__all__'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context['sections'] = Section.objects.all()
+        return context
+
+
+class SectionEditView(UpdateView):
+    from filebrowser.sites import site
+    site.storage = MEDIA_ROOT
+    site.directory = '/uploads/'
+    template_name = 'pages/sections-create.html'
+    context_object_name = 'sections'
+    model = Section
+    fields = '__all__'
+
+    product_id = None
+    slug_field = 'id'
+    slug_url_kwarg = 'section_id'
+
+    def get_success_url(self):
+        return reverse_lazy('section_edit', kwargs={'section_id': self.object.id})

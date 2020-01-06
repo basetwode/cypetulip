@@ -12,7 +12,6 @@
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <title>Products</title>
     <script src="{% static 'autocomplete.js' %}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <link href="{% static 'management.css' %}" rel="stylesheet">
 {% endblock %}
 
@@ -25,30 +24,27 @@
                     <thead class="thead-dark">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">{% trans 'Position' %}</th>
-                        <th scope="col">{% trans 'Pagename' %}</th>
-                        <th scope="col">{% trans 'Enabled' %}</th>
-                        <th scope="col">{% trans 'Link' %}</th>
+                        <th scope="col">{% trans 'Page' %}</th>
+                        <th scope="col">{% trans 'Content' %}</th>
+                        <th scope="col">{% trans 'Picture' %}</th>
                         <th scope="col">{% trans 'Configuration' %}</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for page in pages %}
+                    {% for section in sections %}
                         <tr>
-                            <td>{{ page.id }}</td>
-                            <td>{{ page.position }}</td>
-                            <td>{{ page.page_name }}</td>
-                            <td>{{ page.is_enabled }}</td>
-                            <td>{{ page.link }}</td>
+                            <td>{{ section.id }}</td>
+                            <td>{{ section.page }}</td>
+                            <td>{{ section.content }}</td>
+                            <td>{{ section.picture }}</td>
                             <td class="">
-                            <div>
-                                <a class="btn btn-outline-dark" href="{% url 'page_edit' page.id %}">{% trans 'Edit' %}</a>
-                                <button class="btn btn-outline-dark" data-toggle="modal"
-                                        data-target="#exampleModal">{% trans 'Delete' %}</button>
+                                <div>
+                                    <a class="btn btn-outline-dark" href="{% url 'section_edit' section.id %}">{% trans 'Edit' %}</a>
+                                    <button class="btn btn-outline-dark" data-toggle="modal"
+                                            data-target="#exampleModal">{% trans 'Delete' %}</button>
 
-                                {% include 'delete-modal.html' %}
-                            </div>
-
+                                    {% include 'delete-modal.html' %}
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}
