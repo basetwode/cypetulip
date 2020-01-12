@@ -49,45 +49,7 @@
                             </span>
                             <span class="caret"></span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right padding-1rem" id="shoppingcart">
-                            <span class="dropdown-header ">
-                            <a href="/shop/cart"
-                               class="btn btn-secondary btn-sm text-align-right">{% trans 'Open cart' %}</a>
-                            </span>
-
-                            {% for order in open_orders %}
-                                <div class="dropdown-divider hidden-sm"></div>
-                                <div class="dropdown-item hidden-sm">
-                                    <div class="row" style="min-height: 30px; width: 450px; max-height: 50px;">
-                                        <div class="col-md-5 col-lg-5 col-sm-3">
-                                            <div class="col-8">
-                                                {% if order.product.product.product_picture %}
-                                                    <img src="/media/{{ order.product.product.product_picture.url }}"
-                                                         alt="..."
-                                                         class="img-responsive img-thumbnail"/>
-                                                {% else %}
-                                                    <i class="fa fa-image img-thumbnail"></i>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                        <div class="col-md-5 col-lg-5 col-sm-7" style="overflow: hidden">
-                                            <h5>{{ order.product.name }}</h5>
-                                        </div>
-                                        <div class="col-md-2 col-lg-2 col-sm-2">
-                                            {{ order.product.price }} &euro;
-                                        </div>
-                                    </div>
-                                </div>
-
-                            {% endfor %}
-                            <div class="dropdown-divider"></div>
-                            <div class="row" style="padding: 0.25rem 0.5rem 0rem 2.5rem">
-                                <span class="col-4">{% trans 'Total: ' %}</span>
-                                <span class="col-8 text-align-right">{{ total_cart }} &euro;</span>
-
-                            </div>
-
-                        </div>
+                        {% include 'order/shopping-cart.html' %}
                     </li>
                     <li id="usermenu" class="nav-item dropdown">
                         <a href="#usermenu" style="text-transform: capitalize;" class="dropdown-toggle nav-link"

@@ -1,6 +1,7 @@
 
 # Baseline configuration.
 from django_auth_ldap.config import LDAPSearch
+
 from utils.ldap import Ldap
 
 ldap = Ldap.objects.all()

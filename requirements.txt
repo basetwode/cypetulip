@@ -21,7 +21,6 @@ django-flatpages-tinymce==0.1.1
 django-oauth-plus==2.2.9
 django-oauth-toolkit==1.2.0
 django-oauth2-provider==0.2.6.1
-django-recaptcha==2.0.5
 django-simple-history==2.8.0
 django-tempus-dominus==5.1.2.9
 django-tinymce4-lite==1.7.5
@@ -45,7 +44,7 @@ protobuf==3.11.2
 Pillow==7.0.0
 pisa==3.0.33
 pytz==2019.3
-PyInstaller==3.5
+PyInstaller==3.6
 PyPDF2==1.26.0
 reportlab==3.5.32
 requests==2.22.0

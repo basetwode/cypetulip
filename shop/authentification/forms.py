@@ -1,10 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
 from django.forms import ModelForm
 
-from shop.models import Company, Contact
+from shop.models import Company
 
 
 class SignUpForm(UserCreationForm):
@@ -18,4 +17,3 @@ class CompleteCompanyForm(ModelForm):
         model = Company
         fields = ['name', 'street', 'number', 'zipcode', 'city', 'term_of_payment']
         widgets = {'name': forms.HiddenInput(), 'term_of_payment': forms.HiddenInput()}
-

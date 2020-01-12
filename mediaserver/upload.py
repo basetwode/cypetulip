@@ -47,5 +47,3 @@ def guid(*args):
 
 def rand_key(size):
     return secrets.token_urlsafe(20)
-
-

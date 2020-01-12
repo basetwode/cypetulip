@@ -1,8 +1,9 @@
-from mediaserver.views import ServePublicFiles, ServeCompanyFiles, ServeOrderFiles
+from django.conf.urls import url
+
+from mediaserver.views import (ServeCompanyFiles, ServeOrderFiles,
+                               ServePublicFiles)
 
 __author__ = ''
-from django.conf.urls import include, url
-from django.contrib import admin
 
 urlpatterns = [
     url(r"^orders/(?P<hash>[a-zA-Z0-9_.-]+)/(?P<file>([a-zA-Z0-9_.-]|\W)+)$", ServeOrderFiles.as_view(),

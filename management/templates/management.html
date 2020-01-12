@@ -6,15 +6,15 @@
 {% bootstrap_messages %}
 {% block head %}
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
-    <title>Products</title>
+    <title>{% trans "management" %}</title>
     <script src="{% static 'autocomplete.js' %}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="{% static 'js/jquery.ui.min.js' %}"></script>
     <link href="{% static 'management.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
     <div class="main">
-        <div class="content container">
+        <div class="content">
             <div>
                 <h1>
                     <strong>{% trans "management" %}</strong>
@@ -23,7 +23,7 @@
 
             <div class="card-deck">
                 <div class="card">
-                    <div class="card-header text-align-center">
+                    <div class="card-header text-center">
                         <div>
                             <i class="fas fa-shopping-basket fa-4x"></i>
                         </div>
@@ -33,9 +33,10 @@
 
                     </div>
                     <div class="card-body">
-                        <p class="card-text">{% trans 'Show orders, track or cancel them' %}</p>
+
                         <a href="{% url 'management_all_orders' %}"
                            class="btn btn-primary">{% trans 'All orders' %}</a>
+                        <hr>
                         <p>{% trans 'Search orders' %}</p>
                         <form action="{% url 'search_orders' %}">
                             <div class="input-group">
@@ -48,9 +49,12 @@
                             </div>
                         </form>
                     </div>
+                    <div class="card-footer">
+                        <p class="card-text">{% trans 'Show orders, track or cancel them' %}</p>
+                    </div>
                 </div>
                 <div class="card">
-                    <div class="card-header text-align-center">
+                    <div class="card-header text-center">
                         <div>
                             <i class="fa fa-user-circle fa-4x"></i>
                         </div>
@@ -60,11 +64,11 @@
                     </div>
 
                     <div class="card-body">
-                        <p>{% trans 'Show and edit customers' %}</p>
                         <a href="{% url 'customers_overview' %}"
                            class="btn btn-primary">{% trans 'Customers' %}</a>
                         <a href="{% url 'create_customer' %}"
                            class="btn btn-primary">{% trans 'Add customer' %}</a>
+                        <hr>
                         <p>{% trans 'Search customers' %}</p>
                         <form action="{% url 'search_orders' %}">
                             <div class="input-group">
@@ -77,10 +81,12 @@
                             </div>
                         </form>
                     </div>
-
+                    <div class="card-footer">
+                        <p>{% trans 'Show and edit customers' %}</p>
+                    </div>
                 </div>
                 <div class="card">
-                    <div style="overflow: auto" class="card-header text-align-center">
+                    <div style="overflow: auto" class="card-header text-center">
                         <div>
                             <i class="fa fa-box-open fa-4x"></i>
                         </div>
@@ -89,23 +95,27 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <p>{% trans 'Categories' %}</p>
-                        <a href="{% url 'categories_overview' %}"
-                           class="btn btn-primary">{% trans 'Show' %}</a>
-                        <a href="{% url 'create_category' %}"
-                           class="btn btn-primary">{% trans 'Create new Category' %}</a>
-                        <p>{% trans 'Products' %}</p>
+                        <h5 class="card-title">{% trans 'Products' %}</h5>
                         <a href="{% url 'products_overview' %}"
                            class="btn btn-primary">{% trans 'Show' %}</a>
                         <a href="{% url 'create_product' %}"
                            class="btn btn-primary">{% trans 'Create new Product' %}</a>
+                        <hr>
+                        <h5 class="card-title">{% trans 'Categories' %}</h5>
+                        <a href="{% url 'categories_overview' %}"
+                           class="btn btn-primary">{% trans 'Show' %}</a>
+                        <a href="{% url 'create_category' %}"
+                           class="btn btn-primary">{% trans 'Create new Category' %}</a>
                     </div>
-
+                    <div class="card-footer">
+                        <p>{% trans 'Products' %}</p>
+                    </div>
                 </div>
             </div>
+            <br>
             <div class="card-deck">
                 <div class="card">
-                    <div class="card-header text-align-center">
+                    <div class="card-header text-center">
                         <div>
                             <i class="fa fa-cog fa-4x"></i>
                         </div>
@@ -113,36 +123,35 @@
                     </div>
 
                     <div class="card-body">
+
                         <div class="card-text">
-                            <p>{% trans 'All shop related settings. Manage permissions, staff and products and pages' %}</p>
-                        </div>
-                        <div class="card-text btn-toolbar">
                             <div class="btn-group">
                                 <a href="{% url 'account_settings' %}"
                                    class="btn btn-primary mr-1">{% trans 'Staff' %}</a>
                                 <a href="{% url 'all_orders' %}"
                                    class="btn btn-primary mr-1">{% trans 'permissions' %}</a>
                             </div>
+                            <hr>
                             <div class="btn-group">
                                 <a href="{% url 'company_settings' %}"
                                    class="btn btn-primary mr-1">{% trans 'shop' %}</a>
 
                             </div>
+                            <hr>
                             <div class="btn-group">
                                 <a href="{% url 'mail_settings_details' mail_settings.id %}"
                                    class="btn btn-primary mr-1">{% trans 'mail' %}</a>
                                 <a href="{% url 'ldap_settings_details'  ldap_settings.id %}"
                                    class="btn btn-primary mr-1">{% trans 'ldap' %}</a>
                             </div>
-
-
                         </div>
-
-
+                    </div>
+                    <div class="card-footer">
+                        <p>{% trans 'All shop related settings. Manage permissions, staff and products and pages' %}</p>
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header text-align-center">
+                    <div class="card-header text-center">
                         <div>
                             <i class="fas fa-laptop-medical fa-4x"></i>
                         </div>
@@ -152,22 +161,28 @@
                     </div>
 
                     <div class="card-body">
-                        <p>{% trans 'Show and edit pages' %}</p>
+
+                        <div class="card-text">Seiten</div>
                         <a href="{% url 'pages' %}"
                            class="btn btn-primary mr-1">{% trans 'Pages' %}</a>
                         <a href="{% url 'create_page' %}"
                            class="btn btn-primary">{% trans 'Add Page' %}</a>
-                        <p>{% trans 'Show and edit Sections' %}</p>
+                        <hr>
+                        <div class="card-text">Sektionen</div>
                         <a href="{% url 'sections' %}"
                            class="btn btn-primary mr-1">{% trans 'Sections' %}</a>
                         <a href="{% url 'create_section' %}"
                            class="btn btn-primary">{% trans 'Add Section' %}</a>
 
                     </div>
+                    <div class="card-footer">
+                        <p>{% trans 'Show and edit pages' %}</p>
+                        <p>{% trans 'Show and edit Sections' %}</p>
 
+                    </div>
                 </div>
                 <div class="card">
-                    <div class="card-header text-align-center">
+                    <div class="card-header text-center">
                         <div>
                             <i class="fas fa-balance-scale fa-4x"></i>
                         </div>
@@ -178,12 +193,13 @@
 
                     <div class="card-body">
                         <div class="card-text">
-                            <p>{% trans 'Create or review accounting information' %}</p>
+
                             <a href="{% url 'account_settings' %}"
                                class="btn btn-primary">{% trans 'Open Accounting' %}</a>
                         </div>
-
-
+                    </div>
+                    <div class="card-footer">
+                        <p>{% trans 'Create or review accounting information' %}</p>
                     </div>
                 </div>
 

@@ -124,7 +124,7 @@
                                                     <div class="col-sm-2 col-xs-4">
                                                         {% if  order_item.product.product.product_picture %}
                                                             <img
-                                                                    src="/media/{{ order_item.product.product.product_picture.url }}"
+                                                                    src="{{ order_item.product.product.product_picture.url }}"
                                                                     alt="..."
                                                                     class="img-responsive"/>{% endif %}</div>
                                                     <div class="col-sm-8 col-xs-8">

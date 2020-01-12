@@ -5,21 +5,17 @@ function addToCart(product) {
         data: $('#add-cart-form').serialize(),
 
         success: function (data) {
-
-            $('#shopping-cart').html(data);
-
-
+            // $('#shopping-cart').html(data);
         }
     })
 }
 
 function submitForm(url, form) {
-    var data = $('#' + form);
-    console.log(data);
+    var data = $("#" + form);
     var formData = new FormData(data[0]);
-    if (!data[0].checkValidity()) {
-
-    }
+    // if (!data[0].checkValidity()) {
+    //
+    // }
     $('p.error').html("");
     data.find('tr, div').removeClass('error-row');
     data.find(".input-group").removeClass('has-error');
@@ -39,27 +35,27 @@ function submitForm(url, form) {
             return xhr;
         },
         url: url,
-        method: 'post',
+        type: 'POST',
+        method: 'POST',
         data: formData,
-        enctype: 'multipart/form-data',
+        enctype: 'form/multipart',
         processData: false,  // tell jQuery not to process the data
         contentType: false,   // tell jQuery not to set contentType
-        success: function (data) {
+        success: function (response) {
 
-            console.log(data);
+            console.log('success: ', response);
             $('#alert-success').show();
             waitModal.modal('hide');
             $('.progress-bar').css('width', 0 + '%').attr('aria-valuenow', 0);
             var nextForm = $('#next-step-form');
-            if(data.next_url.length > 0){
-                nextForm.attr('action', data.next_url);
+            if (response.next_url.length > 0) {
+                nextForm.attr('action', response.next_url);
             }
-            nextForm.find('#next-step-token').val(data.token);
+            nextForm.find('#next-step-token').val(response.token);
             nextForm.submit();
-            window.location.href = "/shop/overview/"+data['order']+"/"+data['token']
+            // window.location.href = "/shop/overview/" + response['order'] + "/" + response['token']
         },
-        error: function (data) {
-
+        error: function (response) {
             $('#alert-warning').hide();
             $('#alert-danger').hide();
             waitModal.modal('hide');
@@ -78,7 +74,7 @@ function submitForm(url, form) {
             //             }
             //         });
             // });
-             parseErrors(data);
+            parseErrors(response);
             //$('.main').html($(data.responseText).find(".main").html())
         }
     })
@@ -114,17 +110,17 @@ function parseErrors(data) {
     success = message.success;
     errors = message.errors;
     errorCode = 0;
-    for(index = 0; index < errors.length; index++){
+    for (index = 0; index < errors.length; index++) {
         error = errors[index];
-        input_element = $('#'+error.field_name);
+        input_element = $('#' + error.field_name);
         input_element.addClass('error-row');
         input_element.find('.error').html(error.message);
         input_element.find('.input-group, .form-group').addClass('has-error');
-        if(errorCode < error.code){
-            errorCode=error.code;
+        if (errorCode < error.code) {
+            errorCode = error.code;
         }
     }
-    switch(errorCode){
+    switch (errorCode) {
         case 400:
             $('#alert-warning').show();
             break;
@@ -132,3 +128,61 @@ function parseErrors(data) {
             $('#alert-danger').show();
     }
 }
+
+$(function () {
+
+
+    // This function gets cookie with a given name
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+    /*
+    The functions below will create a header with csrftoken
+    */
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    function sameOrigin(url) {
+        // test that a given url is a same-origin URL
+        // url could be relative or scheme relative or absolute
+        var host = document.location.host; // host + port
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        // Allow absolute or scheme relative URLs to same origin
+        return (url === origin || url.slice(0, origin.length + 1) === origin + '/') ||
+            (url === sr_origin || url.slice(0, sr_origin.length + 1) === sr_origin + '/') ||
+            // or any other URL that isn't scheme relative or absolute i.e relative.
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+                // Send the token to same-origin, relative URLs only.
+                // Send the token only if the method warrants CSRF protection
+                // Using the CSRFToken value acquired earlier
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+});

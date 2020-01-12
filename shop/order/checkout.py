@@ -1,11 +1,9 @@
-import json
-from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import View
 
-from shop.Errors import JsonResponse, FieldError
-from shop.models import Order, Contact, OrderItem, ProductSubItem, Product
-from shop.order.forms import SubItemForm, ItemBuilder
+from shop.Errors import FieldError, JsonResponse
+from shop.models import Contact, Order, OrderItem, Product, ProductSubItem
+from shop.order.forms import ItemBuilder, SubItemForm
 from shop.utils import create_hash, json_response
 
 __author__ = 'Anselm'
@@ -44,7 +42,6 @@ class CheckoutView(View):
                         forms_are_valid = forms_are_valid and form.is_valid()
             for post in request.POST:
                 value = request.POST.get(post)
-
                 # TODO this items can also be multiple, check that
 
                 form = self.create_form(request, forms, post, value)
@@ -58,9 +55,9 @@ class CheckoutView(View):
                 ord = _order[0]
                 ord.token = token
                 ord.save()
-                result = json_response(code=200, x=JsonResponse(token=token).dump())
-                return result
-                # return json_response(200, x={'token': token, 'order': _order[0].order_hash})
+                # result = json_response(code=200, x=JsonResponse(token=token).dump())
+                # return result
+                return json_response(200, x={'token': token, 'order': _order[0].order_hash, 'next_url': '', })
             else:
                 # return json_response(code=400, x={'success': False,
                 #                                   'errors': [([(formkey, v[0]) for k, v in form.errors.items()]) for

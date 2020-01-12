@@ -1,4 +1,6 @@
 from django import template
+from django.contrib.auth.models import Group
+from django.template import Variable
 
 register = template.Library()
 
@@ -68,8 +70,6 @@ def do_recurse(parser, token):
     return RecurseNode(var, name, child, nodeList)
 
 
-from django.contrib.auth.models import Group
-from django.template import Variable
 
 
 @register.tag()
@@ -121,4 +121,3 @@ def check_type(value, arg):
     return str(type(value)) == str(arg)
 
 do_recurse = register.tag('recurse', do_recurse)
-

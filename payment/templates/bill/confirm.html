@@ -7,10 +7,8 @@
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <script src="{% static 'payment_utils.js' %}"></script>
     <script src="{% static 'utils.js' %}"></script>
-    <script src="{% static 'dist/js/jquery.validate.js' %}"></script>
-    <script
-            src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/jquery.validate.js"
-            type="text/javascript"></script>
+    <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+
     <title>{{ product.name }}</title>
 {% endblock %}
 
@@ -74,7 +72,7 @@
                                             <div class="col-sm-2 hidden-xs">
                                                 {% if order.product.product.product_picture %}
                                                     <img
-                                                            src="/media/{{ order.product.product.product_picture.url }}"
+                                                            src="{{ order.product.product.product_picture.url }}"
                                                             alt="..."
                                                             class="img-responsive"/>
                                                 {% endif %}

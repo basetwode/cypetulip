@@ -16,7 +16,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Theme Template for Bootstrap</title>
+    <title>Cypetulip Management</title>
     <script src="{% static 'js/functions.js' %}"></script>
     <script src="{% static 'cms/js/site-loader.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
@@ -30,37 +30,20 @@
     <link href="/cms/theme.css" rel="stylesheet" type='text/css'>
 
     <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     {% block head %}
     {% endblock %}
 </head>
 
-<body role="document">
+<body role="document" class="mb-5">
 <!-- Modal -->
-<div id="wait-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1>Processing...</h1>
-            </div>
-            <div class="modal-body">
-                <div class="progress">
-                    <div class="progress-bar progress-bar-success progress-bar-striped" id="progressbar"
-                         role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                        <span class="sr-only">40% Complete (success)</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+{% include 'wait-modal.html' %}
 <!-- Fixed navbar -->
 {% include 'navbar.html' %}
 
-<main role="main" id="main" style="margin-top: 50px;min-height: 600px">
+<main role="main" id="main" class="mb-5" style="margin-top: 50px;min-height: 600px">
     <div id="noty-holder">
 
         <div id="alert-danger" class="alert alert-danger alert-dismissable page-alert" hidden>
@@ -72,23 +55,23 @@
             </div>
         </div>
         <div id="alert-success" class="alert alert-success alert-dismissable page-alert" hidden>
-            <button type="button" class="close" onclick="$(this).parent().hide()"><span aria-hidden="true">×</span><span
-                    class="sr-only">Close</span>
+            <button type="button" class="close" onclick="$(this).parent().hide()"><span aria-hidden="true">×</span>
+                <span class="sr-only">{% trans 'Close' %}</span>
             </button>
             <div id="success-text">
                 {% trans 'Sent' %} {% trans 'successfully' %}</div>
         </div>
         <div id="alert-warning" class="alert alert-warning alert-dismissable page-alert" hidden>
-            <button type="button" class="close" onclick="$(this).parent().hide()"><span aria-hidden="true">×</span><span
-                    class="sr-only">Close</span>
+            <button type="button" class="close" onclick="$(this).parent().hide()"><span aria-hidden="true">×</span>
+                <span class="sr-only">{% trans 'Close' %}</span>
             </button>
             <div id="warning-text">
-                Looks like you've missed some fields
+                {% trans 'Looks like you have missed some fields' %}
             </div>
         </div>
     </div>
-        {% block body %}
-        {% endblock %}
+    {% block body %}
+    {% endblock %}
 
 
 </main>

@@ -1,11 +1,11 @@
 from __future__ import unicode_literals
 
-from django.db import models
-from django.core.validators import MaxValueValidator
 import datetime
 
-from mediaserver.upload import rand_key
-from shop.models import Order, Contact
+from django.core.validators import MaxValueValidator
+from django.db import models
+
+from shop.models import Contact, Order
 
 # Create your models here.
 

@@ -2,11 +2,10 @@ import configparser
 import os
 import re
 import sys
+from os import sep
 
 from home import settings
-
 from home.settings import BASE_DIR
-from os import sep
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "home.settings")
 

@@ -1,6 +1,6 @@
 from django import forms
 
-from payment.models import CreditCard, Bill
+from payment.models import Bill, CreditCard
 
 
 class PaymentForm(forms.ModelForm):
@@ -11,17 +11,18 @@ class CreditCardForm(PaymentForm):
     class Meta:
         model = CreditCard
         fields = '__all__'
-        exclude = ['user','order','method']
+        exclude = ['user', 'order', 'method']
 
     @staticmethod
     def _name():
         return 'Credit-card'
 
+
 class BillForm(PaymentForm):
     class Meta:
         model = Bill
         fields = '__all__'
-        exclude = ['user','order','method']
+        exclude = ['user', 'order', 'method']
 
     @staticmethod
     def _name():

@@ -3,11 +3,9 @@ import json
 import logging
 import re
 import time
-from abc import ABCMeta, abstractmethod
 
 from django.http import HttpResponse
 
-from permissions.error_handler import raise_401
 from shop.Errors import FieldError, JsonResponse
 
 __author__ = 'Anselm'
@@ -62,5 +60,3 @@ def check_params(required_arguments, redirect_page=None, message=""):
         return decorator
 
     return real_decorator
-
-

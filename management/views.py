@@ -1,17 +1,15 @@
 from django.contrib.auth.models import User
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.forms.widgets import Input
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.urls import reverse, reverse_lazy
-from django.views.generic.edit import CreateView, UpdateView
-
+from django.urls import reverse_lazy
 # Create your views here.
-from django.views.generic import View, DetailView, ListView, DeleteView
+from django.views.generic import DetailView, ListView, View
+from django.views.generic.edit import CreateView, UpdateView
 
 from cms.models import Page, Section
 from home.settings import MEDIA_ROOT
-from management.models import MailSettings, LdapSettings
+from management.models import LdapSettings, MailSettings
 from permissions.permissions import check_serve_perms
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory
 from shop.my_account.views import SearchOrders

@@ -24,9 +24,9 @@
                         <div class="panel-body">
                             <p>{% trans 'Your logo' %}</p>
                             {% if contact.company.logo %}
-                                <img class="img-responsive" src="/media/{{ contact.company.logo.url }}">
+                                <img class="img-responsive" src="{{ contact.company.logo.url }}">
                             {% endif %}
-                        <p></p>
+                            <p></p>
                             <a href="{{ request.META.HTTP_REFERER }}"
                                class="btn btn-fw btn-secondary">{% trans 'Go back' %}</a>
                             <a href="{% url 'all_orders' %}"

@@ -21,7 +21,6 @@ from filebrowser.sites import site
 
 from billing import urls as billing_urls
 from cms import urls as cms_urls
-from home.settings import MEDIA_ROOT
 from management import urls as admin_urls
 from mediaserver import urls as media_urls
 from payment import urls as payment_urls
@@ -30,18 +29,19 @@ from shop import urls as shop_urls
 
 admin.autodiscover()
 
+
 urlpatterns = [
-    url('admin/filebrowser/', site.urls),
+    url(r'^admin/filebrowser/', site.urls),
     url(r'^$', RedirectView.as_view(url='/cms/home/')),
     url(r'^admin/', admin.site.urls),
     url(r'^management/', include(admin_urls.urlpatterns)),
-   # url(r'^accounting/', include(accounting_urls.urlpatterns)),
+    # url(r'^accounting/', include(accounting_urls.urlpatterns)),
     url(r'^media/', include(media_urls.urlpatterns)),
     url(r'^shop/', include(shop_urls.urlpatterns)),
     url(r'^permissions/', include(perm_urls.urlpatterns)),
     url(r'^cms/', include(cms_urls.urlpatterns)),
     url(r'^billing/', include(billing_urls.urlpatterns)),
-    url(r'^payment/', include(payment_urls.urlpatterns)),
+    url(r'^payment/', include(payment_urls, namespace='payment')),
 ]
 
 # if settings.DEBUG:

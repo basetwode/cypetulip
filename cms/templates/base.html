@@ -16,7 +16,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Theme Template for Bootstrap</title>
+    <title>Cypetulip</title>
     <script src="{% static 'js/functions.js' %}"></script>
     <script src="{% static 'cms/js/site-loader.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
@@ -40,24 +40,7 @@
 
 <body role="document">
 <!-- Modal -->
-<div id="wait-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1>Processing...</h1>
-            </div>
-            <div class="modal-body">
-                <div class="progress">
-                    <div class="progress-bar progress-bar-success progress-bar-striped" id="progressbar"
-                         role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                        <span class="sr-only">40% Complete (success)</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+{% include 'wait-modal.html' %}
 <header class="shop-header py-3">
     <div class="container">
         <div class="row flex-nowrap justify-content-between align-items-center">
@@ -78,7 +61,6 @@
             </div>
         </div>
     </div>
-
 </header>
 <!-- Fixed navbar -->
 {% include 'navbar.html' %}
@@ -128,7 +110,7 @@
         </p>
     </div>
     <hr>
-    <div class="cold-md-4 divider">
+    <div class="col-md-4 center divider">
         <img class="center" width="100" src="{% static 'images/test_small.png' %}">
     </div>
 </footer>

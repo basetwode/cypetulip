@@ -1,14 +1,9 @@
 import re
-from functools import wraps
-
-from django.contrib.auth.models import User
-from django.shortcuts import redirect
 
 from permissions.error_handler import raise_401
 # from models import App, AppPermissions
 from permissions.models import AppUrl, AppUrlPermission
-from permissions.utils import show_urls
-from shop.models import Order, OrderDetail, Contact, Company
+from shop.models import Company, Contact, Order
 
 __author__ = 'Anselm'
 

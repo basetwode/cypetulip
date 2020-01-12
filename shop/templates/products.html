@@ -71,47 +71,69 @@
                             <img src="http://www.freelargeimages.com/wp-content/uploads/2014/12/Landscape_01.jpg">
                         </div>
                     </div>
-                    <div class="col-12 products-list">
+                    <div class="col-12 products-list mt-3">
                         <div class="row col-12">
                             <h3>{% trans 'Products' %}</h3>
                         </div>
-                        <div class="row col-12">
+                        <div class="row">
                             {% for product in products %}
-                                <div class="col-md-6 item">
-                                    <div class="heading item">
-                                            <div class="col-md-9">
-                                                <h4><a href="/shop/product/{{ product.name }}">{{ product.name }}</a>
-                                                </h4>
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-header">
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    <h5><a
+                                                            href="/shop/product/{{ product.name }}">{{ product.name }}</a>
+                                                    </h5>
+                                                </div>
+                                                <div class="col-2 my-auto">
+                                                    {% if product.price %}
+                                                        <i style="color: red" class="fas fa-2x fa-percent"></i>
+                                                    {% endif %}
+                                                </div>
                                             </div>
-                                            <div class="col-md-3">
-                                                <h4>{{ product.price }} &euro;</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    {% if product.price %}
+                                                        <span style="text-decoration: line-through">{{ product.price | floatformat:2 }} &euro;</span>
+                                                        <strong style="color: red">{{ product.price | floatformat:2 }}
+                                                            &euro;</strong>
+                                                    {% else %}
+                                                        <span>{{ product.price | floatformat:2 }} &euro;</span>
+                                                    {% endif %}
+                                                </div>
                                             </div>
-                                    </div>
-                                    <div class="product">
-                                        <div class="content">
-                                            <div class="content-img">
+                                            <hr>
+                                            <div class="card-text">
+                                                {{ product.description }}
+                                            </div>
+                                            <hr>
+                                            <div class="card-img content-img">
                                                 <a href="/shop/product/{{ product.name }}">
                                                     {% if product.product_picture %}
-                                                        <img
-                                                                src="/media/{{ product.product_picture.url }}"
-                                                                alt=""/>
+                                                        <img class="img-responsive img-thumbnail"
+                                                             src="{{ product.product_picture.url }}" alt=""/>
                                                     {% else %}
                                                         <i class="fa fa-image img-thumbnail"></i>
                                                     {% endif %}
 
                                                 </a>
                                             </div>
-                                            <div class="price-details">
-                                                <div class="price-number">
-                                                </div>
-                                                <div class="add-cart">
-                                                    <h5><a href="/shop/product/{{ product.name }}">More Info</a></h5>
-                                                </div>
-                                                <div class="clear"></div>
+
+                                        </div>
+                                        <div class="card-footer price-details">
+                                            <div class="price-number">
                                             </div>
+                                            <div class="add-cart">
+                                                <h5>
+                                                    <a href="/shop/product/{{ product.name }}">{% trans 'More Info' %}</a>
+                                                </h5>
+                                            </div>
+                                            <div class="clear"></div>
                                         </div>
                                     </div>
-
                                 </div>
                             {% endfor %}
 

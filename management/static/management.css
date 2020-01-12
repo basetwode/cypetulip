@@ -18,21 +18,15 @@
     color: white;
 }
 
-.panel-body {
-    background-color: #e3ebf1;
-}
+/*.panel-body {*/
+/*    padding-top: 1rem;*/
+/*    background-color: #e3ebf1;*/
+/*}*/
 
-.text-align-center{
-    text-align: center;
-}
-.text-align-right{
-    text-align: right;
-}
-
-.padding-1rem{
+.padding-1rem {
     padding: 1rem;
 }
 
-.uppercase-text{
+.uppercase-text {
     text-transform: uppercase;
 }

@@ -1,20 +1,20 @@
 import json
 
 from django.core import serializers
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.shortcuts import render
 from django.views.generic import View
 
 from permissions.permissions import check_serve_perms
-from shop.models import Contact, Order, Product, OrderItem
-from shop.my_account.forms import ContactForm, CompanyForm
+from shop.models import Contact, Order, OrderItem, Product
+from shop.my_account.forms import CompanyForm, ContactForm
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
 
 
 class OrderDetailView(View):
-    template_name = 'my_account/orders_detail.html'
+    template_name = 'my_account/orders-detail.html'
 
     @check_serve_perms
     def get(self, request, order):
@@ -67,7 +67,7 @@ class OrdersView(View):
 
 
 class MyAccountView(View):
-    template_name = 'my_account/my_account.html'
+    template_name = 'my_account/my-account.html'
 
     @check_serve_perms
     def get(self, request):
@@ -81,7 +81,7 @@ class MyAccountView(View):
 
 
 class AccountSettingsView(View):
-    template_name = 'my_account/account_settings.html'
+    template_name = 'my_account/account-settings.html'
 
     @check_serve_perms
     def get(self, request):
@@ -99,7 +99,7 @@ class AccountSettingsView(View):
         return render(request, self.template_name, {'contact': contact,'form':form})
 
 class CompanySettingsView(View):
-    template_name = 'my_account/company_settings.html'
+    template_name = 'my_account/company-settings.html'
 
     @check_serve_perms
     def get(self, request):

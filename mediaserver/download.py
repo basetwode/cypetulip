@@ -1,9 +1,8 @@
+import os
 import zipfile
+from datetime import datetime
 
 import StringIO
-import os
-
-from datetime import datetime
 from django.http import HttpResponse
 
 __author__ = ''

@@ -1,10 +1,10 @@
-from django.conf.urls import url, include
-from payment.methods.bill import urls as bill_urls
-from payment.methods.paypal import urls as paypal_urls
-from payment.methods.sofort import urls as sofort_urls
+from django.conf.urls import include, url
 
+from payment.methods.bill import urls as bill_urls
+
+app_name = 'methods'
 urlpatterns = [
-    url(r'bill/', include(bill_urls)),
-    #url(r'paypal/', include(paypal_urls)),
-    #url(r'sofort/', include(sofort_urls)),
+    url(r'^bill/', include(bill_urls, namespace='bill')),
+    # url(r'paypal/', include(paypal_urls)),
+    # url(r'sofort/', include(sofort_urls)),
 ]

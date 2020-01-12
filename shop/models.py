@@ -1,10 +1,10 @@
-from django.dispatch.dispatcher import receiver
-from django.db.models.signals import pre_delete, post_save
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import pre_delete
+from django.dispatch.dispatcher import receiver
 
-from mediaserver.upload import company_files_upload_handler, fs, guid, public_files_upload_handler, \
-    order_files_upload_handler, rand_key
+from mediaserver.upload import (company_files_upload_handler, fs, order_files_upload_handler,
+                                public_files_upload_handler, rand_key)
 
 
 class Company(models.Model):
@@ -69,6 +69,7 @@ class Employee(models.Model):
 
 class ProductSubItem(models.Model):
     price = models.FloatField()
+    # special_price = models.FloatField(default=False)
     name = models.CharField(max_length=30)
     description = models.CharField(max_length=300)
     details = models.CharField(max_length=300)

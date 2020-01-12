@@ -6,17 +6,14 @@
 {% block head %}
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <script src="{% static 'utils.js' %}"></script>
-    <script src="{% static 'dist/js/jquery.validate.js' %}"></script>
-    <script
-            src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/jquery.validate.js"
-            type="text/javascript"></script>
+    <script src="{% static 'js/jquery.validate.min.js' %}"></script>
     <title>{{ product.name }}</title>
 {% endblock %}
 
 {% block body %}
     <div class="main">
         <div class="content">
-            <div class="order-step row">
+            <div class="checkout-step row">
 
                 <div class="col-4 left-step-normal">
                     <div style="margin: auto;align-content: center;text-align:
@@ -32,7 +29,7 @@
                 center;border: 1px solid #efefef;background-color:#54c5b4;
                 padding: 10px">
                         <h4>{% trans "Check" %}</h4>
-                        <i class="fa fa-pencil-square-o fa-3x"></i>
+                        <i class="far fa-edit fa-3x"></i>
                     </div>
                 </div>
                 <div class="col-4 left-step">
@@ -49,6 +46,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <form id="order-form">
+                        {% csrf_token %}
                         <table id="cart" class="table table-hover table-condensed">
                             <thead>
                             <tr>
@@ -61,8 +59,6 @@
                             </thead>
 
                             <tbody>
-
-
                             <input type="submit" hidden id="#submit">
                             {% for order in open_orders %}
                                 <tr class="product-row">
@@ -73,7 +69,7 @@
                                             <div class="col-sm-2 hidden-xs">
                                                 {% if order.product.product.product_picture %}
                                                     <img
-                                                            src="/media/{{ order.product.product.product_picture.url }}"
+                                                            src="{{ order.product.product.product_picture.url }}"
                                                             alt="..."
                                                             class="img-responsive img-thumbnail"/></div>
                                                 {% else %}
@@ -93,8 +89,8 @@
                                         class="text-center">{{ order.product.price }} &euro;
                                     </td>
                                     <td class="actions" data-th="">
-                                        <button class="btn btn-info btn-sm"><i class="fa fa-refresh"></i></button>
-                                        <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+                                        <button class="btn btn-info btn-sm"><i class="fas fa-sync"></i></button>
+                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
 
@@ -115,13 +111,13 @@
                                                             </p>
 
                                                             {% if sub_product.filesubitem %}
-                                                                {% include 'order/items/file_item.html' %}
+                                                                {% include 'order/items/file-item.html' %}
                                                             {% elif sub_product.selectsubitem %}
-                                                                {% include 'order/items/select_item.html' %}
+                                                                {% include 'order/items/select-item.html' %}
                                                             {% elif sub_product.checkboxsubitem %}
-                                                                {% include 'order/items/check_item.html' %}
+                                                                {% include 'order/items/check-item.html' %}
                                                             {% elif sub_product.numbersubitem %}
-                                                                {% include 'order/items/number_item.html' %}
+                                                                {% include 'order/items/number-item.html' %}
                                                             {% endif %}
                                                             <p class="error" style="color: #FF4136"></p>
                                                         </div>
@@ -168,13 +164,13 @@
 
                                                         <p>
                                                             {% if sub_product.filesubitem %}
-                                                                {% include 'order/items/file_item.html' %}
+                                                                {% include 'order/items/file-item.html' %}
                                                             {% elif sub_product.selectsubitem %}
-                                                                {% include 'order/items/select_item.html' %}
+                                                                {% include 'order/items/select-item.html' %}
                                                             {% elif sub_product.checkboxsubitem %}
-                                                                {% include 'order/items/check_item.html' %}
+                                                                {% include 'order/items/check-item.html' %}
                                                             {% elif sub_product.numbersubitem %}
-                                                                {% include 'order/items/number_item.html' %}
+                                                                {% include 'order/items/number-item.html' %}
                                                             {% endif %}
                                                         </p>
                                                     </div>
@@ -195,7 +191,6 @@
                                     </tr>
                                 {% endif %}
                             {% endfor %}
-                            {% csrf_token %}
 
 
                             </tbody>
@@ -205,11 +200,13 @@
                                         class="fa fa-angle-left"></i> {% trans 'Back to shoppingcart' %}</a></td>
                                 <td colspan="1" class="hidden-xs"></td>
                                 <td class="hidden-xs text-center"><strong>
-                                    {% trans 'Total: ' %}<span id="total">{{ total_cart }}</span> &euro;</strong></td>
+                                    {% trans 'Total: ' %}<span id="total">{{ total_cart }}</span> &euro;</strong
+                                ></td>
                                 <td>
                                     <a onclick="submitForm('/shop/checkout/{{ order_details.order_hash }}','order-form')"
                                        class="btn btn-success btn-block">{% trans 'Overview' %} <i
-                                            class="fa fa-angle-right"></i></a></td>
+                                            class="fa fa-angle-right"></i></a>
+                                </td>
                             </tr>
                             </tfoot>
                         </table>

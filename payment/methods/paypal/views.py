@@ -1,8 +1,5 @@
-from django.http import HttpResponse
-from django.shortcuts import render
-from paypalrestsdk import Payment as PaypalPayment
-
 from django.views.generic import View
+
 __author__ = 'Anselm'
 
 

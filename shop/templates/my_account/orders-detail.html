@@ -116,12 +116,12 @@
 
                                                             <div class="row">
                                                                 <div class="col-sm-2 hidden-xs">
-                                                                    {%  if order.product.product.product_picture %}
-                                                                    <img
-                                                                        src="/media/{{ order.product.product.product_picture.url }}"
-                                                                        alt="..."
-                                                                        class="img-responsive"/>
-                                                                    {%  endif %}
+                                                                    {% if order.product.product.product_picture %}
+                                                                        <img
+                                                                                src="{{ order.product.product.product_picture.url }}"
+                                                                                alt="..."
+                                                                                class="img-responsive"/>
+                                                                    {% endif %}
                                                                 </div>
                                                                 <div class="col-sm-10">
                                                                     <h4 class="nomargin">{{ order.product.name }}</h4>
@@ -158,11 +158,11 @@
                                                                             <div class="col-md-12">
                                                                                 {% if sub_item.fileorderitem %}
                                                                                     {% trans 'File' %}:
-                                                                                    <a href="/media/{{ sub_item.fileorderitem.file.url }}">
+                                                                                    <a href="{{ sub_item.fileorderitem.file.url }}">
                                                                                         {{ sub_item.fileorderitem.file_name }}
                                                                                     </a>
                                                                                     <div class="col-sm-2 hidden-xs"><img
-                                                                                            src="/media/{{ sub_item.fileorderitem.file.url }}"
+                                                                                            src="{{ sub_item.fileorderitem.file.url }}"
                                                                                             alt="..."
                                                                                             class="img-responsive"/>
                                                                                     </div>
@@ -217,11 +217,11 @@
                                                                         <div class="col-md-12">
                                                                             {% if sub_item.fileorderitem %}
                                                                                 {% trans 'File' %}:
-                                                                                <a href="/media/{{ sub_item.fileorderitem.file.url }}">
+                                                                                <a href="{{ sub_item.fileorderitem.file.url }}">
                                                                                     {{ sub_item.fileorderitem.file_name }}
                                                                                 </a>
                                                                                 <div class="col-sm-2 hidden-xs"><img
-                                                                                        src="/media/{{ sub_item.fileorderitem.file.url }}"
+                                                                                        src="{{ sub_item.fileorderitem.file.url }}"
                                                                                         alt="..."
                                                                                         class="img-responsive"/></div>
                                                                             {% elif sub_item.selectorderitem %}

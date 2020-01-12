@@ -2,12 +2,7 @@
 
 
 body {
-    /*padding-top: 50px;*/
-    /*padding-bottom: 30px;*/
     font-family: "Raleway", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-}
-
-footer {
     height: 100%;
 }
 
@@ -31,16 +26,33 @@ footer {
 /*}*/
 
 #sidebar-wrapper {
-    background: #{{main_color}};
+    background: #{{main_color}
+}
+
+;
 }
 
 footer {
-    background-color: #{{main_color}};
-    width:100%;
-    height:50px;
-    position: fixed;
-    bottom:0;
-    left:0;
+    /*height: 100%;*/
+    /*background-color: #{{main_color}};*/
+    /*width:100%;*/
+    /*height:50px;*/
+    /*position: fixed;*/
+    /*bottom:0;*/
+    /*left:0;*/
+}
+
+.footer {
+    width: 100%;
+    border-top: 1px solid #cccccc;
+    margin-top: 40px;
+    height: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+
+    background-color: slategray;
 }
 
 footer .box {
@@ -64,19 +76,19 @@ footer .box {
 /*
  * Card component
  */
-.card {
-    background-color: #F7F7F7;
-    /* just in case there no content*/
-    padding: 20px 25px 30px;
-    margin: 25px auto 25px;
-    /* shadows and rounded borders */
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-}
+/*.card {*/
+/*    background-color: #F7F7F7;*/
+/*    !* just in case there no content*!*/
+/*    padding: 20px 25px 30px;*/
+/*    margin: 25px auto 25px;*/
+/*    !* shadows and rounded borders *!*/
+/*    -moz-border-radius: 2px;*/
+/*    -webkit-border-radius: 2px;*/
+/*    border-radius: 2px;*/
+/*    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);*/
+/*    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);*/
+/*    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);*/
+/*}*/
 
 .profile-img-card {
     width: 96px;
@@ -176,9 +188,6 @@ footer .box {
     color: rgb(12, 97, 33);
 }
 
-.product {
-    border: 1px solid #dddddd;
-}
 
 .product > img {
     max-width: 350px;
@@ -316,15 +325,6 @@ footer .box {
 
 }
 
-.products {
-
-}
-
-.product {
-
-
-    border: 1px solid #eeeeee;
-}
 
 .products-list .heading {
     background-color: #f5f5f5;
@@ -435,18 +435,6 @@ footer .box {
     border-top: 1px solid #DDD !important;
 }
 
-.footer {
-    width: 100%;
-    border-top: 1px solid #cccccc;
-    margin-top: 40px;
-    height: auto;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    padding: 1rem;
-
-    background-color: slategray;
-}
 
 .center {
     margin-left: auto;

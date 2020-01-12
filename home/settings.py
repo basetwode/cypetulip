@@ -13,7 +13,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import logging
 import os
-from django.utils.translation import ugettext_lazy as _, gettext
+
+from django.utils.translation import gettext
+from django.utils.translation import ugettext_lazy as _
 
 from home.init import load_settings
 
@@ -133,7 +135,8 @@ MEDIA_ROOT = '/var/cypetulip'
 
 MEDIA_URL = '/media/'
 
-FILEBROWSER_DIRECTORY = 'public/'
+FILEBROWSER_DIRECTORY = ''
+FILEBROWSER_MEDIA_ROOT = '/var/cypetulip'
 
 SHOP_NAME = u'Cypetulip'
 

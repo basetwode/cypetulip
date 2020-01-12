@@ -1,6 +1,8 @@
 import os
+
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.views.generic import View
+
 from home import settings
 # Todo: check permissions and raise 401 AND check if file exists and if not raise 404 then
 from permissions.error_handler import raise_404

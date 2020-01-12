@@ -1,16 +1,17 @@
 
-from django.urls import reverse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect, render
 from django.template.defaultfilters import lower
+from django.urls import reverse
 from django.views.generic import View
 
-from payment.models import PaymentMethod, PaymentDetails
+from payment.models import PaymentDetails, PaymentMethod
 from permissions.permissions import check_serve_perms
-from shop.Errors import JsonResponse, FatalError, GENERIC_FATAL_ERROR, FieldError
+from shop.Errors import (FieldError,
+                         JsonResponse)
 from shop.models import Contact, Order
 from shop.order.utils import get_order_for_hash_and_contact
-from shop.utils import json_response, check_params
-from .methods.forms import get_all_payment_forms_as_dict, PaymentFormFactory
+from shop.utils import json_response
+from .methods.forms import PaymentFormFactory, get_all_payment_forms_as_dict
 
 
 class PaymentView(View):
@@ -66,13 +67,13 @@ class PaymentCreationView(View):
         return redirect('/shop/overview/' + order)
 
     @check_serve_perms
-    @check_params(required_arguments={'method': '[0-9]'}, message="Please select a payment method")
+    # @check_params(required_arguments={'method': '[0-9]'}, message="Please select a payment method")
     def post(self, request, order):
         contact = Contact.objects.filter(user=request.user)
         company = contact[0].company
         _order = Order.objects.get(order_hash=order, is_send=False, company=company)
 
-        payment_details = PaymentDetails.objects.filter(order=_order, user=contact)
+        payment_details = PaymentDetails.objects.filter(order=_order, user=contact[0])
         payment_details.delete()
 
         choosen_payment_method = PaymentMethod.objects.get(id=request.POST['method'])
@@ -84,7 +85,9 @@ class PaymentCreationView(View):
             payment_instance.method = PaymentMethod.objects.get(id=request.POST['method'])
             payment_instance.save()
             result = json_response(code=200, x=JsonResponse(
-                next_url=reverse('payment:%s' % lower(payment_instance.method.name), args=[order])).dump())
+                # next_url=reverse('payment:methods:bill:index')).dump())
+                next_url=reverse('payment:methods:%s:index' % lower(payment_instance.method.name),
+                                 args=[order])).dump())
         else:
             result = self.__form_is_not_valid(form)
 

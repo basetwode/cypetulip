@@ -1,15 +1,14 @@
 from django.shortcuts import render
-from django.utils.translation import ungettext_lazy
 from django.views.generic import View
-from shop.models import Contact, OrderDetail, Order, Product, Company, OrderItem
+
+from shop.models import (Contact, Order, OrderDetail, OrderItem,
+                         Product)
 
 __author__ = 'Anselm'
 
 
-
 class ShoppingCartView(View):
-
-    template_name = 'order/shopping_cart.html'
+    template_name = 'order/shopping-cart.html'
 
     def get(self, request, product):
         if request.user.is_authenticated:
@@ -41,8 +40,7 @@ class ShoppingCartView(View):
 
 
 class ShoppingCartDetailView(View):
-
-    template_name = 'order/shopping_cart_detail.html'
+    template_name = 'order/shopping-cart-detail.html'
 
     def get(self, request):
         if request.user.is_authenticated:

@@ -1,9 +1,8 @@
 from django.db import models
-
 # Create your models here.
 from tinymce import HTMLField
 
-from mediaserver.upload import public_files_upload_handler, fs
+from mediaserver.upload import fs, public_files_upload_handler
 
 
 class Page(models.Model):

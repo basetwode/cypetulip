@@ -19,4 +19,3 @@ def show_urls(urllist, depth=0, name="",url_prefix="", urls={}):
                 print("  " * depth, entry.name)
             if hasattr(entry, 'url_patterns'):
                 show_urls(entry.url_patterns, depth + 1,name,url_prefix+entry.regex.pattern,urls)
-

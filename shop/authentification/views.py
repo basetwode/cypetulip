@@ -1,15 +1,13 @@
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseRedirect, request
-from django.shortcuts import render, redirect
-from django.template import RequestContext
+from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.models import User
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect, render
 from django.views.generic import View
 
 from install import create_app_perms_for_user
-from shop.authentification.forms import SignUpForm, CompleteCompanyForm
+from shop.authentification.forms import CompleteCompanyForm, SignUpForm
 from shop.models import Contact
 
 __author__ = ''

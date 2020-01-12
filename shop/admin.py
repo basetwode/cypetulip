@@ -1,5 +1,7 @@
 from django.contrib import admin
+
 from shop.models import *
+
 # Register your models here.
 
 
@@ -24,6 +26,3 @@ admin.site.register(NumberOrderItem)
 admin.site.register(NumberSubItem)
 admin.site.register(OrderState)
 admin.site.register(OrderItemState)
-
-
-

@@ -1,5 +1,5 @@
-from home import settings
 from cms.models import Page
+from home import settings
 
 __author__ = ''
 
@@ -21,4 +21,3 @@ def get_page_title(request):
     return {
         'title': settings.SHOP_NAME
     }
-

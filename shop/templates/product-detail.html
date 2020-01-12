@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load recurse %}
+
+{% block head %}
+    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'css/theme.css' %}" rel="stylesheet" type='text/css'>
+    <script src="{% static 'utils.js' %}"></script>
+    <title>{{ product.name }}</title>
+{% endblock %}
+
+{% block body %}
+    <div class="main">
+        <div class="content">
+
+            <div class="row">
+                <div class="col-md-12 path">
+                    <a href="/cms/home">
+                        Home
+                    </a>
+                    >
+                    <a href="/shop/products/">
+                        Products
+                    </a>
+                    >
+                    <a href="/shop/products/{{ product.category }}">
+                        {{ product.category }}
+                    </a>
+                    >
+                    <a href="/cms/product/{{ product.name }}">
+                        {{ product.name }}
+                    </a>
+
+                </div>
+                <div class="col-md-3 categories">
+                    <div class="categories-list">
+                        <div class="panel-group" id="accordion">
+                            <div class="card panel panel-default margin-none">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                                <span class="glyphicon glyphicon-folder-close">
+                                                </span>{% trans 'Categories' %}</a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse show">
+                                    <ul class="list-group">
+                                        {% recurse category.child_categories.all with categories as category %}
+
+                                            {% loop %}
+                                                <li class="list-group-item" id="v_hm">
+                                                    <div class="heading">
+                                                        <div class="arrowImage"></div>
+                                                        <a class="link"
+                                                           href="/shop/products/{{ category.name }}">{{ category.name }}</a>
+                                                    </div>
+                                                    <ul class="list-group sub">{% child %}</ul>
+
+                                                </li>
+
+                                            {% endloop %}
+                                        {% endrecurse %}
+
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-9 card">
+
+                    <div class="product">
+                        <div class="row">
+                            <div class="col-md-12 card-header">
+                                <h3>{{ product.name }}</h3>
+                            </div>
+                            <div class="row no-gutters">
+                                <div class="col-md-4" style=" border-right: 1px solid rgba(0,0,0,.125);">
+                                    {% if product.product_picture %}
+                                        <a class="thumbnail fancybox" rel="ligthbox"
+                                           href="{{ product.product_picture.url }}">
+                                        <img
+                                                src="{{ product.product_picture.url }}"
+                                                alt="..."
+                                                class="img-responsive"/>
+                                    {% else %}
+                                        <i class="fa fa-image img-thumbnail"></i>
+                                    {% endif %}
+                                    </a>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <div class="card-text">
+                                            <p>
+                                                {{ product.category.name }}
+                                            </p>
+                                            <p>
+                                                {{ product.description }}
+                                            </p>
+                                            <p class="price">
+                                                {% if product.price %}
+                                                    <span style="text-decoration: line-through">{{ product.price |floatformat:2 }} &euro;</span>
+                                                    <strong style="color: red">{{ product.price | floatformat:2 }}
+                                                        &euro;</strong>
+                                                {% else %}
+                                                    <span>{{ product.price | floatformat:2 }} &euro;</span>
+                                                {% endif %}
+                                            </p>
+                                            <br>
+                                            <form id="add-cart-form">
+                                                {% csrf_token %}
+                                                <button type="button" onclick="addToCart('{{ product.name }}')"
+                                                        class="btn btn-secondary btn-md">{% trans 'Add to cart' %}</button>
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="col-md-12 bg-light rounded shadow card-body">
+                                <div class="mb-5">
+                                    <ul class="nav nav-tabs nav-pills with-arrow lined flex-column flex-sm-row text-center"
+                                        role="tablist">
+                                        <li class="nav-item  flex-sm-fill">
+                                            <a class="active nav-link text-uppercase font-weight-bold rounded-0"
+                                               data-toggle="tab"
+                                               href="#description">{% trans 'Product Description' %}</a>
+                                        </li>
+                                        <li class="nav-item flex-sm-fill">
+                                            <a class="nav-link text-uppercase font-weight-bold rounded-0"
+                                               data-toggle="tab"
+                                               href="#details">{% trans 'Details' %}</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div id="description" role="tabpanel"
+                                             class="tab-pane fade px-4 pt-5 show active">
+                                            <h3>Product Description</h3>
+
+                                            <p>{{ product.description }}</p>
+                                        </div>
+                                        <div id="details" role="tabpanel" class="tab-pane fade px-4 pt-5">
+                                            <h3>Details</h3>
+                                            <p>{{ product.details }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <script>
+
+        //FANCYBOX
+        //https://github.com/fancyapps/fancyBox
+        $(".fancybox").fancybox({
+            openEffect: "none",
+            closeEffect: "none"
+        });
+
+    </script>
+{% endblock %}

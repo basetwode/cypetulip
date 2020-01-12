@@ -7,7 +7,7 @@ __author__ = 'Anselm'
 
 
 class SofortPayment(View):
-    template_name = 'product_detail.html'
+    template_name = 'product-detail.html'
 
     def get(self, request, product):
 
@@ -22,4 +22,3 @@ class SofortPayment(View):
     # and sends the data to sofortueberweisung
     def step1(self):
         pass
-
