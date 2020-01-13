@@ -38,17 +38,6 @@
                 {% if user.is_authenticated %}
 
                     <li id="shopping-cart" class="cart nav-item dropdown">
-                        <a href="#shopping-cart" class="dropdown-toggle nav-link"
-                           data-target="#shopping-cart" data-toggle="dropdown" role="button"
-                           aria-haspopup="true"
-                           aria-expanded="false"><i class="fa fa-shopping-cart"></i>
-                            <span class="hidden-sm">{% trans 'Shoppingcart' %}
-                                {% if number_items > 0 %}
-                                    ({{ number_items }})
-                                {% endif %}
-                            </span>
-                            <span class="caret"></span>
-                        </a>
                         {% include 'order/shopping-cart.html' %}
                     </li>
                     <li id="usermenu" class="nav-item dropdown">

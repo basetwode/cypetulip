@@ -5,9 +5,9 @@ function addToCart(product) {
         data: $('#add-cart-form').serialize(),
 
         success: function (data) {
-            // $('#shopping-cart').html(data);
+            $('#shopping-cart').html(data);
         }
-    })
+    });
 }
 
 function submitForm(url, form) {
@@ -53,42 +53,28 @@ function submitForm(url, form) {
             }
             nextForm.find('#next-step-token').val(response.token);
             nextForm.submit();
-            // window.location.href = "/shop/overview/" + response['order'] + "/" + response['token']
         },
         error: function (response) {
             $('#alert-warning').hide();
             $('#alert-danger').hide();
-            waitModal.modal('hide');
             $('.progress-bar').css('width', 0 + '%').attr('aria-valuenow', 0);
-            // $.each(data.responseJSON, function (index, row) {
-            //     if (row)
-            //         $.each(row, function (index, row) {
-            //             if (row && row[0]) {
-            //
-            //                 //console.log(row[0][0]);
-            //                 //console.log(row[0][1]);
-            //                 var rowH = $('#' + row[0][0]);
-            //                 rowH.addClass('error-row');
-            //                 rowH.find(".error").html((row[0][1]));
-            //                 rowH.find(".input-group").addClass('has-error');
-            //             }
-            //         });
-            // });
+            waitModal.modal('hide');
             parseErrors(response);
-            //$('.main').html($(data.responseText).find(".main").html())
         }
-    })
+    });
 
 
 }
 
 function addToSubTotal(product, subproductPrice) {
-    var productPrice = parseInt($('#subtotal-' + product).html(), 10)
+    const subTotalIdentifier = '#subtotal-' + product;
+    const totalIdentifier = '#total';
+    let productPrice = parseInt($(subTotalIdentifier).html(), 10);
     productPrice += subproductPrice;
-    var total = parseInt($('#total').html(), 10);
+    let total = parseInt($(totalIdentifier).html(), 10);
     total += subproductPrice;
-    $('#total').html(total);
-    $('#subtotal-' + product).html(productPrice + " &euro;");
+    $(totalIdentifier).html(total);
+    $(subTotalIdentifier).html(productPrice + " &euro;");
 }
 
 function duplicateProduct(button, product, price) {
@@ -100,16 +86,16 @@ function duplicateProduct(button, product, price) {
     //    $(element).val("");
     //}
     $(newRow).insertBefore(row.nextSibling);
-    addToSubTotal(product, price)
+    addToSubTotal(product, price);
 }
 
 
 function parseErrors(data) {
-
-    message = data.responseJSON;
-    success = message.success;
-    errors = message.errors;
-    errorCode = 0;
+    const positionTop = 0;
+    const message = data.responseJSON;
+    const success = message.success;
+    let errors = message.errors;
+    let errorCode = 0;
     for (index = 0; index < errors.length; index++) {
         error = errors[index];
         input_element = $('#' + error.field_name);
@@ -123,9 +109,12 @@ function parseErrors(data) {
     switch (errorCode) {
         case 400:
             $('#alert-warning').show();
+            $(window).scrollTop(positionTop);
             break;
         case 500:
             $('#alert-danger').show();
+            $(window).scrollTop(positionTop);
+            break;
     }
 }
 
@@ -134,11 +123,11 @@ $(function () {
 
     // This function gets cookie with a given name
     function getCookie(name) {
-        var cookieValue = null;
+        let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
+            let cookies = document.cookie.split(';');
             for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
+                let cookie = jQuery.trim(cookies[i]);
                 // Does this cookie string begin with the name we want?
                 if (cookie.substring(0, name.length + 1) === (name + '=')) {
                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
@@ -149,7 +138,7 @@ $(function () {
         return cookieValue;
     }
 
-    var csrftoken = getCookie('csrftoken');
+    let csrftoken = getCookie('csrftoken');
 
     /*
     The functions below will create a header with csrftoken
@@ -163,10 +152,10 @@ $(function () {
     function sameOrigin(url) {
         // test that a given url is a same-origin URL
         // url could be relative or scheme relative or absolute
-        var host = document.location.host; // host + port
-        var protocol = document.location.protocol;
-        var sr_origin = '//' + host;
-        var origin = protocol + sr_origin;
+        const host = document.location.host; // host + port
+        const protocol = document.location.protocol;
+        const sr_origin = '//' + host;
+        const origin = protocol + sr_origin;
         // Allow absolute or scheme relative URLs to same origin
         return (url === origin || url.slice(0, origin.length + 1) === origin + '/') ||
             (url === sr_origin || url.slice(0, sr_origin.length + 1) === sr_origin + '/') ||

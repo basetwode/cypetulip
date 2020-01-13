@@ -1,6 +1,16 @@
 {% load static %}
 {% load i18n %}
-
+<a href="#shopping-cart" class="dropdown-toggle nav-link"
+   data-target="#shopping-cart" data-toggle="dropdown" role="button"
+   aria-haspopup="true"
+   aria-expanded="false"><i class="fa fa-shopping-cart"></i>
+    <span class="hidden-sm">{% trans 'Shoppingcart' %}
+        {% if number_items > 0 %}
+            ({{ number_items }})
+        {% endif %}
+                            </span>
+    <span class="caret"></span>
+</a>
 <div class="dropdown-menu dropdown-menu-right padding-1rem" id="shoppingcart">
     <div class="dropdown-header">
         <div class="row">

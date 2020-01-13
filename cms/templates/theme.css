@@ -729,11 +729,14 @@ footer .box {
 }
 
 
-
 .shop-header {
     line-height: 1;
     background-color: lightgray !important;
     border-bottom: 1px solid #e5e5e5;
+}
+
+.hidden {
+    display: none;
 }
 
 @media (max-width: 768px) {

@@ -66,32 +66,8 @@
 {% include 'navbar.html' %}
 
 <main role="main" id="main" style="margin-top: 50px;min-height: 600px">
-    <div id="noty-holder">
+    {% include 'notify-modal.html' %}
 
-        <div id="alert-danger" class="alert alert-danger alert-dismissable page-alert" hidden>
-            <button type="button" class="close" onclick="$(this).parent().hide()"><span aria-hidden="true">×</span><span
-                    class="sr-only">Close</span>
-            </button>
-            <div id="danger-text">
-                Ups, something went wrong. Please try again later or contact an administrator.
-            </div>
-        </div>
-        <div id="alert-success" class="alert alert-success alert-dismissable page-alert" hidden>
-            <button type="button" class="close" onclick="$(this).parent().hide()"><span aria-hidden="true">×</span><span
-                    class="sr-only">Close</span>
-            </button>
-            <div id="success-text">
-                {% trans 'Sent' %} {% trans 'successfully' %}</div>
-        </div>
-        <div id="alert-warning" class="alert alert-warning alert-dismissable page-alert" hidden>
-            <button type="button" class="close" onclick="$(this).parent().hide()"><span aria-hidden="true">×</span><span
-                    class="sr-only">Close</span>
-            </button>
-            <div id="warning-text">
-                Looks like you've missed some fields
-            </div>
-        </div>
-    </div>
     {% block body %}
     {% endblock %}
 
