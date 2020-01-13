@@ -15,18 +15,18 @@ class BillConfirmView(View):
 
     @check_serve_perms
     def get(self, request, order):
-        print('bill')
         pass
 
     @check_serve_perms
     def post(self, request, order):
-        print('bill post')
         contact = Contact.objects.filter(user=request.user)
         company = contact[0].company
         _order = Order.objects.filter(order_hash=order, is_send=False, company=company)
-        order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True, product__in=Product.objects.all())
-        payment_details = PaymentDetails.objects.get(order=_order, user=contact[0])
-        return render(request, self.template_name, {'order_items': order_items, 'payment_details': payment_details})
+        order_items = OrderItem.objects.filter(order=_order[0], order_item__isnull=True,
+                                               product__in=Product.objects.all())
+        payment_details = PaymentDetails.objects.get(order=_order[0], user=contact[0])
+        return render(request, self.template_name,
+                      {'order_items': order_items, 'payment_details': payment_details, 'contact': contact[0]})
 
 
 class BillSubmitView(View):
@@ -37,12 +37,12 @@ class BillSubmitView(View):
 
     @check_serve_perms
     def post(self, request, order):
-        print('bill submit')
         contact = Contact.objects.filter(user=request.user)
         company = contact[0].company
         _order = Order.objects.filter(order_hash=order, is_send=False, company=company)
-        order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True, product__in=Product.objects.all())
-        payment_details = PaymentDetails.objects.get(order=_order, user=contact[0])
+        order_items = OrderItem.objects.filter(order=_order[0], order_item__isnull=True,
+                                               product__in=Product.objects.all())
+        payment_details = PaymentDetails.objects.get(order=_order[0], user=contact[0])
         payment = Payment(is_paid=False, token=create_hash(), details=payment_details)
         payment.save()
 

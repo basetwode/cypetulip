@@ -29,7 +29,7 @@ urlpatterns = [
         name='ldap_settings_details'),
 
     url(r'^orders/search/', SearchOrders.as_view(), name="search_orders"),
-    url(r'^orders/(?P<order>[a-zA-Z0-9\\s\- ]+)$', ManagementOrderDetailView.as_view(),
+    url(r'^orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)$', ManagementOrderDetailView.as_view(),
         name="management_detail_order"),
 
     url(r'^categories/create/$', CategoryCreationView.as_view(), name="create_category"),

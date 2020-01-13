@@ -1,5 +1,6 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.generic import View
 
 from permissions.error_handler import raise_404
@@ -81,10 +82,13 @@ class OrderConfirmedView(View):
     def get(self, request, order):
         contact = Contact.objects.filter(user=request.user)
         company = contact[0].company
-        _order = Order.objects.get(order_hash=order, is_send=False, company=company)
-        _order.is_send = True
-        _order.save()
-        return render(request, self.template_name, {'order': _order})
+        _order = Order.objects.get(order_hash=order, company=company)
+        if _order.is_send:
+            return redirect(reverse("detail_order", args=[order]))
+        else:
+            _order.is_send = True
+            _order.save()
+            return render(request, self.template_name, {'order': _order})
 
     @check_serve_perms
     def post(self, request, order):

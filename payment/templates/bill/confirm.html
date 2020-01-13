@@ -15,39 +15,39 @@
 {% block body %}
     <div class="main">
         <div class="content col-md-12">
-            <div class="order-step col-md-12 col-lg-12 col-xs-12">
+            <div class="payment-overview-step row">
 
-                <div class="col-md-4 col-lg-4 col-xs-4 left-step-normal">
+                <div class="col-4 left-step-normal">
                     <div style="margin: auto;align-content: center;text-align:
                                     center;border: 1px solid #efefef;background-color:#fafafa;
                                     padding: 10px">
-                        <h4>{% trans "Checkout" %}</h4>
-                        <i class="fa fa-pencil-square-o fa-3x"></i>
+                        <h4>{% trans 'Checkout' %}</h4>
+                        <i class="fa fa-edit fa-3x"></i>
                     </div>
                 </div>
-                <div class="col-md-4 col-lg-4 col-xs-4 left-step-last ">
+                <div class="col-4 left-step-last">
+
                     <div style="margin: auto;align-content: center;text-align:
                 center;border: 1px solid #efefef;background-color:#fafafa;
                 padding: 10px">
                         <h4>{% trans "Overview" %}</h4>
-                        <i class="fa fa-check-square fa-3x"></i>
+                        <i class="far fa-check-square fa-3x"></i>
                     </div>
-
                 </div>
-                <div class="col-md-4 col-lg-4 col-xs-4 left-step">
+                <div class="col-4 left-step">
                     <div style="margin: auto;align-content: center;text-align:
                 center;border: 1px solid #efefef;background-color:#54c5b4;
                 padding: 10px">
-                        <h4>{% trans "payment" %}</h4>
-                        <i class="fa fa-credit-card fa-3x"></i>
+                        <h4>{% trans "Payment" %}</h4>
+                        <i class="fas fa-credit-card fa-3x"></i>
                     </div>
 
                 </div>
             </div>
 
-            <div class="col-md-12 payment">
+            <div class="row payment">
                 <h3>{% trans 'Order overview' %}</h3>
-                <p>{% trans "Please check whether the information you've entered are correct." %}</p>
+                <p class="col-12">{% trans "Please check whether the information you've entered are correct." %}</p>
                 <div class="col-md-12">
                     <h4 style="font-weight: bold">{% trans 'Your order' %}</h4>
                     <div class="col-md-12">
@@ -74,7 +74,9 @@
                                                     <img
                                                             src="{{ order.product.product.product_picture.url }}"
                                                             alt="..."
-                                                            class="img-responsive"/>
+                                                            class="img-responsive img-thumbnail"/>
+                                                {% else %}
+                                                    <i class="fa fa-image img-thumbnail"></i>
                                                 {% endif %}
                                             </div>
                                             <div class="col-sm-10">
@@ -105,28 +107,31 @@
                         <table id="cart" class="table table-hover table-condensed">
                             <thead>
                             <tr>
-                                <th style="width:30%"></th>
-                                <th style="width:70%"></th>
+                                <th style="width:50%">{% trans 'Payment Method' %}</th>
+                                <th style="width:10%">{% trans 'Price' %}</th>
+
+                                <th style="width:22%" class="text-center">{% trans 'Subtotal' %}</th>
+                                <th style="width:10%"></th>
 
                             </tr>
                             </thead>
 
                             <tbody>
                             <tr>
-                                <td>
-                                    <h4>Payment method</h4>
-                                </td>
-                                <td>
-                                    <b>{{ payment_details.method.name }}</b>
-                                </td>
+                                <td style="width:50%">{{ payment_details.method.name }}</td>
+                                <td style="width:10%">{{ total_cart }}</td>
+
+                                <td style="width:22%" class="text-center">{{ total_cart }}</td>
+                                <td style="width:10%"></td>
+
                             </tr>
                             <tr>
-                                <td>
-                                    <h4>Total</h4>
-                                </td>
-                                <td>
-                                    <b>{{ total_cart }}</b>
-                                </td>
+                                <td style="width:50%"></td>
+                                <td style="width:10%"></td>
+
+                                <td style="width:22%" class="text-center"></td>
+                                <td style="width:10%"></td>
+
                             </tr>
                             </tbody>
                         </table>
@@ -138,19 +143,31 @@
                         <table id="cart" class="table table-hover table-condensed">
                             <thead>
                             <tr>
-                                <th style="width:30%"></th>
-                                <th style="width:70%"></th>
+                                <th style="width:50%">{% trans 'Adress' %}</th>
+                                <th style="width:10%">{% trans '' %}</th>
+
+                                <th style="width:22%" class="text-center">{% trans '' %}</th>
+                                <th style="width:10%"></th>
+
                             </tr>
                             </thead>
 
                             <tbody>
                             <tr>
-                                <td>
-                                    <h4>Address</h4>
-                                </td>
-                                <td>
-                                    <b>todo</b>
-                                </td>
+                                <td style="width:50%">{{ contact.title }} {{ contact.first_name }} {{ contact.lastname }}</td>
+                                <td style="width:10%"></td>
+
+                                <td style="width:22%" class="text-center"></td>
+                                <td style="width:10%"></td>
+
+                            </tr>
+                            <tr>
+                                <td style="width:50%">{{ contact.company.street }} {{ contact.company.zipcode }} {{ contact.company.city }}</td>
+                                <td style="width:10%"></td>
+
+                                <td style="width:22%" class="text-center"></td>
+                                <td style="width:10%"></td>
+
                             </tr>
                             </tbody>
                         </table>
@@ -173,7 +190,8 @@
                 </tbody>
                 <tfoot>
                 <tr class="visible-xs">
-                    <td class="text-center"><strong>Total 1.99</strong></td>
+                    <td class="text-center"
+                    </td>
                 </tr>
                 <tr>
                     <td>
@@ -203,7 +221,6 @@
             </table>
             <form id="next-step-form" action="confirm/" method="post">
                 {% csrf_token %}
-
                 <input id="next-step-token" type="hidden" name="token" value="{{ order_details.order_hash }}">
             </form>
         </div>

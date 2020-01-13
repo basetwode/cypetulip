@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^cart/add/(?P<product>[\S0-9_.-\\s\- ]*)$', ShoppingCartView.as_view()),
     url(r'^cart/', ShoppingCartDetailView.as_view(), name="shopping_cart"),
     url(r'^checkout/(?P<order>[\S0-9_.-\\s\- ]*)$', CheckoutView.as_view(), name="checkout_order"),
-    url(r'^confirmed/(?P<order>[\S0-9_.-\\s\- ]*)$', OrderConfirmedView.as_view(), name="confirmed_order"),
+    url(r'^confirmed/(?P<order>[a-zA-Z0-9\\s\-_ ]+)$', OrderConfirmedView.as_view(), name="confirmed_order"),
     url(r'^overview/(?P<order>[\S0-9_.-\\s\- ]*)$', OverviewView.as_view(), name="overview_order"),
 
     url(r'^products/(?P<category>[\S0-9_.-\\s\- ]*)$', ProductView.as_view()),
@@ -39,11 +39,11 @@ urlpatterns = [
         name="all_orders"),
     url(r'^myaccount/orders/search/', SearchOrders.as_view(), name="search_orders"),
 
-    url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\- ]+)/$', OrderDetailView.as_view(), name="detail_order"),
-    url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\- ]+)/cancel/$', OrderDetailView.as_view(),
+    url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/$', OrderDetailView.as_view(), name="detail_order"),
+    url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/cancel/$', OrderDetailView.as_view(),
         name="detail_order_cancel_order"),
-    url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\- ]+)/bill/show$', OrderDetailView.as_view(),
+    url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/bill/show$', OrderDetailView.as_view(),
         name="detail_order_show_bill"),
-    url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\- ]+)/review/create$', OrderDetailView.as_view(),
+    url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/review/create$', OrderDetailView.as_view(),
         name="detail_order_write_review"),
 ]

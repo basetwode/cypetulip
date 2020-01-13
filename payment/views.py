@@ -86,7 +86,7 @@ class PaymentCreationView(View):
             payment_instance.save()
             result = json_response(code=200, x=JsonResponse(
                 # next_url=reverse('payment:methods:bill:index')).dump())
-                next_url=reverse('payment:methods:%s:index' % lower(payment_instance.method.name),
+                next_url=reverse('payment:%s' % lower(payment_instance.method.name),
                                  args=[order])).dump())
         else:
             result = self.__form_is_not_valid(form)
