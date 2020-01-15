@@ -10,6 +10,22 @@ function addToCart(product) {
     });
 }
 
+function removeFromCart(url_part, product) {
+    waitModal = $('#wait-modal');
+    waitModal.modal('show');
+    $.ajax({
+        url: '/shop/' + url_part + '/remove/' + product,
+        method: 'delete',
+        data: $('#order-form').serialize(),
+
+        success: function (data) {
+            $('#shopping-cart').html(data);
+            $('body').html(data);
+
+        }
+    })
+}
+
 function submitForm(url, form) {
     var data = $("#" + form);
     var formData = new FormData(data[0]);
@@ -77,16 +93,30 @@ function addToSubTotal(product, subproductPrice) {
     $(subTotalIdentifier).html(productPrice + " &euro;");
 }
 
+function removeFromSubTotal(product, subproductPrice) {
+    const subTotalIdentifier = '#subtotal-' + product;
+    const totalIdentifier = '#total';
+    let productPrice = parseInt($(subTotalIdentifier).html(), 10);
+    productPrice -= subproductPrice;
+    let total = parseInt($(totalIdentifier).html(), 10);
+    total -= subproductPrice;
+    $(totalIdentifier).html(total);
+    $(subTotalIdentifier).html(productPrice + " &euro;");
+}
+
 function duplicateProduct(button, product, price) {
     var row = button.parentNode.parentNode;
     var newRow = $(row).clone(true);
-    $(row).find("button").remove();
-    //inputs = $(newRow).find("input");
-    //for(element in inputs ){
-    //    $(element).val("");
-    //}
+    $(row).find(".button-add-subproduct").remove();
+    $(row).find(".button-remove-subproduct").remove();
     $(newRow).insertBefore(row.nextSibling);
     addToSubTotal(product, price);
+}
+
+function removeSubProduct(button, product, price) {
+    var row = button.parentNode.parentNode;
+    $(row).remove();
+    removeFromSubTotal(product, price);
 }
 
 

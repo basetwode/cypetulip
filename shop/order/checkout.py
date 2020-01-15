@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.generic import View
 
 from shop.Errors import FieldError, JsonResponse
@@ -10,7 +11,14 @@ __author__ = 'Anselm'
 
 
 class CheckoutView(View):
-    template_name = 'order/checkout.html'
+    template_name = 'order/delivery.html'
+
+    def delete(self, request, product_id):
+        if request.user.is_authenticated:
+            instance = OrderItem.objects.get(id=product_id)
+            instance.delete()
+
+        return render(request, self.template_name)
 
     def get(self, request, order):
         contact = Contact.objects.filter(user=request.user)
@@ -23,6 +31,8 @@ class CheckoutView(View):
             sub_products_once_only = self.get_subproducts_once_only(order)
             return render(request, self.template_name, {'order_details': order,
                                                         'sub_products_once_only': sub_products_once_only})
+        else:
+            return redirect(reverse('shopping_cart'))
 
     def post(self, request, order):
         contact = Contact.objects.filter(user=request.user)
@@ -64,7 +74,7 @@ class CheckoutView(View):
                 #                                              formkey, form
                 #                                              in forms.items()]
                 #                                   })
-                errors=[]
+                errors = []
                 for formkey, form in forms.items():
                     errors_form = [FieldError(message=v[0], field_name=formkey) for k, v in form.errors.items()]
                     errors.extend(errors_form)

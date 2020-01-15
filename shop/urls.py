@@ -12,6 +12,7 @@ from shop.views import *
 
 __author__ = ''
 
+
 urlpatterns = [
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^index/', IndexView.as_view()),
@@ -21,7 +22,9 @@ urlpatterns = [
     url(r'^logout/', LogoutView.as_view()),
 
     url(r'^cart/add/(?P<product>[\S0-9_.-\\s\- ]*)$', ShoppingCartView.as_view()),
+    url(r'^cart/remove/([0-9]*)$', ShoppingCartDetailView.as_view()),
     url(r'^cart/', ShoppingCartDetailView.as_view(), name="shopping_cart"),
+    url(r'^checkout/remove/([0-9]*)$', CheckoutView.as_view()),
     url(r'^checkout/(?P<order>[\S0-9_.-\\s\- ]*)$', CheckoutView.as_view(), name="checkout_order"),
     url(r'^confirmed/(?P<order>[a-zA-Z0-9\\s\-_ ]+)$', OrderConfirmedView.as_view(), name="confirmed_order"),
     url(r'^overview/(?P<order>[\S0-9_.-\\s\- ]*)$', OverviewView.as_view(), name="overview_order"),

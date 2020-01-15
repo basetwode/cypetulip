@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load recurse %}
+{% load get_type %}
+{% block head %}
+    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
+    <script src="{% static 'utils.js' %}"></script>
+    <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+    <title>{{ product.name }}</title>
+{% endblock %}
+
+{% block body %}
+    <div class="main">
+        <div class="content">
+            <div class="checkout-step row">
+                <div class="stepwizard">
+                    <div class="stepwizard-row">
+                        <div class="stepwizard-step">
+                            <a href="/shop/cart/" type="button" class="btn btn-outline-success btn-circle"><i
+                                    class="fa fa-shopping-cart"></i></a>
+                            <p><small>{% trans 'Shoppingcart' %}</small></p>
+                        </div>
+                        <div class="stepwizard-step">
+                            <a href="" type="button" class="btn btn-success btn-circle"><i
+                                    class="fas fa-truck"></i></a>
+                            <p><small>{% trans "Delivery" %}</small></p>
+                        </div>
+                        <div class="stepwizard-step">
+                            <a type="button"
+                               onclick="submitForm('/shop/checkout/{{ order_details.order_hash }}','order-form')"
+                               class="btn btn-outline-success btn-circle"><i
+                                    class="fa fa-check-square"></i></a>
+                            <p><small>{% trans "Overview" %}</small></p>
+                        </div>
+                        <div class="stepwizard-step">
+                            <a type="button" class="btn btn-outline-success btn-circle"><i
+                                    class="fas fa-credit-card"></i></a>
+                            <p><small>{% trans "Payment" %}</small></p>
+                        </div>
+                        <div class="stepwizard-step">
+                            <a type="button" class="btn btn-outline-success btn-circle"><i
+                                    class="far fa-check-square "></i></a>
+                            <p><small>{% trans "Overview" %}</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <form id="order-form">
+                    {% csrf_token %}
+                    <table id="cart" class="table table-hover table-striped table-responsive-md">
+                        <thead>
+                        <tr>
+                            <th style="width:50%">{% trans 'Product' %}</th>
+                            <th style="width:10%">{% trans 'Price' %}</th>
+
+                            <th style="width:22%" class="text-center">{% trans 'Subtotal' %}</th>
+                            <th style="width:10%"></th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <input type="submit" hidden id="#submit">
+                        {% for order in open_orders %}
+                            <tr class="product-row">
+                                <td data-th="Product">
+                                    <input type="hidden" name="[{{ order.id }}][prod]{{ order.product.id }}">
+
+                                    <div class="row">
+                                        <div class="col-2 hidden-xs">
+                                            {% if order.product.product.product_picture %}
+                                                <img
+                                                        src="{{ order.product.product.product_picture.url }}"
+                                                        alt="..."
+                                                        class="img-responsive img-thumbnail"/>
+                                            {% else %}
+                                                <i class="fa fa-image img-thumbnail"></i>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-sm-10">
+                                            <h4 class="nomargin">{{ order.product.name }}</h4>
+
+                                            <p>{{ order.product.description|truncatechars:100 }}</p>
+                                        </div>
+
+                                    </div>
+                                </td>
+                                <td data-th="Price">{{ order.product.price }}</td>
+
+                                <td id="subtotal-{{ order.id }}" data-th="Subtotal"
+                                    class="text-center">{{ order.product.price }} &euro;
+                                </td>
+                                <td class="actions" data-th="">
+                                    <button class="btn btn-info btn-sm"><i class="fas fa-sync"></i></button>
+                                    <button class="btn btn-danger btn-sm"
+                                            onclick="removeFromCart('checkout','{{ order.id }}')"><i
+                                            class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+
+                            {% for sub_product in order.product.product.assigned_sub_products.all %}
+                                {% if sub_product.is_once_per_order == False and sub_product.is_required %}
+                                    <tr id="{{ order.id }}-{{ sub_product.id }}" style="border-top: none">
+                                        <td colspan="1">
+                                            <div class="col-sm-12 ">
+
+
+                                                <div class="col-md-offset-1 col-md-11 sub-product required">
+                                                    <div class="col-md-offset-1 col-md-9">
+                                                        <h5>{{ sub_product.name }}</h5>
+
+                                                        <p>
+                                                            <small>
+                                                                {{ sub_product.description }}</small>
+                                                        </p>
+
+                                                        {% if sub_product.filesubitem %}
+                                                            {% include 'order/items/file-item.html' %}
+                                                        {% elif sub_product.selectsubitem %}
+                                                            {% include 'order/items/select-item.html' %}
+                                                        {% elif sub_product.checkboxsubitem %}
+                                                            {% include 'order/items/check-item.html' %}
+                                                        {% elif sub_product.numbersubitem %}
+                                                            {% include 'order/items/number-item.html' %}
+                                                        {% endif %}
+                                                        <p class="error" style="color: #FF4136"></p>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                        </td>
+                                        <td colspan="2" data-th="Price">{{ sub_product.price }} &euro;</td>
+                                        <script>
+                                            $(document).ready(function () {
+                                                addToSubTotal({{ order.id }}, {{ sub_product.price }})
+                                            });
+                                        </script>
+                                        <td>
+
+                                            {% if sub_product.is_multiple_per_item %}
+                                                <button onclick="duplicateProduct(this,{{ order.id }},{{ sub_product.price }})"
+                                                        class="button-add-subproduct btn btn-secondary btn-sm"><i
+                                                        class="fa fa-plus-circle"></i>
+                                                </button>
+
+                                                <button onclick="removeSubProduct(this,{{ order.id }},{{ sub_product.price }})"
+                                                        class="button-remove-subproduct btn btn-secondary btn-sm"><i
+                                                        class="fa fa-minus-circle"></i>
+                                                </button>
+                                            {% endif %}
+
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+
+                        {% for sub_product in sub_products_once_only %}
+                            {% if sub_product.is_once_per_order == True and sub_product.is_required %}
+                                <tr style="border-top: none">
+                                    <td colspan="2">
+                                        <div class="col-sm-12 ">
+                                            <div class="col-md-12 required">
+                                                <div class="col-md-offset-1 col-md-9">
+                                                    <h4>{{ sub_product.name }}</h4>
+
+                                                    <p>
+                                                        {{ sub_product.description }}
+                                                    </p>
+
+                                                    <p>
+                                                        {% if sub_product.filesubitem %}
+                                                            {% include 'order/items/file-item.html' %}
+                                                        {% elif sub_product.selectsubitem %}
+                                                            {% include 'order/items/select-item.html' %}
+                                                        {% elif sub_product.checkboxsubitem %}
+                                                            {% include 'order/items/check-item.html' %}
+                                                        {% elif sub_product.numbersubitem %}
+                                                            {% include 'order/items/number-item.html' %}
+                                                        {% endif %}
+                                                    </p>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                    </td>
+                                    <td data-th="Subtotal" class="text-center">{{ sub_product.price }} &euro;</td>
+                                    <td>
+                                        <script>
+                                            $(document).ready(function () {
+                                                addToSubTotal(0, {{ sub_product.price }})
+                                            });
+                                        </script>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if not open_orders %}
+                            <tr>
+                                <td data-th="Product">
+                                    {{ open_order }}
+                                    {% trans 'Empty Cart' %}
+                                </td>
+                            </tr>
+                        {% endif %}
+
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td style="width:50%"></td>
+                            <td style="width:10%"></td>
+                            <td style="width:22%" class="text-center"><strong>{% trans 'Total: ' %}<span
+                                    id="total">{{ total_cart }}</span> &euro;</strong></td>
+                            <td style="width:10%"></td>
+                        </tr>
+
+
+                        </tfoot>
+
+                    </table>
+                </form>
+                <div class="row">
+                    <div class="col">
+                        <a href="/shop/cart/" class="btn btn-warning"><i
+                                class="fa fa-angle-left"></i> {% trans 'Back to shoppingcart' %}</a>
+                    </div>
+                    <div class="col">
+                        <a onclick="submitForm('/shop/checkout/{{ order_details.order_hash }}','order-form')"
+                           class="btn btn-success float-right">{% trans 'Overview' %} <i
+                                class="fa fa-angle-right"></i></a>
+                    </div>
+                </div>
+                <form id="next-step-form" action="/shop/overview/{{ order_details.order_hash }}" method="post">
+                    {% csrf_token %}
+                    <input id="next-step-token" type="hidden" name="token">
+                </form>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+{% endblock %}

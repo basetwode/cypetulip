@@ -14,37 +14,44 @@
     <div class="main">
         <div class="content">
             <div class="overview-step row">
-
-                <div class="col-4 left-step-normal">
-                    <div style="margin: auto;align-content: center;text-align:
-                center;border: 1px solid #efefef;background-color:#fafafa;
-                padding: 10px">
-                        <h4>{% trans 'Shoppingcart' %}</h4>
-                        <i class="fa fa-shopping-cart fa-3x"></i>
+                <div class="stepwizard">
+                    <div class="stepwizard-row">
+                        <div class="stepwizard-step">
+                            <a href="/shop/cart/" type="button" class="btn btn-outline-success btn-circle"><i
+                                    class="fa fa-shopping-cart"></i></a>
+                            <p><small>{% trans 'Shoppingcart' %}</small></p>
+                        </div>
+                        <div class="stepwizard-step">
+                            <form action="{% url 'checkout_order' order_details.order_hash %}" method="get">
+                                <a onclick="$(this).parent().submit()" type="button"
+                                   class="btn btn-outline-success btn-circle"><i
+                                        class="fas fa-truck"></i></a>
+                                <p><small>{% trans "Delivery" %}</small></p>
+                            </form>
+                        </div>
+                        <div class="stepwizard-step">
+                            <a href="/shop/overview/{{ order_details.order_hash }}" type="button"
+                               class="btn btn-success btn-circle"><i
+                                    class="fa fa-check-square"></i></a>
+                            <p><small>{% trans "Overview" %}</small></p>
+                        </div>
+                        <div class="stepwizard-step">
+                            <a onclick="$('#payment-form').submit();" type="button"
+                               class="btn btn-outline-success btn-circle"><i
+                                    class="fas fa-credit-card"></i></a>
+                            <p><small>{% trans "Payment" %}</small></p>
+                        </div>
+                        <div class="stepwizard-step">
+                            <a type="button" class="btn btn-outline-success btn-circle"><i
+                                    class="far fa-check-square "></i></a>
+                            <p><small>{% trans "Overview" %}</small></p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-4 left-step-curr">
-
-                    <div style="margin: auto;align-content: center;text-align:
-                center;border: 1px solid #efefef;background-color:#54c5b4;
-                padding: 10px">
-                        <h4>{% trans "Check" %}</h4>
-                        <i class="far fa-edit fa-3x"></i>
-                    </div>
-                </div>
-                <div class="col-4 left-step">
-                    <div style="margin: auto;align-content: center;text-align:
-                center;border: 1px solid #efefef;background-color:#fafafa;
-                padding: 10px">
-                        <h4>{% trans "Payment" %}</h4>
-                        <i class="fa fa-credit-card fa-3x"></i>
-                    </div>
-
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12 ">
-                    <table id="cart" class="table table-hover table-condensed">
+                <div class="col-md-12">
+                    <table id="cart" class="table table-hover table-striped table-responsive-md">
                         <thead>
                         <tr>
                             <th style="width:50%">{% trans 'Product' %}</th>
@@ -66,7 +73,7 @@
                                         <input type="hidden" name="[{{ order.id }}][prod]{{ order.product.id }}">
 
                                         <div class="row">
-                                            <div class="col-sm-2 hidden-xs">
+                                            <div class="col-2 hidden-xs">
                                                 {% if order.product.product.product_picture %}
                                                     <img
                                                             src="{{ order.product.product.product_picture.url }}"
@@ -168,7 +175,7 @@
                                                             <a href="{{ sub_item.fileorderitem.file.url }}">
                                                                 {{ sub_item.fileorderitem.file_name }}
                                                             </a>
-                                                            <div class="col-sm-2 hidden-xs"><img
+                                                            <div class="col-2 hidden-xs"><img
                                                                     src="{{ sub_item.fileorderitem.file.url }}"
                                                                     alt="..."
                                                                     class="img-responsive"/></div>
@@ -198,30 +205,48 @@
                                     </td>
                                 </tr>
                             {% endfor %}
+                            {% if not order_items %}
+                                <tr>
+                                    <td data-th="Product">
+                                        {% trans 'Empty Cart' %}
+                                    </td>
+                                </tr>
+                            {% endif %}
                             {% csrf_token %}
 
                         </form>
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td>
-                                <form action="{% url 'checkout_order' order_details.order_hash %}" method="get">
-                                    <a onclick="$(this).parent().submit()" class="btn btn-warning"><i
-                                            class="fa fa-angle-left"></i> {% trans 'Back to checkout' %}</a>
-                                </form>
-
-
-                            </td>
+                            <td></td>
                             <td colspan="1" class="hidden-xs"></td>
                             <td class="hidden-xs text-center"><strong>
                                 {% trans 'Total: ' %}<span id="total">{{ total_cart }}</span> &euro;</strong></td>
-                            <td><a onclick="$('#payment-form').submit();"
-                                   class="btn btn-success btn-block">{% trans 'Payment' %} <i
-                                    class="fa fa-angle-right"></i></a></td>
+                            <td></td>
                         </tr>
                         </tfoot>
                     </table>
+                    <div class="row">
+                        <div class="col">
+                            <form action="{% url 'checkout_order' order_details.order_hash %}" method="get">
+                                <a onclick="$(this).parent().submit()" class="btn btn-warning"><i
+                                        class="fa fa-angle-left"></i> {% trans 'Back to checkout' %}</a>
+                            </form>
+                        </div>
+                        <div class="col">
+                            <a onclick="$('#payment-form').submit();"
+                               class="btn btn-success float-right">{% trans 'Payment' %} <i
+                                    class="fa fa-angle-right"></i></a></a>
+                        </div>
 
+
+                        <form id="next-step-form" action="confirm/" method="post">
+                            {% csrf_token %}
+
+                            <input id="next-step-token" type="hidden" name="token"
+                                   value="{{ order_details.order_hash }}">
+                        </form>
+                    </div>
                     <form id="payment-form" action="/payment/{{ order_details.order_hash }}/" method="post">
                         {% csrf_token %}
                     </form>

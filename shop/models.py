@@ -7,6 +7,13 @@ from mediaserver.upload import (company_files_upload_handler, fs, order_files_up
                                 public_files_upload_handler, rand_key)
 
 
+class Address(models.Model):
+    name = models.CharField(max_length=100)
+    street = models.CharField(max_length=40, default=None)
+    number = models.CharField(max_length=5, default=None)
+    zipcode = models.CharField(max_length=5, default=None)
+
+
 class Company(models.Model):
     name = models.CharField(max_length=100)
     company_id = models.CharField(max_length=100, blank=True, null=True)
@@ -17,6 +24,8 @@ class Company(models.Model):
     city = models.CharField(max_length=30, default=None)
     logo = models.FileField(default=None, null=True, blank=True,
                             upload_to=company_files_upload_handler, storage=fs)
+
+    # address = models.ForeignKey(Address, on_delete=models.CASCADE, default=None, null=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
