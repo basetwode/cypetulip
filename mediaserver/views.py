@@ -56,7 +56,7 @@ class ServeCompanyFiles(View):
 
 class ServePublicFiles(View):
     file = None
-    path = 'public'
+    path = '/public/'
 
     def get(self, request, file):
         path = os.path.join(settings.MEDIA_ROOT + self.path, file)
