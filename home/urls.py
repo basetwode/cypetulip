@@ -29,6 +29,11 @@ from shop import urls as shop_urls
 
 admin.autodiscover()
 
+from filebrowser.sites import site
+site.directory = "public/"
+
+from django.core.files.storage import default_storage
+site.storage = default_storage
 
 urlpatterns = [
     url(r'^admin/filebrowser/', site.urls),

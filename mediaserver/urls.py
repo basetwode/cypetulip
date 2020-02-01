@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from mediaserver.views import (ServeCompanyFiles, ServeOrderFiles,
-                               ServePublicFiles)
+                               ServePublicFiles, ServeVersionFiles)
 
 __author__ = ''
 
@@ -12,4 +12,6 @@ urlpatterns = [
         name="company_files"),
     url(r"^public/(?P<file>[a-zA-Z0-9_.-]+)$", ServePublicFiles.as_view(),
         name="public_files"),
+    url(r"^_versions/(?P<file>[a-zA-Z0-9_.-]+)$", ServeVersionFiles.as_view(),
+        name="public_thumbnails"),
 ]

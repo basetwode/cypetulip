@@ -136,7 +136,8 @@ MEDIA_ROOT = '/var/cypetulip'
 MEDIA_URL = '/media/'
 
 FILEBROWSER_DIRECTORY = ''
-FILEBROWSER_MEDIA_ROOT = '/var/cypetulip'
+DIRECTORY = ''
+FILEBROWSER_MEDIA_ROOT = '/var/cypetulip/public'
 
 SHOP_NAME = u'Cypetulip'
 

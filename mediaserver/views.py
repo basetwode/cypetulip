@@ -56,9 +56,10 @@ class ServeCompanyFiles(View):
 
 class ServePublicFiles(View):
     file = None
+    path = 'public'
 
     def get(self, request, file):
-        path = os.path.join(settings.MEDIA_ROOT + '/public/', file)
+        path = os.path.join(settings.MEDIA_ROOT + self.path, file)
         if os.path.isfile(path):
             file_extension = os.path.splitext(path)[1].lower()
             image_data = open(path, "rb").read()
@@ -70,3 +71,7 @@ class ServePublicFiles(View):
 
     def post(self, request):
         return HttpResponseNotAllowed('GET')
+
+
+class ServeVersionFiles(ServePublicFiles):
+    path = '/_versions/'
