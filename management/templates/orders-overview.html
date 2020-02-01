@@ -48,6 +48,15 @@
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-9">
+                    {% if not orders %}
+                        <div class="card">
+                            <div style="overflow: auto" class="card-header orders-overview">
+                                <div style="overflow: auto" class="row">
+                                    {% trans 'Nothing found' %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                     {% for order in orders %}
                         <div class="card">
                             <div style="overflow: auto" class="card-header orders-overview">
@@ -167,7 +176,7 @@
                         </div>
 
                     {% endfor %}
-                    <div class="row">
+                    <div class="row mt-2">
                         <div class="col-3">
                             <form method="get" class="">
                                 <input hidden value="{% if search %}{{ search }}{% endif %}" type="text"
@@ -206,15 +215,6 @@
                                             <a class="page-link"
                                                href="{% url 'management_all_orders' %}{{ number_of_orders }}/
 
-
-
-
-
-
-
-
-
-
                                                        {{ orders.previous_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Previous' %}</a>
                                         {% else %}
                                             <a class="disabled page-link" href="">Previous</a>
@@ -229,12 +229,6 @@
                                         {% if orders.has_next %}
                                             <a class="page-link"
                                                href="{% url 'management_all_orders' %}{{ number_of_orders }}/
-
-
-
-
-
-
 
                                                        {{ orders.next_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Next' %}</a>
                                         {% else %}

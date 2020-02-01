@@ -11,7 +11,7 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               ProductCreationView, ProductEditView,
                               ProductsOverviewView, SectionCreateView,
                               SectionEditView, SectionsOverviewView,
-                              SettingsView)
+                              SettingsView, ProductDeleteView)
 from shop.my_account.views import SearchOrders
 
 __author__ = ''
@@ -38,6 +38,7 @@ urlpatterns = [
 
     url(r'^products/create/$', ProductCreationView.as_view(), name="create_product"),
     url(r'^products/(?P<product_id>[a-zA-Z0-9_.-]+)/$', ProductEditView.as_view(), name="product_edit"),
+    url(r'^products/(?P<product_id>[a-zA-Z0-9_.-]+)/delete/$', ProductDeleteView.as_view(), name="product_delete"),
     url(r'^products/$', ProductsOverviewView.as_view(), name="products_overview"),
 
     url(r'^customers/create/$', CustomerCreationView.as_view(), name="create_customer"),

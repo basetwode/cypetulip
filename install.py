@@ -67,10 +67,37 @@ def install():
     print('####Creating a superuser account####')
     execute_from_command_line(['', 'createsuperuser'])
     from django.contrib.auth.models import User
-    from shop.models import Contact
+    from shop.models import Contact, Company, Address
+    execute_from_command_line(['', 'migrate'])
+    print('####Creating your company and first (admin) account####')
+    company_name = input("Your company name: ")
+    term_of_payment = input("Please add your term of payment (e.g. 10 days for paying) ")
+    street = input("Street: ")
+    number = input("Streetnumber: ")
+    zipcode = input("Zipcode: ")
+    city = input("City: ")
+    address = Address.objects.create(name=street + ' ' + number + ', ' + zipcode + ' ' + city, street=street,
+                                     number=number, city=city, zipcode=zipcode)
+    company = Company.objects.create(company_name=company_name, term_of_payment=term_of_payment, street=street,
+                                     number=number, zipcode=zipcode, city=city, address=address)
     users = User.objects.all()
     for user in users:
-        contact = Contact()
+        first_name = input("Your first name: ")
+        last_name = input("Your last name: ")
+        title = input("Your title: ")
+        gender = input("Your gender(m/w/d): ")
+        telephone = input("Your phone number: ")
+        email = input("Your mail address: ")
+        while True:
+            language = input("Your language(de/en - default): ")
+            if (language == 'de') or (language == 'en'):
+                continue
+            else:
+                break
+
+        Contact.objects.create_user(user=user, company=company, first_name=first_name, last_name=last_name,
+                                    title=title, gender=gender, telephone=telephone, email=email,
+                                    language=language)
     # Then populate database for every app
     #
     # from django.core.management import execute_from_command_line
@@ -124,3 +151,5 @@ if __name__ == "__main__":
         create_app_perms_for_user(sys.argv[2])
     elif sys.argv[1] == '--install':
         install()
+    elif (sys.argv[1] == '--help') or (sys.argv[1] == ''):
+        print("You have the following choices: --populateperms, --grantaccess, --install, --help")

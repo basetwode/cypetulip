@@ -87,7 +87,7 @@
                                                 alt="..."
                                                 class="img-responsive"/>
                                     {% else %}
-                                        <i class="fa fa-image img-thumbnail"></i>
+                                        <i class="fa fa-4x fa-image img-thumbnail"></i>
                                     {% endif %}
                                     </a>
                                 </div>
@@ -101,9 +101,9 @@
                                                 {{ product.description }}
                                             </p>
                                             <p class="price">
-                                                {% if product.price %}
-                                                    <span style="text-decoration: line-through">{{ product.price |floatformat:2 }} &euro;</span>
-                                                    <strong style="color: red">{{ product.price | floatformat:2 }}
+                                                {% if product.special_price %}
+                                                    <span style="text-decoration: line-through">{{ product.price | floatformat:2 }} &euro;</span>
+                                                    <strong style="color: red">{{ product.special_price | floatformat:2 }}
                                                         &euro;</strong>
                                                 {% else %}
                                                     <span>{{ product.price | floatformat:2 }} &euro;</span>

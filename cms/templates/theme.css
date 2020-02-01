@@ -479,27 +479,22 @@ footer .box {
 /*	.actions .btn{*/
 /*		width:36%;*/
 /*		margin:1.5em 0;*/
-/*	}*/
-
-/*	.actions .btn-info{*/
-/*		float:left;*/
-/*	}*/
-/*	.actions .btn-danger{*/
-/*		float:right;*/
-/*	}*/
-
-	table#cart thead { display: none; }
-	/*table#cart tbody td { display: block; padding: .6rem;}*/
-/*	table#cart tbody tr td:first-child { background: #333; color: #fff; }*/
-/*	table#cart tbody td:before {*/
-/*		content: attr(data-th); font-weight: bold;*/
-/*		display: inline-block; width: 8rem;*/
-/*	}*/
-
-
-
-	table#cart tfoot td{display:block; }
-	table#cart tfoot td .btn{display:block;}
+    /*	}*/
+    /*	.actions .btn-info{*/
+    /*		float:left;*/
+    /*	}*/
+    /*	.actions .btn-danger{*/
+    /*		float:right;*/
+    /*	}*/
+    /*table#cart thead { display: none; }*/
+    /*table#cart tbody td { display: block; padding: .6rem;}*/
+    /*	table#cart tbody tr td:first-child { background: #333; color: #fff; }*/
+    /*	table#cart tbody td:before {*/
+    /*		content: attr(data-th); font-weight: bold;*/
+    /*		display: inline-block; width: 8rem;*/
+    /*	}*/
+    /*table#cart tfoot td{display:block; }*/
+    /*table#cart tfoot td .btn{display:block;}*/
 
 }
 
@@ -531,14 +526,16 @@ footer .box {
 }
 
 .flag {
-	width: 16px;
-	height: 11px;
-	background:url({% static 'images/flags.png' %}) no-repeat
+    width: 16px;
+    height: 11px;
+    background: url({% static 'images/flags.png' %}) no-repeat
 }
-.order-step {
+
+.order-step, .checkout-step, .overview-step, .payment-step, .payment-overview-step {
     padding: 0px 0px 40px;
 }
-.left-step-normal,.left-step-curr,.left-step-last, .left-step {
+
+.left-step-normal, .left-step-curr, .left-step-last, .left-step {
     padding: 0px;
 }
 .left-step-normal:after {
@@ -743,4 +740,59 @@ footer .box {
     .hidden-sm {
         display: none !important;
     }
+}
+
+
+.stepwizard-step p {
+    margin-top: 0px;
+    color: #666;
+}
+
+.stepwizard-row {
+    display: table-row;
+}
+
+.stepwizard {
+    display: table;
+    width: 100%;
+    position: relative;
+}
+
+.stepwizard-step button[disabled] {
+    /*opacity: 1 !important;
+    filter: alpha(opacity=100) !important;*/
+}
+
+.stepwizard .btn.disabled, .stepwizard .btn[disabled], .stepwizard fieldset[disabled] .btn {
+    opacity: 1 !important;
+    color: #bbb;
+}
+
+.stepwizard-row:before {
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    z-index: 0;
+}
+
+.stepwizard-step {
+    display: table-cell;
+    text-align: center;
+    position: relative;
+}
+
+.btn-circle {
+    margin-top: -2px;
+    color: black !important;
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    padding: 9px 0;
+    font-size: 13px;
+    line-height: 1.428571429;
+    border-radius: 20px;
 }

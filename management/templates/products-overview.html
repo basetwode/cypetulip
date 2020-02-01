@@ -16,7 +16,6 @@
 {% block body %}
     <div class="main">
         <div class="content">
-            {% include 'delete-modal.html' %}
             <div class="col-md-12">
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
@@ -30,7 +29,7 @@
                     </div>
                 </div>
                 <br>
-                <table class="table table-striped">
+                <table class="table table-hover table-striped table-responsive-sm">
                     <thead class="thead-dark">
                     <tr>
                         <th scope="col">#</th>
@@ -39,11 +38,11 @@
                         <th scope="col">{% trans 'Name' %}</th>
                         <th scope="col">{% trans 'Price' %}</th>
                         <th scope="col">{% trans 'Configuration' %}</th>
-                        <th scope="col">{% trans 'Active' %}</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for product in products %}
+                        {% include 'delete-modal.html' with id=product.id %}
                         <tr>
                             <td>{{ product.id }}</td>
                             <td>{{ product.category }}</td>
@@ -54,7 +53,7 @@
                                              src="{{ product.product_picture.url }}"
                                              class="img-thumbnail">
                                     {% else %}
-                                        <i class="fa fa-image img-thumbnail"></i>
+                                        <i class="fa fa-4x fa-image img-thumbnail"></i>
                                     {% endif %}
 
                                 </div>
@@ -64,21 +63,20 @@
 
                             <td class="">
                                 <div>
-                                    <a class="btn btn-outline-dark" href="{% url 'product_edit' product.id %}">{% trans 'Edit' %}</a>
+                                    <a class="btn btn-outline-dark"
+                                       href="{% url 'product_edit' product.id %}">{% trans 'Edit' %}</a>
                                     <button class="btn btn-outline-dark" data-toggle="modal"
-                                            data-target="#exampleModal">{% trans 'Delete' %}</button>
+                                            data-target="#delete-modal">{% trans 'Delete' %}</button>
                                 </div>
 
                             </td>
-                            <td><input type="checkbox" class="form-check-input">
-                                {{ product.is_required }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
 
                 </table>
 
-                <a class="btn btn-secondary" href="{% url 'management_index'  %}">{% trans 'Back' %}</a>
+                <a class="btn btn-secondary" href="{% url 'management_index' %}">{% trans 'Back' %}</a>
             </div>
         </div>
     </div>
