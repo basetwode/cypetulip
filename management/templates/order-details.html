@@ -279,7 +279,7 @@
                                 <h5 class="h-bold">{% trans 'Options' %}</h5>
                                 <a href="{% url 'detail_order_cancel_order' order.order_hash %}"
                                    class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</a>
-                                <a href="{% url 'detail_order_show_bill' order.order_hash %}"
+                                <a href="{% url 'invoice_pdf' order.order_hash %}"
                                    class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
                                 <a href="{% url 'detail_order_write_review' order.order_hash %}"
                                    class="btn btn-fw btn-secondary">{% trans 'Write review' %}</a>

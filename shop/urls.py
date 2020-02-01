@@ -43,7 +43,7 @@ urlpatterns = [
 
     url(r'^myaccount/orders(/(?P<number_of_orders>[0-9]*)/(?P<page>[0-9]*))?/$', OrdersView.as_view(),
         name="all_orders"),
-    url(r'^myaccount/orders/search/', SearchOrders.as_view(), name="search_orders"),
+    url(r'orders/search/', SearchOrders.as_view(), name="search_orders"),
 
     url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/$', OrderDetailView.as_view(), name="detail_order"),
     url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/cancel/$', OrderDetailView.as_view(),

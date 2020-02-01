@@ -6,6 +6,9 @@
 {% block head %}
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <script src="{% static 'onchange.js' %}"></script>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+
     <title>Admin - All orders </title>
 {% endblock %}
 
@@ -22,12 +25,9 @@
                         <div class="card-body">
                             <form method="get">
                                 <div class="input-group">
-                                    <input name="search" type="text" class="form-control"
-                                           placeholder="Search for..."
-                                           value="{% if search %}{{ search }}{% endif %}">
-                                    <span class="input-group-btn">
-                                                    <button class="btn btn-warning" type="button">Go!</button>
-                                                  </span>
+
+                                    <input id="order-search" type="text" class="form-control"
+                                           placeholder="Search for...">
                                 </div>
                             </form>
 
