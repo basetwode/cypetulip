@@ -9,14 +9,14 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{% url 'product_delete' product_id=id %}" method="post">
+            <form action="{% url url url_param=id %}" method="post">
                 {% csrf_token %}
                 <div class="modal-body">
                     {% trans 'Are you sure you want to delete?' %}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="button" class="btn btn-primary" type="submit">{% trans 'Delete' %}</button>
+                    <button type="submit" class="btn btn-primary">{% trans 'Delete' %}</button>
                 </div>
             </form>
 

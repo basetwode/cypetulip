@@ -7,10 +7,11 @@ class ContactForm(ModelForm):
     class Meta:
         model = Contact
         fields = '__all__'
-        exclude = ['company', 'user',]
+        exclude = ['company', 'user']
+
 
 class CompanyForm(ModelForm):
     class Meta:
         model = Company
         fields = '__all__'
-        exclude = ['company_id', 'term_of_payment',]
+        exclude = ['company_id', 'term_of_payment', ]

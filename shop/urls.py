@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
 
 from shop.authentification.views import (CompanyView, LoginView, LogoutView,
@@ -12,6 +13,7 @@ from shop.order.shoppingcart import ShoppingCartDetailView, ShoppingCartView
 from shop.views import *
 
 __author__ = ''
+app_name = 'shop'
 
 urlpatterns = [
     url(r'^i18n/', include('django.conf.urls.i18n')),
@@ -19,7 +21,7 @@ urlpatterns = [
     url(r'^$', RedirectView.as_view(url='/cms/home/'), name='home'),
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^register/$', RegisterView.signup, name='register'),
-    url(r'^create-company/', CompanyView.create, name='create-company'),
+    url(r'^companies/create', CompanyView.create, name='create-company'),
     url(r'^logout/', LogoutView.as_view()),
 
     url(r'^cart/add/(?P<product>[\S0-9_.-\\s\- ]*)$', ShoppingCartView.as_view()),
@@ -50,4 +52,14 @@ urlpatterns = [
         name="detail_order_show_bill"),
     url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/review/create$', OrderDetailView.as_view(),
         name="detail_order_write_review"),
+
+    url(r'^password_change/$', auth_views.PasswordChangeView.as_view(), name='password_change'),
+    url(r'^password_change/done/$', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
+
+    url(r'^password_reset/$', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    url(r'^password_reset/done/$', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    url(r'^reset/(?P<uidb64>[\S0-9_.-\\s\- ]*)/(?P<token>[\S0-9_.-\\s\- ]*)/$',
+        auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    url(r'^reset/done/$', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+
 ]

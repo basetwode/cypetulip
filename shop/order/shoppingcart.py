@@ -40,7 +40,7 @@ class ShoppingCartView(View):
                 return render(request, self.template_name)
             else:
                 error_list = JsonResponse(errors=[Error(417, 'No Account found')], success=False,
-                                          next_url='/shop/create-company')
+                                          next_url='/shop/companies/create')
                 return json_response(code=417, x=error_list.dump(), )
         else:
             error_list = JsonResponse(errors=[Error(417, 'No Account found')], success=False,

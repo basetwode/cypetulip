@@ -39,11 +39,12 @@
                             <td>{{ section.picture }}</td>
                             <td class="">
                                 <div>
-                                    <a class="btn btn-outline-dark" href="{% url 'section_edit' section.id %}">{% trans 'Edit' %}</a>
+                                    <a class="btn btn-outline-dark"
+                                       href="{% url 'section_edit' section.id %}">{% trans 'Edit' %}</a>
                                     <button class="btn btn-outline-dark" data-toggle="modal"
-                                            data-target="#exampleModal">{% trans 'Delete' %}</button>
+                                            data-target="#delete-modal">{% trans 'Delete' %}</button>
 
-                                    {% include 'delete-modal.html' %}
+                                    {% include 'delete-modal.html' with id=section.id url='section_delete' url_param='section_id' %}
                                 </div>
                             </td>
                         </tr>
@@ -52,7 +53,7 @@
 
                 </table>
 
-                <a class="btn btn-secondary" href="{% url 'management_index'  %}">{% trans 'Back' %}</a>
+                <a class="btn btn-secondary" href="{% url 'management_index' %}">{% trans 'Back' %}</a>
             </div>
         </div>
     </div>

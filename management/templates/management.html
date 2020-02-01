@@ -6,9 +6,12 @@
 {% bootstrap_messages %}
 {% block head %}
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.structure.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.theme.min.css' %}" rel="stylesheet">
     <title>{% trans "management" %}</title>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
     <script src="{% static 'autocomplete.js' %}"></script>
-    <script src="{% static 'js/jquery.ui.min.js' %}"></script>
     <link href="{% static 'management.css' %}" rel="stylesheet">
 {% endblock %}
 
@@ -45,7 +48,7 @@
                                        placeholder="Search for...">
                                 <span class="input-group-btn">
                                     <button class="btn btn-primary" type="button">Go!</button>
-                                  </span>
+                                </span>
                             </div>
                         </form>
                     </div>
@@ -66,7 +69,7 @@
                     <div class="card-body">
                         <a href="{% url 'customers_overview' %}"
                            class="btn btn-primary">{% trans 'Customers' %}</a>
-                        <a href="{% url 'create_customer' %}"
+                        <a href="{% url 'register' %}"
                            class="btn btn-primary">{% trans 'Add customer' %}</a>
                         <hr>
                         <p>{% trans 'Search customers' %}</p>
@@ -76,8 +79,8 @@
                                 <input id="order-search" type="text" class="form-control"
                                        placeholder="Search for...">
                                 <span class="input-group-btn">
-                                                    <button class="btn btn-primary" type="button">Go!</button>
-                                                  </span>
+                                    <button class="btn btn-primary" type="button">Go!</button>
+                                </span>
                             </div>
                         </form>
                     </div>
@@ -207,4 +210,5 @@
 
         </div>
     </div>
+
 {% endblock %}

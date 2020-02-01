@@ -7,7 +7,6 @@
 
 
 ;;directories to ignore
-migrations/
 .idea/
 venv/
 .vscode/

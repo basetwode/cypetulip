@@ -9,7 +9,7 @@
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <title>Products</title>
     <script src="{% static 'autocomplete.js' %}"></script>
-    <script src="{% static 'js/jquery.ui.min.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
     <link href="{% static 'management.css' %}" rel="stylesheet">
 {% endblock %}
 
@@ -42,7 +42,6 @@
                     </thead>
                     <tbody>
                     {% for product in products %}
-                        {% include 'delete-modal.html' with id=product.id %}
                         <tr>
                             <td>{{ product.id }}</td>
                             <td>{{ product.category }}</td>
@@ -67,6 +66,8 @@
                                        href="{% url 'product_edit' product.id %}">{% trans 'Edit' %}</a>
                                     <button class="btn btn-outline-dark" data-toggle="modal"
                                             data-target="#delete-modal">{% trans 'Delete' %}</button>
+                                    {% include 'delete-modal.html' with id=product.id url='product_delete' url_param='product_id' %}
+
                                 </div>
 
                             </td>

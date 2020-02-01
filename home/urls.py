@@ -15,9 +15,6 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic import RedirectView
-# from Accounting import urls as accounting_urls
-# from home import settings
-from filebrowser.sites import site
 
 from billing import urls as billing_urls
 from cms import urls as cms_urls
@@ -27,12 +24,17 @@ from payment import urls as payment_urls
 from permissions import urls as perm_urls
 from shop import urls as shop_urls
 
+# from Accounting import urls as accounting_urls
+# from home import settings
+
 admin.autodiscover()
 
 from filebrowser.sites import site
+
 site.directory = "public/"
 
 from django.core.files.storage import default_storage
+
 site.storage = default_storage
 
 urlpatterns = [

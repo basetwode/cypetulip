@@ -12,7 +12,7 @@
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <title>Products</title>
     <script src="{% static 'autocomplete.js' %}"></script>
-    <script src="{% static 'js/jquery.ui.min.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
     <link href="{% static 'management.css' %}" rel="stylesheet">
 {% endblock %}
 
@@ -41,13 +41,14 @@
                             <td>{{ page.is_enabled }}</td>
                             <td>{{ page.link }}</td>
                             <td class="">
-                            <div>
-                                <a class="btn btn-outline-dark" href="{% url 'page_edit' page.id %}">{% trans 'Edit' %}</a>
-                                <button class="btn btn-outline-dark" data-toggle="modal"
-                                        data-target="#exampleModal">{% trans 'Delete' %}</button>
+                                <div>
+                                    <a class="btn btn-outline-dark"
+                                       href="{% url 'page_edit' page.id %}">{% trans 'Edit' %}</a>
+                                    <button class="btn btn-outline-dark" data-toggle="modal"
+                                            data-target="#delete-modal">{% trans 'Delete' %}</button>
+                                    {% include 'delete-modal.html' with id=page.id url='page_delete' url_param='page_id' %}
 
-                                {% include 'delete-modal.html' %}
-                            </div>
+                                </div>
 
                             </td>
                         </tr>

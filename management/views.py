@@ -7,7 +7,6 @@ from django.views.generic import DetailView, ListView, View, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 
 from cms.models import Page, Section
-from home.settings import MEDIA_ROOT
 from management.models import LdapSettings, MailSettings
 from permissions.permissions import check_serve_perms
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company
@@ -147,30 +146,37 @@ class ProductsOverviewView(ListView):
 
 
 class CustomersOverviewView(ListView):
-    template_name = 'customers/customers-overview.html'
+    template_name = 'customers-overview.html'
     context_object_name = 'customers'
     model = Contact
 
 
-class CustomerCreationView(CreateView):
-    template_name = 'customers/contact-create.html'
+class ContactEditView(UpdateView):
+    template_name = 'generic-edit.html'
     context_object_name = 'contact'
     model = Contact
-    street = ''
-    city = ''
     fields = '__all__'
 
-    def post(self, request, *args, **kwargs):
-        return reverse_lazy('costumer_edit', kwargs={'costumer_id': self.object.id})
+    customer_id = None
+    slug_field = 'id'
+    slug_url_kwarg = 'contact_id'
 
     def get_success_url(self):
-        return reverse_lazy('costumer_edit', kwargs={'costumer_id': self.object.id})
+        return reverse_lazy('customers_overview')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['company'] = Company.objects.all()
-        # And so on for more models
-        return context
+
+class CompanyEditView(UpdateView):
+    template_name = 'generic-edit.html'
+    context_object_name = 'company'
+    model = Company
+    fields = '__all__'
+
+    customer_id = None
+    slug_field = 'id'
+    slug_url_kwarg = 'company_id'
+
+    def get_success_url(self):
+        return reverse_lazy('customers_overview')
 
 
 class ProductCreationView(CreateView):
@@ -180,7 +186,7 @@ class ProductCreationView(CreateView):
     fields = '__all__'
 
     def get_success_url(self):
-        return reverse_lazy('product_edit', kwargs={'product_id': self.object.id})
+        return reverse_lazy('products_overview')
 
 
 class ProductEditView(UpdateView):
@@ -194,12 +200,17 @@ class ProductEditView(UpdateView):
     slug_url_kwarg = 'product_id'
 
     def get_success_url(self):
-        return reverse_lazy('product_edit', kwargs={'product_id': self.object.id})
+        return reverse_lazy('products_overview')
 
 
 class ProductDeleteView(DeleteView):
     model = Product
-    success_url = reverse_lazy('products_overview')
+    slug_field = 'id'
+    slug_url_kwarg = "url_param"
+    template = ''
+
+    def get_success_url(self):
+        return reverse_lazy('products_overview')
 
 
 class CategoryCreationView(CreateView):
@@ -209,7 +220,7 @@ class CategoryCreationView(CreateView):
     fields = '__all__'
 
     def get_success_url(self):
-        return reverse_lazy('categories_overview', kwargs={'category_id': self.object.id})
+        return reverse_lazy('categories_overview')
 
 
 class CategoryEditView(UpdateView):
@@ -223,7 +234,17 @@ class CategoryEditView(UpdateView):
     slug_url_kwarg = 'category_id'
 
     def get_success_url(self):
-        return reverse_lazy('category_edit', kwargs={'category_id': self.object.id})
+        return reverse_lazy('categories_overview')
+
+
+class CategoryDeleteView(DeleteView):
+    model = ProductCategory
+    slug_field = 'id'
+    slug_url_kwarg = "url_param"
+    template = ''
+
+    def get_success_url(self):
+        return reverse_lazy('categories_overview')
 
 
 class PagesOverviewView(ListView):
@@ -243,6 +264,9 @@ class PageCreateView(CreateView):
         context['sections'] = Section.objects.all()
         return context
 
+    def get_success_url(self):
+        return reverse_lazy('pages')
+
 
 class PageEditView(UpdateView):
     template_name = 'generic-edit.html'
@@ -255,7 +279,17 @@ class PageEditView(UpdateView):
     slug_url_kwarg = 'page_id'
 
     def get_success_url(self):
-        return reverse_lazy('page_edit', kwargs={'page_id': self.object.id})
+        return reverse_lazy('pages')
+
+
+class PageDeleteView(DeleteView):
+    model = Page
+    slug_field = 'id'
+    slug_url_kwarg = "url_param"
+    template = ''
+
+    def get_success_url(self):
+        return reverse_lazy('pages')
 
 
 class SectionsOverviewView(ListView):
@@ -265,8 +299,6 @@ class SectionsOverviewView(ListView):
 
 
 class SectionCreateView(CreateView):
-    from filebrowser.sites import site
-    site.directory = '/var/cypetulip/uploads/'
     template_name = 'pages/sections-create.html'
     context_object_name = 'sections'
     model = Section
@@ -277,11 +309,11 @@ class SectionCreateView(CreateView):
         context['sections'] = Section.objects.all()
         return context
 
+    def get_success_url(self):
+        return reverse_lazy('sections')
+
 
 class SectionEditView(UpdateView):
-    from filebrowser.sites import site
-    site.storage = MEDIA_ROOT
-    site.directory = '/uploads/'
     template_name = 'pages/sections-create.html'
     context_object_name = 'sections'
     model = Section
@@ -292,4 +324,14 @@ class SectionEditView(UpdateView):
     slug_url_kwarg = 'section_id'
 
     def get_success_url(self):
-        return reverse_lazy('section_edit', kwargs={'section_id': self.object.id})
+        return reverse_lazy('sections')
+
+
+class SectionDeleteView(DeleteView):
+    model = Section
+    slug_field = 'id'
+    slug_url_kwarg = "url_param"
+    template = ''
+
+    def get_success_url(self):
+        return reverse_lazy('sections')

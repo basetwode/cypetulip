@@ -89,8 +89,9 @@ class RegisterView(SignUpForm):
                 email = form.cleaned_data.get('email')
                 raw_password = form.cleaned_data.get('password1')
                 user = authenticate(username=email, password=raw_password)
-                login(request, user)
-                return redirect('/shop/create-company')
+                if not request.user.is_authenticated:
+                    login(request, user)
+                return redirect('/shop/companies/create')
         else:
             form = SignUpForm()
         return render(request, 'authentification/register.html', {'form': form, 'buttonText': 'Sign Up'})

@@ -6,55 +6,31 @@
 {% block head %}
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <script src="{% static 'onchange.js' %}"></script>
-    <title>Products</title>
+    <title>Admin - All orders </title>
 {% endblock %}
 
 {% block body %}
     <div class="main">
         <div class="content">
-
             <div class="row">
 
-
-                <div class="col-md-3 hidden-xs">
-                    <h4 class="h-bold">{% trans "Your account" %}</h4>
-                    <div class="panel">
-                        <div style="overflow: auto" class="panel-heading">
-                            <div class="col-md-12"><span>{{ contact.first_name }} {{ contact.last_name }}</span></div>
-                            <div class="col-md-12"><span
-                                    style="font-size: small; font-weight: bold">{{ contact.company.name }}</span></div>
+                <div class="col-3 hidden-sm">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="h-bold">{% trans "Menu" %}</h4>
                         </div>
-                        <div class="panel-body">
-                            <p>{% trans 'Manage your account' %}</p>
-                            <a href="{% url 'my_account' %}"
-                               class="btn btn-fw btn-warning">{% trans 'Go to your account' %}</a>
-                            <a href="{% url 'account_settings' %}"
-                               class="btn btn-fw btn-warning">{% trans 'Account settings' %}</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-9 ">
-                    <div class="md-12">
-                        <div class="col-md-2">
-                            <h4 class="h-bold">{% trans "Your orders" %}</h4>
-                        </div>
-
-                        <div class="col-md-5 align-right">
+                        <div class="card-body">
                             <form method="get">
                                 <div class="input-group">
-                                                  <span class="input-group-btn">
+                                    <input name="search" type="text" class="form-control"
+                                           placeholder="Search for..."
+                                           value="{% if search %}{{ search }}{% endif %}">
+                                    <span class="input-group-btn">
                                                     <button class="btn btn-warning" type="button">Go!</button>
                                                   </span>
-                                    <input name="search" type="text" class="form-control" placeholder="Search for..."
-                                           value="{% if search %}{{ search }}{% endif %}">
                                 </div>
                             </form>
-                        </div>
-                        <div class="col-xs-12 hidden-lg hidden-md">
-                            <p></p>
-                        </div>
-                        <div class="col-md-5 align-right">
+
                             <select class="form-control">
                                 <option>
                                     All orders
@@ -63,147 +39,210 @@
                                     Open orders
                                 </option>
                             </select>
+                            <hr>
+                            <a href="{% url 'my_account' %}"
+                               class="btn btn-fw btn-warning">{% trans 'Go back' %}</a>
                         </div>
+
                     </div>
-
                 </div>
-                <div class="col-xs-12 hidden-lg hidden-md">
-                    <p></p>
-                </div>
-                <div class="col-md-9">
-
-                    <div class="panel-group">
-                        {% for order in orders %}
-                            <div class="panel">
-                                <div style="overflow: auto" class="panel-heading orders-overview">
-                                    <div style="overflow: auto" class="col-md-12">
-                                        <div class="col-md-3 col-xs-3" style="text-align: left; ">
-                                            {% trans 'Orderdate' %}
-                                        </div>
-                                        <div class="col-md-2 col-xs-2">
-                                            {% trans 'State' %}
-                                        </div>
-                                        <div class="col-md-3 col-xs-3">
-                                            {% trans 'Total' %}
-                                        </div>
-                                        <div class="col-md-4 col-xs-4">
-                                            Ordernr.: {{ order.order_hash }}
-                                        </div>
+                <div class="col-sm-12 col-md-9">
+                    {% if not orders %}
+                        <div class="card">
+                            <div style="overflow: auto" class="card-header orders-overview">
+                                <div style="overflow: auto" class="row">
+                                    {% trans 'Nothing found' %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% for order in orders %}
+                        <div class="card">
+                            <div style="overflow: auto" class="card-header orders-overview">
+                                <div style="overflow: auto" class="row">
+                                    <div class="col-md-3 col-xs-3" style="text-align: left; ">
+                                        <strong> {% trans 'Orderdate' %}</strong>
+                                        <br>
+                                        {% for order_detail in order.orderdetail_set.all %}
+                                            {{ order_detail.date_added }}
+                                        {% endfor %}
                                     </div>
-                                    <div style="overflow: auto; font-size: small" class="col-md-12">
-                                        <div class="col-md-3 col-xs-3" style="text-align: left">
-                                            {% for order_detail in order.orderdetail_set.all %}
-                                                {{ order_detail.date_added }}
-                                            {% endfor %}
-                                        </div>
-                                        <div class="col-md-2  col-xs-2">
-                                             {% for order_detail in order.orderdetail_set.all %}
-                                                {{ order_detail.state.name }}
-                                            {% endfor %}
-                                        </div>
-                                        <div class="col-md-3  col-xs-3">
-                                            {{ order.total }} €
-                                        </div>
-                                        <div class="col-md-4  col-xs-4">
-                                            <div class="col-md-6">
-                                                <a href="{% url 'detail_order' order.order_hash %}">Bestelldetails</a>
-
-                                            </div>
-                                            <div class="col-md-6">
-                                                <a href="#">Rechnung</a>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-2 col-xs-2" style="text-align: left; ">
+                                        <strong> {% trans 'State' %}</strong>
+                                        <br>
+                                        {% for order_detail in order.orderdetail_set.all %}
+                                            {{ order_detail.state.name }}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col-md-2 col-xs-2" style="text-align: left; ">
+                                        <strong> {% trans 'Total' %}</strong>
+                                        <br>
+                                        {{ order.total }} €
+                                    </div>
+                                    <div class="col-md-5 col-xs-5" style="text-align: left; ">
+                                        <strong> Ordernr.: <small>{{ order.order_hash }}</small></strong>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-3" style="text-align: left; ">
+                                        <a class="btn btn-outline-secondary"
+                                           href="{% url 'detail_order' order.order_hash %}">{% trans 'Orderdetails' %}</a>
+                                        <a class="btn btn-outline-secondary" href="#">{% trans 'Bill' %}</a>
+                                    </div>
 
-                                <div class="panel-body">
-                                    <div class="col-sm-12">
-                                        <div class="col-sm-9">
+                                </div>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <h4>{% trans 'Customer Information' %}</h4>
+                                        <div>
+                                            <b>{{ order.company }}</b>
+                                        </div>
+
+                                        {% for order_detail in order.orderdetail_set.all %}
+                                            <div>
+                                                {{ order_detail.contact.first_name }} {{ order_detail.contact.last_name }}
+                                            </div>
+                                            <div>
+                                                {{ order.company.street }} {{ order.company.number }}
+                                            </div>
+                                            <div>
+                                                {{ order.company.zipcode }} {{ order.company.city }}
+                                            </div>
+                                            <div style="margin-top: 5px">
+                                                {{ order_detail.contact.telephone }}
+                                            </div>
+                                            <div>
+                                                {{ order_detail.contact.email }}
+                                            </div>
+                                        {% endfor %}
+
+                                    </div>
+                                    <div class="col-6">
+
+                                        <h4>{% trans 'State' %}</h4>
+
+                                        {% for order_detail in order.orderdetail_set.all %}
+                                            <div>
+                                                Assigned Employee: <span
+                                                    style="color: #2c7b91"><b>{{ order_detail.employee|default:"None" }}</b></span>
+                                            </div>
+                                            <div>
+                                                Status: <span
+                                                    style="color: #2c7b91"><b>{{ order_detail.state }}</b></span>
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12">
+
+                                        <h4>{% trans 'Order' %}</h4>
+                                        <div style="margin-left: 15px; background-color: white">
                                             {% for order_item in order.orderitem_set.all %}
                                                 <div class="row">
-                                                    <div class="col-sm-2 col-xs-4">
+                                                    <div class="col-sm-1 col-xs-4">
                                                         {% if  order_item.product.product.product_picture %}
                                                             <img
                                                                     src="{{ order_item.product.product.product_picture.url }}"
-                                                                    alt="..."
-                                                                    class="img-responsive"/>{% endif %}</div>
-                                                    <div class="col-sm-8 col-xs-8">
-                                                        <h5 class="nomargin">{{ order_item.product.name }}</h5>
+                                                                    class="img-thumbnail"/>{% endif %}
+                                                    </div>
+                                                    <div class="col-sm-9 col-xs-8">
+                                                        <div class="no-margin">
+                                                            <strong>{{ order_item.product.name }}</strong></div>
 
                                                     </div>
                                                     <div class="col-sm-2 hidden-xs">
-                                                        {{ order_item.product.price }}
+                                                        {{ order_item.product.price }} €
                                                     </div>
                                                 </div>
+                                                <hr>
                                             {% endfor %}
                                         </div>
-                                        <div class="col-sm-3">
-                                            <a href="{% url 'detail_order_cancel_order' order.order_hash %}"
-                                               class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</a>
-                                            <a href="{% url 'detail_order_show_bill' order.order_hash %}"
-                                               class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
-                                            <a href="{% url 'detail_order_write_review' order.order_hash %}"
-                                               class="btn btn-fw btn-secondary">{% trans 'Write review' %}</a>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
 
-                        {% endfor %}
-
-                        <div class="col-md-12">
-
-                            <ul class="pager">
-                                <li class="previous ">
-                                    {% if orders.has_previous %}
-                                        <a class="" href="
-                                        {% url 'all_orders' %}{{ number_of_orders }}/{{ orders.previous_page_number }}{% if search %}/?search={{ search }}{% endif %}">previous</a>
-
-                                    {% else %}
-                                        <a class="disabled" href="">-</a>
-                                    {% endif %}
-                                </li>
-                                <li>
-                                <span class="current">
-                                        Page {{ orders.number }} of {{ orders.paginator.num_pages }}.
-                                    </span>
-                                </li>
-                                <li class="next ">
-                                    {% if orders.has_next %}
-                                        <a href="
-                                            {% url 'all_orders' %}{{ number_of_orders }}/{{ orders.next_page_number }}{% if search %}/?search={{ search }}{% endif %}">next</a>
-                                    {% else %}
-                                        <a class="disabled" href="">-</a>
-                                    {% endif %}
-                                </li>
-                            </ul>
                         </div>
-                        <div class="col-md-12 ">
-                            <div class="col-md-4 "></div>
-                            <div class="col-md-4">
-                            <form method="get">
-                            <input hidden value="{% if search %}{{ search }}{% endif %}" type="text" name="search">
+
+                    {% endfor %}
+                    <div class="row mt-2">
+                        <div class="col-3">
+                            <form method="get" class="">
+                                <input hidden value="{% if search %}{{ search }}{% endif %}" type="text"
+                                       name="search">
                                 <select class="form-control"
                                         onchange=
                                                 "changeNumberOfOrders(this,'{% url 'all_orders' %}{0}/{{ orders.number }}/')">
-                                    <option value="1" {% if number_of_orders == '1' %}selected{% endif %}>
+                                    <option class="dropdown-item" value="1"
+                                            {% if number_of_orders == '1' %}selected{% endif %}>
                                         1 Entry
                                     </option>
-                                    <option value="5" {% if number_of_orders == '5' %}selected{% endif %}>
+                                    <div class="dropdown-divider"></div>
+                                    <option class="dropdown-item" value="5"
+                                            {% if number_of_orders == '5' %}selected{% endif %}>
                                         5 Entries
                                     </option>
-                                    <option value="20"{% if number_of_orders == '20' %}selected{% endif %}>
+                                    <div class="dropdown-divider"></div>
+                                    <option class="dropdown-item" value="20"
+                                            {% if number_of_orders == '20' %}selected{% endif %}>
                                         20 Entries
                                     </option>
-                                    <option value="50"{% if number_of_orders == '50' %}selected{% endif %}>
+                                    <div class="dropdown-divider"></div>
+                                    <option class="dropdown-item" value="50"
+                                            {% if number_of_orders == '50' %}selected{% endif %}>
                                         50 Entries
                                     </option>
+                                    <div class="dropdown-divider"></div>
                                 </select>
                             </form>
-                                </div>
-                                <div class="col-md-4 "></div>
+                        </div>
+                        <div class="col-9">
+                            <nav>
+                                <ul class="pagination">
+                                    <li class="page-item">
+                                        {% if orders.has_previous %}
+                                            <a class="page-link"
+                                               href="{% url 'all_orders' %}{{ number_of_orders }}/
+
+
+
+                                                       {{ orders.previous_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Previous' %}</a>
+                                        {% else %}
+                                            <a class="disabled page-link" href="">Previous</a>
+                                        {% endif %}
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="current page-link">
+                                            {{ orders.number }}
+                                        </a>
+                                    </li>
+                                    <li class="next page-item">
+                                        {% if orders.has_next %}
+                                            <a class="page-link"
+                                               href="{% url 'all_orders' %}{{ number_of_orders }}/
+
+
+
+                                                       {{ orders.next_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Next' %}</a>
+                                        {% else %}
+                                            <a class="disabled page-link" href="">Next</a>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </nav>
 
                         </div>
+
                     </div>
                 </div>
             </div>

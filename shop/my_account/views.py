@@ -90,14 +90,15 @@ class MyAccountView(View):
 
 
 class AccountSettingsView(View):
-    template_name = 'my_account/account-settings.html'
+    template_name = 'my_account/settings.html'
 
     @check_serve_perms
     def get(self, request):
-        contact = Contact.objects.filter(user=request.user)
+        contact = Contact.objects.get(user=request.user)
         if contact:
             form = ContactForm(instance=contact)
-            return render(request, self.template_name, {'contact': contact, 'form': form})
+            return render(request, self.template_name, {'contact': contact, 'form': form, 'title': 'Account Settings',
+                                                        'next_url': 'account_settings'})
         else:
             return redirect('/shop/register')
 
@@ -106,22 +107,25 @@ class AccountSettingsView(View):
         contact = Contact.objects.filter(user=request.user)
         form = ContactForm(request.POST, instance=contact)
         form.save()
-        return render(request, self.template_name, {'contact': contact, 'form': form})
+        return render(request, self.template_name, {'contact': contact, 'form': form, 'title': 'Account Settings',
+                                                    'next_url': 'account_settings'})
 
 
 class CompanySettingsView(View):
-    template_name = 'my_account/company-settings.html'
+    template_name = 'my_account/settings.html'
 
     @check_serve_perms
     def get(self, request):
-        contact = Contact.objects.filter(user=request.user)
+        contact = Contact.objects.get(user=request.user)
         if contact:
             company = contact.company
             if company:
                 form = CompanyForm(instance=company)
-                return render(request, self.template_name, {'contact': contact, 'form': form})
+                return render(request, self.template_name, {'contact': contact, 'form': form,
+                                                            'title': 'Company Settings',
+                                                            'next_url': 'company_settings'})
             else:
-                return redirect('/shop/create-company')
+                return redirect('/shop/companies/create')
         else:
             return redirect('/shop/register')
 
@@ -132,7 +136,8 @@ def post(self, request):
     company = contact.company
     form = CompanyForm(request.POST, files=request.FILES, instance=company)
     form.save()
-    return render(request, self.template_name, {'contact': contact, 'form': form})
+    return render(request, self.template_name, {'contact': contact, 'form': form, 'title': 'Company Settings',
+                                                'next_url': 'company_settings'})
 
 
 class SearchOrders(View):
@@ -154,7 +159,7 @@ class SearchOrders(View):
                 if company:
                     _orders = Order.objects.filter(is_send=True, company=company)
                 else:
-                    return redirect('/shop/create-company')
+                    return redirect('/shop/companies/create')
             else:
                 return redirect('/shop/register')
 

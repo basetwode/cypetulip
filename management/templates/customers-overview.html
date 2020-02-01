@@ -12,7 +12,7 @@
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <title>Products</title>
     <script src="{% static 'autocomplete.js' %}"></script>
-    <script src="{% static 'js/jquery.ui.min.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
     <link href="{% static 'management.css' %}" rel="stylesheet">
 {% endblock %}
 
@@ -28,21 +28,31 @@
                         <th scope="col">#</th>
                         <th scope="col">{% trans 'Name' %}</th>
                         <th scope="col">{% trans 'Company' %}</th>
+                        <th scope="col">{% trans 'Configuration' %}</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for contact in customers %}
                         <tr>
                             <td>{{ contact.id }}</td>
-                            <td>{{ contact.first_name }} {{ contact.last_name}}</td>
+                            <td>{{ contact.first_name }} {{ contact.last_name }}</td>
                             <td>{{ contact.company }}</td>
+                            <td class="">
+                                <div>
+                                    <a class="btn btn-outline-dark"
+                                       href="{% url 'contact_edit' contact.company_id %}">{% trans 'Edit Contact' %}</a>
+                                    <a class="btn btn-outline-dark"
+                                       href="{% url 'company_edit' contact.id %}">{% trans 'Edit Company' %}</a>
+                                </div>
+
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
 
                 </table>
 
-                <a class="btn btn-secondary" href="{% url 'management_index'  %}">{% trans 'Back' %}</a>
+                <a class="btn btn-secondary" href="{% url 'management_index' %}">{% trans 'Back' %}</a>
             </div>
         </div>
     </div>

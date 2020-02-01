@@ -7,6 +7,11 @@
     <link href="{% static 'management.css' %}" rel="stylesheet">
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <script src="{% static 'onchange.js' %}"></script>
+    <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.structure.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.theme.min.css' %}" rel="stylesheet">
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'autocomplete.js' %}"></script>
     <title>Admin - All orders </title>
 {% endblock %}
 
@@ -21,14 +26,11 @@
                             <h4 class="h-bold">{% trans "Menu" %}</h4>
                         </div>
                         <div class="card-body">
-                            <form method="get">
+                            <form action="{% url 'search_orders' %}">
                                 <div class="input-group">
-                                    <input name="search" type="text" class="form-control"
-                                           placeholder="Search for..."
-                                           value="{% if search %}{{ search }}{% endif %}">
-                                    <span class="input-group-btn">
-                                                    <button class="btn btn-primary" type="button">Go!</button>
-                                                  </span>
+
+                                    <input id="order-search" type="text" class="form-control"
+                                           placeholder="Search for...">
                                 </div>
                             </form>
 
@@ -216,6 +218,7 @@
                                             <a class="page-link"
                                                href="{% url 'management_all_orders' %}{{ number_of_orders }}/
 
+
                                                        {{ orders.previous_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Previous' %}</a>
                                         {% else %}
                                             <a class="disabled page-link" href="">Previous</a>
@@ -230,6 +233,7 @@
                                         {% if orders.has_next %}
                                             <a class="page-link"
                                                href="{% url 'management_all_orders' %}{{ number_of_orders }}/
+
 
                                                        {{ orders.next_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Next' %}</a>
                                         {% else %}
