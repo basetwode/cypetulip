@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Case, When, FloatField, Sum
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
 
@@ -80,6 +81,7 @@ class Employee(models.Model):
 class ProductSubItem(models.Model):
     price = models.FloatField()
     special_price = models.FloatField(default=False, blank=True, null=True)
+    tax = models.FloatField(default=0.19, blank=False, null=False)
     name = models.CharField(max_length=30)
     description = models.CharField(max_length=300)
     details = models.CharField(max_length=300)
@@ -90,6 +92,9 @@ class ProductSubItem(models.Model):
 
     def __str__(self):
         return self.name + ' - required ' + str(self.is_required)
+
+    def get_price(self):
+        return self.special_price if self.special_price else self.price
 
 
 class FileSubItem(ProductSubItem):
@@ -208,7 +213,6 @@ class OrderDetail(models.Model):
     date_bill = models.DateTimeField(null=True, blank=True)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
 
-
 # Like a surcharge or discount or product or whatever.
 
 
@@ -223,7 +227,7 @@ class OrderItem(models.Model):
     state = models.ForeignKey(
         OrderItemState, on_delete=models.CASCADE, null=True, blank=True, )
     count = models.IntegerField(default=1)
-
+    price = models.FloatField(default=None, blank=True, null=True)
 
 # Corresponding OrderItems for the subproducts
 class FileOrderItem(OrderItem):

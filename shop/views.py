@@ -1,3 +1,6 @@
+from datetime import datetime
+
+from django.db.models import When, FloatField, Case
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -6,7 +9,7 @@ from django.views.generic import View
 from permissions.error_handler import raise_404
 from permissions.permissions import check_serve_perms
 from shop.models import (Contact, Order, OrderDetail, OrderState,
-                         Product, ProductCategory)
+                         Product, ProductCategory, OrderItem)
 
 
 # Create your views here.
@@ -83,6 +86,16 @@ class OrderConfirmedView(View):
         contact = Contact.objects.filter(user=request.user)
         company = contact[0].company
         _order = Order.objects.get(order_hash=order, company=company)
+        order_detail = OrderDetail.objects.get(order=_order.id)
+        order_detail.date_bill = datetime.now()
+
+        for order_item in OrderItem.objects.filter(order=_order):
+            order_item.price = order_item.product.special_price if \
+                order_item.product.special_price else order_item.product.price
+            order_item.save()
+
+        order_detail.state = OrderState.objects.get(initial=True)
+        order_detail.save()
         if _order.is_send:
             return redirect(reverse("detail_order", args=[order]))
         else:
@@ -96,7 +109,6 @@ class OrderConfirmedView(View):
         company = contact[0].company
         _order = Order.objects.get(order_hash=order, is_send=False, company=company)
         _order.is_send = True
-        order_detail = OrderDetail.objects.get(order=_order.id)
-        order_detail.state = OrderState.objects.get(initial=True)
+
         _order.save()
         return render(request, self.template_name, {'order': _order})
