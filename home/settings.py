@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'shop',
     'management',
     'billing',
@@ -102,7 +103,7 @@ WSGI_APPLICATION = 'home.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db2.sqlite3'),
     }
 }
 
@@ -129,14 +130,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = "/var/cypetulip/static"
+STATIC_ROOT = '/var/cypetulip/static'
 
 MEDIA_ROOT = '/var/cypetulip'
 
 MEDIA_URL = '/media/'
 
 FILEBROWSER_DIRECTORY = ''
-FILEBROWSER_MEDIA_ROOT = '/var/cypetulip'
+FILEBROWSER_MEDIA_ROOT = '/var/cypetulip/media'
 
 SHOP_NAME = u'Cypetulip'
 

@@ -10,5 +10,5 @@ def populate_db():
     #
     # else:
     #     print 'Database already populated'
-    register_site('Products', '/shop/products/')
+    register_site('products', '/shop/products/')
     print('Product site registered')

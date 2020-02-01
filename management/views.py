@@ -1,17 +1,16 @@
-from django.contrib.auth.models import User
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 # Create your views here.
-from django.views.generic import DetailView, ListView, View
+from django.views.generic import DetailView, ListView, View, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 
 from cms.models import Page, Section
 from home.settings import MEDIA_ROOT
 from management.models import LdapSettings, MailSettings
 from permissions.permissions import check_serve_perms
-from shop.models import Contact, Order, OrderItem, Product, ProductCategory
+from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company
 from shop.my_account.views import SearchOrders
 from shop.order.utils import get_orderitems_once_only
 from utils.views import CreateUpdateView
@@ -38,7 +37,10 @@ class ManagementOrderOverviewView(View):
     template_name = 'orders-overview.html'
 
     def get(self, request, page=1):
-        contact = Contact.objects.get(user=request.user)
+        if not request.user.is_staff:
+            contact = Contact.objects.get(user=request.user)
+        else:
+            contact = {}
         _orders, search = SearchOrders.filter_orders(request, True)
         number_of_orders = '5'
         paginator = Paginator(_orders, number_of_orders)
@@ -70,8 +72,11 @@ class ManagementOrderDetailView(DetailView):
 
     @check_serve_perms
     def get(self, request, order):
-        contact = Contact.objects.get(user=request.user)
-        company = contact.company
+        if not request.user.is_staff:
+            contact = Contact.objects.get(user=request.user)
+            company = contact.company
+        else:
+            contact = {}
         _order = Order.objects.get(order_hash=order)
         if _order:
             total = 0
@@ -149,22 +154,23 @@ class CustomersOverviewView(ListView):
 
 class CustomerCreationView(CreateView):
     template_name = 'customers/contact-create.html'
-    context_object_name = 'customers'
+    context_object_name = 'contact'
     model = Contact
+    street = ''
+    city = ''
     fields = '__all__'
+
+    def post(self, request, *args, **kwargs):
+        return reverse_lazy('costumer_edit', kwargs={'costumer_id': self.object.id})
 
     def get_success_url(self):
         return reverse_lazy('costumer_edit', kwargs={'costumer_id': self.object.id})
 
-
-class UserCreationView(CreateView):
-    template_name = 'customers/create-modal.html'
-    context_object_name = 'customers'
-    model = User
-    fields = '__all__'
-
-    def get_success_url(self):
-        return reverse_lazy('costumer_edit', kwargs={'costumer_id': self.object.id})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['company'] = Company.objects.all()
+        # And so on for more models
+        return context
 
 
 class ProductCreationView(CreateView):
@@ -189,6 +195,11 @@ class ProductEditView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('product_edit', kwargs={'product_id': self.object.id})
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('products_overview')
 
 
 class CategoryCreationView(CreateView):

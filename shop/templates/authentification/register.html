@@ -7,15 +7,20 @@
 
 {% block body %}
     <div class="content">
-        <div class="card">
-            <h2>{{ buttonText | upper }}</h2>
-            <br>
-            <form method="post">
-                {% csrf_token %}
-                {% bootstrap_form form layout='horizontal' %}
-                {% bootstrap_form_errors form layout='horizontal' %}
-                <button class="btn btn-primary" type="submit">{{ buttonText }}</button>
-            </form>
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>{{ buttonText | upper }}</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% bootstrap_form form layout='horizontal' %}
+                        {% bootstrap_form_errors form layout='horizontal' %}
+                        <button class="btn btn-primary" type="submit">{{ buttonText }}</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 

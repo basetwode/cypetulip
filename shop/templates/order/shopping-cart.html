@@ -12,7 +12,7 @@
     <span class="caret"></span>
 </a>
 <div class="dropdown-menu dropdown-menu-right padding-1rem" id="shoppingcart">
-    <div class="dropdown-header">
+    <div class="dropdown-header" style="min-height: 30px; width: 450px;">
         <div class="row">
             <a href="{% url 'shopping_cart' %}"
                class="col-3 btn btn-secondary btn-sm text-align-right">{% trans 'Open cart' %}</a>
@@ -33,7 +33,7 @@
                                  alt="..."
                                  class="img-fluid img-responsive img-thumbnail"/>
                         {% else %}
-                            <i class="fa fa-image img-thumbnail"></i>
+                            <i class="fa fa-4x fa-image img-thumbnail"></i>
                         {% endif %}
                     </div>
                 </div>

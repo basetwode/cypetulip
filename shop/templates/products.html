@@ -87,7 +87,7 @@
                                                     </h5>
                                                 </div>
                                                 <div class="col-2 my-auto">
-                                                    {% if product.price %}
+                                                    {% if product.special_price %}
                                                         <i style="color: red" class="fas fa-2x fa-percent"></i>
                                                     {% endif %}
                                                 </div>
@@ -96,9 +96,9 @@
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-12">
-                                                    {% if product.price %}
+                                                    {% if product.special_price %}
                                                         <span style="text-decoration: line-through">{{ product.price | floatformat:2 }} &euro;</span>
-                                                        <strong style="color: red">{{ product.price | floatformat:2 }}
+                                                        <strong style="color: red">{{ product.special_price | floatformat:2 }}
                                                             &euro;</strong>
                                                     {% else %}
                                                         <span>{{ product.price | floatformat:2 }} &euro;</span>
@@ -116,7 +116,7 @@
                                                         <img class="img-responsive img-thumbnail"
                                                              src="{{ product.product_picture.url }}" alt=""/>
                                                     {% else %}
-                                                        <i class="fa fa-image img-thumbnail"></i>
+                                                        <i class="fa fa-4x fa-image img-thumbnail"></i>
                                                     {% endif %}
 
                                                 </a>

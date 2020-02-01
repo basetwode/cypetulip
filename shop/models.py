@@ -12,6 +12,7 @@ class Address(models.Model):
     street = models.CharField(max_length=40, default=None)
     number = models.CharField(max_length=5, default=None)
     zipcode = models.CharField(max_length=5, default=None)
+    city = models.CharField(max_length=100, default=None)
 
 
 class Company(models.Model):
@@ -24,8 +25,8 @@ class Company(models.Model):
     city = models.CharField(max_length=30, default=None)
     logo = models.FileField(default=None, null=True, blank=True,
                             upload_to=company_files_upload_handler, storage=fs)
-
-    # address = models.ForeignKey(Address, on_delete=models.CASCADE, default=None, null=True)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE, default=None,
+                                null=True, blank=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -39,7 +40,7 @@ class Company(models.Model):
 
 
 class Contact(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, blank=True, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -78,7 +79,7 @@ class Employee(models.Model):
 
 class ProductSubItem(models.Model):
     price = models.FloatField()
-    # special_price = models.FloatField(default=False)
+    special_price = models.FloatField(default=False, blank=True, null=True)
     name = models.CharField(max_length=30)
     description = models.CharField(max_length=300)
     details = models.CharField(max_length=300)
@@ -157,9 +158,9 @@ class OrderState(models.Model):
 
 
 class Product(ProductSubItem):
-    product_picture = models.FileField(default=None, null=True, blank=True,
-                                       upload_to=public_files_upload_handler,
-                                       storage=fs)
+    product_picture = models.ImageField(default=None, null=True, blank=True,
+                                        upload_to=public_files_upload_handler,
+                                        storage=fs)
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
     is_public = models.BooleanField()
     assigned_sub_products = models.ManyToManyField(ProductSubItem, default=None, blank=True,

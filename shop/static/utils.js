@@ -6,6 +6,12 @@ function addToCart(product) {
 
         success: function (data) {
             $('#shopping-cart').html(data);
+        },
+        error: function (response) {
+            const message = response.responseJSON;
+            let errors = message.errors;
+            let nextUrl = message.next_url;
+            window.location.replace(nextUrl);
         }
     });
 }

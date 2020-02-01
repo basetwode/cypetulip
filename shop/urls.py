@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.views.generic import RedirectView
 
 from shop.authentification.views import (CompanyView, LoginView, LogoutView,
                                          RegisterView)
@@ -12,12 +13,12 @@ from shop.views import *
 
 __author__ = ''
 
-
 urlpatterns = [
     url(r'^i18n/', include('django.conf.urls.i18n')),
-    url(r'^index/', IndexView.as_view()),
-    url(r'^login/', LoginView.as_view()),
-    url(r'^register/', RegisterView.signup, name='register'),
+    url(r'^index/$', IndexView.as_view()),
+    url(r'^$', RedirectView.as_view(url='/cms/home/'), name='home'),
+    url(r'^login/$', LoginView.as_view(), name='login'),
+    url(r'^register/$', RegisterView.signup, name='register'),
     url(r'^create-company/', CompanyView.create, name='create-company'),
     url(r'^logout/', LogoutView.as_view()),
 

@@ -29,7 +29,6 @@ from shop import urls as shop_urls
 
 admin.autodiscover()
 
-
 urlpatterns = [
     url(r'^admin/filebrowser/', site.urls),
     url(r'^$', RedirectView.as_view(url='/cms/home/')),

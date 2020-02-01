@@ -16,7 +16,6 @@
 {% block body %}
     <div class="main">
         <div class="content">
-            {% include 'delete-modal.html' %}
             <div class="col-md-12">
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
@@ -43,6 +42,7 @@
                     </thead>
                     <tbody>
                     {% for product in products %}
+                        {% include 'delete-modal.html' with id=product.id %}
                         <tr>
                             <td>{{ product.id }}</td>
                             <td>{{ product.category }}</td>
@@ -53,7 +53,7 @@
                                              src="{{ product.product_picture.url }}"
                                              class="img-thumbnail">
                                     {% else %}
-                                        <i class="fa fa-image img-thumbnail"></i>
+                                        <i class="fa fa-4x fa-image img-thumbnail"></i>
                                     {% endif %}
 
                                 </div>
@@ -66,7 +66,7 @@
                                     <a class="btn btn-outline-dark"
                                        href="{% url 'product_edit' product.id %}">{% trans 'Edit' %}</a>
                                     <button class="btn btn-outline-dark" data-toggle="modal"
-                                            data-target="#exampleModal">{% trans 'Delete' %}</button>
+                                            data-target="#delete-modal">{% trans 'Delete' %}</button>
                                 </div>
 
                             </td>

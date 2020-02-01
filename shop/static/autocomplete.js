@@ -3,17 +3,17 @@
  */
 $(function() {
 
-    $("#order-search").autocomplete({
+    $('#order-search').autocomplete({
 
-        source: function(request, response) {
+        source: function (request, response) {
             $.ajax({
                 url: 'orders/search/',
-                data: {search: request.term },
+                data: {search: request.term},
                 dataType: "json",
-                success: function(data) {
-                    a=[]
-                    for ( i = 0; i < data.length; i++) {
-                        a.push({label:"Order "+data[i].fields.order_hash, value:data[i].fields.order_hash});
+                success: function (data) {
+                    a = [];
+                    for (i = 0; i < data.length; i++) {
+                        a.push({label: "Order " + data[i].fields.order_hash, value: data[i].fields.order_hash});
                     }
                     response(a);
 
@@ -25,7 +25,7 @@ $(function() {
 
         select: function(event, ui) {
             var url = ui.item.value;
-            if(url != '#') {
+            if (url !== '#') {
                 location.href = '/shop/myaccount/orders/' + url;
             }
         },
@@ -34,7 +34,7 @@ $(function() {
 
       // optional (if other layers overlap autocomplete list)
         open: function(event, ui) {
-            $(".ui-autocomplete").css("z-index", 1000);
+            $('.ui-autocomplete').css('z-index', 1000);
         }
     });
 
