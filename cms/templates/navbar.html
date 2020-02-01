@@ -16,7 +16,7 @@
                     <li class="nav-item">
                         <a class="nav-link"
                            href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}/">{% endif %}
-                           {% trans page.page_name %}</a>
+                           {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
                     </li>
                 {% endfor %}
             </ul>
@@ -50,7 +50,7 @@
                             <span class="dropdown-header">{{ user.first_name }} {{ user.last_name }}</span>
                             <a class="dropdown-item" href="{% url 'my_account' %}">{% trans 'My account' %}</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'all_orders' %}">{% trans 'All orders' %}</a>
+                            <a class="dropdown-item" href="{% url 'all_orders' %}">{% trans 'My orders' %}</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{% url 'account_settings' %}">{% trans 'Settings' %}</a>
                             {% if user.is_staff %}
