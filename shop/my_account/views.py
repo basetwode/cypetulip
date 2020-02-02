@@ -45,7 +45,7 @@ class OrdersView(View):
     template_name = 'my_account/orders.html'
 
     @check_serve_perms
-    def get(self, request, page=1):
+    def get(self, request, page=1, **kwargs):
         contact = Contact.objects.filter(user=request.user)
         if contact:
             _orders, search = SearchOrders.filter_orders(request)

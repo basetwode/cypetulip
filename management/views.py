@@ -37,7 +37,7 @@ class ManagementView(View):
 class ManagementOrderOverviewView(View):
     template_name = 'orders-overview.html'
 
-    def get(self, request, page=1):
+    def get(self, request, page=1, **kwargs):
         if not request.user.is_staff:
             contact = Contact.objects.get(user=request.user)
         else:
