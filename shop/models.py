@@ -2,17 +2,10 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
+from django.utils.translation import ugettext_lazy as _
 
 from mediaserver.upload import (company_files_upload_handler, fs, order_files_upload_handler,
                                 public_files_upload_handler, rand_key)
-
-
-class Address(models.Model):
-    name = models.CharField(max_length=100)
-    street = models.CharField(max_length=40, default=None)
-    number = models.CharField(max_length=5, default=None)
-    zipcode = models.CharField(max_length=5, default=None)
-    city = models.CharField(max_length=100, default=None)
 
 
 class Company(models.Model):
@@ -25,8 +18,6 @@ class Company(models.Model):
     city = models.CharField(max_length=30, default=None)
     logo = models.FileField(default=None, null=True, blank=True,
                             upload_to=company_files_upload_handler, storage=fs)
-    address = models.ForeignKey(Address, on_delete=models.CASCADE, default=None,
-                                null=True, blank=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -40,18 +31,32 @@ class Company(models.Model):
 
 
 class Contact(models.Model):
+    GENDER_CHOICES = (
+        ('M', _('Male')),
+        ('F', _('Female')),
+        ('D', _('Others')),
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, blank=True, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     title = models.CharField(max_length=20)
-    gender = models.CharField(max_length=20)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     telephone = models.CharField(max_length=40)
     email = models.EmailField()
     language = models.CharField(max_length=2, default='en')
 
     def __str__(self):
         return str(self.company) + ' - ' + self.last_name
+
+
+class Address(models.Model):
+    name = models.CharField(max_length=100)
+    street = models.CharField(max_length=40, default=None)
+    number = models.CharField(max_length=5, default=None)
+    zipcode = models.CharField(max_length=5, default=None)
+    city = models.CharField(max_length=100, default=None)
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, default=None, blank=True, null=True)
 
 
 class ProductCategory(models.Model):

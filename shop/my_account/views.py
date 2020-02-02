@@ -4,10 +4,11 @@ from django.core import serializers
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect
-from django.views.generic import View
+from django.urls import reverse_lazy
+from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 
 from permissions.permissions import check_serve_perms
-from shop.models import Contact, Order, OrderItem, Product, OrderDetail
+from shop.models import Contact, Order, OrderItem, Product, OrderDetail, Address
 from shop.my_account.forms import CompanyForm, ContactForm
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
@@ -176,3 +177,43 @@ class SearchOrders(View):
                                               Q(orderdetail__date_added__month=search))
 
         return _orders.order_by('-orderdetail__date_added'), search
+
+
+class AddressOverviewView(ListView):
+    template_name = 'my_account/address-overview.html'
+    context_object_name = 'address'
+    model = Address
+
+
+class AddressCreationView(CreateView):
+    template_name = 'generic-create.html'
+    context_object_name = 'address'
+    model = Address
+    fields = '__all__'
+
+    def get_success_url(self):
+        return reverse_lazy('address_overview')
+
+
+class AddressEditView(UpdateView):
+    template_name = 'generic-edit.html'
+    context_object_name = 'address'
+    model = Address
+    fields = '__all__'
+
+    address_id = None
+    slug_field = 'id'
+    slug_url_kwarg = 'address_id'
+
+    def get_success_url(self):
+        return reverse_lazy('address_overview')
+
+
+class AddressDeleteView(DeleteView):
+    model = Address
+    slug_field = 'id'
+    slug_url_kwarg = "url_param"
+    template = ''
+
+    def get_success_url(self):
+        return reverse_lazy('address_overview')

@@ -227,6 +227,38 @@
                         </tfoot>
 
                     </table>
+
+                    <div class="accordion" id="addressFormInput">
+                        {% for entry in address %}
+                            <div class="card">
+                                <div class="card-header" id="heading{{ entry.name }}">
+                                    <h2 class="mb-0">
+                                        <input id="input{{ entry.name }}" type="radio"
+                                               name="method" data-toggle="collapse"
+                                               data-target="#body{{ entry.name }}"
+                                               aria-expanded="false" aria-controls="#body{{ entry.name }}"
+                                               value="{{ entry.id }}">
+                                        <label for="input{{ entry.name }}"
+                                               data-toggle="collapse" data-target="#body{{ entry.name }}"
+                                        >
+                                            <i class="fas fa-truck"></i>
+                                            {{ entry.name }}</label>
+                                    </h2>
+                                </div>
+
+                                <div id="body{{ entry.name }}" class="collapsed collapse"
+                                     aria-labelledby="heading{{ entry.name }}"
+                                     data-parent="#addressFormInput">
+                                    <div class="card-body">
+                                        {{ entry.street }} {{ entry.number }}
+                                        <p>{{ entry.zipcode }} {{ entry.city }}</p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
                 </form>
                 <div class="row">
                     <div class="col">

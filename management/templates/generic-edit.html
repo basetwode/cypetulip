@@ -21,7 +21,7 @@
                 <form method="post">{% csrf_token %}
                     {% bootstrap_form form layout='horizontal' %}
                     <input class="btn btn-primary" type="submit" value="Save">
-                    <a class="btn btn-secondary" href="{% url 'management_index'  %}">{% trans 'Back' %}</a>
+                    <a class="btn btn-secondary" href="{{ request.META.HTTP_REFERER }}">{% trans 'Back' %}</a>
                 </form>
 
             </div>

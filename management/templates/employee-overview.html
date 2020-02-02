@@ -17,7 +17,7 @@
     <div class="main">
         <div class="content">
             <div class="col-md-12">
-                <a class="btn btn-secondary" href="{% url 'management_index' %}">{% trans 'Back' %}</a>
+                <a class="btn btn-secondary" href="{{ request.META.HTTP_REFERER }}">{% trans 'Back' %}</a>
                 <a href="{% url 'create_employee' %}"
                    class="btn btn-primary">{% trans 'Add new Employee' %}</a>
 

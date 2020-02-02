@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.views.generic import View
 
 from shop.Errors import FieldError, JsonResponse
-from shop.models import Contact, Order, OrderItem, Product, ProductSubItem
+from shop.models import Contact, Order, OrderItem, Product, ProductSubItem, Address
 from shop.order.forms import ItemBuilder, SubItemForm
 from shop.utils import create_hash, json_response
 
@@ -22,6 +22,7 @@ class CheckoutView(View):
 
     def get(self, request, order):
         contact = Contact.objects.filter(user=request.user)
+        address = Address.objects.filter(contact=contact[0])
         company = contact[0].company
         order = Order.objects.filter(order_hash=order, is_send=False, company=company)
         if order.count() > 0:
@@ -30,7 +31,8 @@ class CheckoutView(View):
             sub_order_items.delete()
             sub_products_once_only = self.get_subproducts_once_only(order)
             return render(request, self.template_name, {'order_details': order,
-                                                        'sub_products_once_only': sub_products_once_only})
+                                                        'sub_products_once_only': sub_products_once_only,
+                                                        'address': address})
         else:
             return redirect(reverse('shopping_cart'))
 

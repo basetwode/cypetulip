@@ -7,7 +7,8 @@ from shop.authentification.views import (CompanyView, LoginView, LogoutView,
                                          RegisterView)
 from shop.my_account.views import (AccountSettingsView, CompanySettingsView,
                                    MyAccountView, OrderDetailView, OrdersView,
-                                   SearchOrders)
+                                   SearchOrders, AddressCreationView, AddressEditView, AddressDeleteView,
+                                   AddressOverviewView)
 from shop.order.checkout import CheckoutView
 from shop.order.overview import OverviewView
 from shop.order.shoppingcart import ShoppingCartDetailView, ShoppingCartView
@@ -38,6 +39,12 @@ urlpatterns = [
     url(r"^product/(?P<product>[\S0-9_.-\\s\- ]+)/order/(?P<order_step>[0-9]+)$", OrderView.as_view()),
 
     url(r'^myaccount/$', MyAccountView.as_view(), name="my_account"),
+
+    url(r'^myaccount/address/create/$', AddressCreationView.as_view(), name="address_create"),
+    url(r'^myaccount/address/(?P<address_id>[a-zA-Z0-9_.-]+)/$', AddressEditView.as_view(), name="address_edit"),
+    url(r'^myaccount/address/(?P<url_param>[a-zA-Z0-9_.-]+)/delete$', AddressDeleteView.as_view(),
+        name="address_delete"),
+    url(r'^myaccount/address/$', AddressOverviewView.as_view(), name="address_overview"),
 
     url(r'^myaccount/account_settings/$', AccountSettingsView.as_view(), name="account_settings"),
     url(r'^myaccount/company_settings/$', CompanySettingsView.as_view(), name="company_settings"),
