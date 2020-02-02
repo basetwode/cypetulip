@@ -57,7 +57,7 @@
                         </div>
                     {% endif %}
                     {% for order in orders %}
-                        <div class="card">
+                        <div class="card mb-2">
                             <div style="overflow: auto" class="card-header orders-overview">
                                 <div style="overflow: auto" class="row">
                                     <div class="col-md-3 col-xs-3" style="text-align: left; ">
@@ -88,7 +88,8 @@
                                     <div class="col-md-3" style="text-align: left; ">
                                         <a class="btn btn-outline-secondary"
                                            href="{% url 'detail_order' order.order_hash %}">{% trans 'Orderdetails' %}</a>
-                                        <a class="btn btn-outline-secondary" href="#">{% trans 'Bill' %}</a>
+                                        <a class="btn btn-outline-secondary"
+                                           href="{% url 'invoice_pdf' order.order_hash %}">{% trans 'Bill' %}</a>
                                     </div>
 
                                 </div>
@@ -180,10 +181,6 @@
                                 <select class="form-control"
                                         onchange=
                                                 "changeNumberOfOrders(this,'{% url 'all_orders' %}{0}/{{ orders.number }}/')">
-                                    <option class="dropdown-item" value="1"
-                                            {% if number_of_orders == '1' %}selected{% endif %}>
-                                        1 Entry
-                                    </option>
                                     <div class="dropdown-divider"></div>
                                     <option class="dropdown-item" value="5"
                                             {% if number_of_orders == '5' %}selected{% endif %}>
@@ -216,6 +213,7 @@
 
 
 
+
                                                        {{ orders.previous_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Previous' %}</a>
                                         {% else %}
                                             <a class="disabled page-link" href="">Previous</a>
@@ -230,6 +228,7 @@
                                         {% if orders.has_next %}
                                             <a class="page-link"
                                                href="{% url 'all_orders' %}{{ number_of_orders }}/
+
 
 
 

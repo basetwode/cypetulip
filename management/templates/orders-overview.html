@@ -191,10 +191,6 @@
                                 <select class="form-control"
                                         onchange=
                                                 "changeNumberOfOrders(this,'{% url 'management_all_orders' %}{0}/{{ orders.number }}/')">
-                                    <option class="dropdown-item" value="1"
-                                            {% if number_of_orders == '1' %}selected{% endif %}>
-                                        1 Entry
-                                    </option>
                                     <div class="dropdown-divider"></div>
                                     <option class="dropdown-item" value="5"
                                             {% if number_of_orders == '5' %}selected{% endif %}>

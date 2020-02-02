@@ -5,6 +5,7 @@ from shop.models import *
 # Register your models here.
 
 
+admin.site.register(Address)
 admin.site.register(Order)
 admin.site.register(Company)
 admin.site.register(Contact)

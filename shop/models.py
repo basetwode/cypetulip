@@ -218,6 +218,7 @@ class OrderDetail(models.Model):
                               blank=True, )
     date_bill = models.DateTimeField(null=True, blank=True)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
+    shipment_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True)
 
 
 # Like a surcharge or discount or product or whatever.
