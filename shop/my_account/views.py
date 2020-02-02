@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 
 from permissions.permissions import check_serve_perms
-from shop.models import Contact, Order, OrderItem, Product
+from shop.models import Contact, Order, OrderItem, Product, OrderDetail
 from shop.my_account.forms import CompanyForm, ContactForm
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
@@ -21,6 +21,7 @@ class OrderDetailView(View):
         contact = Contact.objects.filter(user=request.user)
         if contact:
             _order = Order.objects.get(order_hash=order)
+            order_details = OrderDetail.objects.get(order_number=order)
             if _order:
                 total = 0
                 for order_item in _order.orderitem_set.all():
@@ -29,7 +30,7 @@ class OrderDetailView(View):
                 order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True,
                                                        product__in=Product.objects.all())
                 return render(request, self.template_name,
-                              {'order_details': _order, 'order': _order, 'contact': contact,
+                              {'order_details': order_details, 'order': _order, 'contact': contact,
                                'order_items': order_items,
                                'order_items_once_only': get_orderitems_once_only(_order)})
             else:
@@ -112,7 +113,7 @@ class AccountSettingsView(View):
 
 
 class CompanySettingsView(View):
-    template_name = 'my_account/settings.html'
+    template_name = 'settings-details.html'
 
     @check_serve_perms
     def get(self, request):

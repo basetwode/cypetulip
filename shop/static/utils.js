@@ -154,6 +154,28 @@ function parseErrors(data) {
     }
 }
 
+
+function assignEmployee(order_hash) {
+    var id = $('#employee-select').val();
+    $.ajax(
+        {
+            url: order_hash + '/assign/',
+            method: 'post',
+            data: $('#assignEmployeeForm').serialize() + '&id=' + id,
+            success: function () {
+                $('#alert-success').show();
+                $('#assign-employee-modal').modal('hide');
+                setTimeout(() => {
+                    window.location.reload()
+                }, 1000)
+            },
+            error: function () {
+                $('#alert-danger').show();
+            }
+        }
+    )
+}
+
 $(function () {
 
 

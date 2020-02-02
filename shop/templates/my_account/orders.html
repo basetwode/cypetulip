@@ -83,6 +83,7 @@
                                         <strong> Ordernr.: <small>{{ order.order_hash }}</small></strong>
                                     </div>
                                 </div>
+                                <hr>
                                 <div class="row">
                                     <div class="col-md-3" style="text-align: left; ">
                                         <a class="btn btn-outline-secondary"
@@ -125,10 +126,6 @@
                                         <h4>{% trans 'State' %}</h4>
 
                                         {% for order_detail in order.orderdetail_set.all %}
-                                            <div>
-                                                Assigned Employee: <span
-                                                    style="color: #2c7b91"><b>{{ order_detail.employee|default:"None" }}</b></span>
-                                            </div>
                                             <div>
                                                 Status: <span
                                                     style="color: #2c7b91"><b>{{ order_detail.state }}</b></span>
@@ -216,6 +213,9 @@
 
 
 
+
+
+
                                                        {{ orders.previous_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Previous' %}</a>
                                         {% else %}
                                             <a class="disabled page-link" href="">Previous</a>
@@ -230,6 +230,9 @@
                                         {% if orders.has_next %}
                                             <a class="page-link"
                                                href="{% url 'all_orders' %}{{ number_of_orders }}/
+
+
+
 
 
 

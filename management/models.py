@@ -3,7 +3,7 @@ from django.db import models
 from mediaserver.upload import public_files_upload_handler, fs
 
 
-class MailSettings(models.Model):
+class MailSetting(models.Model):
     smtp_server = models.CharField(max_length=100)
     smtp_port = models.IntegerField()
     smtp_user = models.CharField(max_length=100)
@@ -12,7 +12,7 @@ class MailSettings(models.Model):
     smtp_default_from = models.CharField(max_length=100)
 
 
-class LdapSettings(models.Model):
+class LdapSetting(models.Model):
     ldap_server = models.CharField(max_length=100)
     ldap_port = models.IntegerField()
     ldap_user = models.CharField(max_length=100)
@@ -22,7 +22,7 @@ class LdapSettings(models.Model):
     ldap_group_filter = models.CharField(max_length=1000)
 
 
-class LegalSettings(models.Model):
+class LegalSetting(models.Model):
     company_name = models.CharField(max_length=100)
     street = models.CharField(max_length=40, default=None)
     number = models.CharField(max_length=5, default=None)

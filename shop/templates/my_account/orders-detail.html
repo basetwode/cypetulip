@@ -280,8 +280,11 @@
 
                             <div class="col-lg-3 col-md-12 col-sm-12">
                                 <h5 class="h-bold">{% trans 'Options' %}</h5>
-                                <a href="{% url 'detail_order_cancel_order' order.order_hash %}"
-                                   class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</a>
+                                <form action="{% url 'detail_order_cancel_order' order.order_hash %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" {% if not order_details.state.initial %}disabled{% endif %}
+                                            class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
+                                </form>
                                 <a href="{% url 'invoice_pdf' order.order_hash %}"
                                    class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
                                 <a href="{% url 'detail_order_write_review' order.order_hash %}"

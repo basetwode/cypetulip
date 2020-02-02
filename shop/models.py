@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Case, When, FloatField, Sum
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
 
@@ -150,6 +149,8 @@ class OrderItemState(models.Model):
 class OrderState(models.Model):
     name = models.CharField(max_length=20)
     initial = models.BooleanField(default=False)
+    cancel_order_state = models.ForeignKey(
+        'self', on_delete=models.CASCADE, null=True, blank=True, related_name='cancel_state', )
     next_state = models.ForeignKey(
         'self', on_delete=models.CASCADE, null=True, blank=True, related_name='previous_state', )
 
@@ -204,7 +205,7 @@ class Order(models.Model):
 
 class OrderDetail(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    order_number = models.CharField(max_length=20)
+    order_number = models.CharField(max_length=30)
     date_added = models.DateTimeField(auto_now_add=True)
     assigned_employee = models.ForeignKey(
         Employee, on_delete=models.CASCADE, null=True, blank=True, )
@@ -212,6 +213,7 @@ class OrderDetail(models.Model):
                               blank=True, )
     date_bill = models.DateTimeField(null=True, blank=True)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
+
 
 # Like a surcharge or discount or product or whatever.
 
@@ -228,6 +230,7 @@ class OrderItem(models.Model):
         OrderItemState, on_delete=models.CASCADE, null=True, blank=True, )
     count = models.IntegerField(default=1)
     price = models.FloatField(default=None, blank=True, null=True)
+
 
 # Corresponding OrderItems for the subproducts
 class FileOrderItem(OrderItem):

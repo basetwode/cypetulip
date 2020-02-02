@@ -2,6 +2,7 @@ from django.conf.urls import include, url
 from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
 
+from management.views import OrderCancelView
 from shop.authentification.views import (CompanyView, LoginView, LogoutView,
                                          RegisterView)
 from shop.my_account.views import (AccountSettingsView, CompanySettingsView,
@@ -46,7 +47,7 @@ urlpatterns = [
     url(r'orders/search/', SearchOrders.as_view(), name="search_orders"),
 
     url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/$', OrderDetailView.as_view(), name="detail_order"),
-    url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/cancel/$', OrderDetailView.as_view(),
+    url(r'^myaccount/orders/([a-zA-Z0-9\\s\-_ ]+)/cancel/$', OrderCancelView.as_view(),
         name="detail_order_cancel_order"),
     url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/bill/show$', OrderDetailView.as_view(),
         name="detail_order_show_bill"),

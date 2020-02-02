@@ -57,6 +57,8 @@ INSTALLED_APPS = (
     'filebrowser',
     'django.contrib.admin',
     'tinymce',
+    'google_analytics',
+    'gtm',
 )
 
 MIDDLEWARE = (
@@ -142,6 +144,11 @@ DIRECTORY = ''
 FILEBROWSER_MEDIA_ROOT = '/var/cypetulip/public'
 
 SHOP_NAME = u'Cypetulip'
+
+GOOGLE_ANALYTICS = {
+    'google_analytics_id': 'asd',
+}
+GOOGLE_TAG_ID = 'asd'
 
 LOGGING = {
     'version': 1,

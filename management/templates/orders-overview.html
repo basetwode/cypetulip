@@ -86,12 +86,16 @@
                                         <strong> Ordernr.: <small>{{ order.order_hash }}</small></strong>
                                     </div>
                                 </div>
+                                <hr>
                                 <div class="row">
-                                    <div class="col-md-3" style="text-align: left; ">
+                                    <div class="col-md-12" style="text-align: left; ">
                                         <a class="btn btn-outline-secondary"
                                            href="{% url 'management_detail_order' order.order_hash %}">{% trans 'Orderdetails' %}</a>
                                         <a class="btn btn-outline-secondary"
                                            href="{% url 'invoice_pdf' order.order_hash %}">{% trans 'Bill' %}</a>
+                                        <a class="btn btn-outline-secondary" data-toggle="modal"
+                                           data-target="#assign-employee-modal">{% trans 'Assign' %}</a>
+                                        {% include 'assign-employee.html' with employees=employees order_hash=order.order_hash %}
                                     </div>
 
                                 </div>
@@ -131,7 +135,7 @@
                                         {% for order_detail in order.orderdetail_set.all %}
                                             <div>
                                                 Assigned Employee: <span
-                                                    style="color: #2c7b91"><b>{{ order_detail.employee|default:"None" }}</b></span>
+                                                    style="color: #2c7b91"><b>{{ order_detail.assigned_employee.last_name|default:"None" }} {{ order_detail.assigned_employee.first_name }}</b></span>
                                             </div>
                                             <div>
                                                 Status: <span
@@ -219,6 +223,11 @@
                                                href="{% url 'management_all_orders' %}{{ number_of_orders }}/
 
 
+
+
+
+
+
                                                        {{ orders.previous_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Previous' %}</a>
                                         {% else %}
                                             <a class="disabled page-link" href="">Previous</a>
@@ -233,6 +242,11 @@
                                         {% if orders.has_next %}
                                             <a class="page-link"
                                                href="{% url 'management_all_orders' %}{{ number_of_orders }}/
+
+
+
+
+
 
 
                                                        {{ orders.next_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Next' %}</a>
