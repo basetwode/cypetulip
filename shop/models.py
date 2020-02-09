@@ -93,8 +93,14 @@ class ProductSubItem(models.Model):
     def __str__(self):
         return self.name + ' - required ' + str(self.is_required)
 
-    def get_price(self):
-        return self.special_price if self.special_price else self.price
+    def price_wt(self):
+        return round(self.price * (1 + self.tax), 2)
+
+    def special_price_wt(self):
+        return round(self.special_price * (1 + self.tax), 2)
+
+    def bprice_wt(self):
+        return self.special_price_wt() if self.special_price else self.price_wt()
 
 
 class FileSubItem(ProductSubItem):
@@ -158,6 +164,13 @@ class OrderState(models.Model):
     def __str__(self):
         return self.name
 
+class ProductAttributeType(models.Model):
+    name = models.CharField(max_length=100)
+
+
+class ProductAttributeTypeInstance(models.Model):
+    type = models.ForeignKey(ProductAttributeType, on_delete=models.CASCADE)
+    value = models.CharField(max_length=100, db_index=True)
 
 # A product can be whatever one needs, like a plan or a surcharge or hours worked..
 
@@ -171,6 +184,7 @@ class Product(ProductSubItem):
     assigned_sub_products = models.ManyToManyField(ProductSubItem, default=None, blank=True,
                                                    symmetrical=False,
                                                    related_name='sub_products')
+    attributes = models.ManyToManyField(ProductAttributeTypeInstance, blank=True)
 
     def __str__(self):
         return self.name + ' - public ' + str(self.is_public)
@@ -212,6 +226,9 @@ class OrderDetail(models.Model):
                               blank=True, )
     date_bill = models.DateTimeField(null=True, blank=True)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
+
+    def unique_nr(self):
+        return "CTNR" + str(self.id).rjust(10, "0")
 
 # Like a surcharge or discount or product or whatever.
 

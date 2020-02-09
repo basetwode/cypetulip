@@ -172,7 +172,7 @@
 
         </div>
         <div id="invoice">
-            <h1>{% trans 'Invoice' %} {{order.order_hash}}</h1>
+            <h1>{% trans 'Invoice' %} {{order_detail.unique_nr}}</h1>
             <div class="date">{% trans 'Invoice Date' %} {{ order_detail.date_bill|date:"d.m.Y" }}</div>
             <div class="date">{% trans 'Due Date' %} {{order_detail.date_due|date:"d.m.Y"}}</div>
         </div>
@@ -193,7 +193,7 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ item.product.name }}</td>
                 <td>
-                    {{ item.product.price|intcomma:True }} €</td>
+                    {{ item.price|intcomma:True }} €</td>
                 <td>{{ item.count }}</td>
                 <td>{{ item.price_t }} €</td>
             </tr>

@@ -1,0 +1,69 @@
+{% load static %}
+{% load recurse %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% block head %}
+    <style>
+        #attributeForm {
+            margin-left: 15px;
+            padding-top: 20px;
+        }
+        .clearable span {
+            margin-left: 10px;
+        }
+    </style>
+{% endblock %}
+<div class="categories-list">
+    <div style="padding-top: 20px" class="panel-group" id="accordion">
+        <div class="card panel panel-default margin-none">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                                <span class="glyphicon glyphicon-folder-close">
+                                                </span>{% trans 'Filter Result' %}</a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse show">
+                <form id="attributeForm" method="get" action="">
+                    {% for field in attribute_form %}
+                        {{ field.as_hidden }}
+                        <div>
+                            {% if field.value %}
+                                <a class="clearable" href="#" onclick="clearAttributeParam('{{ field.auto_id }}')"><i
+                                        class="fa fa-times"></i><span><b>{{ field.label }}</b>: {{ field.value }}</span></a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </form>
+                <ul class="list-group">
+                    {% for attribute_category in types %}
+
+                        <li class="list-group-item" id="v_hm">
+                            <div class="heading">
+                                <div class="arrowImage"></div>
+                                <a class="link"
+                                   href="/shop/products/{{ attribute_category.name }}">{{ attribute_category.name }}</a>
+                            </div>
+                            <ul class="list-group sub">
+                                {% for instance in type_instances %}
+                                    {% if instance in attribute_category.productattributetypeinstance_set.all %}
+                                        <li class="list-group-item" id="v_hm">
+                                            <div class="heading">
+                                                <div class="arrowImage"></div>
+
+                                                <a href="#" class="link"
+                                                   onclick="setAttributeParam('{{ attribute_category.name }}','{{ instance.value }}')"
+                                                >{{ instance.value }} ({{ instance.count }})</a>
+                                            </div>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>

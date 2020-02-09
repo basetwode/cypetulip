@@ -80,7 +80,7 @@
                                         {{ order.total }} €
                                     </div>
                                     <div class="col-md-5 col-xs-5" style="text-align: left; ">
-                                        <strong> Ordernr.: <small>{{ order.order_hash }}</small></strong>
+                                        <strong> Ordernr.: <small>{{ order.orderdetail_set.first.unique_nr }}</small></strong>
                                     </div>
                                 </div>
                                 <div class="row">

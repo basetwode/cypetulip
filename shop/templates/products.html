@@ -6,6 +6,7 @@
 {% load i18n %}
 {% block head %}
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
+    <script src="{% static 'products.js' %}"></script>
     <title>Products</title>
 {% endblock %}
 
@@ -18,7 +19,7 @@
                         Home
                     </a>
                     >
-                    <a href="/shop/products/">
+                    <a href="/shop/products/?">
                         Products
                     </a>
                     {% if selected_category %}
@@ -48,7 +49,7 @@
                                                     <div class="heading">
                                                         <div class="arrowImage"></div>
                                                         <a class="link"
-                                                           href="/shop/products/{{ category.name }}">{{ category.name }}</a>
+                                                           href="/shop/products/{{ category.name }}?">{{ category.name }}</a>
                                                     </div>
                                                     <ul class="list-group sub">{% child %}</ul>
 
@@ -64,6 +65,7 @@
                         </div>
 
                     </div>
+                    {% include 'attribute_side_bar.html' %}
                 </div>
                 <div class="col-md-9 products">
                     <div class="products-img">
@@ -97,11 +99,11 @@
                                             <div class="row">
                                                 <div class="col-12">
                                                     {% if product.special_price %}
-                                                        <span style="text-decoration: line-through">{{ product.price | floatformat:2 }} &euro;</span>
-                                                        <strong style="color: red">{{ product.special_price | floatformat:2 }}
+                                                        <span style="text-decoration: line-through">{{ product.price_wt | floatformat:2 }} &euro;</span>
+                                                        <strong style="color: red">{{ product.special_price_wt | floatformat:2 }}
                                                             &euro;</strong>
                                                     {% else %}
-                                                        <span>{{ product.price | floatformat:2 }} &euro;</span>
+                                                        <span>{{ product.price_wt | floatformat:2 }} &euro;</span>
                                                     {% endif %}
                                                 </div>
                                             </div>

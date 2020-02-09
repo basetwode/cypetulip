@@ -57,7 +57,7 @@ class GeneratePDF(View):
         context = {
             'total': total_with_tax,
             'total_without_tax': total_without_tax,
-            'tax': round(total_with_tax - total_without_tax,2),
+            'tax': round(total_with_tax - total_without_tax, 2),
             'order': _order,
             'order_detail': order_detail,
             'order_items': order_items,

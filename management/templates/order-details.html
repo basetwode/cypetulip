@@ -98,7 +98,7 @@
                                 </div>
                                 <div class="col-md-5 col-sm-5">
                                     <strong>Ordernr.:</strong>
-                                    <div><small>{{ order.order_hash }}</small>
+                                    <div><small>{{ order.orderdetail_set.first.unique_nr }}</small>
                                     </div>
                                 </div>
                             </div>
@@ -134,7 +134,7 @@
                                                                 <img
                                                                         src="{{ order.product.product.product_picture.url }}"
                                                                         alt="..."
-                                                                        class="img img-thumbnail img-responsive"/>
+                                                                        class="img img-thumbnail img-fluid"/>
                                                             {% else %}
                                                                 <i class="fa fa-4x fa-image img-thumbnail"></i>
                                                             {% endif %}
@@ -162,22 +162,22 @@
                                                     style="border-top: none">
                                                     <td colspan="1">
                                                         <div class="col-sm-12 ">
-                                                            <div class="col-md-offset-1 col-md-11 sub-product required">
-                                                                <div class="col-md-offset-1 col-md-9">
+                                                            <div class="col-md-offset-1 col-md-12 sub-product required">
+                                                                <div class="col-md-offset-1 col-md-12">
                                                                     <h5>
                                                                         <i><b>{{ sub_item.product.name }}</b></i>
                                                                     </h5>
                                                                     <div class="col-md-12">
                                                                         {% if sub_item.fileorderitem %}
                                                                             {% trans 'File' %}:
-                                                                            <a href="{{ sub_item.fileorderitem.file.url }}">
+                                                                           <div class="col-md-7"><a href="{{ sub_item.fileorderitem.file.url }}">
                                                                                 {{ sub_item.fileorderitem.file_name }}
-                                                                            </a>
-                                                                            <div class="col-sm-2 hidden-xs">
+                                                                           </a></div>
+                                                                            <div class="col-md-8 hidden-xs">
                                                                                 <img
                                                                                         src="{{ sub_item.fileorderitem.file.url }}"
                                                                                         alt="..."
-                                                                                        class="img-responsive"/>
+                                                                                        class="img img-thumbnail img-fluid"/>
                                                                             </div>
                                                                         {% elif sub_item.selectorderitem %}
                                                                             {{ sub_item.selectorderitem.selected_item }}
@@ -279,7 +279,7 @@
                                 <h5 class="h-bold">{% trans 'Options' %}</h5>
                                 <a href="{% url 'detail_order_cancel_order' order.order_hash %}"
                                    class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</a>
-                                <a href="{% url 'detail_order_show_bill' order.order_hash %}"
+                                <a href="{% url 'invoice_pdf' order.order_hash %}"
                                    class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
                                 <a href="{% url 'detail_order_write_review' order.order_hash %}"
                                    class="btn btn-fw btn-secondary">{% trans 'Write review' %}</a>

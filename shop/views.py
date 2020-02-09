@@ -1,6 +1,8 @@
 from datetime import datetime
 
-from django.db.models import When, FloatField, Case
+from django.db import models
+from django.db.models import When, FloatField, Case, Count, F, OuterRef, Q
+from django.db.models.functions import Round
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -8,8 +10,9 @@ from django.views.generic import View
 
 from permissions.error_handler import raise_404
 from permissions.permissions import check_serve_perms
+from shop.forms import ProductAttributeForm
 from shop.models import (Contact, Order, OrderDetail, OrderState,
-                         Product, ProductCategory, OrderItem)
+                         Product, ProductCategory, OrderItem, ProductAttributeType, ProductAttributeTypeInstance)
 
 
 # Create your views here.
@@ -40,14 +43,45 @@ class ProductView(View):
         if not selected_category:
             products = Product.objects.filter(is_public=True)
         categories = ProductCategory.objects.filter(is_main_category=True)
-        # form = self.form_class(initial=self.initial).
+
+        product_attribute_categories = ProductAttributeType.objects. \
+            filter(productattributetypeinstance__product__in=products).annotate(count=Count('name', distinct=True))
+        attribute_form = ProductAttributeForm(product_attribute_categories, request.GET)
+
+        selected_attribute_types = ProductAttributeType.objects.filter(name__in=attribute_form.data)
+        selected_attributes = ProductAttributeTypeInstance.objects.filter(type__in=selected_attribute_types).\
+            filter(value__in=attribute_form.data.values())
+
+        for selected_attribute in selected_attributes:
+            products = products.filter(attributes__id=selected_attribute.id)
+
+        # Update available list of attributes
+        product_attribute_categories = ProductAttributeType.objects. \
+            filter(productattributetypeinstance__product__in=products).annotate(count=Count('name', distinct=True))
+        product_attribute_types = ProductAttributeTypeInstance.objects. \
+            filter(product__in=products).annotate(count=Count('value', product__in=products))
+
+        self.add_tax_to_product(products)
+
         return render(request, self.template_name, {'products': products,
                                                     'categories': categories,
+                                                    'types': product_attribute_categories,
+                                                    'type_instances': product_attribute_types,
+                                                    'attribute_form': attribute_form,
                                                     'selected_category': category})
 
     def post(self, request):
         # <view logic>
         return HttpResponse('result')
+
+    @staticmethod
+    def add_tax_to_product(products):
+        products.annotate(tprice=Round((Case(
+            When(special_price=False, then='price'),
+            When(special_price__gte=0, then='special_price'),
+            default='price',
+            output_field=FloatField(),
+        ) * (F('tax') + 1), FloatField(), 2)))
 
 
 class ProductDetailView(View):

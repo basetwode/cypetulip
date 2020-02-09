@@ -14,11 +14,11 @@ def get_open_orders(request):
                 all_items = OrderItem.objects.filter(order=order[0])
                 sum = 0
                 for item in all_items:
-                    sum += item.product.price
+                    sum += item.product.bprice_wt()
                 total = 0
                 number_items = 0
                 for order in items:
-                    total += order.product.price
+                    total += order.product.bprice_wt()
                     number_items += 1
                 return {'open_orders': items, 'total_cart': total, 'number_items': number_items, 'total_order': sum}
             else:

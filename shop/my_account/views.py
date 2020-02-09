@@ -28,6 +28,7 @@ class OrderDetailView(View):
                 _order.total = total
                 order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True,
                                                        product__in=Product.objects.all())
+
                 return render(request, self.template_name,
                               {'order_details': _order, 'order': _order, 'contact': contact,
                                'order_items': order_items,
