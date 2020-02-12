@@ -49,7 +49,6 @@ urlpatterns = [
     url(r'^cms/', include(cms_urls.urlpatterns)),
     url(r'^billing/', include(billing_urls.urlpatterns)),
     url(r'^payment/', include(payment_urls, namespace='payment')),
-    url(r'^djga/', include('google_analytics.urls')),
 ]
 
 # if settings.DEBUG:

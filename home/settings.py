@@ -57,8 +57,6 @@ INSTALLED_APPS = (
     'filebrowser',
     'django.contrib.admin',
     'tinymce',
-    'google_analytics',
-    'gtm',
 )
 
 MIDDLEWARE = (
