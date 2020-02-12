@@ -2,9 +2,6 @@
 {% load static %}
 {% load recurse %}
 {% load bootstrap4 %}
-{# Load CSS and JavaScript #}
-{% bootstrap_css %}
-{% bootstrap_javascript jquery='full' %}
 
 {% load i18n %}
 {% bootstrap_messages %}
@@ -19,39 +16,35 @@
 {% block body %}
     <div class="main">
         <div class="content">
-
             <div class="col-md-12">
                 <a class="btn btn-secondary" href="{{ request.META.HTTP_REFERER }}">{% trans 'Back' %}</a>
+                <a href="{% url 'create_employee' %}"
+                   class="btn btn-primary">{% trans 'Add new Employee' %}</a>
 
+                <br>
+                <br>
                 <table class="table table-hover table-striped table-responsive-sm">
                     <thead class="thead-dark">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">{% trans 'Name' %}</th>
-                        <th scope="col">{% trans 'Company' %}</th>
-                        <th scope="col">{% trans 'Configuration' %}</th>
+                        <th scope="col">{% trans 'Firstname' %}</th>
+                        <th scope="col">{% trans 'Lastname' %}</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for contact in customers %}
+                    {% for employee in employees %}
                         <tr>
-                            <td>{{ contact.id }}</td>
-                            <td>{{ contact.first_name }} {{ contact.last_name }}</td>
-                            <td>{{ contact.company }}</td>
-                            <td class="">
-                                <div>
-                                    <a class="btn btn-outline-dark"
-                                       href="{% url 'contact_edit' contact.company_id %}">{% trans 'Edit Contact' %}</a>
-                                    <a class="btn btn-outline-dark"
-                                       href="{% url 'company_edit' contact.id %}">{% trans 'Edit Company' %}</a>
-                                </div>
+                            <td>{{ employee.id }}</td>
+                            <td>{{ employee.first_name }}</td>
 
-                            </td>
+                            <td>{{ employee.last_name }}</td>
+
                         </tr>
                     {% endfor %}
                     </tbody>
 
                 </table>
+
             </div>
         </div>
     </div>

@@ -80,7 +80,6 @@ function submitForm(url, form) {
             $('#alert-warning').hide();
             $('#alert-danger').hide();
             $('.progress-bar').css('width', 0 + '%').attr('aria-valuenow', 0);
-            waitModal.modal('hide');
             parseErrors(response);
         }
     });
@@ -152,6 +151,28 @@ function parseErrors(data) {
             $(window).scrollTop(positionTop);
             break;
     }
+}
+
+
+function assignEmployee(order_hash) {
+    var id = $('#employee-select').val();
+    $.ajax(
+        {
+            url: order_hash + '/assign/',
+            method: 'post',
+            data: $('#assignEmployeeForm').serialize() + '&id=' + id,
+            success: function () {
+                $('#alert-success').show();
+                $('#assign-employee-modal').modal('hide');
+                setTimeout(() => {
+                    window.location.reload()
+                }, 1000)
+            },
+            error: function () {
+                $('#alert-danger').show();
+            }
+        }
+    )
 }
 
 $(function () {

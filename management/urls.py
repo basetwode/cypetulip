@@ -11,10 +11,14 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               ProductsOverviewView, SectionCreateView,
                               SectionEditView, SectionsOverviewView,
                               SettingsView, ProductDeleteView, SectionDeleteView, PageDeleteView, CategoryDeleteView,
-                              ContactEditView, CompanyEditView)
+                              ContactEditView, CompanyEditView, LegalSettingsDetailView, EmployeeOverviewView,
+                              EmployeeCreationView, OrderAssignEmployeeView)
 from shop.my_account.views import SearchOrders
 
 __author__ = ''
+
+from shop.views import OrderCancelView
+
 urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^$', ManagementView.as_view(), name="management_index"),
@@ -27,6 +31,8 @@ urlpatterns = [
         name='mail_settings_details'),
     url(r"^settings/ldap/(?P<ldap_settings_id>[a-zA-Z0-9_.-]*)$", LdapSettingsDetailView.as_view(),
         name='ldap_settings_details'),
+    url(r"^settings/legal/(?P<legal_settings_id>[a-zA-Z0-9_.-]*)$", LegalSettingsDetailView.as_view(),
+        name='legal_settings_details'),
 
     url(r'orders/search/', SearchOrders.as_view(), name="search_orders"),
     url(r'^orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)$', ManagementOrderDetailView.as_view(),
@@ -55,4 +61,12 @@ urlpatterns = [
     url(r'^sections/(?P<url_param>[a-zA-Z0-9_.-]+)/delete/$', SectionDeleteView.as_view(), name="section_delete"),
     url(r'^sections/$', SectionsOverviewView.as_view(), name="sections"),
     url(r'^sections/(?P<section_id>[a-zA-Z0-9_.-]+)/$', SectionEditView.as_view(), name="section_edit"),
+
+    url(r'^employees/$', EmployeeOverviewView.as_view(), name="employee_overview"),
+    url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/assign/$',
+        OrderAssignEmployeeView.as_view(), name="assign_employee"),
+    url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/cancel/$',
+        OrderCancelView.as_view(), name="cancel_order"),
+    url(r'^employees/create/$', EmployeeCreationView.as_view(), name="create_employee"),
+
 ]

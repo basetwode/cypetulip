@@ -3,8 +3,8 @@ from django.urls import reverse
 from django.views.generic import View
 
 from shop.Errors import FieldError, JsonResponse
-from shop.models import Contact, Order, OrderItem, Product, ProductSubItem
-from shop.order.forms import ItemBuilder, SubItemForm
+from shop.models import Contact, Order, OrderItem, Product, ProductSubItem, Address
+from shop.order.forms import ItemBuilder, SubItemForm, OrderDetail
 from shop.utils import create_hash, json_response
 
 __author__ = 'Anselm'
@@ -22,6 +22,7 @@ class CheckoutView(View):
 
     def get(self, request, order):
         contact = Contact.objects.filter(user=request.user)
+        address = Address.objects.filter(contact=contact[0])
         company = contact[0].company
         order = Order.objects.filter(order_hash=order, is_send=False, company=company)
         if order.count() > 0:
@@ -30,7 +31,8 @@ class CheckoutView(View):
             sub_order_items.delete()
             sub_products_once_only = self.get_subproducts_once_only(order)
             return render(request, self.template_name, {'order_details': order,
-                                                        'sub_products_once_only': sub_products_once_only})
+                                                        'sub_products_once_only': sub_products_once_only,
+                                                        'address': address})
         else:
             return redirect(reverse('shopping_cart'))
 
@@ -38,6 +40,7 @@ class CheckoutView(View):
         contact = Contact.objects.filter(user=request.user)
         company = contact[0].company
         _order = Order.objects.filter(order_hash=order, is_send=False, company=company)
+        order_details = OrderDetail.objects.get(order_number=order)
         if _order.count() > 0:
             forms = {}
             forms_are_valid = True
@@ -62,6 +65,9 @@ class CheckoutView(View):
                 for k, v in forms.items():
                     v.save()
                 token = create_hash()
+                shipment_address = Address.objects.get(id=request.POST.get("shipment-address"))
+                order_details.shipment_address = shipment_address
+                order_details.save()
                 ord = _order[0]
                 ord.token = token
                 ord.save()

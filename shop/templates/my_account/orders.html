@@ -6,6 +6,9 @@
 {% block head %}
     <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <script src="{% static 'onchange.js' %}"></script>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+
     <title>Admin - All orders </title>
 {% endblock %}
 
@@ -22,12 +25,9 @@
                         <div class="card-body">
                             <form method="get">
                                 <div class="input-group">
-                                    <input name="search" type="text" class="form-control"
-                                           placeholder="Search for..."
-                                           value="{% if search %}{{ search }}{% endif %}">
-                                    <span class="input-group-btn">
-                                                    <button class="btn btn-warning" type="button">Go!</button>
-                                                  </span>
+
+                                    <input id="order-search" type="text" class="form-control"
+                                           placeholder="Search for...">
                                 </div>
                             </form>
 
@@ -57,7 +57,7 @@
                         </div>
                     {% endif %}
                     {% for order in orders %}
-                        <div class="card">
+                        <div class="card mb-2">
                             <div style="overflow: auto" class="card-header orders-overview">
                                 <div style="overflow: auto" class="row">
                                     <div class="col-md-3 col-xs-3" style="text-align: left; ">
@@ -83,11 +83,13 @@
                                         <strong> Ordernr.: <small>{{ order.orderdetail_set.first.unique_nr }}</small></strong>
                                     </div>
                                 </div>
+                                <hr>
                                 <div class="row">
                                     <div class="col-md-3" style="text-align: left; ">
                                         <a class="btn btn-outline-secondary"
                                            href="{% url 'detail_order' order.order_hash %}">{% trans 'Orderdetails' %}</a>
-                                        <a class="btn btn-outline-secondary" href="#">{% trans 'Bill' %}</a>
+                                        <a class="btn btn-outline-secondary"
+                                           href="{% url 'invoice_pdf' order.order_hash %}">{% trans 'Bill' %}</a>
                                     </div>
 
                                 </div>
@@ -125,10 +127,6 @@
                                         <h4>{% trans 'State' %}</h4>
 
                                         {% for order_detail in order.orderdetail_set.all %}
-                                            <div>
-                                                Assigned Employee: <span
-                                                    style="color: #2c7b91"><b>{{ order_detail.employee|default:"None" }}</b></span>
-                                            </div>
                                             <div>
                                                 Status: <span
                                                     style="color: #2c7b91"><b>{{ order_detail.state }}</b></span>
@@ -183,10 +181,6 @@
                                 <select class="form-control"
                                         onchange=
                                                 "changeNumberOfOrders(this,'{% url 'all_orders' %}{0}/{{ orders.number }}/')">
-                                    <option class="dropdown-item" value="1"
-                                            {% if number_of_orders == '1' %}selected{% endif %}>
-                                        1 Entry
-                                    </option>
                                     <div class="dropdown-divider"></div>
                                     <option class="dropdown-item" value="5"
                                             {% if number_of_orders == '5' %}selected{% endif %}>
@@ -215,10 +209,9 @@
                                                href="{% url 'all_orders' %}{{ number_of_orders }}/
 
 
-
                                                        {{ orders.previous_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Previous' %}</a>
                                         {% else %}
-                                            <a class="disabled page-link" href="">Previous</a>
+                                            <a class=page-link">{% trans 'Previous' %}</a>
                                         {% endif %}
                                     </li>
                                     <li class="page-item">
@@ -231,11 +224,9 @@
                                             <a class="page-link"
                                                href="{% url 'all_orders' %}{{ number_of_orders }}/
 
-
-
                                                        {{ orders.next_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Next' %}</a>
                                         {% else %}
-                                            <a class="disabled page-link" href="">Next</a>
+                                            <a class="page-link">{% trans 'Next' %}</a>
                                         {% endif %}
                                     </li>
                                 </ul>

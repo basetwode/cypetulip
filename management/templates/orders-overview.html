@@ -86,12 +86,16 @@
                                         <strong> Ordernr.: <small>{{ order.orderdetail_set.first.unique_nr }}</small></strong>
                                     </div>
                                 </div>
+                                <hr>
                                 <div class="row">
-                                    <div class="col-md-3" style="text-align: left; ">
+                                    <div class="col-md-12" style="text-align: left; ">
                                         <a class="btn btn-outline-secondary"
                                            href="{% url 'management_detail_order' order.order_hash %}">{% trans 'Orderdetails' %}</a>
                                         <a class="btn btn-outline-secondary"
                                            href="{% url 'invoice_pdf' order.order_hash %}">{% trans 'Bill' %}</a>
+                                        <a class="btn btn-outline-secondary" data-toggle="modal"
+                                           data-target="#assign-employee-modal">{% trans 'Assign' %}</a>
+                                        {% include 'assign-employee.html' with employees=employees order_hash=order.order_hash %}
                                     </div>
 
                                 </div>
@@ -131,7 +135,7 @@
                                         {% for order_detail in order.orderdetail_set.all %}
                                             <div>
                                                 Assigned Employee: <span
-                                                    style="color: #2c7b91"><b>{{ order_detail.employee|default:"None" }}</b></span>
+                                                    style="color: #2c7b91"><b>{{ order_detail.assigned_employee.last_name|default:"None" }} {{ order_detail.assigned_employee.first_name }}</b></span>
                                             </div>
                                             <div>
                                                 Status: <span
@@ -187,10 +191,6 @@
                                 <select class="form-control"
                                         onchange=
                                                 "changeNumberOfOrders(this,'{% url 'management_all_orders' %}{0}/{{ orders.number }}/')">
-                                    <option class="dropdown-item" value="1"
-                                            {% if number_of_orders == '1' %}selected{% endif %}>
-                                        1 Entry
-                                    </option>
                                     <div class="dropdown-divider"></div>
                                     <option class="dropdown-item" value="5"
                                             {% if number_of_orders == '5' %}selected{% endif %}>
@@ -218,10 +218,9 @@
                                             <a class="page-link"
                                                href="{% url 'management_all_orders' %}{{ number_of_orders }}/
 
-
                                                        {{ orders.previous_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Previous' %}</a>
                                         {% else %}
-                                            <a class="disabled page-link" href="">Previous</a>
+                                            <button class="disabled page-link" href="">{% trans 'Previous' %}</button>
                                         {% endif %}
                                     </li>
                                     <li class="page-item">
@@ -237,7 +236,7 @@
 
                                                        {{ orders.next_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Next' %}</a>
                                         {% else %}
-                                            <a class="disabled page-link" href="">Next</a>
+                                            <button class="disabled page-link" href="">{% trans 'Next' %}</button>
                                         {% endif %}
                                     </li>
                                 </ul>

@@ -1,10 +1,7 @@
 {% extends 'base-mgmt.html' %}
-{% load recurse %}
 {% load static %}
+{% load recurse %}
 {% load bootstrap4 %}
-{# Load CSS and JavaScript #}
-{% bootstrap_css %}
-{% bootstrap_javascript jquery='full' %}
 
 {% load i18n %}
 {% bootstrap_messages %}
@@ -20,34 +17,40 @@
     <div class="main">
         <div class="content">
             <div class="col-md-12">
+                <a href="{% url 'address_create' %}" class="btn btn-outline-dark">{% trans 'Add' %}</a>
                 <a class="btn btn-secondary" href="{{ request.META.HTTP_REFERER }}">{% trans 'Back' %}</a>
 
+                <br>
                 <table class="table table-hover table-striped table-responsive-sm">
                     <thead class="thead-dark">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">{% trans 'Position' %}</th>
-                        <th scope="col">{% trans 'Pagename' %}</th>
-                        <th scope="col">{% trans 'Enabled' %}</th>
-                        <th scope="col">{% trans 'Link' %}</th>
+                        <th scope="col">{% trans 'Name' %}</th>
+                        <th scope="col">{% trans 'Street' %}</th>
+                        <th scope="col">{% trans 'Number' %}</th>
+                        <th scope="col">{% trans 'Zipcode' %}</th>
+                        <th scope="col">{% trans 'City' %}</th>
+                        <th scope="col">{% trans 'Contact' %}</th>
                         <th scope="col">{% trans 'Configuration' %}</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for page in pages %}
+                    {% for entry in address %}
                         <tr>
-                            <td>{{ page.id }}</td>
-                            <td>{{ page.position }}</td>
-                            <td>{{ page.page_name }}</td>
-                            <td>{{ page.is_enabled }}</td>
-                            <td>{{ page.link }}</td>
+                            <td>{{ entry.id }}</td>
+                            <td>{{ entry.name }}</td>
+                            <td>{{ entry.street }}</td>
+                            <td>{{ entry.number }}</td>
+                            <td>{{ entry.zipcode }}</td>
+                            <td>{{ entry.city }}</td>
+                            <td>{{ entry.contact }}</td>
                             <td class="">
                                 <div>
                                     <a class="btn btn-outline-dark"
-                                       href="{% url 'page_edit' page.id %}">{% trans 'Edit' %}</a>
+                                       href="{% url 'address_edit' entry.id %}">{% trans 'Edit' %}</a>
                                     <button class="btn btn-outline-dark" data-toggle="modal"
                                             data-target="#delete-modal">{% trans 'Delete' %}</button>
-                                    {% include 'delete-modal.html' with id=page.id url='page_delete' url_param='page_id' %}
+                                    {% include 'delete-modal.html' with id=entry.id url='address_delete' url_param='address_id' %}
 
                                 </div>
 

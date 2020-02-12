@@ -13,7 +13,7 @@ from xhtml2pdf import pisa
 
 from billing.utils import calculate_sum, Round
 from home import settings
-from management.models import LegalSettings
+from management.models import LegalSetting
 from shop.models import Order, OrderDetail, OrderItem
 
 
@@ -25,7 +25,7 @@ class HTMLPreview(View):
         company = _order.company
         order_items = OrderItem.objects.filter(order=_order)
 
-        legal_settings = LegalSettings.objects.first()
+        legal_settings = LegalSetting.objects.first()
 
         template = get_template('invoice.html')
         context = {
@@ -51,7 +51,7 @@ class GeneratePDF(View):
         )
         order_detail.date_due = order_detail.date_bill + timedelta(days=company.term_of_payment)
 
-        legal_settings = LegalSettings.objects.first()
+        legal_settings = LegalSetting.objects.first()
         total_without_tax = calculate_sum(order_items)
         total_with_tax = calculate_sum(order_items, True)
         context = {

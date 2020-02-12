@@ -129,22 +129,21 @@
 
                         <div class="card-text">
                             <div class="btn-group">
-                                <a href="{% url 'account_settings' %}"
+                                <a href="{% url 'employee_overview' %}"
                                    class="btn btn-primary mr-1">{% trans 'Staff' %}</a>
                                 <a href="{% url 'all_orders' %}"
                                    class="btn btn-primary mr-1">{% trans 'permissions' %}</a>
                             </div>
                             <hr>
                             <div class="btn-group">
-                                <a href="{% url 'company_settings' %}"
-                                   class="btn btn-primary mr-1">{% trans 'shop' %}</a>
-
+                                <a href="{% url 'legal_settings_details'  1 %}"
+                                   class="btn btn-primary mr-1">{% trans 'Legal Settings' %}</a>
                             </div>
                             <hr>
                             <div class="btn-group">
-                                <a href="{% url 'mail_settings_details' mail_settings.id %}"
+                                <a href="{% url 'mail_settings_details' 1 %}"
                                    class="btn btn-primary mr-1">{% trans 'mail' %}</a>
-                                <a href="{% url 'ldap_settings_details'  ldap_settings.id %}"
+                                <a href="{% url 'ldap_settings_details'  1 %}"
                                    class="btn btn-primary mr-1">{% trans 'ldap' %}</a>
                             </div>
                         </div>
@@ -165,13 +164,13 @@
 
                     <div class="card-body">
 
-                        <div class="card-text">Seiten</div>
+                        <div class="card-text">{% trans 'Pages' %}</div>
                         <a href="{% url 'pages' %}"
                            class="btn btn-primary mr-1">{% trans 'Pages' %}</a>
                         <a href="{% url 'create_page' %}"
                            class="btn btn-primary">{% trans 'Add Page' %}</a>
                         <hr>
-                        <div class="card-text">Sektionen</div>
+                        <div class="card-text">{% trans 'Sections' %}</div>
                         <a href="{% url 'sections' %}"
                            class="btn btn-primary mr-1">{% trans 'Sections' %}</a>
                         <a href="{% url 'create_section' %}"

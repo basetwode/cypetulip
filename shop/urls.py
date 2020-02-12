@@ -6,7 +6,8 @@ from shop.authentification.views import (CompanyView, LoginView, LogoutView,
                                          RegisterView)
 from shop.my_account.views import (AccountSettingsView, CompanySettingsView,
                                    MyAccountView, OrderDetailView, OrdersView,
-                                   SearchOrders)
+                                   SearchOrders, AddressCreationView, AddressEditView, AddressDeleteView,
+                                   AddressOverviewView)
 from shop.order.checkout import CheckoutView
 from shop.order.overview import OverviewView
 from shop.order.shoppingcart import ShoppingCartDetailView, ShoppingCartView
@@ -38,15 +39,21 @@ urlpatterns = [
 
     url(r'^myaccount/$', MyAccountView.as_view(), name="my_account"),
 
+    url(r'^myaccount/address/create/$', AddressCreationView.as_view(), name="address_create"),
+    url(r'^myaccount/address/(?P<address_id>[a-zA-Z0-9_.-]+)/$', AddressEditView.as_view(), name="address_edit"),
+    url(r'^myaccount/address/(?P<url_param>[a-zA-Z0-9_.-]+)/delete$', AddressDeleteView.as_view(),
+        name="address_delete"),
+    url(r'^myaccount/address/$', AddressOverviewView.as_view(), name="address_overview"),
+
     url(r'^myaccount/account_settings/$', AccountSettingsView.as_view(), name="account_settings"),
     url(r'^myaccount/company_settings/$', CompanySettingsView.as_view(), name="company_settings"),
 
     url(r'^myaccount/orders(/(?P<number_of_orders>[0-9]*)/(?P<page>[0-9]*))?/$', OrdersView.as_view(),
         name="all_orders"),
-    url(r'^myaccount/orders/search/', SearchOrders.as_view(), name="search_orders"),
+    url(r'orders/search/', SearchOrders.as_view(), name="search_orders"),
 
     url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/$', OrderDetailView.as_view(), name="detail_order"),
-    url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/cancel/$', OrderDetailView.as_view(),
+    url(r'^myaccount/orders/([a-zA-Z0-9\\s\-_ ]+)/cancel/$', OrderCancelView.as_view(),
         name="detail_order_cancel_order"),
     url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/bill/show$', OrderDetailView.as_view(),
         name="detail_order_show_bill"),

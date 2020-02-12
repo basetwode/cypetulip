@@ -158,7 +158,7 @@
                         <table id="cart" class="table table-hover table-striped table-responsive-md">
                             <thead>
                             <tr>
-                                <th style="width:50%">{% trans 'Adress' %}</th>
+                                <th style="width:50%">{% trans 'Address' %}</th>
                                 <th style="width:10%">{% trans '' %}</th>
 
                                 <th style="width:22%" class="text-center">{% trans '' %}</th>
@@ -169,7 +169,7 @@
 
                             <tbody>
                             <tr>
-                                <td style="width:50%">{{ contact.title }} {{ contact.first_name }} {{ contact.lastname }}</td>
+                                <td style="width:50%">{{ contact.title }} {{ contact.first_name }} {{ contact.last_name }}</td>
                                 <td style="width:10%"></td>
 
                                 <td style="width:22%" class="text-center"></td>
@@ -177,7 +177,10 @@
 
                             </tr>
                             <tr>
-                                <td style="width:50%">{{ contact.company.street }} {{ contact.company.zipcode }} {{ contact.company.city }}</td>
+                                <td style="width:50%">
+                                    <p>{{ shipment.street }} {{ shipment.number }}</p>
+                                    <p>{{ shipment.zipcode }} {{ shipment.city }}</p>
+                                </td>
                                 <td style="width:10%"></td>
 
                                 <td style="width:22%" class="text-center"></td>

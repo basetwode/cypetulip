@@ -277,8 +277,18 @@
 
                             <div class="col-lg-3 col-md-12 col-sm-12">
                                 <h5 class="h-bold">{% trans 'Options' %}</h5>
-                                <a href="{% url 'detail_order_cancel_order' order.order_hash %}"
-                                   class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</a>
+                                <a class="btn btn-fw btn-secondary" data-toggle="modal" style="color: #fff"
+                                   data-target="#assign-employee-modal">{% trans 'Assign' %}</a>
+                                {% include 'assign-employee.html' with employees=employees order_hash=order.order_hash %}
+                                {% for order_detail in order.orderdetail_set.all %}
+                                    <form action="{% url 'detail_order_cancel_order' order.order_hash %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                {% if order_detail.state == order_detail.state.cancel_order_state %}disabled{% endif %}
+                                                class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
+                                    </form>
+                                {% endfor %}
+
                                 <a href="{% url 'invoice_pdf' order.order_hash %}"
                                    class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
                                 <a href="{% url 'detail_order_write_review' order.order_hash %}"

@@ -14,8 +14,8 @@ from shop.forms import ProductAttributeForm
 from shop.models import (Contact, Order, OrderDetail, OrderState,
                          Product, ProductCategory, OrderItem, ProductAttributeType, ProductAttributeTypeInstance)
 
-
 # Create your views here.
+from shop.utils import json_response
 
 
 class IndexView(View):
@@ -146,3 +146,20 @@ class OrderConfirmedView(View):
 
         _order.save()
         return render(request, self.template_name, {'order': _order})
+
+
+class OrderCancelView(View):
+    def post(self, request, order_hash):
+        _order = OrderDetail.objects.get(order_number=order_hash)
+        if _order.state.initial:
+            _order.state = _order.state.cancel_order_state
+        else:
+            if request.user.is_staff and _order.state != _order.state.cancel_order_state:
+                _order.state = _order.state.cancel_order_state
+            else:
+                return json_response(500, x={})
+        try:
+            _order.save()
+            return redirect(request.META.get('HTTP_REFERER'))
+        except:
+            return json_response(500, x={})

@@ -10,7 +10,7 @@ from shop.Errors import (FieldError,
                          JsonResponse)
 from shop.models import Contact, Order
 from shop.order.utils import get_order_for_hash_and_contact
-from shop.utils import json_response
+from shop.utils import json_response, check_params
 from .methods.forms import PaymentFormFactory, get_all_payment_forms_as_dict
 
 
@@ -67,7 +67,7 @@ class PaymentCreationView(View):
         return redirect('/shop/overview/' + order)
 
     @check_serve_perms
-    # @check_params(required_arguments={'method': '[0-9]'}, message="Please select a payment method")
+    @check_params(required_arguments={'method': '[0-9]'}, message="Please select a payment method")
     def post(self, request, order):
         contact = Contact.objects.filter(user=request.user)
         company = contact[0].company

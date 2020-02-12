@@ -7,11 +7,13 @@ from django.views.generic import DetailView, ListView, View, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 
 from cms.models import Page, Section
-from management.models import LdapSettings, MailSettings
+from management.models import LdapSetting, MailSetting, LegalSetting
+from permissions.models import AppUrlPermission
 from permissions.permissions import check_serve_perms
-from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company
+from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail
 from shop.my_account.views import SearchOrders
 from shop.order.utils import get_orderitems_once_only
+from shop.utils import json_response
 from utils.views import CreateUpdateView
 
 
@@ -20,7 +22,7 @@ class ManagementView(View):
 
     def get(self, request):
         contact = Contact.objects.filter(user=request.user)
-        mail_settings = MailSettings.objects.all()
+        mail_settings = MailSetting.objects.all()
         try:
             company = contact[0].company
             mail_settings = mail_settings[0]
@@ -35,12 +37,13 @@ class ManagementView(View):
 class ManagementOrderOverviewView(View):
     template_name = 'orders-overview.html'
 
-    def get(self, request, page=1):
+    def get(self, request, page=1, **kwargs):
         if not request.user.is_staff:
             contact = Contact.objects.get(user=request.user)
         else:
             contact = {}
         _orders, search = SearchOrders.filter_orders(request, True)
+        employees = Employee.objects.all()
         number_of_orders = '5'
         paginator = Paginator(_orders, number_of_orders)
         for order in _orders:
@@ -57,7 +60,7 @@ class ManagementOrderOverviewView(View):
             # If page is out of range (e.g. 9999), deliver last page of results.
             _orders = paginator.page(paginator.num_pages)
         return render(request, self.template_name,
-                      {'orders': _orders, 'contact': contact, 'search': search})
+                      {'orders': _orders, 'contact': contact, 'search': search, 'employees': employees})
 
     @check_serve_perms
     def post(self, request):
@@ -71,6 +74,7 @@ class ManagementOrderDetailView(DetailView):
 
     @check_serve_perms
     def get(self, request, order):
+        employees = Employee.objects.all()
         if not request.user.is_staff:
             contact = Contact.objects.get(user=request.user)
             company = contact.company
@@ -86,7 +90,7 @@ class ManagementOrderDetailView(DetailView):
                                                    product__in=Product.objects.all())
             return render(request, self.template_name,
                           {'order_details': _order, 'order': _order, 'contact': contact,
-                           'order_items': order_items,
+                           'order_items': order_items, 'employees': employees,
                            'order_items_once_only': get_orderitems_once_only(_order)})
 
     def post(self, request):
@@ -109,7 +113,7 @@ class MailSettingsDetailView(CreateUpdateView):
     mail_settings_id = None
     slug_field = 'id'
     slug_url_kwarg = 'mail_settings_id'
-    model = MailSettings
+    model = MailSetting
     fields = '__all__'
 
     def get_success_url(self):
@@ -121,11 +125,23 @@ class LdapSettingsDetailView(CreateUpdateView):
     ldap_settings_id = None
     slug_field = 'id'
     slug_url_kwarg = 'ldap_settings_id'
-    model = LdapSettings
+    model = LdapSetting
     fields = '__all__'
 
     def get_success_url(self):
         return reverse_lazy('ldap_settings_details', kwargs={'ldap_settings_id': self.object.id})
+
+
+class LegalSettingsDetailView(CreateUpdateView):
+    template_name = 'settings-details.html'
+    ldap_settings_id = None
+    slug_field = 'id'
+    slug_url_kwarg = 'legal_settings_id'
+    model = LegalSetting
+    fields = '__all__'
+
+    def get_success_url(self):
+        return reverse_lazy('legal_settings_details', kwargs={'legal_settings_id': self.object.id})
 
 
 class CategoriesOverviewView(ListView):
@@ -149,6 +165,28 @@ class CustomersOverviewView(ListView):
     template_name = 'customers-overview.html'
     context_object_name = 'customers'
     model = Contact
+
+
+class PermissionsOverviewView(ListView):
+    template_name = 'customers-overview.html'
+    context_object_name = 'permissions'
+    model = AppUrlPermission
+
+
+class EmployeeOverviewView(ListView):
+    template_name = 'employee-overview.html'
+    context_object_name = 'employees'
+    model = Employee
+
+
+class EmployeeCreationView(CreateView):
+    template_name = 'generic-create.html'
+    context_object_name = 'employee'
+    model = Employee
+    fields = '__all__'
+
+    def get_success_url(self):
+        return reverse_lazy('employee_overview')
 
 
 class ContactEditView(UpdateView):
@@ -335,3 +373,18 @@ class SectionDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('sections')
+
+
+class OrderAssignEmployeeView(View):
+    def post(self, request, order_hash):
+        _order = OrderDetail.objects.get(order_number=order_hash)
+        _employee = Employee.objects.get(id=request.POST['id'])
+        _order.assigned_employee = _employee
+        if _order.state.initial:
+            _order.state = _order.state.next_state
+        try:
+            _order.save()
+            return json_response(200, x={})
+        except:
+            return json_response(500, x={})
+
