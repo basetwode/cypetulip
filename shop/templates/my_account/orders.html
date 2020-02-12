@@ -209,14 +209,9 @@
                                                href="{% url 'all_orders' %}{{ number_of_orders }}/
 
 
-
-
-
-
-
                                                        {{ orders.previous_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Previous' %}</a>
                                         {% else %}
-                                            <a class="disabled page-link" href="">Previous</a>
+                                            <a class=page-link">{% trans 'Previous' %}</a>
                                         {% endif %}
                                     </li>
                                     <li class="page-item">
@@ -229,15 +224,9 @@
                                             <a class="page-link"
                                                href="{% url 'all_orders' %}{{ number_of_orders }}/
 
-
-
-
-
-
-
                                                        {{ orders.next_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Next' %}</a>
                                         {% else %}
-                                            <a class="disabled page-link" href="">Next</a>
+                                            <a class="page-link">{% trans 'Next' %}</a>
                                         {% endif %}
                                     </li>
                                 </ul>

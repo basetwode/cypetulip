@@ -80,7 +80,6 @@ function submitForm(url, form) {
             $('#alert-warning').hide();
             $('#alert-danger').hide();
             $('.progress-bar').css('width', 0 + '%').attr('aria-valuenow', 0);
-            waitModal.modal('hide');
             parseErrors(response);
         }
     });

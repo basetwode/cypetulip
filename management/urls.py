@@ -12,10 +12,13 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               SectionEditView, SectionsOverviewView,
                               SettingsView, ProductDeleteView, SectionDeleteView, PageDeleteView, CategoryDeleteView,
                               ContactEditView, CompanyEditView, LegalSettingsDetailView, EmployeeOverviewView,
-                              EmployeeCreationView, OrderAssignEmployeeView, OrderCancelView)
+                              EmployeeCreationView, OrderAssignEmployeeView)
 from shop.my_account.views import SearchOrders
 
 __author__ = ''
+
+from shop.views import OrderCancelView
+
 urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^$', ManagementView.as_view(), name="management_index"),

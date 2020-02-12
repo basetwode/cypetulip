@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from django.db.models import When, FloatField, Case
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -10,9 +9,8 @@ from permissions.error_handler import raise_404
 from permissions.permissions import check_serve_perms
 from shop.models import (Contact, Order, OrderDetail, OrderState,
                          Product, ProductCategory, OrderItem)
-
-
 # Create your views here.
+from shop.utils import json_response
 
 
 class IndexView(View):
@@ -112,3 +110,20 @@ class OrderConfirmedView(View):
 
         _order.save()
         return render(request, self.template_name, {'order': _order})
+
+
+class OrderCancelView(View):
+    def post(self, request, order_hash):
+        _order = OrderDetail.objects.get(order_number=order_hash)
+        if _order.state.initial:
+            _order.state = _order.state.cancel_order_state
+        else:
+            if request.user.is_staff and _order.state != _order.state.cancel_order_state:
+                _order.state = _order.state.cancel_order_state
+            else:
+                return json_response(500, x={})
+        try:
+            _order.save()
+            return redirect(request.META.get('HTTP_REFERER'))
+        except:
+            return json_response(500, x={})

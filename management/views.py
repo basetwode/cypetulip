@@ -1,7 +1,7 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy, reverse
+from django.shortcuts import render
+from django.urls import reverse_lazy
 # Create your views here.
 from django.views.generic import DetailView, ListView, View, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
@@ -388,15 +388,3 @@ class OrderAssignEmployeeView(View):
         except:
             return json_response(500, x={})
 
-
-class OrderCancelView(View):
-    def post(self, request, order_hash):
-        _order = OrderDetail.objects.get(order_number=order_hash)
-        employee = Employee.objects.get(user=request.user)
-        _order.assigned_employee = employee
-        _order.state = _order.state.cancel_order_state
-        try:
-            _order.save()
-            return redirect(reverse("management_detail_order", args=[order_hash]))
-        except:
-            return json_response(500, x={})

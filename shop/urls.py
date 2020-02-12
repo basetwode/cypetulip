@@ -2,7 +2,6 @@ from django.conf.urls import include, url
 from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
 
-from management.views import OrderCancelView
 from shop.authentification.views import (CompanyView, LoginView, LogoutView,
                                          RegisterView)
 from shop.my_account.views import (AccountSettingsView, CompanySettingsView,
