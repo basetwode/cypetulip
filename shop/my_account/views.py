@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 
+from permissions.error_handler import raise_401
 from permissions.permissions import check_serve_perms
 from shop.models import Contact, Order, OrderItem, Product, OrderDetail, Address
 from shop.my_account.forms import CompanyForm, ContactForm
@@ -141,6 +142,23 @@ def post(self, request):
     form.save()
     return render(request, self.template_name, {'contact': contact, 'form': form, 'title': 'Company Settings',
                                                 'next_url': 'company_settings'})
+
+
+class SearchCustomers(View):
+
+    def get(self, request):
+        if 'search' in request.GET and request.user.is_staff:
+            search = request.GET.get('search')
+            _customers = Contact.objects.filter(Q(user__email__contains=search) |
+                                                Q(company__name__icontains=search) |
+                                                Q(user__username__icontains=search) |
+                                                Q(first_name__icontains=search) |
+                                                Q(last_name__icontains=search)).distinct()
+            _json = json.loads(
+                serializers.serialize('json', _customers.all(), use_natural_foreign_keys=True,
+                                      use_natural_primary_keys=True))
+            return json_response(code=200, x=_json)
+        return raise_401(request)
 
 
 class SearchOrders(View):

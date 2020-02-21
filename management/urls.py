@@ -13,7 +13,7 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               SettingsView, ProductDeleteView, SectionDeleteView, PageDeleteView, CategoryDeleteView,
                               ContactEditView, CompanyEditView, LegalSettingsDetailView, EmployeeOverviewView,
                               EmployeeCreationView, OrderAssignEmployeeView)
-from shop.my_account.views import SearchOrders
+from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
 
@@ -49,6 +49,7 @@ urlpatterns = [
     url(r'^products/$', ProductsOverviewView.as_view(), name="products_overview"),
 
     url(r'^customers/$', CustomersOverviewView.as_view(), name="customers_overview"),
+    url(r'^customers/search/$', SearchCustomers.as_view(), name="search_customers"),
     url(r'^contacts/(?P<contact_id>[a-zA-Z0-9_.-]+)/$', ContactEditView.as_view(), name="contact_edit"),
     url(r'^companies/(?P<company_id>[a-zA-Z0-9_.-]+)/$', CompanyEditView.as_view(), name="company_edit"),
 
