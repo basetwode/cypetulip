@@ -9,7 +9,6 @@
 {% load i18n %}
 {% bootstrap_messages %}
 {% block head %}
-    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <title>Products</title>
     <script src="{% static 'autocomplete.js' %}"></script>
     <script src="{% static 'js/jquery-ui.min.js' %}"></script>
@@ -17,45 +16,35 @@
 {% endblock %}
 
 {% block body %}
-    <div class="main">
-        <div class="content">
+    <a class="btn btn-secondary" href="{{ request.META.HTTP_REFERER }}">{% trans 'Back' %}</a>
 
-            <div class="col-md-12">
-                <a class="btn btn-secondary" href="{{ request.META.HTTP_REFERER }}">{% trans 'Back' %}</a>
+    <table class="table table-hover table-striped table-responsive-sm">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">{% trans 'Name' %}</th>
+            <th scope="col">{% trans 'Company' %}</th>
+            <th scope="col">{% trans 'Configuration' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for contact in customers %}
+            <tr>
+                <td>{{ contact.id }}</td>
+                <td>{{ contact.first_name }} {{ contact.last_name }}</td>
+                <td>{{ contact.company }}</td>
+                <td>
+                    <div>
+                        <a class="btn btn-outline-dark"
+                           href="{% url 'contact_edit' contact.company_id %}">{% trans 'Edit Contact' %}</a>
+                        <a class="btn btn-outline-dark"
+                           href="{% url 'company_edit' contact.id %}">{% trans 'Edit Company' %}</a>
+                    </div>
 
-                <table class="table table-hover table-striped table-responsive-sm">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">{% trans 'Name' %}</th>
-                        <th scope="col">{% trans 'Company' %}</th>
-                        <th scope="col">{% trans 'Configuration' %}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for contact in customers %}
-                        <tr>
-                            <td>{{ contact.id }}</td>
-                            <td>{{ contact.first_name }} {{ contact.last_name }}</td>
-                            <td>{{ contact.company }}</td>
-                            <td class="">
-                                <div>
-                                    <a class="btn btn-outline-dark"
-                                       href="{% url 'contact_edit' contact.company_id %}">{% trans 'Edit Contact' %}</a>
-                                    <a class="btn btn-outline-dark"
-                                       href="{% url 'company_edit' contact.id %}">{% trans 'Edit Company' %}</a>
-                                </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
 
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-
-                </table>
-            </div>
-        </div>
-    </div>
-    <script>
-
-    </script>
+    </table>
 {% endblock %}

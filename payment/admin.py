@@ -6,6 +6,6 @@ from .models import *
 admin.site.register(PaymentMethod)
 admin.site.register(Payment)
 admin.site.register(PaymentProvider)
-admin.site.register(PaymentDetails)
+admin.site.register(PaymentDetail)
 admin.site.register(CreditCard)
 admin.site.register(CardType)

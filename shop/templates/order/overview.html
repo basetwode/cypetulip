@@ -4,45 +4,42 @@
 {% load recurse %}
 {% load get_type %}
 {% block head %}
-    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <script src="{% static 'utils.js' %}"></script>
     <script src="{% static 'js/jquery.validate.min.js' %}"></script>
     <title>{{ product.name }}</title>
 {% endblock %}
 
 {% block body %}
-    <div class="main">
-        <div class="content">
-            <div class="overview-step row">
-                <div class="stepwizard">
-                    <div class="stepwizard-row">
-                        <div class="stepwizard-step">
-                            <a href="/shop/cart/" type="button" class="btn btn-outline-success btn-circle"><i
-                                    class="fa fa-shopping-cart"></i></a>
-                            <p><small>{% trans 'Shoppingcart' %}</small></p>
-                        </div>
-                        <div class="stepwizard-step">
-                            <form action="{% url 'checkout_order' order_details.order_hash %}" method="get">
-                                <a onclick="$(this).parent().submit()" type="button"
-                                   class="btn btn-outline-success btn-circle"><i
-                                        class="fas fa-truck"></i></a>
-                                <p><small>{% trans "Delivery" %}</small></p>
-                            </form>
-                        </div>
-                        <div class="stepwizard-step">
-                            <a href="/shop/overview/{{ order_details.order_hash }}" type="button"
-                               class="btn btn-success btn-circle"><i
-                                    class="fa fa-check-square"></i></a>
-                            <p><small>{% trans "Overview" %}</small></p>
-                        </div>
-                        <div class="stepwizard-step">
-                            <a onclick="$('#payment-form').submit();" type="button"
-                               class="btn btn-outline-success btn-circle"><i
-                                    class="fas fa-credit-card"></i></a>
-                            <p><small>{% trans "Payment" %}</small></p>
-                        </div>
-                        <div class="stepwizard-step">
-                            <a type="button" class="btn btn-outline-success btn-circle"><i
+    <div class="overview-step row">
+        <div class="stepwizard">
+            <div class="stepwizard-row">
+                <div class="stepwizard-step">
+                    <a href="/shop/cart/" type="button" class="btn btn-outline-success btn-circle"><i
+                            class="fa fa-shopping-cart"></i></a>
+                    <p><small>{% trans 'Shoppingcart' %}</small></p>
+                </div>
+                <div class="stepwizard-step">
+                    <form action="{% url 'shop:checkout_order' order_details.order_hash %}" method="get">
+                        <a onclick="$(this).parent().submit()" type="button"
+                           class="btn btn-outline-success btn-circle"><i
+                                class="fas fa-truck"></i></a>
+                        <p><small>{% trans "Delivery" %}</small></p>
+                    </form>
+                </div>
+                <div class="stepwizard-step">
+                    <a href="/shop/overview/{{ order_details.order_hash }}" type="button"
+                       class="btn btn-success btn-circle"><i
+                            class="fa fa-check-square"></i></a>
+                    <p><small>{% trans "Overview" %}</small></p>
+                </div>
+                <div class="stepwizard-step">
+                    <a onclick="$('#payment-form').submit();" type="button"
+                       class="btn btn-outline-success btn-circle"><i
+                            class="fas fa-credit-card"></i></a>
+                    <p><small>{% trans "Payment" %}</small></p>
+                </div>
+                <div class="stepwizard-step">
+                    <a type="button" class="btn btn-outline-success btn-circle"><i
                                     class="far fa-check-square "></i></a>
                             <p><small>{% trans "Overview" %}</small></p>
                         </div>
@@ -75,10 +72,10 @@
                                         <div class="row">
                                             <div class="col-2 hidden-xs">
                                                 {% if order.product.product.product_picture %}
-                                                    <img
-                                                            src="{{ order.product.product.product_picture.url }}"
-                                                            alt="..."
-                                                            class="img-responsive img-thumbnail"/>
+                                                    <img style="max-width: 150px"
+                                                         src="{{ order.product.product.product_picture.url }}"
+                                                         alt="..."
+                                                         class="img-fluid img-thumbnail"/>
                                                 {% else %}
                                                     <i class="fa fa-4x fa-image img-thumbnail"></i>
                                                 {% endif %}
@@ -122,7 +119,7 @@
                                                                 <div class="col-sm-2 hidden-xs"><img
                                                                         src="{{ sub_item.fileorderitem.file.url }}"
                                                                         alt="..."
-                                                                        class="img-responsive"/></div>
+                                                                        class="img-fluid"/></div>
                                                             {% elif sub_item.selectorderitem %}
                                                                 {{ sub_item.selectorderitem.selected_item }}
                                                             {% elif sub_item.checkboxorderitem %}
@@ -178,7 +175,7 @@
                                                             <div class="col-2 hidden-xs"><img
                                                                     src="{{ sub_item.fileorderitem.file.url }}"
                                                                     alt="..."
-                                                                    class="img-responsive"/></div>
+                                                                    class="img-fluid"/></div>
                                                         {% elif sub_item.selectorderitem %}
                                                             {{ sub_item.selectorderitem.selected_item.name }}
                                                         {% elif sub_item.checkboxorderitem %}
@@ -228,7 +225,7 @@
                     </table>
                     <div class="row">
                         <div class="col">
-                            <form action="{% url 'checkout_order' order_details.order_hash %}" method="get">
+                            <form action="{% url 'shop:checkout_order' order_details.order_hash %}" method="get">
                                 <a onclick="$(this).parent().submit()" class="btn btn-warning"><i
                                         class="fa fa-angle-left"></i> {% trans 'Back to checkout' %}</a>
                             </form>
@@ -252,7 +249,5 @@
                     </form>
                 </div>
             </div>
-        </div>
-    </div>
 
 {% endblock %}

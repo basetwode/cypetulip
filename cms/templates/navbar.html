@@ -38,21 +38,22 @@
                 {% if user.is_authenticated %}
 
                     <li id="shopping-cart" class="cart nav-item dropdown">
-                        {% include 'order/shopping-cart.html' %}
+                        {% include 'order/shopping-cart-nav.html' %}
                     </li>
                     <li id="usermenu" class="nav-item dropdown">
-                        <a href="#usermenu" style="text-transform: capitalize;" class="dropdown-toggle nav-link"
+                        <a href="#usermenu" style="text-transform: capitalize;"
+                           class="dropdown-toggle nav-link text-lowercase"
                            data-toggle="dropdown"
                            role="button" aria-haspopup="true" data-target="#usermenu"
                            aria-expanded="false"><i class="fa fa-user"></i> {{ user.username }} <span
                                 class="caret"></span></a>
                         <div class="dropdown-menu  dropdown-menu-right ">
-                            <span class="dropdown-header">{{ user.first_name }} {{ user.last_name }}</span>
-                            <a class="dropdown-item" href="{% url 'my_account' %}">{% trans 'My account' %}</a>
+                            <span class="dropdown-header ">{{ user.first_name }} {{ user.last_name }}</span>
+                            <a class="dropdown-item" href="{% url 'shop:my_account' %}">{% trans 'My account' %}</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'all_orders' %}">{% trans 'My orders' %}</a>
+                            <a class="dropdown-item" href="{% url 'shop:all_orders' %}">{% trans 'My orders' %}</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'account_settings' %}">{% trans 'Settings' %}</a>
+                            <a class="dropdown-item" href="{% url 'shop:account_settings' %}">{% trans 'Settings' %}</a>
                             {% if user.is_staff %}
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item"

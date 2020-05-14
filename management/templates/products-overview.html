@@ -6,7 +6,6 @@
 {% load i18n %}
 {% bootstrap_messages %}
 {% block head %}
-    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <title>Products</title>
     <script src="{% static 'autocomplete.js' %}"></script>
     <script src="{% static 'js/jquery-ui.min.js' %}"></script>
@@ -14,76 +13,67 @@
 {% endblock %}
 
 {% block body %}
-    <div class="main">
-        <div class="content">
-            <div class="col-md-12">
-                <a class="btn btn-secondary" href="{{ request.META.HTTP_REFERER }}">{% trans 'Back' %}</a>
+    <a class="btn btn-secondary" href="{{ request.META.HTTP_REFERER }}">{% trans 'Back' %}</a>
 
 
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans 'Filter by Category' %}
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        {% for category in categories %}
-                            <a class="dropdown-item" href="#">{{ category.name }}</a>
-                        {% endfor %}
-                    </div>
-                </div>
-                <br>
-                <table class="table table-hover table-striped table-responsive-sm">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">{% trans 'Category' %}</th>
-                        <th scope="col">{% trans 'Thumbnail' %}</th>
-                        <th scope="col">{% trans 'Name' %}</th>
-                        <th scope="col">{% trans 'Price' %}</th>
-                        <th scope="col">{% trans 'Configuration' %}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for product in products %}
-                        <tr>
-                            <td>{{ product.id }}</td>
-                            <td>{{ product.category }}</td>
-                            <td class="thumbnail">
-                                <div>
-                                    {% if product.product_picture %}
-                                        <img style="height: 5rem" alt="..."
-                                             src="{{ product.product_picture.url }}"
-                                             class="img-thumbnail">
-                                    {% else %}
-                                        <i class="fa fa-4x fa-image img-thumbnail"></i>
-                                    {% endif %}
-
-                                </div>
-                            </td>
-                            <td>{{ product.name }}</td>
-                            <td>{{ product.price }} €</td>
-
-                            <td class="">
-                                <div>
-                                    <a class="btn btn-outline-dark"
-                                       href="{% url 'product_edit' product.id %}">{% trans 'Edit' %}</a>
-                                    <button class="btn btn-outline-dark" data-toggle="modal"
-                                            data-target="#delete-modal">{% trans 'Delete' %}</button>
-                                    {% include 'delete-modal.html' with id=product.id url='product_delete' url_param='product_id' %}
-
-                                </div>
-
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-
-                </table>
-
-            </div>
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {% trans 'Filter by Category' %}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {% for category in categories %}
+                <a class="dropdown-item" href="#">{{ category.name }}</a>
+            {% endfor %}
         </div>
     </div>
-    <script>
+    <br>
+    <table class="table table-hover table-striped table-responsive-sm">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">{% trans 'Category' %}</th>
+            <th scope="col">{% trans 'Thumbnail' %}</th>
+            <th scope="col">{% trans 'Name' %}</th>
+            <th scope="col">{% trans 'Price' %}</th>
+            <th scope="col">{% trans 'Configuration' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.category }}</td>
+                <td class="thumbnail">
+                    <div>
+                        {% if product.product_picture %}
+                            <img style="height: 5rem" alt="..."
+                                 src="{{ product.product_picture.url }}"
+                                 class="img-thumbnail">
+                        {% else %}
+                            <i class="fa fa-4x fa-image img-thumbnail"></i>
+                        {% endif %}
 
-    </script>
+                    </div>
+                </td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }} €</td>
+
+                <td>
+                    <div>
+                        <a class="btn btn-outline-dark"
+                           href="{% url 'product_edit' product.id %}">{% trans 'Edit' %}</a>
+                        <button class="btn btn-outline-dark" data-toggle="modal"
+                                data-target="#delete-modal">{% trans 'Delete' %}</button>
+                        {% include 'delete-modal.html' with id=product.id url='product_delete' url_param='product_id' %}
+
+                    </div>
+
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
 {% endblock %}

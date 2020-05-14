@@ -3,21 +3,18 @@
 {% load i18n %}
 {% load recurse %}
 {% block head %}
-    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <script src="{% static 'utils.js' %}"></script>
     <title>{{ product.name }}</title>
 {% endblock %}
 
 {% block body %}
-    <div class="main">
-        <div class="content">
-            <div class="order-step row">
-                <div class="stepwizard">
-                    <div class="stepwizard-row">
-                        <div class="stepwizard-step">
-                            <a href="" type="button" class="btn btn-success btn-circle"><i
-                                    class="fa fa-shopping-cart"></i></a>
-                            <p><small>{% trans 'Shoppingcart' %}</small></p>
+    <div class="order-step row">
+        <div class="stepwizard">
+            <div class="stepwizard-row">
+                <div class="stepwizard-step">
+                    <a href="" type="button" class="btn btn-success btn-circle"><i
+                            class="fa fa-shopping-cart"></i></a>
+                    <p><small>{% trans 'Shoppingcart' %}</small></p>
                         </div>
                         <div class="stepwizard-step">
                             <a href="/shop/checkout/{{ order_details.order_hash }}" type="button"
@@ -64,7 +61,7 @@
                                             {% if order.product.product.product_picture %}
                                                 <img
                                                         src="{{ order.product.product.product_picture.url }}" alt="..."
-                                                        class="img-responsive img-thumbnail"/>
+                                                        class="img-fluid img-thumbnail"/>
                                             {% else %}
                                                 <i class="fa fa-4x fa-image img-thumbnail"></i>
                                             {% endif %}
@@ -128,7 +125,4 @@
 
                 </div>
             </div>
-        </div>
-    </div>
-
 {% endblock %}

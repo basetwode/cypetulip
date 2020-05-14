@@ -6,7 +6,6 @@ from django.views.generic import View
 from home import settings
 # Todo: check permissions and raise 401 AND check if file exists and if not raise 404 then
 from permissions.error_handler import raise_404
-from permissions.permissions import check_serve_perms
 
 CONTENT_TYPES = {
     '.pdf': 'application/pdf', '.jpg': 'image/jpg', '.png': 'image/png',
@@ -18,7 +17,6 @@ class ServeOrderFiles(View):
     hash = None
     file = None
 
-    @check_serve_perms
     def get(self, request, hash, file):
         path = os.path.join(settings.MEDIA_ROOT + '/orders/', hash, file)
         if os.path.isfile(path):
@@ -38,7 +36,6 @@ class ServeCompanyFiles(View):
     hash = None
     file = None
 
-    @check_serve_perms
     def get(self, request, hash, file):
         path = os.path.join(settings.MEDIA_ROOT + '/company/', hash, file)
         if os.path.isfile(path):

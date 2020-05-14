@@ -7,8 +7,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 
+from cms.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin
 from permissions.error_handler import raise_401
-from permissions.permissions import check_serve_perms
 from shop.models import Contact, Order, OrderItem, Product, OrderDetail, Address
 from shop.my_account.forms import CompanyForm, ContactForm
 from shop.order.utils import get_orderitems_once_only
@@ -18,7 +18,6 @@ from shop.utils import json_response
 class OrderDetailView(View):
     template_name = 'my_account/orders-detail.html'
 
-    @check_serve_perms
     def get(self, request, order):
         contact = Contact.objects.filter(user=request.user)
         if contact:
@@ -36,17 +35,18 @@ class OrderDetailView(View):
                               {'order_details': order_details, 'order': _order, 'contact': contact,
                                'order_items': order_items,
                                'order_items_once_only': get_orderitems_once_only(_order)})
-            else:
-                return redirect('/shop/register')
+        else:
+            return redirect('/shop/register')
 
     def post(self, request):
         pass
 
 
-class OrdersView(View):
+class OrdersView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
+    permission_get_required = ['shop.view_orderdetail']
+    permission_post_required = ['shop.view_orderdetail']
     template_name = 'my_account/orders.html'
 
-    @check_serve_perms
     def get(self, request, page=1, **kwargs):
         contact = Contact.objects.filter(user=request.user)
         if contact:
@@ -71,15 +71,15 @@ class OrdersView(View):
         else:
             return redirect('/shop/register')
 
-    @check_serve_perms
     def post(self, request):
         pass
 
 
-class MyAccountView(View):
+class MyAccountView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
+    permission_get_required = ['shop.change_contact']
+    permission_post_required = ['shop.change_contact']
     template_name = 'my_account/my-account.html'
 
-    @check_serve_perms
     def get(self, request):
 
         contact = Contact.objects.filter(user=request.user)
@@ -88,37 +88,37 @@ class MyAccountView(View):
         else:
             return redirect('/shop/register')
 
-    @check_serve_perms
     def post(self, request):
         pass
 
 
-class AccountSettingsView(View):
+class AccountSettingsView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
+    permission_get_required = ['shop.change_contact']
+    permission_post_required = ['shop.change_contact']
     template_name = 'my_account/settings.html'
 
-    @check_serve_perms
     def get(self, request):
         contact = Contact.objects.get(user=request.user)
         if contact:
             form = ContactForm(instance=contact)
             return render(request, self.template_name, {'contact': contact, 'form': form, 'title': 'Account Settings',
-                                                        'next_url': 'account_settings'})
+                                                        'next_url': 'shop:account_settings'})
         else:
             return redirect('/shop/register')
 
-    @check_serve_perms
     def post(self, request):
-        contact = Contact.objects.filter(user=request.user)
+        contact = Contact.objects.filter(user=request.user).first()
         form = ContactForm(request.POST, instance=contact)
         form.save()
         return render(request, self.template_name, {'contact': contact, 'form': form, 'title': 'Account Settings',
-                                                    'next_url': 'account_settings'})
+                                                    'next_url': 'shop:account_settings'})
 
 
-class CompanySettingsView(View):
-    template_name = 'settings-details.html'
+class CompanySettingsView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
+    permission_get_required = ['shop.change_company']
+    permission_post_required = ['shop.change_company']
+    template_name = 'my_account/settings.html'
 
-    @check_serve_perms
     def get(self, request):
         contact = Contact.objects.get(user=request.user)
         if contact:
@@ -127,21 +127,19 @@ class CompanySettingsView(View):
                 form = CompanyForm(instance=company)
                 return render(request, self.template_name, {'contact': contact, 'form': form,
                                                             'title': 'Company Settings',
-                                                            'next_url': 'company_settings'})
+                                                            'next_url': 'shop:company_settings'})
             else:
                 return redirect('/shop/companies/create')
         else:
             return redirect('/shop/register')
 
-
-@check_serve_perms
-def post(self, request):
-    contact = Contact.objects.filter(user=request.user)
-    company = contact.company
-    form = CompanyForm(request.POST, files=request.FILES, instance=company)
-    form.save()
-    return render(request, self.template_name, {'contact': contact, 'form': form, 'title': 'Company Settings',
-                                                'next_url': 'company_settings'})
+    def post(self, request):
+        contact = Contact.objects.filter(user=request.user).first()
+        company = contact.company
+        form = CompanyForm(request.POST, files=request.FILES, instance=company)
+        form.save()
+        return render(request, self.template_name, {'contact': contact, 'form': form, 'title': 'Company Settings',
+                                                    'next_url': 'shop:company_settings'})
 
 
 class SearchCustomers(View):
@@ -174,7 +172,7 @@ class SearchOrders(View):
         if request.user.is_staff or admin:
             _orders = Order.objects.filter(is_send=True)
         else:
-            contact = Contact.objects.filter(user=request.user)
+            contact = Contact.objects.get(user=request.user)
             if contact:
                 company = contact.company
                 if company:
@@ -183,7 +181,6 @@ class SearchOrders(View):
                     return redirect('/shop/companies/create')
             else:
                 return redirect('/shop/register')
-
         _orders_copy = _orders
         search = None
         if 'search' in request.GET:
@@ -203,19 +200,27 @@ class AddressOverviewView(ListView):
     context_object_name = 'address'
     model = Address
 
+    def get(self, request, *args, **kwargs):
+        contact = Contact.objects.get(user=request.user)
+        addresses = Address.objects.filter(contact=contact)
+        _json = json.loads(
+            serializers.serialize('json', addresses.all(), use_natural_foreign_keys=True,
+                                  use_natural_primary_keys=True))
+        return render(request, self.template_name, {'address': addresses, 'contact': contact})
+
 
 class AddressCreationView(CreateView):
-    template_name = 'generic-create.html'
+    template_name = 'my_account/generic-create.html'
     context_object_name = 'address'
     model = Address
     fields = '__all__'
 
     def get_success_url(self):
-        return reverse_lazy('address_overview')
+        return reverse_lazy('shop:address_overview')
 
 
 class AddressEditView(UpdateView):
-    template_name = 'generic-edit.html'
+    template_name = 'my_account/generic-edit.html'
     context_object_name = 'address'
     model = Address
     fields = '__all__'
@@ -225,7 +230,7 @@ class AddressEditView(UpdateView):
     slug_url_kwarg = 'address_id'
 
     def get_success_url(self):
-        return reverse_lazy('address_overview')
+        return reverse_lazy('shop:address_overview')
 
 
 class AddressDeleteView(DeleteView):
@@ -235,4 +240,4 @@ class AddressDeleteView(DeleteView):
     template = ''
 
     def get_success_url(self):
-        return reverse_lazy('address_overview')
+        return reverse_lazy('shop:address_overview')

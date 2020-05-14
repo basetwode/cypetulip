@@ -6,7 +6,6 @@
 {% load i18n %}
 {% bootstrap_messages %}
 {% block head %}
-    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <title>Products</title>
     <script src="{% static 'autocomplete.js' %}"></script>
     <script src="{% static 'js/jquery-ui.min.js' %}"></script>
@@ -14,49 +13,40 @@
 {% endblock %}
 
 {% block body %}
-    <div class="main">
-        <div class="content">
-            <div class="col-md-12">
-                <a class="btn btn-secondary" href="{{ request.META.HTTP_REFERER }}">{% trans 'Back' %}</a>
+    <a class="btn btn-secondary" href="{{ request.META.HTTP_REFERER }}">{% trans 'Back' %}</a>
 
-                <table class="table table-hover table-striped table-responsive-sm">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">{% trans 'Name' %}</th>
-                        <th scope="col">{% trans 'Description' %}</th>
-                        <th scope="col">{% trans 'Parent Category' %}</th>
-                        <th scope="col">{% trans 'Configuration' %}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for category in categories %}
-                        <tr>
-                            <td>{{ category.id }}</td>
-                            <td>{{ category.name }}</td>
-                            <td>{{ category.description }}</td>
-                            <td>{{ category.mother_category }}</td>
-                            <td class="">
-                                <div>
-                                    <a class="btn btn-outline-dark"
-                                       href="{% url 'category_edit' category.id %}">{% trans 'Edit' %}</a>
-                                    <button class="btn btn-outline-dark" data-toggle="modal"
-                                            data-target="#delete-modal">{% trans 'Delete' %}</button>
-                                    {% include 'delete-modal.html' with id=category.id url='category_delete' url_param='category_id' %}
+    <table class="table table-hover table-striped table-responsive-sm">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">{% trans 'Name' %}</th>
+            <th scope="col">{% trans 'Description' %}</th>
+            <th scope="col">{% trans 'Parent Category' %}</th>
+            <th scope="col">{% trans 'Configuration' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for category in categories %}
+            <tr>
+                <td>{{ category.id }}</td>
+                <td>{{ category.name }}</td>
+                <td>{{ category.description }}</td>
+                <td>{{ category.mother_category }}</td>
+                <td>
+                    <div>
+                        <a class="btn btn-outline-dark"
+                           href="{% url 'category_edit' category.id %}">{% trans 'Edit' %}</a>
+                        <button class="btn btn-outline-dark" data-toggle="modal"
+                                data-target="#delete-modal">{% trans 'Delete' %}</button>
+                        {% include 'delete-modal.html' with id=category.id url='category_delete' url_param='category_id' %}
 
-                                </div>
+                    </div>
 
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
 
-                </table>
+    </table>
 
-            </div>
-        </div>
-    </div>
-    <script>
-
-    </script>
 {% endblock %}

@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import View
+from django.views.generic import View, TemplateView
 
 from cms.models import CSSSetting, Page, Section
 from permissions.error_handler import raise_404
@@ -62,3 +62,7 @@ class CSSView(View):
             color_dict.setdefault('second_color', css_settings.second_color)
 
         return render(request, self.template_name, color_dict, content_type='text/css')
+
+
+class PermissionDeniedView(TemplateView):
+    template_name = 'permission_denied.html'

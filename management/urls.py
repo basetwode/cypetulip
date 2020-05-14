@@ -12,7 +12,8 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               SectionEditView, SectionsOverviewView,
                               SettingsView, ProductDeleteView, SectionDeleteView, PageDeleteView, CategoryDeleteView,
                               ContactEditView, CompanyEditView, LegalSettingsDetailView, EmployeeOverviewView,
-                              EmployeeCreationView, OrderAssignEmployeeView)
+                              EmployeeCreationView, OrderAssignEmployeeView, AccountingView, OrderPayView,
+                              OrderShipView, OrderChangeStateView)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
@@ -23,6 +24,7 @@ urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^$', ManagementView.as_view(), name="management_index"),
     url(r'^settings/$', SettingsView.as_view()),
+    url(r'^accounting/$', AccountingView.as_view(), name="accounting"),
 
     url(r'^orders(/(?P<number_of_orders>[0-9]*)/(?P<page>[0-9]*))?/$', ManagementOrderOverviewView.as_view(),
         name="management_all_orders"),
@@ -68,6 +70,12 @@ urlpatterns = [
         OrderAssignEmployeeView.as_view(), name="assign_employee"),
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/cancel/$',
         OrderCancelView.as_view(), name="cancel_order"),
+    url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/pay/$',
+        OrderPayView.as_view(), name="pay_order"),
+    url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/ship/$',
+        OrderShipView.as_view(), name="ship_order"),
+    url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/states/change$',
+        OrderChangeStateView.as_view(), name="change_state_order"),
     url(r'^employees/create/$', EmployeeCreationView.as_view(), name="create_employee"),
 
 ]

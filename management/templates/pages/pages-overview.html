@@ -9,7 +9,6 @@
 {% load i18n %}
 {% bootstrap_messages %}
 {% block head %}
-    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <title>Products</title>
     <script src="{% static 'autocomplete.js' %}"></script>
     <script src="{% static 'js/jquery-ui.min.js' %}"></script>
@@ -41,7 +40,7 @@
                             <td>{{ page.page_name }}</td>
                             <td>{{ page.is_enabled }}</td>
                             <td>{{ page.link }}</td>
-                            <td class="">
+                            <td>
                                 <div>
                                     <a class="btn btn-outline-dark"
                                        href="{% url 'page_edit' page.id %}">{% trans 'Edit' %}</a>

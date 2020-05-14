@@ -8,22 +8,23 @@
             margin-left: 15px;
             padding-top: 20px;
         }
+
         .clearable span {
             margin-left: 10px;
         }
     </style>
 {% endblock %}
 <div class="categories-list">
-    <div style="padding-top: 20px" class="panel-group" id="accordion">
-        <div class="card panel panel-default margin-none">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                                <span class="glyphicon glyphicon-folder-close">
+    <div style="padding-top: 20px" class="card-group" id="filterAccordion">
+        <div class="card border-0">
+            <div class="card-header">
+                <h4>
+                    <a data-toggle="collapse" data-parent="#filterAccordion" href="#collapseFilter">
+                                                <span class="fas fa-angle-down">
                                                 </span>{% trans 'Filter Result' %}</a>
                 </h4>
             </div>
-            <div id="collapseOne" class="panel-collapse collapse show">
+            <div id="collapseFilter" class="panel-collapse collapse show">
                 <form id="attributeForm" method="get" action="">
                     {% for field in attribute_form %}
                         {{ field.as_hidden }}

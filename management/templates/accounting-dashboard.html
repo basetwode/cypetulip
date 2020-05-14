@@ -1,0 +1,110 @@
+{% extends 'base-mgmt.html' %}
+{% load recurse %}
+{% load static %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% bootstrap_messages %}
+{% block head %}
+    <title>{% trans "accounting" %}</title>
+    <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.structure.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.theme.min.css' %}" rel="stylesheet">
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col">
+            <h1>{% trans 'Dashboard' %}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="text-uppercase"><span>{% trans 'Total Amount' %}</span>
+                        <span
+                                class="float-right"><i class="fas fa-coins fa-2x"></i>
+                    </span>
+                    </div>
+                    <div><span class="text-bold badge badge-pill badge-primary">{{ total_brutto }} €</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-light">
+
+                <div class="card-body">
+                    <div class="text-uppercase"><span>{% trans 'Open Orders' %}</span>
+                        <span
+                                class="float-right"><i class="fas fa-shopping-basket fa-2x"></i>
+                        </span>
+                    </div>
+                    <div><span
+                            class="text-bold badge badge-pill badge-primary">{{ counted_open_orders }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="text-uppercase"><span>{% trans 'Open Shipments' %}</span>
+                        <span
+                                class="float-right"><i class="fas fa-shipping-fast fa-2x"></i>
+                    </span>
+                    </div>
+                    <div><span
+                            class="text-bold badge badge-pill badge-danger">{{ counted_open_shipments }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="text-uppercase"><span>{% trans 'Open Payments' %}</span>
+                        <span
+                                class="float-right"><i class="fas fa-hand-holding-usd fa-2x"></i>
+                    </span>
+                    </div>
+                    <div><span
+                            class="text-bold badge badge-pill badge-danger">{{ counted_open_payments }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">{% trans 'Last Orders' %}</div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for order in last_orders %}
+                            <a href="{% url 'management_detail_order' order.order.order_hash %}"
+                               class="list-group-item list-group-item-action ">
+                                <div class="row">
+                                    <div class="col-4 font-weight-bold overflow-auto">{% trans 'Ordernr' %}</div>
+                                    <div class="col-4 font-weight-bold overflow-auto">{% trans 'Orderdate' %}</div>
+                                    <div class="col-4 font-weight-bold overflow-auto">{% trans 'Billdate' %}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">{{ order.order.order_hash }}</div>
+                                    <div class="col-4">{{ order.date_added }}</div>
+                                    <div class="col-4">{{ order.date_bill }}</div>
+                                </div>
+
+                            </a>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

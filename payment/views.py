@@ -1,11 +1,10 @@
-
 from django.shortcuts import redirect, render
 from django.template.defaultfilters import lower
-from django.urls import reverse
-from django.views.generic import View
+from django.urls import reverse, reverse_lazy
+from django.views.generic import View, CreateView
 
-from payment.models import PaymentDetails, PaymentMethod
-from permissions.permissions import check_serve_perms
+from cms.mixins import LoginRequiredMixin
+from payment.models import PaymentDetail, PaymentMethod
 from shop.Errors import (FieldError,
                          JsonResponse)
 from shop.models import Contact, Order
@@ -16,12 +15,13 @@ from .methods.forms import PaymentFormFactory, get_all_payment_forms_as_dict
 
 class PaymentView(View):
     template_name = 'payment.html'
+    context_object_name = 'payment_methods'
+    model = PaymentMethod
 
-    @check_serve_perms
-    def get(self, request, order):
-        return redirect('/shop/overview/' + order)
+    def get(self, request):
+        payment_methods = PaymentMethod.objects.all()
+        return render(request, self.template_name, {'payment_methods': payment_methods})
 
-    @check_serve_perms
     def post(self, request, order):
         payment_methods = PaymentMethod.objects.all()
         payment_forms = get_all_payment_forms_as_dict()
@@ -35,17 +35,14 @@ class PaymentView(View):
 class PaymentConfirmationView(View):
     template_name = 'order/payment.html'
 
-    @check_serve_perms
     def get(self, request, order):
         return redirect('/shop/overview/' + order)
 
-    @check_serve_perms
     def post(self, request, order):
         contact = Contact.objects.filter(user=request.user)
         company = contact[0].company
         _order = Order.objects.get(order_hash=order, is_send=False, company=company)
-        payment_details = PaymentDetails.objects.get(order=_order, user=contact,
-                                                     )
+        payment_details = PaymentDetail.objects.get(order=_order, user=contact)
         self.find_view_by_payment(payment_details)
         pass
 
@@ -59,21 +56,22 @@ class PaymentConfirmationView(View):
         print(payment_method)
 
 
-class PaymentCreationView(View):
-    template_name = 'order/payment.html'
+class PaymentCreationView(LoginRequiredMixin, CreateView):
+    template_name = 'generic-create.html'
+    context_object_name = PaymentDetail
+    model = PaymentDetail
+    fields = '__all__'
 
-    @check_serve_perms
-    def get(self, request, order):
-        return redirect('/shop/overview/' + order)
+    def get_success_url(self):
+        return reverse_lazy('shop:address_overview')
 
-    @check_serve_perms
     @check_params(required_arguments={'method': '[0-9]'}, message="Please select a payment method")
     def post(self, request, order):
         contact = Contact.objects.filter(user=request.user)
         company = contact[0].company
         _order = Order.objects.get(order_hash=order, is_send=False, company=company)
 
-        payment_details = PaymentDetails.objects.filter(order=_order, user=contact[0])
+        payment_details = PaymentDetail.objects.filter(order=_order, user=contact[0])
         payment_details.delete()
 
         choosen_payment_method = PaymentMethod.objects.get(id=request.POST['method'])

@@ -6,7 +6,6 @@
 {% load i18n %}
 {% bootstrap_messages %}
 {% block head %}
-    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <script src="{% static 'onchange.js' %}"></script>
     <script src="{% static 'utils.js' %}"></script>
     <link href="{% static 'management.css' %}" rel="stylesheet">
@@ -15,17 +14,37 @@
 {% endblock %}
 
 {% block body %}
-    <div class="main">
-        <div class="content col-md-8">
-            <form method="post">{% csrf_token %}
-                {% bootstrap_form form layout='horizontal'%}
-                {% buttons %}
-                    <button type="submit" value="Save"  class="btn btn-primary float-right">{% trans 'Save' %}</button>
-                    <a class="btn btn-secondary float-right" href="{% url 'management_index'  %}">{% trans 'Back' %}</a>
-                {% endbuttons %}
-            </form>
+    <form method="post">{% csrf_token %}
+        <div class="row">
+            <div class="col-3 hidden-sm">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="h-bold">{% trans "Menu" %}</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <a href="{{ request.META.HTTP_REFERER }}"
+                           class="btn btn-fw btn-secondary">{% trans 'Go back' %}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="card">
+                    <div class="card-header">
+                        {% buttons %}
+                            <button type="submit" value="Save" class="btn btn-warning">{% trans 'Save' %}</button>
+                        {% endbuttons %}
+                    </div>
+                    <div class="card-body">
+                        {% bootstrap_form form layout='horizontal' %}
+
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+
+
+    </form>
 
 
 {% endblock %}

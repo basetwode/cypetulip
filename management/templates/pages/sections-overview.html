@@ -9,7 +9,6 @@
 {% load i18n %}
 {% bootstrap_messages %}
 {% block head %}
-    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <title>Products</title>
     <script src="{% static 'autocomplete.js' %}"></script>
     <link href="{% static 'management.css' %}" rel="stylesheet">
@@ -38,7 +37,7 @@
                             <td>{{ section.page }}</td>
                             <td>{{ section.content }}</td>
                             <td>{{ section.picture }}</td>
-                            <td class="">
+                            <td>
                                 <div>
                                     <a class="btn btn-outline-dark"
                                        href="{% url 'section_edit' section.id %}">{% trans 'Edit' %}</a>

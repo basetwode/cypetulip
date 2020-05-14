@@ -4,7 +4,6 @@
 {% load recurse %}
 {% load get_type %}
 {% block head %}
-    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <script src="{% static 'payment_utils.js' %}"></script>
     <script src="{% static 'utils.js' %}"></script>
     <script src="{% static 'js/jquery.validate.min.js' %}"></script>
@@ -24,7 +23,7 @@
                             <p><small>{% trans 'Shoppingcart' %}</small></p>
                         </div>
                         <div class="stepwizard-step">
-                            <form action="{% url 'checkout_order' order_items.order_hash %}" method="get">
+                            <form action="{% url 'shop:checkout_order' order_items.order_hash %}" method="get">
                                 <a onclick="$(this).parent().submit()" type="button"
                                    class="btn btn-outline-success btn-circle"><i
                                         class="fas fa-truck"></i></a>
@@ -32,7 +31,7 @@
                             </form>
                         </div>
                         <div class="stepwizard-step">
-                            <form action="{% url 'overview_order' order_items.order_hash %}" method="post">
+                            <form action="{% url 'shop:overview_order' order_items.order_hash %}" method="post">
                                 {% csrf_token %}
                                 <input hidden name="token" value="{{ order_items.token }}"/>
                                 <a onclick="$(this).parent().submit()" class="btn btn-outline-success btn-circle">
@@ -89,7 +88,7 @@
                                                     <img
                                                             src="{{ order.product.product.product_picture.url }}"
                                                             alt="..."
-                                                            class="img-responsive img-thumbnail"/>
+                                                            class="img-fluid img-thumbnail"/>
                                                 {% else %}
                                                     <i class="fa fa-4x fa-image img-thumbnail"></i>
                                                 {% endif %}
@@ -159,9 +158,9 @@
                             <thead>
                             <tr>
                                 <th style="width:50%">{% trans 'Address' %}</th>
-                                <th style="width:10%">{% trans '' %}</th>
+                                <th style="width:10%"></th>
 
-                                <th style="width:22%" class="text-center">{% trans '' %}</th>
+                                <th style="width:22%" class="text-center"></th>
                                 <th style="width:10%"></th>
 
                             </tr>

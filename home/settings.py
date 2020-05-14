@@ -53,10 +53,12 @@ INSTALLED_APPS = (
     'cms',
     'mediaserver',
     'permissions',
+    'shipping',
     'utils',
     'filebrowser',
     'django.contrib.admin',
     'tinymce',
+    'django_filters',
 )
 
 MIDDLEWARE = (
@@ -198,12 +200,11 @@ BOOTSTRAP4 = {
     # e.g. "https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css",
     # or a dict like the default value below.
     "css_url": {
-        "href": "https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css",
-        "href": "/static/css/bootstrap.min.css",
+        "href": "/static/bootstrap/css/bootstrap.min.css",
     },
     # The complete URL to the Bootstrap JavaScript file
     "javascript_url": {
-        "url": "/static/js/bootstrap.bundle.min.js",
+        "url": "/static/bootstrap/js/bootstrap.bundle.min.js",
     },
     # The complete URL to the Bootstrap CSS file (None means no theme)
     "theme_url": None,

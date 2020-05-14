@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View
 
+from cms.mixins import LoginRequiredMixin
 from shop.Errors import FieldError, JsonResponse
 from shop.models import Contact, Order, OrderItem, Product, ProductSubItem, Address
 from shop.order.forms import ItemBuilder, SubItemForm, OrderDetail
@@ -10,7 +11,7 @@ from shop.utils import create_hash, json_response
 __author__ = 'Anselm'
 
 
-class CheckoutView(View):
+class CheckoutView(LoginRequiredMixin, View):
     template_name = 'order/delivery.html'
 
     def delete(self, request, product_id):
@@ -34,7 +35,7 @@ class CheckoutView(View):
                                                         'sub_products_once_only': sub_products_once_only,
                                                         'address': address})
         else:
-            return redirect(reverse('shopping_cart'))
+            return redirect(reverse('shop:shopping_cart'))
 
     def post(self, request, order):
         contact = Contact.objects.filter(user=request.user)

@@ -70,16 +70,16 @@ def install():
     from shop.models import Contact, Company, Address
     execute_from_command_line(['', 'migrate'])
     print('####Creating your company and first (admin) account####')
-    company_name = input("Your company name: ")
+    name = input("Your company name: ")
     term_of_payment = input("Please add your term of payment (e.g. 10 days for paying) ")
     street = input("Street: ")
     number = input("Streetnumber: ")
     zipcode = input("Zipcode: ")
     city = input("City: ")
-    address = Address.objects.create(name=street + ' ' + number + ', ' + zipcode + ' ' + city, street=street,
-                                     number=number, city=city, zipcode=zipcode)
-    company = Company.objects.create(company_name=company_name, term_of_payment=term_of_payment, street=street,
-                                     number=number, zipcode=zipcode, city=city, address=address)
+    Address.objects.create(name=street + ' ' + number + ', ' + zipcode + ' ' + city, street=street,
+                           number=number, city=city, zipcode=zipcode)
+    company = Company.objects.create(name=name, term_of_payment=term_of_payment, street=street,
+                                     number=number, zipcode=zipcode, city=city)
     users = User.objects.all()
     for user in users:
         first_name = input("Your first name: ")
@@ -95,9 +95,9 @@ def install():
             else:
                 break
 
-        Contact.objects.create_user(user=user, company=company, first_name=first_name, last_name=last_name,
-                                    title=title, gender=gender, telephone=telephone, email=email,
-                                    language=language)
+        Contact.objects.create(user=user, company=company, first_name=first_name, last_name=last_name,
+                               title=title, gender=gender, telephone=telephone, email=email,
+                               language=language)
     # Then populate database for every app
     #
     # from django.core.management import execute_from_command_line

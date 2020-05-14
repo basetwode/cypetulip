@@ -175,6 +175,27 @@ function assignEmployee(order_hash) {
     )
 }
 
+function changeState(order_hash) {
+    var id = $('#change-state-select').val();
+    $.ajax(
+        {
+            url: order_hash + '/states/change',
+            method: 'post',
+            data: $('#changeStateForm').serialize() + '&id=' + id,
+            success: function () {
+                $('#alert-success').show();
+                $('#change-state-modal').modal('hide');
+                setTimeout(() => {
+                    window.location.reload()
+                }, 1000)
+            },
+            error: function () {
+                $('#alert-danger').show();
+            }
+        }
+    )
+}
+
 $(function () {
 
 

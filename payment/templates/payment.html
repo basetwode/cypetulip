@@ -4,7 +4,6 @@
 {% load recurse %}
 {% load get_type %}
 {% block head %}
-    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <script src="{% static 'payment_utils.js' %}"></script>
     <script src="{% static 'utils.js' %}"></script>
     <script src="{% static 'js/jquery.validate.min.js' %}"></script>
@@ -30,7 +29,7 @@
                             <p><small>{% trans "Delivery" %}</small></p>
                         </div>
                         <div class="stepwizard-step">
-                            <form action="{% url 'overview_order' order_details.order_hash %}" method="post">
+                            <form action="{% url 'shop:overview_order' order_details.order_hash %}" method="post">
                                 {% csrf_token %}
                                 <input hidden name="token" value="{{ order_details.token }}"/>
                                 <a onclick="$(this).parent().submit()" class="btn btn-outline-success btn-circle">
@@ -115,7 +114,7 @@
         </div>
         <div class="row">
             <div class="col">
-                <form action="{% url 'overview_order' order_details.order_hash %}" method="post">
+                <form action="{% url 'shop:overview_order' order_details.order_hash %}" method="post">
                     {% csrf_token %}
                     <input hidden name="token" value="{{ order_details.token }}"/>
                     <a onclick="$(this).parent().submit()" class="btn btn-warning"><i

@@ -35,14 +35,14 @@ class CardType(models.Model):
         return self.name
 
 
-class PaymentDetails(models.Model):
+class PaymentDetail(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     method = models.ForeignKey(PaymentMethod, on_delete=models.CASCADE)
     user = models.ForeignKey(Contact, on_delete=models.CASCADE, blank=True)
 
 
 # TODO: a credit card should belong to an user or company
-class CreditCard(PaymentDetails):
+class CreditCard(PaymentDetail):
     card_type = models.ForeignKey(CardType, on_delete=models.CASCADE)
     name = models.CharField(max_length=70)
     card_number = models.CharField(max_length=20)
@@ -51,7 +51,7 @@ class CreditCard(PaymentDetails):
     cvv = models.PositiveIntegerField(validators=[MaxValueValidator(999)])
 
 
-class Bill(PaymentDetails):
+class Bill(PaymentDetail):
     pass
 
 
@@ -59,4 +59,4 @@ class Bill(PaymentDetails):
 class Payment(models.Model):
     is_paid = models.BooleanField()
     token = models.CharField(max_length=30)
-    details = models.ForeignKey(PaymentDetails, on_delete=models.CASCADE)
+    details = models.ForeignKey(PaymentDetail, on_delete=models.CASCADE)

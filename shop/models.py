@@ -170,6 +170,14 @@ class OrderState(models.Model):
     def __str__(self):
         return self.name
 
+    def last_state(self):
+        print(self)
+        if self == self.next_state and self.next_state != self.cancel_order_state:
+            return True
+        else:
+            return False
+
+
 class ProductAttributeType(models.Model):
     name = models.CharField(max_length=100)
 
@@ -177,6 +185,7 @@ class ProductAttributeType(models.Model):
 class ProductAttributeTypeInstance(models.Model):
     type = models.ForeignKey(ProductAttributeType, on_delete=models.CASCADE)
     value = models.CharField(max_length=100, db_index=True)
+
 
 # A product can be whatever one needs, like a plan or a surcharge or hours worked..
 
@@ -233,7 +242,6 @@ class OrderDetail(models.Model):
     date_bill = models.DateTimeField(null=True, blank=True)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
     shipment_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True)
-
 
     def unique_nr(self):
         return "CTNR" + str(self.id).rjust(10, "0")

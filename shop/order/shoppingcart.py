@@ -11,11 +11,7 @@ from shop.utils import json_response
 
 
 class ShoppingCartView(View):
-    template_name = 'order/shopping-cart.html'
-
-    def get(self, request, product):
-        if request.user.is_authenticated:
-            return render(request, self.template_name)
+    template_name = 'order/shopping-cart-nav.html'
 
     def post(self, request, product):
         if request.user.is_authenticated:

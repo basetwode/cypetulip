@@ -1,9 +1,9 @@
 {% load i18n %}
 {% load static %}
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
+<link rel="stylesheet" href="{% static 'bootstrap-select/css/bootstrap-select.min.css' %}">
 <!-- Latest compiled and minified JavaScript -->
-<script src="{% static 'js/bootstrap-select.min.js' %}"></script>
+<script src="{% static 'bootstrap-select/js/bootstrap-select.min.js' %}"></script>
 <script src="{% static 'utils.js' %}">
 
 </script>
@@ -17,23 +17,20 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-
-
             <div class="modal-body">
                 {% trans 'Please choose your Employee' %}
                 <br>
                 <br>
-                <select id="employee-select" class="selectpicker" data-live-search="true">
-                    {% for employee in employees %}
-                        <option value="{{ employee.id }}"
-                                data-tokens="{{ employee.first_name }} {{ employee.last_name }}">
-                            {{ employee.first_name }} {{ employee.last_name }}
-                        </option>
-                    {% endfor %}
-
-                </select>
-
-
+                <div class="form-group">
+                    <select id="employee-select" class="selectpicker form-control" data-live-search="true">
+                        {% for employee in employees %}
+                            <option value="{{ employee.id }}"
+                                    data-tokens="{{ employee.first_name }} {{ employee.last_name }}">
+                                {{ employee.first_name }} {{ employee.last_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
             <div class="modal-footer">
 

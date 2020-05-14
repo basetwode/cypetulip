@@ -5,148 +5,141 @@
 {% load bootstrap4 %}
 {% load i18n %}
 {% block head %}
-    <link href="{% static 'simple-sidebar.css' %}" rel="stylesheet">
     <script src="{% static 'products.js' %}"></script>
     <title>Products</title>
 {% endblock %}
 
 {% block body %}
-    <div class="main">
-        <div class="content">
-            <div class="row">
-                <div class="col-md-12 path">
-                    <a href="/cms/home">
-                        Home
-                    </a>
-                    >
-                    <a href="/shop/products/?">
-                        Products
-                    </a>
-                    {% if selected_category %}
-                        >
-                    {% endif %}
-                    <a href="/shop/products/{{ selected_category }}">
-                        {{ selected_category }}
-                    </a>
-                </div>
-                <div class="col-md-3 categories">
-                    <div class="categories-list">
-                        <div class="panel-group" id="accordion">
-                            <div class="card panel panel-default margin-none">
-                                <div class="panel-heading">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                                <span class="glyphicon glyphicon-folder-close">
+    <div class="row">
+        <div class="col-md-12 path">
+            <a href="/cms/home">
+                Home
+            </a>
+            >
+            <a href="/shop/products/?">
+                Products
+            </a>
+            {% if selected_category %}
+                >
+            {% endif %}
+            <a href="/shop/products/{{ selected_category }}">
+                {{ selected_category }}
+            </a>
+        </div>
+        <div class="col-md-3 categories">
+            <div class="categories-list" id="accordionCategories">
+                <div class="card border-0">
+                    <div class="card-header">
+                        <h4>
+                            <a data-toggle="collapse" data-parent="#accordionCategories" href="#collapseCategories">
+                                                <span class="fas fa-angle-down">
                                                 </span>{% trans 'Categories' %}</a>
-                                    </h4>
-                                </div>
-                                <div id="collapseOne" class="panel-collapse collapse show">
-                                    <ul class="list-group">
-                                        {% recurse category.child_categories.all with categories as category %}
-
-                                            {% loop %}
-                                                <li class="list-group-item" id="v_hm">
-                                                    <div class="heading">
-                                                        <div class="arrowImage"></div>
-                                                        <a class="link"
-                                                           href="/shop/products/{{ category.name }}?">{{ category.name }}</a>
-                                                    </div>
-                                                    <ul class="list-group sub">{% child %}</ul>
-
-                                                </li>
-
-                                            {% endloop %}
-                                        {% endrecurse %}
-
-
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
+                        </h4>
                     </div>
-                    {% include 'attribute_side_bar.html' %}
+                    <div id="collapseCategories" class="panel-collapse collapse show">
+                        <ul class="list-group">
+                            {% recurse category.child_categories.all with categories as category %}
+
+                                {% loop %}
+                                    <li class="list-group-item" id="v_hm">
+                                        <div class="heading">
+                                            <div class="arrowImage"></div>
+                                            <a class="link"
+                                               href="/shop/products/{{ category.name }}?">{{ category.name }}</a>
+                                        </div>
+                                        <ul class="list-group sub">{% child %}</ul>
+
+                                    </li>
+
+                                {% endloop %}
+                            {% endrecurse %}
+
+
+                        </ul>
+                    </div>
                 </div>
-                <div class="col-md-9 products">
-                    <div class="products-img">
-                        <div class="col-12">
-                            <img src="http://www.freelargeimages.com/wp-content/uploads/2014/12/Landscape_01.jpg">
-                        </div>
-                    </div>
-                    <div class="col-12 products-list mt-3">
-                        <div class="row col-12">
-                            <h3>{% trans 'Products' %}</h3>
-                        </div>
-                        <div class="row row-cols-1 row-cols-md-4">
-                            {% for product in products %}
-                                <div class="mb-4">
-                                    <div class="card h-100">
-                                        <div class="card-header">
-                                            <div class="row">
-                                                <div class="col-9">
-                                                    <h5>
-                                                        <a href="/shop/product/{{ product.name }}">{{ product.name }}</a>
-                                                    </h5>
-                                                </div>
-                                                <div class="col-2 my-auto">
-                                                    {% if product.special_price %}
-                                                        <i style="color: red" class="fas fa-2x fa-percent"></i>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    {% if product.special_price %}
-                                                        <span style="text-decoration: line-through">{{ product.price_wt | floatformat:2 }} &euro;</span>
-                                                        <strong style="color: red">{{ product.special_price_wt | floatformat:2 }}
-                                                            &euro;</strong>
-                                                    {% else %}
-                                                        <span>{{ product.price_wt | floatformat:2 }} &euro;</span>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                            <hr>
-                                            <div class="card-text">
-                                                {{ product.description }}
-                                            </div>
-                                            <hr>
-                                            <div class="card-img content-img">
-                                                <a href="/shop/product/{{ product.name }}">
-                                                    {% if product.product_picture %}
-                                                        <img class="img-responsive img-thumbnail"
-                                                             src="{{ product.product_picture.url }}" alt=""/>
-                                                    {% else %}
-                                                        <i class="fa fa-4x fa-image img-thumbnail"></i>
-                                                    {% endif %}
 
-                                                </a>
-                                            </div>
+            </div>
+            {% include 'attribute_side_bar.html' %}
+        </div>
+        <div class="col-md-9 products">
+            <div class="products-img">
+                <div class="col-12">
+                    <img src="http://www.freelargeimages.com/wp-content/uploads/2014/12/Landscape_01.jpg">
+                </div>
+            </div>
+            <div class="col-12 products-list mt-3 card-deck">
+                <div class="row col-12">
+                    <h3>{% trans 'Products' %}</h3>
+                </div>
+                <div class="row row-cols-1 row-cols-md-3">
+                    {% for product in products %}
+                        <div class="mb-4">
+                            <div class="card h-100">
+                                <div class="card-header text-center">
+                                    <div class="row justify-content-center">
+                                        <div class="card-img content-img">
+                                            <a href="/shop/product/{{ product.name }}">
+                                                {% if product.product_picture %}
+                                                    <img class="img-fluid img-thumbnail"
+                                                         style="max-width: 150px; height: 150px"
+                                                         src="{{ product.product_picture.url }}" alt=""/>
+                                                {% else %}
+                                                    <i style="max-width: 150px; height: 150px"
+                                                       class="fa fa-5x fa-image img-thumbnail"></i>
+                                                {% endif %}
 
+                                            </a>
                                         </div>
-                                        <div class="card-footer price-details">
-                                            <div class="price-number">
-                                            </div>
-                                            <div class="add-cart">
-                                                <h5>
-                                                    <a href="/shop/product/{{ product.name }}">{% trans 'More Info' %}</a>
-                                                </h5>
-                                            </div>
-                                            <div class="clear"></div>
+                                        <div>
+                                            <a class="text-center"
+                                               href="/shop/product/{{ product.name }}">{{ product.name }}</a>
+                                            {% if product.special_price %}
+                                                <span class="badge badge-pill badge-danger badge-primary">{% trans 'Sale' %}
+                                                        </span>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
-                            {% endfor %}
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            {% if product.special_price %}
+                                                <span style="text-decoration: line-through">{{ product.price_wt | floatformat:2 }} &euro;</span>
+                                                <strong style="color: red"
+                                                        class="font-weight-bold">{{ product.special_price_wt | floatformat:2 }}
+                                                    &euro;</strong>
+                                            {% else %}
+                                                <span>{{ product.price_wt | floatformat:2 }} &euro;</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="card-text text-justify">
+                                        {{ product.description }}
+                                    </div>
+                                    <hr>
 
+
+                                </div>
+                                <div class="card-footer price-details">
+                                    <div class="price-number">
+                                    </div>
+                                    <div class="add-cart">
+                                        <h5>
+                                            <a href="/shop/product/{{ product.name }}">{% trans 'More Info' %}</a>
+                                        </h5>
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    {% endfor %}
+
                 </div>
             </div>
-
-
         </div>
-
     </div>
+
 
 {% endblock %}

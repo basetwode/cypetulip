@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from django.db import models
-from django.db.models import When, FloatField, Case, Count, F, OuterRef, Q
+from django.db.models import When, FloatField, Case, Count, F
 from django.db.models.functions import Round
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -9,11 +8,9 @@ from django.urls import reverse
 from django.views.generic import View
 
 from permissions.error_handler import raise_404
-from permissions.permissions import check_serve_perms
 from shop.forms import ProductAttributeForm
 from shop.models import (Contact, Order, OrderDetail, OrderState,
                          Product, ProductCategory, OrderItem, ProductAttributeType, ProductAttributeTypeInstance)
-
 # Create your views here.
 from shop.utils import json_response
 
@@ -49,7 +46,7 @@ class ProductView(View):
         attribute_form = ProductAttributeForm(product_attribute_categories, request.GET)
 
         selected_attribute_types = ProductAttributeType.objects.filter(name__in=attribute_form.data)
-        selected_attributes = ProductAttributeTypeInstance.objects.filter(type__in=selected_attribute_types).\
+        selected_attributes = ProductAttributeTypeInstance.objects.filter(type__in=selected_attribute_types). \
             filter(value__in=attribute_form.data.values())
 
         for selected_attribute in selected_attributes:
@@ -115,7 +112,6 @@ class OrderView(View):
 class OrderConfirmedView(View):
     template_name = 'order/order-confirmed.html'
 
-    @check_serve_perms
     def get(self, request, order):
         contact = Contact.objects.filter(user=request.user)
         company = contact[0].company
@@ -137,7 +133,6 @@ class OrderConfirmedView(View):
             _order.save()
             return render(request, self.template_name, {'order': _order})
 
-    @check_serve_perms
     def post(self, request, order):
         contact = Contact.objects.filter(user=request.user)
         company = contact[0].company
