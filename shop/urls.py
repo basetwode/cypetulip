@@ -8,7 +8,7 @@ from shop.my_account.views import (AccountSettingsView, CompanySettingsView,
                                    MyAccountView, OrderDetailView, OrdersView,
                                    SearchOrders, AddressCreationView, AddressEditView, AddressDeleteView,
                                    AddressOverviewView)
-from shop.order.checkout import CheckoutView
+from shop.order.checkout import DeliveryView
 from shop.order.overview import OverviewView
 from shop.order.shoppingcart import ShoppingCartDetailView, ShoppingCartView
 from shop.views import *
@@ -28,8 +28,8 @@ urlpatterns = [
     url(r'^cart/add/(?P<product>[\S0-9_.-\\s\- ]*)$', ShoppingCartView.as_view()),
     url(r'^cart/remove/([0-9]*)$', ShoppingCartDetailView.as_view()),
     url(r'^cart/', ShoppingCartDetailView.as_view(), name="shopping_cart"),
-    url(r'^checkout/remove/([0-9]*)$', CheckoutView.as_view()),
-    url(r'^checkout/(?P<order>[\S0-9_.-\\s\- ]*)$', CheckoutView.as_view(), name="checkout_order"),
+    url(r'^delivery/remove/([0-9]*)$', DeliveryView.as_view()),
+    url(r'^delivery/(?P<order>[\S0-9_.-\\s\- ]*)$', DeliveryView.as_view(), name="delivery_order"),
     url(r'^confirmed/(?P<order>[a-zA-Z0-9\\s\-_ ]+)$', OrderConfirmedView.as_view(), name="confirmed_order"),
     url(r'^overview/(?P<order>[\S0-9_.-\\s\- ]*)$', OverviewView.as_view(), name="overview_order"),
 

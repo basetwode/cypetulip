@@ -19,7 +19,7 @@
                     <p><small>{% trans 'Shoppingcart' %}</small></p>
                 </div>
                 <div class="stepwizard-step">
-                    <form action="{% url 'shop:checkout_order' order_details.order_hash %}" method="get">
+                    <form action="{% url 'shop:delivery_order' order_details.order_hash %}" method="get">
                         <a onclick="$(this).parent().submit()" type="button"
                            class="btn btn-outline-success btn-circle"><i
                                 class="fas fa-truck"></i></a>
@@ -225,7 +225,7 @@
                     </table>
                     <div class="row">
                         <div class="col">
-                            <form action="{% url 'shop:checkout_order' order_details.order_hash %}" method="get">
+                            <form action="{% url 'shop:delivery_order' order_details.order_hash %}" method="get">
                                 <a onclick="$(this).parent().submit()" class="btn btn-warning"><i
                                         class="fa fa-angle-left"></i> {% trans 'Back to checkout' %}</a>
                             </form>

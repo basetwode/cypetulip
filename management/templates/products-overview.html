@@ -13,67 +13,78 @@
 {% endblock %}
 
 {% block body %}
-    <a class="btn btn-secondary" href="{{ request.META.HTTP_REFERER }}">{% trans 'Back' %}</a>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="card-title h4">{% trans 'Filter' %}</div>
+                    <form action="" method="get">
 
+                        {% bootstrap_form filter.form %}
+                        <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
 
-    <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {% trans 'Filter by Category' %}
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            {% for category in categories %}
-                <a class="dropdown-item" href="#">{{ category.name }}</a>
-            {% endfor %}
+                    </form>
+                    <a href="{% url 'create_product' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Add Product' %}</a>
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+            <table class="table table-hover table-striped table-responsive-sm">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">{% trans 'Category' %}</th>
+                    <th scope="col">{% trans 'Thumbnail' %}</th>
+                    <th scope="col">{% trans 'Name' %}</th>
+                    <th scope="col">{% trans 'Price' %}</th>
+                    <th scope="col">{% trans 'Configuration' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for product in filter.qs %}
+                    <tr>
+                        <td>{{ product.id }}</td>
+                        <td>{{ product.category }}</td>
+                        <td class="thumbnail">
+                            <div>
+                                {% if product.product_picture %}
+                                    <img style="height: 5rem" alt="..."
+                                         src="{{ product.product_picture.url }}"
+                                         class="img-thumbnail">
+                                {% else %}
+                                    <i class="fa fa-4x fa-image img-thumbnail"></i>
+                                {% endif %}
+
+                            </div>
+                        </td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.price }} €</td>
+
+                        <td>
+                            <div>
+                                <a class="btn btn-outline-dark"
+                                   href="{% url 'product_edit' product.id %}">{% trans 'Edit' %}</a>
+                                <button class="btn btn-outline-dark" data-toggle="modal"
+                                        data-target="#delete-modal">{% trans 'Delete' %}</button>
+                                {% include 'delete-modal.html' with id=product.id url='product_delete' url_param='product_id' %}
+
+                            </div>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
         </div>
     </div>
-    <br>
-    <table class="table table-hover table-striped table-responsive-sm">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">{% trans 'Category' %}</th>
-            <th scope="col">{% trans 'Thumbnail' %}</th>
-            <th scope="col">{% trans 'Name' %}</th>
-            <th scope="col">{% trans 'Price' %}</th>
-            <th scope="col">{% trans 'Configuration' %}</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for product in products %}
-            <tr>
-                <td>{{ product.id }}</td>
-                <td>{{ product.category }}</td>
-                <td class="thumbnail">
-                    <div>
-                        {% if product.product_picture %}
-                            <img style="height: 5rem" alt="..."
-                                 src="{{ product.product_picture.url }}"
-                                 class="img-thumbnail">
-                        {% else %}
-                            <i class="fa fa-4x fa-image img-thumbnail"></i>
-                        {% endif %}
-
-                    </div>
-                </td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.price }} €</td>
-
-                <td>
-                    <div>
-                        <a class="btn btn-outline-dark"
-                           href="{% url 'product_edit' product.id %}">{% trans 'Edit' %}</a>
-                        <button class="btn btn-outline-dark" data-toggle="modal"
-                                data-target="#delete-modal">{% trans 'Delete' %}</button>
-                        {% include 'delete-modal.html' with id=product.id url='product_delete' url_param='product_id' %}
-
-                    </div>
-
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-
-    </table>
 
 {% endblock %}

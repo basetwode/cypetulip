@@ -171,9 +171,11 @@ class OrderState(models.Model):
         return self.name
 
     def last_state(self):
-        print(self)
-        if self == self.next_state and self.next_state != self.cancel_order_state:
-            return True
+        if self is not None:
+            if self == self.next_state and self.next_state != self.cancel_order_state:
+                return True
+            else:
+                return False
         else:
             return False
 
@@ -245,6 +247,7 @@ class OrderDetail(models.Model):
 
     def unique_nr(self):
         return "CTNR" + str(self.id).rjust(10, "0")
+
 
 # Like a surcharge or discount or product or whatever.
 

@@ -15,114 +15,118 @@
                     <a href="" type="button" class="btn btn-success btn-circle"><i
                             class="fa fa-shopping-cart"></i></a>
                     <p><small>{% trans 'Shoppingcart' %}</small></p>
-                        </div>
-                        <div class="stepwizard-step">
-                            <a href="/shop/checkout/{{ order_details.order_hash }}" type="button"
-                               class="btn btn-outline-success btn-circle"><i
-                                    class="fas fa-truck"></i></a>
-                            <p><small>{% trans "Delivery" %}</small></p>
-                        </div>
-                        <div class="stepwizard-step">
-                            <a type="button" class="btn btn-outline-success btn-circle"><i
-                                    class="fa fa-check-square"></i></a>
-                            <p><small>{% trans "Overview" %}</small></p>
-                        </div>
-                        <div class="stepwizard-step">
-                            <a type="button" class="btn btn-outline-success btn-circle"><i
-                                    class="fas fa-credit-card"></i></a>
-                            <p><small>{% trans "Payment" %}</small></p>
-                        </div>
-                        <div class="stepwizard-step">
-                            <a type="button" class="btn btn-outline-success btn-circle"><i
-                                    class="far fa-check-square "></i></a>
-                            <p><small>{% trans "Overview" %}</small></p>
-                        </div>
-                    </div>
+                </div>
+                <div class="stepwizard-step">
+                    <a href="{% url 'shop:delivery_order' order_details.order_hash %} " type="button"
+                       class="btn btn-outline-success btn-circle"><i
+                            class="fas fa-truck"></i></a>
+                    <p><small>{% trans "Delivery" %}</small></p>
+                </div>
+                <div class="stepwizard-step">
+                    <a type="button" class="btn btn-outline-success btn-circle"><i
+                            class="fa fa-check-square"></i></a>
+                    <p><small>{% trans "Overview" %}</small></p>
+                </div>
+                <div class="stepwizard-step">
+                    <a type="button" class="btn btn-outline-success btn-circle"><i
+                            class="fas fa-credit-card"></i></a>
+                    <p><small>{% trans "Payment" %}</small></p>
+                </div>
+                <div class="stepwizard-step">
+                    <a type="button" class="btn btn-outline-success btn-circle"><i
+                            class="far fa-check-square "></i></a>
+                    <p><small>{% trans "Overview" %}</small></p>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="cart" class="table table-hover table-striped table-responsive-md">
+                <thead>
+                <tr>
+                    <th style="width:50%">{% trans 'Product' %}</th>
+                    <th style="width:10%">{% trans 'Price' %}</th>
+
+                    <th style="width:22%" class="text-center">{% trans 'Subtotal' %}</th>
+                    <th style="width:10%"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for order in open_orders %}
+                    <tr>
+                        <td data-th="Product">
+                            <div class="row">
+                                <div class="col-2 hidden-xs">
+                                    {% if order.product.product.product_picture %}
+                                        <img
+                                                src="{{ order.product.product.product_picture.url }}" alt="..."
+                                                class="img-fluid img-thumbnail"/>
+                                    {% else %}
+                                        <i class="fa fa-4x fa-image img-thumbnail"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="col-sm-10">
+                                    <h4 class="nomargin">{{ order.product.name }}</h4>
+
+                                    <p>{{ order.product.description|truncatechars:100 }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-th="Price">{{ order.product.price }} €</td>
+
+                        <td data-th="Subtotal" class="text-center">{{ order.product.bprice_wt }} &euro;</td>
+                        <td class="actions" data-th="">
+                            <button class="btn btn-info btn-sm"><i class="fas fa-sync"></i></button>
+                            <button class="btn btn-danger btn-sm"
+                                    onclick="removeFromCart('cart','{{ order.id }}')"><i
+                                    class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                {% if not open_orders %}
+                    <tr>
+                        <td data-th="Product">
+                            {% trans 'Empty Cart' %}
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+                {% endif %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td style="width:50%"></td>
+                    <td style="width:10%"></td>
+                    <td style="width:22%" class="text-center"><strong>{% trans 'Total: ' %}<span
+                            id="total">{{ total_cart }}</span> &euro;</strong></td>
+                    <td style="width:10%"></td>
+                </tr>
+
+
+                </tfoot>
+            </table>
             <div class="row">
-                <div class="col-md-12">
-                    <table id="cart" class="table table-hover table-striped table-responsive-md">
-                        <thead>
-                        <tr>
-                            <th style="width:50%">{% trans 'Product' %}</th>
-                            <th style="width:10%">{% trans 'Price' %}</th>
-
-                            <th style="width:22%" class="text-center">{% trans 'Subtotal' %}</th>
-                            <th style="width:10%"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for order in open_orders %}
-                            <tr>
-                                <td data-th="Product">
-                                    <div class="row">
-                                        <div class="col-2 hidden-xs">
-                                            {% if order.product.product.product_picture %}
-                                                <img
-                                                        src="{{ order.product.product.product_picture.url }}" alt="..."
-                                                        class="img-fluid img-thumbnail"/>
-                                            {% else %}
-                                                <i class="fa fa-4x fa-image img-thumbnail"></i>
-                                            {% endif %}
-                                        </div>
-                                        <div class="col-sm-10">
-                                            <h4 class="nomargin">{{ order.product.name }}</h4>
-
-                                            <p>{{ order.product.description|truncatechars:100 }}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td data-th="Price">{{ order.product.price }} €</td>
-
-                                <td data-th="Subtotal" class="text-center">{{ order.product.bprice_wt }} &euro;</td>
-                                <td class="actions" data-th="">
-                                    <button class="btn btn-info btn-sm"><i class="fas fa-sync"></i></button>
-                                    <button class="btn btn-danger btn-sm"
-                                            onclick="removeFromCart('cart','{{ order.id }}')"><i
-                                            class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        {% endfor %}
-
-                        {% if not open_orders %}
-                            <tr>
-                                <td data-th="Product">
-                                    {% trans 'Empty Cart' %}
-                                </td>
-                            </tr>
-                        {% endif %}
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <td style="width:50%"></td>
-                            <td style="width:10%"></td>
-                            <td style="width:22%" class="text-center"><strong>{% trans 'Total: ' %}<span
-                                    id="total">{{ total_cart }}</span> &euro;</strong></td>
-                            <td style="width:10%"></td>
-                        </tr>
-
-
-                        </tfoot>
-                    </table>
-                    <div class="row">
-                        <div class="col">
-                            <a href="/shop/products/" class="btn btn-warning"><i
-                                    class="fa fa-angle-left"></i> {% trans 'Continue Shopping' %}</a>
-                        </div>
-                        <div class="col">
-                            <a href="/shop/checkout/{{ order_details.order_hash }}"
-                               class="btn btn-success float-right">{% trans 'Checkout' %}<i
-                                    class="fa fa-angle-right"></i></a>
-                        </div>
-                        <form id="next-step-form" action="confirm/" method="post">
-                            {% csrf_token %}
-
-                            <input id="next-step-token" type="hidden" name="token"
-                                   value="{{ order_details.order_hash }}">
-                        </form>
-                    </div>
-
+                <div class="col">
+                    <a href="/shop/products/" class="btn btn-warning"><i
+                            class="fa fa-angle-left"></i> {% trans 'Continue Shopping' %}</a>
                 </div>
+                <div class="col">
+                    <a href="{% url 'shop:delivery_order' order_details.order_hash %} "
+                       class="btn btn-success float-right">{% trans 'Checkout' %}<i
+                            class="fa fa-angle-right"></i></a>
+                </div>
+                <form id="next-step-form" method="post">
+                    {% csrf_token %}
+
+                    <input id="next-step-token" type="hidden" name="token"
+                           value="{{ order_details.order_hash }}">
+                </form>
             </div>
+
+        </div>
+    </div>
 {% endblock %}

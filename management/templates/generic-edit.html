@@ -1,6 +1,6 @@
 {% extends 'base-mgmt.html' %}
-{% load recurse %}
 {% load static %}
+{% load recurse %}
 {% load bootstrap4 %}
 
 {% load i18n %}
@@ -13,10 +13,34 @@
 {% endblock %}
 
 {% block body %}
-    <form method="post" enctype="multipart/form-data">{% csrf_token %}
-        {% bootstrap_form form layout='horizontal' %}
-        <input class="btn btn-primary" type="submit" value="Save">
-        <a class="btn btn-secondary" href="{{ request.META.HTTP_REFERER }}">{% trans 'Back' %}</a>
-    </form>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+            <form method="post" enctype="multipart/form-data">{% csrf_token %}
+
+                <div class="card">
+                    <div class="card-header">
+                        <input class="btn btn-primary" type="submit" value="Save">
+                    </div>
+                    <div class="card-body">
+
+                        {% bootstrap_form form layout='horizontal' %}
+                    </div>
+            </form>
+        </div>
+    </div>
 
 {% endblock %}

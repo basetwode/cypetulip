@@ -11,7 +11,7 @@ from shop.utils import create_hash, json_response
 __author__ = 'Anselm'
 
 
-class CheckoutView(LoginRequiredMixin, View):
+class DeliveryView(LoginRequiredMixin, View):
     template_name = 'order/delivery.html'
 
     def delete(self, request, product_id):

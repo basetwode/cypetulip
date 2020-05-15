@@ -12,7 +12,8 @@ from cms.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
 from cms.models import Page, Section
 from management.models import LdapSetting, MailSetting, LegalSetting
 from payment.models import PaymentDetail, Payment
-from shop.filters import OrderDetailFilter
+from shop.filters import OrderDetailFilter, ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
+    PageFilter
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState
 from shop.my_account.views import SearchOrders
 from shop.order.utils import get_orderitems_once_only
@@ -162,22 +163,32 @@ class CategoriesOverviewView(LoginRequiredMixin, ListView):
     context_object_name = 'categories'
     model = ProductCategory
 
+    def get(self, request, *args, **kwargs):
+        filter = ProductCategoryFilter(request.GET, queryset=ProductCategory.objects.all())
+        return render(request, self.template_name,
+                      {'filter': filter})
+
 
 class ProductsOverviewView(LoginRequiredMixin, ListView):
     template_name = 'products-overview.html'
     context_object_name = 'products'
     model = Product
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data()
-        context['categories'] = ProductCategory.objects.all()
-        return context
+    def get(self, request, *args, **kwargs):
+        filter = ProductFilter(request.GET, queryset=Product.objects.all())
+        return render(request, self.template_name,
+                      {'filter': filter})
 
 
 class CustomersOverviewView(LoginRequiredMixin, ListView):
     template_name = 'customers-overview.html'
     context_object_name = 'customers'
     model = Contact
+
+    def get(self, request, *args, **kwargs):
+        filter = ContactFilter(request.GET, queryset=Contact.objects.all())
+        return render(request, self.template_name,
+                      {'filter': filter})
 
 
 class EmployeeOverviewView(LoginRequiredMixin, ListView):
@@ -297,9 +308,14 @@ class PagesOverviewView(LoginRequiredMixin, ListView):
     context_object_name = 'pages'
     model = Page
 
+    def get(self, request, *args, **kwargs):
+        filter = PageFilter(request.GET, queryset=Page.objects.all())
+        return render(request, self.template_name,
+                      {'filter': filter})
+
 
 class PageCreateView(LoginRequiredMixin, CreateView):
-    template_name = 'pages/pages-create.html'
+    template_name = 'generic-create.html'
     context_object_name = 'page'
     model = Page
     fields = '__all__'
@@ -342,9 +358,14 @@ class SectionsOverviewView(LoginRequiredMixin, ListView):
     context_object_name = 'sections'
     model = Section
 
+    def get(self, request, *args, **kwargs):
+        filter = SectionFilter(request.GET, queryset=Section.objects.all())
+        return render(request, self.template_name,
+                      {'filter': filter})
+
 
 class SectionCreateView(LoginRequiredMixin, CreateView):
-    template_name = 'pages/sections-create.html'
+    template_name = 'generic-create.html'
     context_object_name = 'sections'
     model = Section
     fields = '__all__'
@@ -359,7 +380,7 @@ class SectionCreateView(LoginRequiredMixin, CreateView):
 
 
 class SectionEditView(LoginRequiredMixin, UpdateView):
-    template_name = 'pages/sections-create.html'
+    template_name = 'generic-edit.html'
     context_object_name = 'sections'
     model = Section
     fields = '__all__'

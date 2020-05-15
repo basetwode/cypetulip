@@ -10,57 +10,72 @@
 {% bootstrap_messages %}
 {% block head %}
     <title>Products</title>
-    <script src="{% static 'autocomplete.js' %}"></script>
-    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
     <link href="{% static 'management.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
-    <div class="main">
-        <div class="content">
-            <div class="col-md-12">
-                <a class="btn btn-secondary" href="{{ request.META.HTTP_REFERER }}">{% trans 'Back' %}</a>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="card-title h4">{% trans 'Filter' %}</div>
+                    <form action="" method="get">
 
-                <table class="table table-hover table-striped table-responsive-sm">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">{% trans 'Position' %}</th>
-                        <th scope="col">{% trans 'Pagename' %}</th>
-                        <th scope="col">{% trans 'Enabled' %}</th>
-                        <th scope="col">{% trans 'Link' %}</th>
-                        <th scope="col">{% trans 'Configuration' %}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for page in pages %}
-                        <tr>
-                            <td>{{ page.id }}</td>
-                            <td>{{ page.position }}</td>
-                            <td>{{ page.page_name }}</td>
-                            <td>{{ page.is_enabled }}</td>
-                            <td>{{ page.link }}</td>
-                            <td>
-                                <div>
-                                    <a class="btn btn-outline-dark"
-                                       href="{% url 'page_edit' page.id %}">{% trans 'Edit' %}</a>
-                                    <button class="btn btn-outline-dark" data-toggle="modal"
-                                            data-target="#delete-modal">{% trans 'Delete' %}</button>
-                                    {% include 'delete-modal.html' with id=page.id url='page_delete' url_param='page_id' %}
+                        {% bootstrap_form filter.form %}
+                        <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
 
-                                </div>
-
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-
-                </table>
+                    </form>
+                    <a href="{% url 'create_page' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Add Page' %}</a>
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
 
             </div>
         </div>
-    </div>
-    <script>
+        <div class="col-sm-12 col-md-9">
 
-    </script>
+
+            <table class="table table-hover table-striped table-responsive-sm">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">{% trans 'Position' %}</th>
+                    <th scope="col">{% trans 'Pagename' %}</th>
+                    <th scope="col">{% trans 'Enabled' %}</th>
+                    <th scope="col">{% trans 'Link' %}</th>
+                    <th scope="col">{% trans 'Configuration' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for page in filter.qs %}
+                    <tr>
+                        <td>{{ page.id }}</td>
+                        <td>{{ page.position }}</td>
+                        <td>{{ page.page_name }}</td>
+                        <td>{{ page.is_enabled }}</td>
+                        <td>{{ page.link }}</td>
+                        <td>
+                            <div>
+                                <a class="btn btn-outline-dark"
+                                   href="{% url 'page_edit' page.id %}">{% trans 'Edit' %}</a>
+                                <button class="btn btn-outline-dark" data-toggle="modal"
+                                        data-target="#delete-modal">{% trans 'Delete' %}</button>
+                                {% include 'delete-modal.html' with id=page.id url='page_delete' url_param='page_id' %}
+
+                            </div>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
 {% endblock %}

@@ -14,25 +14,27 @@
 {% endblock %}
 
 {% block body %}
-    <form method="post">{% csrf_token %}
-        <div class="row">
-            <div class="col-3 hidden-sm">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="h-bold">{% trans "Menu" %}</h4>
-                    </div>
-                    <div class="card-body">
-
-                        <a href="{{ request.META.HTTP_REFERER }}"
-                           class="btn btn-fw btn-secondary">{% trans 'Go back' %}</a>
-                    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
                 </div>
+                <div class="card-body">
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
             </div>
-            <div class="col-9">
+        </div>
+        <div class="col-9">
+            <form method="post">{% csrf_token %}
+
                 <div class="card">
                     <div class="card-header">
                         {% buttons %}
-                            <button type="submit" value="Save" class="btn btn-warning">{% trans 'Save' %}</button>
+                            <button type="submit" value="Save" class="btn btn-primary">{% trans 'Save' %}</button>
                         {% endbuttons %}
                     </div>
                     <div class="card-body">
@@ -40,11 +42,12 @@
 
                     </div>
                 </div>
-            </div>
+            </form>
+
         </div>
+    </div>
 
 
-    </form>
 
 
 {% endblock %}
