@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from mediaserver.upload import (company_files_upload_handler, fs, order_files_upload_handler,
                                 public_files_upload_handler, rand_key)
+from shipping.models import Shipment
 
 
 class Company(models.Model):
@@ -243,7 +244,12 @@ class OrderDetail(models.Model):
                               blank=True, )
     date_bill = models.DateTimeField(null=True, blank=True)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
-    shipment_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True)
+    shipment_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True,
+                                         related_name='shipment_address')
+    billing_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True,
+                                        related_name='billing_address')
+    shipment = models.ForeignKey(Shipment, on_delete=models.CASCADE, null=True, blank=True,
+                                 related_name='shipment')
 
     def unique_nr(self):
         return "CTNR" + str(self.id).rjust(10, "0")

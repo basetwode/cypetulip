@@ -12,8 +12,9 @@ from cms.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
 from cms.models import Page, Section
 from management.models import LdapSetting, MailSetting, LegalSetting
 from payment.models import PaymentDetail, Payment
+from shipping.models import Shipment
 from shop.filters import OrderDetailFilter, ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
-    PageFilter
+    PageFilter, ShipmentPackageFilter
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState
 from shop.my_account.views import SearchOrders
 from shop.order.utils import get_orderitems_once_only
@@ -473,3 +474,14 @@ class OrderChangeStateView(View):
             return redirect(request.META.get('HTTP_REFERER'))
         except:
             return json_response(500, x={})
+
+
+class ShipmentOverviewView(LoginRequiredMixin, ListView):
+    template_name = 'shipment-overview.html'
+    context_object_name = 'shipment'
+    model = Shipment
+
+    def get(self, request, *args, **kwargs):
+        filter = ShipmentPackageFilter(request.GET, queryset=Shipment.objects.all())
+        return render(request, self.template_name,
+                      {'filter': filter})

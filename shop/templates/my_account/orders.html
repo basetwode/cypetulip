@@ -132,6 +132,14 @@
                                         Status: <span
                                             style="color: #2c7b91"><b>{{ order_detail.state }}</b></span>
                                     </div>
+                                    <div>
+                                        {% trans 'Tracking' %}: <span
+                                            style="color: #2c7b91"><b>{{ order_detail.shipment.package.tracking_code }}</b></span>
+                                    </div>
+                                    <div>
+                                        {% trans 'Shipper' %}: <span
+                                            style="color: #2c7b91"><b>{{ order_detail.shipment.package.shipper }}</b></span>
+                                    </div>
 
                                 {% endfor %}
 
@@ -216,6 +224,9 @@
 
 
 
+
+
+
                                                {{ orders.previous_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Previous' %}</a>
                                 {% else %}
                                     <button class="btn disabled page-link"
@@ -231,6 +242,9 @@
                                 {% if orders.has_next %}
                                     <a class="page-link"
                                        href="{% url 'shop:all_orders' %}{{ number_of_orders }}/
+
+
+
 
 
                                                {{ orders.next_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Next' %}</a>

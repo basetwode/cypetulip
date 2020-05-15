@@ -115,8 +115,15 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2"></div>
+                        <div class="col-md-4"><strong>
+                            {% trans 'Tracking' %}
+                        </strong>
+                            <div>
+                                {% for order_detail in order.orderdetail_set.all %}
+                                    {{ order_detail.shipment.package.tracking_code }}
+                                {% endfor %}
+                            </div>
+                        </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-4">
                             <strong>

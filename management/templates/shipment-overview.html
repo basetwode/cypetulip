@@ -1,0 +1,68 @@
+{% extends 'base-mgmt.html' %}
+{% load static %}
+{% load recurse %}
+{% load bootstrap4 %}
+
+{% load i18n %}
+{% bootstrap_messages %}
+{% block head %}
+    <title>Products</title>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="card-title h4">{% trans 'Filter' %}</div>
+                    <form action="" method="get">
+
+                        {% bootstrap_form filter.form %}
+                        <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
+
+                    </form>
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+            <table class="table table-hover table-striped table-responsive-sm">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">{% trans 'Tracking' %}</th>
+                    <th scope="col">{% trans 'Price' %}</th>
+                    <th scope="col">{% trans 'Weight' %}</th>
+                    <th scope="col">{% trans 'Shipper' %}</th>
+                    <th scope="col">{% trans 'Configuration' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for shipment in filter.qs %}
+                    <tr>
+                        <td>{{ shipment.id }}</td>
+                        <td>{{ shipment.package.tracking_code }}</td>
+                        <td>{{ shipment.package.price }} €</td>
+                        <td>{{ shipment.package.weight }}</td>
+                        <td>{{ shipment.package.shipper }}</td>
+
+                        <td>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

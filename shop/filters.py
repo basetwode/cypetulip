@@ -1,6 +1,7 @@
 import django_filters
 
 from cms.models import Section, Page
+from shipping.models import Package
 from shop.models import OrderDetail, Product, Contact, ProductCategory
 
 
@@ -38,3 +39,9 @@ class SectionFilter(django_filters.FilterSet):
     class Meta:
         model = Section
         fields = ['page']
+
+
+class ShipmentPackageFilter(django_filters.FilterSet):
+    class Meta:
+        model = Package
+        fields = ['shipper']
