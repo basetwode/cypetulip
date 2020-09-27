@@ -2,16 +2,15 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View
 
-from cms.mixins import LoginRequiredMixin
 from shop.Errors import FieldError, JsonResponse
-from shop.models import Contact, Order, OrderItem, Product, ProductSubItem, Address
-from shop.order.forms import ItemBuilder, SubItemForm, OrderDetail
+from shop.models import Contact, Order, OrderItem, Product, ProductSubItem, Address, Company
+from shop.order.forms import ItemBuilder, SubItemForm, OrderDetail, AddressForm, ContactForm
 from shop.utils import create_hash, json_response
 
 __author__ = 'Anselm'
 
 
-class DeliveryView(LoginRequiredMixin, View):
+class DeliveryView(View):
     template_name = 'order/delivery.html'
 
     def delete(self, request, product_id):
@@ -22,26 +21,59 @@ class DeliveryView(LoginRequiredMixin, View):
         return render(request, self.template_name)
 
     def get(self, request, order):
-        contact = Contact.objects.filter(user=request.user)
-        address = Address.objects.filter(contact=contact[0])
-        company = contact[0].company
-        order = Order.objects.filter(order_hash=order, is_send=False, company=company)
-        if order.count() > 0:
-            order = order[0]
+        orders = None
+        if request.user.is_authenticated:
+            contact = Contact.objects.filter(user=request.user)
+            address = Address.objects.filter(contact=contact[0])
+            company = contact[0].company
+            orders = Order.objects.filter(order_hash=order, is_send=False, company=company)
+        else:
+            orders = Order.objects.filter(order_hash=order, is_send=False)
+            address = None
+        if orders.count() > 0:
+            order = orders[0]
             sub_order_items = OrderItem.objects.filter(order=order).exclude(product__in=Product.objects.all())
             sub_order_items.delete()
             sub_products_once_only = self.get_subproducts_once_only(order)
+            address_form = AddressForm()
+            contact_form = ContactForm()
             return render(request, self.template_name, {'order_details': order,
                                                         'sub_products_once_only': sub_products_once_only,
-                                                        'address': address})
+                                                        'address': address, 'addressForm': address_form,
+                                                        'contactForm': contact_form})
         else:
             return redirect(reverse('shop:shopping_cart'))
 
     def post(self, request, order):
-        contact = Contact.objects.filter(user=request.user)
-        company = contact[0].company
-        _order = Order.objects.filter(order_hash=order, is_send=False, company=company)
-        order_details = OrderDetail.objects.get(order_number=order)
+        # TODO add new contact and address from delivery form
+
+        _order = None
+        order_details = None
+        if request.user.is_anonymous:
+            contact_from_visitor = Contact.objects.filter(first_name=request.POST['first_name'],
+                                                          last_name=request.POST['last_name'],
+                                                          email=request.POST['email'])
+
+            if not contact_from_visitor:
+                new_company = Company(name=request.POST['email'])
+                new_contact = Contact(first_name=request.POST['first_name'], last_name=request.POST['last_name'],
+                                      gender=request.POST['gender'], email=request.POST['email'],
+                                      telephone=request.POST['telephone'], company=new_company)
+                address_by_form = Address(name=request.POST['name'], street=request.POST['name'],
+                                          number=request.POST['name'], zipcode=request.POST['name'],
+                                          city=request.POST['name'], contact=new_contact)
+                _order = Order.objects.filter(order_hash=order, is_send=False)
+                _order[0].company = new_company
+                _order[0].save()
+                _order_details = OrderDetail.objects.get(order=_order[0])
+                _order_details.shipment_address = address_by_form
+            else:
+                pass
+        else:
+            contact_by_user = Contact.objects.filter(user=request.user)
+            company = contact_by_user[0].company
+            _order = Order.objects.filter(order_hash=order, is_send=False, company=company)
+            order_details = OrderDetail.objects.get(order_number=order)
         if _order.count() > 0:
             forms = {}
             forms_are_valid = True
@@ -66,7 +98,13 @@ class DeliveryView(LoginRequiredMixin, View):
                 for k, v in forms.items():
                     v.save()
                 token = create_hash()
-                shipment_address = Address.objects.get(id=request.POST.get("shipment-address"))
+                if request.POST.get("shipment-address"):
+                    shipment_address = Address.objects.get(id=request.POST.get("shipment-address"))
+                else:
+                    shipment_address = Address(name=request.POST['name'], street=request.POST['name'],
+                                               number=request.POST['name'], zipcode=request.POST['name'],
+                                               city=request.POST['name'], contact=contact_by_user[0])
+                    shipment_address.save()
                 order_details.shipment_address = shipment_address
                 order_details.save()
                 ord = _order[0]

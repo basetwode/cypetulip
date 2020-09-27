@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
+{% load bootstrap4 %}
 {% load static %}
 {% load i18n %}
 {% load recurse %}
 {% load get_type %}
+
+{% load i18n %}
+{% bootstrap_messages %}
 {% block head %}
     <script src="{% static 'utils.js' %}"></script>
     <script src="{% static 'js/jquery.validate.min.js' %}"></script>
@@ -225,25 +229,30 @@
 
                 <div class="accordion" id="addressFormInput">
                     {% if not address %}
-                        {% trans 'Please add at first an address' %}
+                        <hr>
+                        <h1>{% trans 'Add Address' %}</h1><br/>
+                        {% bootstrap_form contactForm layout='horizontal' %}
+                        {% bootstrap_form_errors contactForm layout='horizontal' %}
+                        {% bootstrap_form addressForm layout='horizontal' %}
+                        {% bootstrap_form_errors addressForm layout='horizontal' %}
                     {% endif %}
                     {% for entry in address %}
                         <div class="card">
                             <div class="card-header" id="heading{{ entry.name }}">
                                 <h2 class="mb-0">
-                                    <input id="input{{ entry.name }}" type="radio"
+                                    <input id="input{{ entry.id }}" type="radio"
                                            name="shipment-address" data-toggle="collapse"
-                                           data-target="#body{{ entry.name }}"
+                                           data-target="#body{{ entry.id }}"
                                            aria-expanded="false" aria-controls="#body{{ entry.name }}"
                                            value="{{ entry.id }}">
-                                    <label for="input{{ entry.name }}"
-                                           data-toggle="collapse" data-target="#body{{ entry.name }}">
+                                    <label for="input{{ entry.id }}"
+                                           data-toggle="collapse" data-target="#body{{ entry.id }}">
                                         <i class="fas fa-truck"></i>
                                         {{ entry.name }}</label>
                                 </h2>
                             </div>
 
-                            <div id="body{{ entry.name }}" class="collapsed collapse"
+                            <div id="body{{ entry.id }}" class="collapsed collapse"
                                  aria-labelledby="heading{{ entry.name }}"
                                  data-parent="#addressFormInput">
                                 <div class="card-body">

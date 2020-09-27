@@ -8,7 +8,7 @@ from django.views.generic import View
 
 from install import create_app_perms_for_user
 from shop.authentification.forms import CompleteCompanyForm, SignUpForm
-from shop.models import Contact
+from shop.models import Contact, Order, OrderItem
 
 __author__ = ''
 
@@ -24,7 +24,10 @@ class LoginView(View):
     def post(self, request):
         username = request.POST['username']
         password = request.POST['password']
-
+        order_from_session = Order.objects.filter(session=request.session.session_key)
+        order_items_from_order_session = []
+        if order_from_session:
+            order_items_from_order_session = OrderItem.objects.filter(order=order_from_session[0])
         # Use Django's machinery to attempt to see if the username/password
         # combination is valid - a User object is returned if it is.
         user = authenticate(username=username, password=password)
@@ -34,8 +37,15 @@ class LoginView(View):
                 # If the account is valid and active, we can log the user in.
                 # We'll send the user back to the homepage.
                 auth_login(request, user)
-
-                contact = Contact.objects.filter(user=request.user)
+                contact = Contact.objects.get(user=request.user)
+                if contact:
+                    order_from_contact = Order.objects.filter(company=contact.company, is_send=False)
+                    for item in order_items_from_order_session:
+                        item.order = order_from_contact[0]
+                        item.save()
+                    order_from_session.delete()
+                else:
+                    order_from_session.session = request.session.session_key
                 # language = contact[0].language
                 # request.LANGUAGE_CODE = language
 

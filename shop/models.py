@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from mediaserver.upload import (company_files_upload_handler, fs, order_files_upload_handler,
                                 public_files_upload_handler, rand_key)
@@ -218,8 +218,9 @@ class Order(models.Model):
     order_id = models.IntegerField(null=True, blank=True)
     order_hash = models.CharField(max_length=30, null=True, blank=True)
     is_send = models.BooleanField(default=False)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, )
     token = models.CharField(max_length=25, blank=True, null=True)
+    session = models.CharField(max_length=40, blank=True, null=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -249,7 +250,7 @@ class OrderDetail(models.Model):
     state = models.ForeignKey(OrderState, on_delete=models.CASCADE, null=True,
                               blank=True, )
     date_bill = models.DateTimeField(null=True, blank=True)
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True, )
     shipment_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True,
                                          related_name='shipment_address')
     billing_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True,

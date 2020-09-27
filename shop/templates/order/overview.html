@@ -72,10 +72,10 @@
                                         <div class="row">
                                             <div class="col-2 hidden-xs">
                                                 {% if order.product.product.product_picture %}
-                                                    <img style="max-width: 150px"
-                                                         src="{{ order.product.product.product_picture.url }}"
-                                                         alt="..."
-                                                         class="img-fluid img-thumbnail"/>
+                                                    <img
+                                                            src="{{ order.product.product.product_picture.url }}"
+                                                            alt="..."
+                                                            class="img-fluid img-thumbnail"/>
                                                 {% else %}
                                                     <i class="fa fa-4x fa-image img-thumbnail"></i>
                                                 {% endif %}
@@ -85,7 +85,6 @@
 
                                                 <p>{{ order.product.description|truncatechars:100 }}</p>
                                             </div>
-
                                         </div>
                                     </td>
                                     <td data-th="Price">{{ order.product.price }}</td>
@@ -227,7 +226,7 @@
                         <div class="col">
                             <form action="{% url 'shop:delivery_order' order_details.order_hash %}" method="get">
                                 <a onclick="$(this).parent().submit()" class="btn btn-warning"><i
-                                        class="fa fa-angle-left"></i> {% trans 'Back to checkout' %}</a>
+                                        class="fa fa-angle-left"></i> {% trans 'Back to Shipment' %}</a>
                             </form>
                         </div>
                         <div class="col">
