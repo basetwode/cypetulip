@@ -39,13 +39,14 @@
 
 <body role="document" class="mb-5">
 <!-- Modal -->
-{% include 'wait-modal.html' %}
+{% include 'loading-spinner.html' %}
 <!-- Fixed navbar -->
 {% include 'navbar.html' %}
 
 <main role="main" id="main" class="mb-5" style="margin-top: 50px;min-height: 600px">
-    {% include 'notify-modal.html' %}
+
     <div class="container">
+        {% include 'notify-modal.html' %}
 
         {% block body %}
         {% endblock %}
