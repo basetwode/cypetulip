@@ -18,7 +18,7 @@ from django.views.generic import RedirectView
 
 from billing import urls as billing_urls
 from cms import urls as cms_urls
-from management import urls as admin_urls
+from management import urls as admin_urls, rest
 from mediaserver import urls as media_urls
 from payment import urls as payment_urls
 from permissions import urls as perm_urls
@@ -38,6 +38,8 @@ from django.core.files.storage import default_storage
 site.storage = default_storage
 
 urlpatterns = [
+    url(r'^api-auth/', include('rest_framework.urls')),
+    url(r'^api/v1/', include(rest.router.urls)),
     url(r'^admin/filebrowser/', site.urls),
     url(r'^$', RedirectView.as_view(url='/cms/home/')),
     url(r'^admin/', admin.site.urls),

@@ -35,11 +35,13 @@
                         <input class="btn btn-primary" type="submit" value="Save">
                     </div>
                     <div class="card-body">
-
-                        {% bootstrap_form form layout='horizontal' %}
+                        {% block form %}
+                            {% bootstrap_form form exclude=excluded_fields layout='horizontal' %}
+                        {% endblock %}
                     </div>
             </form>
         </div>
+
     </div>
 
 {% endblock %}

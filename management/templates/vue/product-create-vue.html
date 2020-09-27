@@ -1,0 +1,172 @@
+
+{% extends 'generic-create.html' %}
+{% load bootstrap4 %}
+{% load i18n %}
+
+{% block form %}
+
+    {% bootstrap_form form exclude="attributes" layout='horizontal' %}
+
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
+        </script><script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script type='text/javascript'>
+            var csrfmiddlewaretoken = '{{ csrf_token }}';
+        </script>
+
+        <div id="app">
+            <div class="form-group row"><label class="col-md-3 col-form-label" for="id_selectedAttributes">Attributes</label>
+                <div class="col-md-8"><select size="10" v-model="selectedAttributes" name="selectedAttributes" class="form-control"
+                                              title="" id="id_selectedAttributes"
+                                              multiple="">
+                    <option v-for="option in productAttributeTypeInstances" v-bind:value="option.value">
+                        [[ getTypeName(option.type) ]] | [[ option.value ]]
+                    </option>
+
+                </select></div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#product-attribute-create">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="product-attribute-create" class="modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" style="max-width:800px" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{% trans 'Create Product Attribute' %}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group row"><label class="col-md-3 col-form-label"
+                                                               for="id_attributes">{% trans 'Attribute Type' %}</label>
+                                <div class="col-md-9"><select  v-model="selectedType" name="attributes" class="form-control" title=""
+                                                              id="id_attributetypes"
+                                                              >
+                                    <option v-for="option in productAttributeTypes" v-bind:value="option">
+                                        [[ option.name ]]
+                                    </option>
+
+                                </select></div>
+
+
+                            </div>
+                            <div class="form-group row">
+                                <label class="offset-1 col-md-3 col-form-label"
+                                       for="id_attributes">{% trans 'Add new attribute type' %}</label>
+                                <div class="col-md-7"><input type="text" v-model="newTypeName" maxlength="300" class="form-control"
+                                                                         placeholder="Details" title=""></div>
+                                <div class="col-md-1"><button  type="button" v-on:click="addProductAttributeType()" class="btn btn-primary" >
+                                    <i class="fa fa-plus"></i>
+                                </button></div>
+                            </div>
+                            <div v-if="selectedType" class="form-group row"><label class="col-md-3 col-form-label" for="id_selectedAttributes">Attributes</label>
+                                <div class="col-md-9"><select size="10" v-model="selectedAttributes" name="selectedAttributes" class="form-control"
+                                                              title="" id="id_selectedAttributes"
+                                                              multiple="">
+                                    <option v-for="option in filterByType(productAttributeTypeInstances)" v-bind:value="option.value">
+                                        [[ getTypeName(option.type) ]] | [[ option.value ]]
+                                    </option>
+
+                                </select></div>
+
+
+                        </div>
+                            <div v-if="selectedType" class="form-group row">
+                            <label class="offset-1 col-md-3 col-form-label"
+                                   for="id_attributes">{% trans 'Add new attribute' %}</label>
+                            <div class="col-md-7"><input type="text" v-model="newTypeInstanceName" maxlength="300" class="form-control"
+                                                         placeholder="Instance Value" title=""></div>
+                            <div class="col-md-1"><button  type="button" v-on:click="addProductAttributeTypeInstance()" class="btn btn-primary" >
+                                <i class="fa fa-plus"></i>
+                            </button></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{#            <div class="col-md-11">#}
+{#                {% bootstrap_field form.attributes layout="horizontal" %}#}
+{#            </div>#}
+
+{#            <ul>#}
+{#                <li v-for="type in productAttributeTypes">#}
+{#                    <a v-bind:href="type.url">[[ type ]]</a> <button v-on:click="updateProductAttributeType(type)">Update</button>#}
+{#                </li>#}
+{#            </ul>#}
+        </div>
+
+        <script>
+            var app = new Vue({
+                delimiters: ['[[', ']]'],
+                el: '#app',
+                data: {
+                    message: 'Hello Vue!',
+                    productAttributeTypes: [],
+                    productAttributeTypeInstances: [],
+                    csrfmiddlewaretoken: csrfmiddlewaretoken,
+                    selectedAttributes: [],
+                    selectedType: "",
+                    newTypeName:'',
+                    newTypeInstanceName:''
+                },
+                mounted() {
+                    this.reloadData()
+                },
+                methods: {
+                    reloadData: function(){
+                        axios.get('/api/v1/productattributetypes')
+                            .then(response => {
+                            console.log(response)
+                            this.productAttributeTypes = response.data
+                        });
+                        axios.get('/api/v1/productattributetypeinstances')
+                            .then(response => {
+                            console.log(response)
+                            this.productAttributeTypeInstances = response.data
+                        })
+                    },
+                    updateProductAttributyType: function(type) {
+                        console.log('Hello from ' + type + '!')
+                    },
+                    addProductAttributeType: function () {
+                        axios.post('/api/v1/productattributetypes/', {'name': this.newTypeName, 'csrfmiddlewaretoken':
+                        this.csrfmiddlewaretoken})
+                            .then(response => {
+                                this.productAttributeTypes.push(response.data)
+                                this.newTypeName="";
+                                this.selectedType = response.data.name;
+                            })
+                    },
+                    getTypeName: function(name){
+                        return this.productAttributeTypes.filter(function(type) {
+                            return type.url === name;
+                        })[0].name;
+
+                    },
+                    addProductAttributeTypeInstance: function () {
+                        axios.post('/api/v1/productattributetypeinstances/', {'value': this.newTypeInstanceName, 'type': this.selectedType.url})
+                            .then(response => {
+                            this.productAttributeTypeInstances.push(response.data)
+                        })
+                    },
+                    filterByType: function() {
+                        var instance = this;
+                        return this.productAttributeTypeInstances.filter(function(typeInstance) {
+                            return typeInstance.type === instance.selectedType.url;
+                        })
+                    }
+                }
+            });
+        </script>
+
+
+        <div class="col-md-1">
+{#            {% include 'modals/product-attribute-create.html' %}#}
+        </div>
+{% endblock %}

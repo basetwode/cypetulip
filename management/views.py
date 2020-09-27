@@ -1,3 +1,5 @@
+import json
+
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Sum
 from django.http import HttpResponse
@@ -15,7 +17,8 @@ from payment.models import PaymentDetail, Payment
 from shipping.models import Shipment
 from shop.filters import OrderDetailFilter, ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
     PageFilter, ShipmentPackageFilter
-from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState
+from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
+    ProductAttributeType
 from shop.my_account.views import SearchOrders
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
@@ -237,13 +240,18 @@ class CompanyEditView(LoginRequiredMixin, UpdateView):
 
 
 class ProductCreationView(LoginRequiredMixin, CreateView):
-    template_name = 'generic-create.html'
+    template_name = 'vue/product-create-vue.html'
     context_object_name = 'products'
     model = Product
     fields = '__all__'
 
     def get_success_url(self):
         return reverse_lazy('products_overview')
+
+    # def get_context_data(self, **kwargs):
+    #     context_data = super(ProductCreationView, self).get_context_data()
+    #     context_data['product_attribute_types'] = json.dumps(ProductAttributeType.objects.all().values())
+    #     return context_data
 
 
 class ProductEditView(LoginRequiredMixin, UpdateView):
@@ -485,3 +493,5 @@ class ShipmentOverviewView(LoginRequiredMixin, ListView):
         filter = ShipmentPackageFilter(request.GET, queryset=Shipment.objects.all())
         return render(request, self.template_name,
                       {'filter': filter})
+
+

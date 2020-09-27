@@ -122,6 +122,10 @@
                                     <a class="nav-link text-uppercase font-weight-bold rounded-0"
                                        data-toggle="tab"
                                        href="#details">{% trans 'Details' %}</a></li>
+                                <li class="nav-item flex-sm-fill">
+                                <a class="nav-link text-uppercase font-weight-bold rounded-0"
+                                   data-toggle="tab"
+                                   href="#technical-details">{% trans 'Technical Details' %}</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div id="description" role="tabpanel"
@@ -134,6 +138,23 @@
                                     <h3>{% trans 'Details' %}</h3>
                                     <p>{{ product.details }}</p>
                                 </div>
+                                <div id="technical-details" role="tabpanel" class="tab-pane fade px-4 pt-5">
+                                <h3>{% trans 'Technical Details' %}</h3>
+                                    {% regroup product.attributes.all by type as attributes_grouped %}
+                                    {% for attribute in attributes_grouped %}
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <b> {{ attribute.grouper.name }}:</b>
+                                            </div>
+                                            <div class="col-md-2">
+                                                {% for attribute_item in attribute.list %}
+                                                    {{ attribute_item.value }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    </div>
+                            </div>
                             </div>
                         </div>
 
