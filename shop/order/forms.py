@@ -85,3 +85,15 @@ class ItemBuilder():
 
     def build_reverse(self, order_id, product_type, product_id):
         return self.item_string.format(order_id, product_type, product_id)
+
+
+class AddressForm(ModelForm):
+    class Meta:
+        model = Address
+        fields = ('name', 'street', 'number', 'zipcode', 'city')
+
+
+class ContactForm(ModelForm):
+    class Meta:
+        model = Contact
+        fields = ('first_name', 'last_name', 'gender', 'telephone', 'email')

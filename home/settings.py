@@ -15,7 +15,7 @@ import logging
 import os
 
 from django.utils.translation import gettext
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from home.init import load_settings
 
