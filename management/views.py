@@ -266,7 +266,7 @@ class ProductCreationView(LoginRequiredMixin, CreateView):
 
 
 class ProductEditView(LoginRequiredMixin, UpdateView):
-    template_name = 'generic-edit.html'
+    template_name = 'vue/product-create-vue.html'
     context_object_name = 'products'
     model = Product
     fields = '__all__'

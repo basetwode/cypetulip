@@ -7,27 +7,32 @@ from rest_framework.authentication import SessionAuthentication
 
 
 class ProductAttributeTypeSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = ProductAttributeType
         fields = '__all__'
 
 class ProductAttributeTypeInstanceSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = ProductAttributeTypeInstance
         fields = '__all__'
 
 class ProductCategorySerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = ProductCategory
         fields = '__all__'
 
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = Product
         fields = '__all__'
 
 
 class ProductSubItemSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = ProductSubItem
         fields = '__all__'
