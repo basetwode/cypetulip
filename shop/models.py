@@ -192,6 +192,9 @@ class ProductAttributeTypeInstance(models.Model):
     type = models.ForeignKey(ProductAttributeType, on_delete=models.CASCADE)
     value = models.CharField(max_length=100, db_index=True)
 
+    class Meta:
+        ordering = ['type']
+
     def __str__(self):
         return self.type.__str__() + " | " + self.value
 
