@@ -13,7 +13,8 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               SettingsView, ProductDeleteView, SectionDeleteView, PageDeleteView, CategoryDeleteView,
                               ContactEditView, CompanyEditView, LegalSettingsDetailView, EmployeeOverviewView,
                               EmployeeCreationView, OrderAssignEmployeeView, AccountingView, OrderPayView,
-                              OrderShipView, OrderChangeStateView, ShipmentOverviewView)
+                              OrderShipView, OrderChangeStateView, ShipmentOverviewView, FileSubItemCreationView,
+                              FileSubItemEditView, FileSubItemOverviewView, FileSubItemDeleteView)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
@@ -50,6 +51,12 @@ urlpatterns = [
     url(r'^products/(?P<product_id>[a-zA-Z0-9_.-]+)/$', ProductEditView.as_view(), name="product_edit"),
     url(r'^products/(?P<url_param>[a-zA-Z0-9_.-]+)/delete/$', ProductDeleteView.as_view(), name="product_delete"),
     url(r'^products/$', ProductsOverviewView.as_view(), name="products_overview"),
+
+    url(r'^filesubitems/create/$', FileSubItemCreationView.as_view(), name="create_filesubitem"),
+    url(r'^filesubitems/(?P<filesubitem_id>[a-zA-Z0-9_.-]+)/$', FileSubItemEditView.as_view(), name="filesubitem_edit"),
+    url(r'^filesubitems/(?P<url_param>[a-zA-Z0-9_.-]+)/delete/$', FileSubItemDeleteView.as_view(),
+        name="filesubitem_delete"),
+    url(r'^filesubitems/$', FileSubItemOverviewView.as_view(), name="filesubitem_overview"),
 
     url(r'^customers/$', CustomersOverviewView.as_view(), name="customers_overview"),
     url(r'^customers/search/$', SearchCustomers.as_view(), name="search_customers"),

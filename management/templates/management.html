@@ -103,6 +103,12 @@
                 <a href="{% url 'create_product' %}"
                    class="btn btn-primary">{% trans 'Create new Product' %}</a>
                 <hr>
+                <h5 class="card-title">{% trans 'File Subitems' %}</h5>
+                <a href="{% url 'filesubitem_overview' %}"
+                   class="btn btn-primary">{% trans 'Show' %}</a>
+                <a href="{% url 'create_filesubitem' %}"
+                   class="btn btn-primary">{% trans 'Create new FileSubItem' %}</a>
+                <hr>
                 <h5 class="card-title">{% trans 'Categories' %}</h5>
                 <a href="{% url 'categories_overview' %}"
                    class="btn btn-primary">{% trans 'Show' %}</a>

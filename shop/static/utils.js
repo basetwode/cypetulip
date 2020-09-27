@@ -17,8 +17,8 @@ function addToCart(product) {
 }
 
 function removeFromCart(url_part, product) {
-    waitModal = $('#wait-modal');
-    waitModal.modal('show');
+    loadingSpinner = $('#loading-spinner');
+    loadingSpinner.removeClass('overlay-hidden');
     $.ajax({
         url: '/shop/' + url_part + '/remove/' + product,
         method: 'delete',
@@ -26,6 +26,7 @@ function removeFromCart(url_part, product) {
 
         success: function (data) {
             $('#shopping-cart').html(data);
+            loadingSpinner.addClass('overlay-hidden');
             $('body').html(data);
 
         }
@@ -41,21 +42,9 @@ function submitForm(url, form) {
     $('p.error').html("");
     data.find('tr, div').removeClass('error-row');
     data.find(".input-group").removeClass('has-error');
-    waitModal = $('#wait-modal');
-    waitModal.modal('show');
+    loadingSpinner = $('#loading-spinner');
+    loadingSpinner.removeClass('overlay-hidden');
     $.ajax({
-        xhr: function () {
-            var xhr = new window.XMLHttpRequest();
-
-            xhr.upload.addEventListener("progress", function (evt) {
-                if (evt.lengthComputable) {
-                    var percentComplete = evt.loaded / evt.total;
-                    percentComplete = parseInt(percentComplete * 100);
-                    $('.progress-bar').css('width', percentComplete + '%').attr('aria-valuenow', percentComplete);
-                }
-            }, false);
-            return xhr;
-        },
         url: url,
         type: 'POST',
         method: 'POST',
@@ -65,10 +54,9 @@ function submitForm(url, form) {
         contentType: false,   // tell jQuery not to set contentType
         success: function (response) {
 
-            console.log('success: ', response);
+
             $('#alert-success').show();
-            waitModal.modal('hide');
-            $('.progress-bar').css('width', 0 + '%').attr('aria-valuenow', 0);
+            loadingSpinner.addClass('overlay-hidden');
             var nextForm = $('#next-step-form');
             if (response.next_url.length > 0) {
                 nextForm.attr('action', response.next_url);
@@ -79,6 +67,7 @@ function submitForm(url, form) {
         error: function (response) {
             $('#alert-warning').hide();
             $('#alert-danger').hide();
+            loadingSpinner.addClass('overlay-hidden');
             $('.progress-bar').css('width', 0 + '%').attr('aria-valuenow', 0);
             parseErrors(response);
         }

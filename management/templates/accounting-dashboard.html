@@ -33,19 +33,24 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-light">
+            <a href="{% url "management_all_orders" %}?state={{ open_order_state_id }}&contact=">
+                <div class="card bg-light">
 
-                <div class="card-body">
-                    <div class="text-uppercase"><span>{% trans 'Open Orders' %}</span>
-                        <span
-                                class="float-right"><i class="fas fa-shopping-basket fa-2x"></i>
-                        </span>
+                    <div class="card-body">
+
+                        <div class="text-uppercase"><span>{% trans 'Open Orders' %}</span>
+                            <span
+                                    class="float-right"><i class="fas fa-shopping-basket fa-2x"></i>
+                            </span>
+                        </div>
+                        <div><span
+                                class="text-bold badge badge-pill badge-primary">{{ counted_open_orders }}</span>
+                        </div>
+
                     </div>
-                    <div><span
-                            class="text-bold badge badge-pill badge-primary">{{ counted_open_orders }}</span>
-                    </div>
+
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-3">
             <div class="card bg-light">

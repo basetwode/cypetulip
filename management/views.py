@@ -16,9 +16,9 @@ from management.models import LdapSetting, MailSetting, LegalSetting
 from payment.models import PaymentDetail, Payment
 from shipping.models import Shipment
 from shop.filters import OrderDetailFilter, ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
-    PageFilter, ShipmentPackageFilter
+    PageFilter, ShipmentPackageFilter, FileSubItemFilter
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
-    ProductAttributeType
+    FileSubItem
 from shop.my_account.views import SearchOrders
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
@@ -184,6 +184,17 @@ class ProductsOverviewView(LoginRequiredMixin, ListView):
                       {'filter': filter})
 
 
+class FileSubItemOverviewView(LoginRequiredMixin, ListView):
+    template_name = 'filesubitems-overview.html'
+    context_object_name = 'filesubitem'
+    model = FileSubItem
+
+    def get(self, request, *args, **kwargs):
+        filter = FileSubItemFilter(request.GET, queryset=FileSubItem.objects.all())
+        return render(request, self.template_name,
+                      {'filter': filter})
+
+
 class CustomersOverviewView(LoginRequiredMixin, ListView):
     template_name = 'customers-overview.html'
     context_object_name = 'customers'
@@ -276,6 +287,40 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('products_overview')
+
+
+class FileSubItemCreationView(LoginRequiredMixin, CreateView):
+    template_name = 'generic-create.html'
+    context_object_name = 'filesubitem'
+    model = FileSubItem
+    fields = '__all__'
+
+    def get_success_url(self):
+        return reverse_lazy('filesubitem_overview')
+
+
+class FileSubItemEditView(LoginRequiredMixin, UpdateView):
+    template_name = 'generic-edit.html'
+    context_object_name = 'filesubitem'
+    model = FileSubItem
+    fields = '__all__'
+
+    product_id = None
+    slug_field = 'id'
+    slug_url_kwarg = 'filesubitem_id'
+
+    def get_success_url(self):
+        return reverse_lazy('filesubitem_overview')
+
+
+class FileSubItemDeleteView(LoginRequiredMixin, DeleteView):
+    model = FileSubItem
+    slug_field = 'id'
+    slug_url_kwarg = "url_param"
+    template = ''
+
+    def get_success_url(self):
+        return reverse_lazy('filesubitem_overview')
 
 
 class CategoryCreationView(LoginRequiredMixin, CreateView):
@@ -430,6 +475,7 @@ class AccountingView(LoginRequiredMixin, View):
 
     def get(self, request):
         total_netto = OrderItem.objects.aggregate(Sum('price'))
+        open_order_state_id = OrderState.objects.get(initial=True).id
         all_order_items = OrderItem.objects.filter()
         total_brutto = calculate_sum(all_order_items, True)
         last_orders = OrderDetail.objects.all()[:5]
@@ -445,7 +491,7 @@ class AccountingView(LoginRequiredMixin, View):
                       {'total_netto': total_netto, 'total_brutto': total_brutto,
                        'counted_open_orders': counted_open_orders,
                        'counted_open_payments': counted_open_payments, 'counted_open_shipments': counted_open_shipments,
-                       'last_orders': last_orders})
+                       'last_orders': last_orders, 'open_order_state_id': open_order_state_id})
 
 
 class OrderPayView(View):

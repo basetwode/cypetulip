@@ -45,8 +45,6 @@ class DeliveryView(View):
             return redirect(reverse('shop:shopping_cart'))
 
     def post(self, request, order):
-        # TODO add new contact and address from delivery form
-
         _order = None
         order_details = None
         if request.user.is_anonymous:
@@ -98,6 +96,7 @@ class DeliveryView(View):
                 for k, v in forms.items():
                     v.save()
                 token = create_hash()
+                # TODO: check if anything is added, else add errors to show
                 if request.POST.get("shipment-address"):
                     shipment_address = Address.objects.get(id=request.POST.get("shipment-address"))
                 else:

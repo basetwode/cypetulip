@@ -2,7 +2,7 @@ import django_filters
 
 from cms.models import Section, Page
 from shipping.models import Package
-from shop.models import OrderDetail, Product, Contact, ProductCategory
+from shop.models import OrderDetail, Product, Contact, ProductCategory, FileSubItem
 
 
 class OrderDetailFilter(django_filters.FilterSet):
@@ -15,6 +15,12 @@ class ProductFilter(django_filters.FilterSet):
     class Meta:
         model = Product
         fields = ['category', 'attributes']
+
+
+class FileSubItemFilter(django_filters.FilterSet):
+    class Meta:
+        model = FileSubItem
+        fields = []
 
 
 class ContactFilter(django_filters.FilterSet):
