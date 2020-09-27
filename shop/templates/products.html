@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block body %}
-    <div class="row">
+    <div class="row products">
         <div class="col-md-12 path">
             <a href="/cms/home">
                 Home
@@ -29,17 +29,14 @@
         <div class="col-md-3 categories">
             <div class="categories-list" id="accordionCategories">
                 <div class="card border-0">
-                    <div class="card-header">
+                    <div class="">
                         <h4>
-                            <a data-toggle="collapse" data-parent="#accordionCategories" href="#collapseCategories">
-                                                <span class="fas fa-angle-down">
-                                                </span>{% trans 'Categories' %}</a>
+                            {% trans 'Categories' %}
                         </h4>
                     </div>
                     <div id="collapseCategories" class="panel-collapse collapse show">
                         <ul class="list-group">
                             {% recurse category.child_categories.all with categories as category %}
-
                                 {% loop %}
                                     <li class="list-group-item" id="v_hm">
                                         <div class="heading">

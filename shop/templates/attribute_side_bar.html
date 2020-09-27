@@ -14,17 +14,15 @@
         }
     </style>
 {% endblock %}
-<div class="categories-list">
-    <div style="padding-top: 20px" class="card-group" id="filterAccordion">
-        <div class="card border-0">
-            <div class="card-header">
+<div class="attributes categories-list">
+    <div style="padding-top: 20px">
+        <div class="">
+            <div class="">
                 <h4>
-                    <a data-toggle="collapse" data-parent="#filterAccordion" href="#collapseFilter">
-                                                <span class="fas fa-angle-down">
-                                                </span>{% trans 'Filter Result' %}</a>
+                    <a>{% trans 'Shopping-Filters' %}</a>
                 </h4>
             </div>
-            <div id="collapseFilter" class="panel-collapse collapse show">
+            <div>
                 <form id="attributeForm" method="get" action="">
                     {% for field in attribute_form %}
                         {{ field.as_hidden }}
@@ -36,33 +34,36 @@
                         </div>
                     {% endfor %}
                 </form>
-                <ul class="list-group">
+                <div class="accordion list-group" id="attributesAccordion">
+
                     {% for attribute_category in types %}
+                        <div class="list-group-item" id="label-{{ attribute_category.name }}">
+                            <a class="attribute-label" href="#" data-toggle="collapse"
+                               data-target="#collapseFilter-{{ attribute_category.name }}">
+                                {{ attribute_category.name }} <span class="fas fa-angle-down">
+                                                </span></a>
+                        </div>
 
-                        <li class="list-group-item" id="v_hm">
-                            <div class="heading">
-                                <div class="arrowImage"></div>
-                                <a class="link"
-                                   href="/shop/products/{{ attribute_category.name }}">{{ attribute_category.name }}</a>
-                            </div>
-                            <ul class="list-group sub">
-                                {% for instance in type_instances %}
-                                    {% if instance in attribute_category.productattributetypeinstance_set.all %}
-                                        <li class="list-group-item" id="v_hm">
-                                            <div class="heading">
-                                                <div class="arrowImage"></div>
+                        <div aria-labelledby="label-{{ attribute_category.name }}"
+                             id="collapseFilter-{{ attribute_category.name }}"
+                             data-parent="#attributesAccordion" class="collapse">
+                            {% for instance in type_instances %}
+                                {% if instance in attribute_category.productattributetypeinstance_set.all %}
+                                    <li class="list-group-item" id="v_hm">
+                                        <div class="heading">
+                                            <div class="arrowImage"></div>
 
-                                                <a href="#" class="link"
-                                                   onclick="setAttributeParam('{{ attribute_category.name }}','{{ instance.value }}')"
-                                                >{{ instance.value }} ({{ instance.count }})</a>
-                                            </div>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
-                        </li>
+                                            <a class="attribute-item" href="#" class="link"
+                                               onclick="setAttributeParam('{{ attribute_category.name }}','{{ instance.value }}')"
+                                            >{{ instance.value }} ({{ instance.count }})</a>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
                     {% endfor %}
-                </ul>
+                </div>
+
             </div>
         </div>
     </div>

@@ -907,3 +907,18 @@ footer .box {
 .btn, .card, .form-control, .img-thumbnail {
     border-radius: 0 !important;
 }
+
+.products .attributes .list-group-item {
+
+    border: 1px solid rgba(0,0,0,.125);
+    border-left: none;
+    border-right: none;
+    padding-left: 1rem;
+}
+.products .attributes .attribute-label {
+    text-decoration: none;
+    color: black;
+}
+.products .attributes .attribute-item {
+    text-decoration: none;
+}

@@ -184,10 +184,16 @@ class OrderState(models.Model):
 class ProductAttributeType(models.Model):
     name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.name
+
 
 class ProductAttributeTypeInstance(models.Model):
     type = models.ForeignKey(ProductAttributeType, on_delete=models.CASCADE)
     value = models.CharField(max_length=100, db_index=True)
+
+    def __str__(self):
+        return self.type.__str__() + " | " + self.value
 
 
 # A product can be whatever one needs, like a plan or a surcharge or hours worked..
