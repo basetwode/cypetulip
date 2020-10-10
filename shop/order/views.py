@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View
 
-from shop.Errors import JsonResponse, Error
+from shop.errors import JsonResponse, Error, FieldError
 from shop.models import (Contact, Order, OrderDetail, OrderItem,
                          Product)
 
@@ -86,4 +86,43 @@ class ShoppingCartDetailView(View):
             return render(request, self.template_name, {'order_details': order[0]})
 
     def post(self, request):
-        pass
+        forms = {}
+        forms_are_valid = True
+        for post in request.FILES:
+            values = request.FILES.getlist(post)
+            file_index = 0
+            for value in values:
+                form = self.create_form(request, forms, post, value,
+                                        index=file_index)
+                file_index += 1
+                if form:
+                    forms_are_valid = forms_are_valid and form.is_valid()
+        for post in request.POST:
+            value = request.POST.get(post)
+            # TODO this items can also be multiple, check that
+
+            form = self.create_form(request, forms, post, value)
+            if form:
+                forms_are_valid = forms_are_valid and form.is_valid()
+
+        if forms_are_valid:
+            for k, v in forms.items():
+                v.save()
+            return json_response(200, x={'next_url': ''})
+        else:
+            # return json_response(code=400, x={'success': False,
+            #                                   'errors': [([(formkey, v[0]) for k, v in form.errors.items()]) for
+            #                                              formkey, form
+            #                                              in forms.items()]
+            #                                   })
+            errors = []
+            for formkey, form in forms.items():
+                errors_form = [FieldError(message=v[0], field_name=formkey) for k, v in form.errors.items()]
+                errors.extend(errors_form)
+
+            # errors = [[FieldError(message=v[0], field_name=k) for k, v in form.errors.items()] for
+            #           formkey, form
+            #           in forms.items()]
+
+            result = json_response(code=400, x=JsonResponse(success=False, errors=errors).dump())
+            return result

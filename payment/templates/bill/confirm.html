@@ -31,15 +31,6 @@
                             </form>
                         </div>
                         <div class="stepwizard-step">
-                            <form action="{% url 'shop:overview_order' order_items.order_hash %}" method="post">
-                                {% csrf_token %}
-                                <input hidden name="token" value="{{ order_items.token }}"/>
-                                <a onclick="$(this).parent().submit()" class="btn btn-outline-success btn-circle">
-                                    <i class="fa fa-check-square"></i></a>
-                                <p><small>{% trans "Overview" %}</small></p>
-                            </form>
-                        </div>
-                        <div class="stepwizard-step">
                             <form action="{{ request.META.HTTP_REFERER }}" method="post">
                                 {% csrf_token %}
                                 <a onclick="$(this).parent().submit()" class="btn btn-outline-success btn-circle"><i

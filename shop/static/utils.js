@@ -28,8 +28,11 @@ function removeFromCart(url_part, product) {
             $('#shopping-cart').html(data);
             loadingSpinner.addClass('overlay-hidden');
             $('body').html(data);
-
-        }
+        },
+        error: function (data) {
+            $('#shopping-cart').html(data);
+            loadingSpinner.addClass('overlay-hidden');
+        },
     })
 }
 
@@ -53,8 +56,6 @@ function submitForm(url, form) {
         processData: false,  // tell jQuery not to process the data
         contentType: false,   // tell jQuery not to set contentType
         success: function (response) {
-
-
             $('#alert-success').show();
             loadingSpinner.addClass('overlay-hidden');
             var nextForm = $('#next-step-form');

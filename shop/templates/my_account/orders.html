@@ -220,13 +220,6 @@
                                     <a class="page-link"
                                        href="{% url 'shop:all_orders' %}{{ number_of_orders }}/
 
-
-
-
-
-
-
-
                                                {{ orders.previous_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Previous' %}</a>
                                 {% else %}
                                     <button class="btn disabled page-link"
@@ -242,10 +235,6 @@
                                 {% if orders.has_next %}
                                     <a class="page-link"
                                        href="{% url 'shop:all_orders' %}{{ number_of_orders }}/
-
-
-
-
 
                                                {{ orders.next_page_number }}{% if search %}/?search={{ search }}{% endif %}">{% trans 'Next' %}</a>
                                 {% else %}

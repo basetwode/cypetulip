@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View
 
-from shop.Errors import FieldError, JsonResponse
+from shop.errors import JsonResponse
 from shop.models import Contact, Order, OrderItem, Product, ProductSubItem, Address, Company
 from shop.order.forms import ItemBuilder, SubItemForm, OrderDetail, AddressForm, ContactForm
 from shop.utils import create_hash, json_response
@@ -17,11 +17,14 @@ class DeliveryView(View):
         if request.user.is_authenticated:
             instance = OrderItem.objects.get(id=product_id)
             instance.delete()
-
+        else:
+            instance = OrderItem.objects.get(id=product_id)
+            instance.delete()
         return render(request, self.template_name)
 
     def get(self, request, order):
         orders = None
+        address = None
         if request.user.is_authenticated:
             contact = Contact.objects.filter(user=request.user)
             address = Address.objects.filter(contact=contact[0])
@@ -29,7 +32,11 @@ class DeliveryView(View):
             orders = Order.objects.filter(order_hash=order, is_send=False, company=company)
         else:
             orders = Order.objects.filter(order_hash=order, is_send=False)
-            address = None
+            order_details = OrderDetail.objects.get(order=orders[0])
+            if order_details.shipment_address:
+                address = Address.objects.filter(id=order_details.shipment_address.id)
+            else:
+                address = None
         if orders.count() > 0:
             order = orders[0]
             sub_order_items = OrderItem.objects.filter(order=order).exclude(product__in=Product.objects.all())
@@ -47,88 +54,64 @@ class DeliveryView(View):
     def post(self, request, order):
         _order = None
         order_details = None
+        contact_by_user = None
         if request.user.is_anonymous:
             contact_from_visitor = Contact.objects.filter(first_name=request.POST['first_name'],
                                                           last_name=request.POST['last_name'],
                                                           email=request.POST['email'])
-
+            contact_by_user = contact_from_visitor
             if not contact_from_visitor:
-                new_company = Company(name=request.POST['email'])
+                new_company = Company(name=request.POST['email'], term_of_payment=10, street=request.POST['name'],
+                                      number=request.POST['name'], zipcode=request.POST['name'],
+                                      city=request.POST['name'])
+                new_company.save()
                 new_contact = Contact(first_name=request.POST['first_name'], last_name=request.POST['last_name'],
                                       gender=request.POST['gender'], email=request.POST['email'],
                                       telephone=request.POST['telephone'], company=new_company)
+                new_contact.save()
+                contact_by_user = new_contact
                 address_by_form = Address(name=request.POST['name'], street=request.POST['name'],
                                           number=request.POST['name'], zipcode=request.POST['name'],
                                           city=request.POST['name'], contact=new_contact)
+                address_by_form.save()
                 _order = Order.objects.filter(order_hash=order, is_send=False)
                 _order[0].company = new_company
                 _order[0].save()
-                _order_details = OrderDetail.objects.get(order=_order[0])
-                _order_details.shipment_address = address_by_form
+                order_details = OrderDetail.objects.get(order=_order[0])
+                order_details.shipment_address = address_by_form
+                _order = Order.objects.filter(order_hash=order, is_send=False)
+
             else:
-                pass
+                _order = Order.objects.filter(order_hash=order, is_send=False)
+                order_details = OrderDetail.objects.get(order=_order[0])
         else:
             contact_by_user = Contact.objects.filter(user=request.user)
             company = contact_by_user[0].company
             _order = Order.objects.filter(order_hash=order, is_send=False, company=company)
             order_details = OrderDetail.objects.get(order_number=order)
         if _order.count() > 0:
-            forms = {}
-            forms_are_valid = True
-            for post in request.FILES:
-                values = request.FILES.getlist(post)
-                file_index = 0
-                for value in values:
-                    form = self.create_form(request, forms, post, value,
-                                            index=file_index)
-                    file_index += 1
-                    if form:
-                        forms_are_valid = forms_are_valid and form.is_valid()
-            for post in request.POST:
-                value = request.POST.get(post)
-                # TODO this items can also be multiple, check that
 
-                form = self.create_form(request, forms, post, value)
-                if form:
-                    forms_are_valid = forms_are_valid and form.is_valid()
-
-            if forms_are_valid:
-                for k, v in forms.items():
-                    v.save()
-                token = create_hash()
-                # TODO: check if anything is added, else add errors to show
-                if request.POST.get("shipment-address"):
-                    shipment_address = Address.objects.get(id=request.POST.get("shipment-address"))
-                else:
-                    shipment_address = Address(name=request.POST['name'], street=request.POST['name'],
-                                               number=request.POST['name'], zipcode=request.POST['name'],
-                                               city=request.POST['name'], contact=contact_by_user[0])
-                    shipment_address.save()
-                order_details.shipment_address = shipment_address
-                order_details.save()
-                ord = _order[0]
-                ord.token = token
-                ord.save()
-                # result = json_response(code=200, x=JsonResponse(token=token).dump())
-                # return result
-                return json_response(200, x={'token': token, 'order': _order[0].order_hash, 'next_url': '', })
+            token = create_hash()
+            # TODO: check if anything is added, else add errors to show
+            if request.POST.get("shipment-address"):
+                shipment_address = Address.objects.get(id=request.POST.get("shipment-address"))
             else:
-                # return json_response(code=400, x={'success': False,
-                #                                   'errors': [([(formkey, v[0]) for k, v in form.errors.items()]) for
-                #                                              formkey, form
-                #                                              in forms.items()]
-                #                                   })
-                errors = []
-                for formkey, form in forms.items():
-                    errors_form = [FieldError(message=v[0], field_name=formkey) for k, v in form.errors.items()]
-                    errors.extend(errors_form)
-
-                # errors = [[FieldError(message=v[0], field_name=k) for k, v in form.errors.items()] for
-                #           formkey, form
-                #           in forms.items()]
-
-                result = json_response(code=400, x=JsonResponse(success=False, errors=errors).dump())
-                return result
+                shipment_address = Address(name=request.POST['name'], street=request.POST['street'],
+                                           number=request.POST['number'], zipcode=request.POST['zipcode'],
+                                           city=request.POST['city'], contact=contact_by_user[0])
+                shipment_address.save()
+            order_details.shipment_address = shipment_address
+            order_details.save()
+            ord = _order[0]
+            ord.token = token
+            ord.save()
+            # result = json_response(code=200, x=JsonResponse(token=token).dump())
+            # return result
+            return json_response(200, x={'token': token, 'order': _order[0].order_hash, 'next_url': '', })
+        else:
+            errors = []
+            result = json_response(code=400, x=JsonResponse(success=False, errors=errors).dump())
+            return result
 
     def create_form(self, request, all_forms, key, value, **kwargs):
         item_builder = ItemBuilder()

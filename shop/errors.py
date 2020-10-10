@@ -38,5 +38,4 @@ class FatalError(Error):
         Error.__init__(self, 500, message)
 
 
-
 GENERIC_FATAL_ERROR = FatalError(message="Ups the server made a hiccup")

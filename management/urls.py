@@ -12,7 +12,7 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               SectionEditView, SectionsOverviewView,
                               SettingsView, ProductDeleteView, SectionDeleteView, PageDeleteView, CategoryDeleteView,
                               ContactEditView, CompanyEditView, LegalSettingsDetailView, EmployeeOverviewView,
-                              EmployeeCreationView, OrderAssignEmployeeView, AccountingView, OrderPayView,
+                              EmployeeCreationView, OrderAssignEmployeeView, OrderPayView,
                               OrderShipView, OrderChangeStateView, ShipmentOverviewView, FileSubItemCreationView,
                               FileSubItemEditView, FileSubItemOverviewView, FileSubItemDeleteView)
 from shop.my_account.views import SearchOrders, SearchCustomers
@@ -25,7 +25,6 @@ urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^$', ManagementView.as_view(), name="management_index"),
     url(r'^settings/$', SettingsView.as_view()),
-    url(r'^accounting/$', AccountingView.as_view(), name="accounting"),
     url(r'^shipments/$', ShipmentOverviewView.as_view(), name="all_shipments"),
 
     url(r'^orders(/(?P<number_of_orders>[0-9]*)/(?P<page>[0-9]*))?/$', ManagementOrderOverviewView.as_view(),

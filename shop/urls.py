@@ -9,8 +9,7 @@ from shop.my_account.views import (AccountSettingsView, CompanySettingsView,
                                    SearchOrders, AddressCreationView, AddressEditView, AddressDeleteView,
                                    AddressOverviewView)
 from shop.order.checkout import DeliveryView
-from shop.order.overview import OverviewView
-from shop.order.shoppingcart import ShoppingCartDetailView, ShoppingCartView
+from shop.order.views import ShoppingCartDetailView, ShoppingCartView
 from shop.views import *
 
 __author__ = ''
@@ -26,12 +25,11 @@ urlpatterns = [
     url(r'^logout/', LogoutView.as_view()),
 
     url(r'^cart/add/(?P<product>[\S0-9_.-\\s\- ]*)$', ShoppingCartView.as_view()),
-    url(r'^cart/remove/([0-9]*)$', ShoppingCartDetailView.as_view()),
-    url(r'^cart/', ShoppingCartDetailView.as_view(), name="shopping_cart"),
-    url(r'^delivery/remove/([0-9]*)$', DeliveryView.as_view()),
+    url(r'^cart/remove/([0-9]*)$', ShoppingCartDetailView.as_view(), name="remove_order_item_from_shoppingcart"),
+    url(r'^cart/$', ShoppingCartDetailView.as_view(), name="shopping_cart"),
+    url(r'^delivery/remove/([0-9]*)$', DeliveryView.as_view(), name="remove_order_item_from_delivery"),
     url(r'^delivery/(?P<order>[\S0-9_.-\\s\- ]*)$', DeliveryView.as_view(), name="delivery_order"),
     url(r'^confirmed/(?P<order>[a-zA-Z0-9\\s\-_ ]+)$', OrderConfirmedView.as_view(), name="confirmed_order"),
-    url(r'^overview/(?P<order>[\S0-9_.-\\s\- ]*)$', OverviewView.as_view(), name="overview_order"),
 
     url(r'^products/(?P<category>[\S0-9_.-\\s\- ]*)$', ProductView.as_view(), name="products"),
     url(r"^product/(?P<product>[\S0-9_.-\\s\- ]+)$", ProductDetailView.as_view()),

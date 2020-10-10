@@ -23,20 +23,10 @@
                             <p><small>{% trans 'Shoppingcart' %}</small></p>
                         </div>
                         <div class="stepwizard-step">
-                            <a href="/shop/checkout/{{ order_details.order_hash }}" type="button"
+                            <a href="/shop/delivery/{{ order_details.order_hash }}" type="button"
                                class="btn btn-outline-success btn-circle"><i
                                     class="fas fa-truck"></i></a>
                             <p><small>{% trans "Delivery" %}</small></p>
-                        </div>
-                        <div class="stepwizard-step">
-                            <form action="{% url 'shop:overview_order' order_details.order_hash %}" method="post">
-                                {% csrf_token %}
-                                <input hidden name="token" value="{{ order_details.token }}"/>
-                                <a onclick="$(this).parent().submit()" class="btn btn-outline-success btn-circle">
-                                    <i class="fa fa-check-square"></i></a>
-                                <p><small>{% trans "Overview" %}</small></p>
-                            </form>
-
                         </div>
                         <div class="stepwizard-step">
                             <a href="" type="button" class="btn btn-success btn-circle"><i
@@ -112,15 +102,6 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <form action="{% url 'shop:overview_order' order_details.order_hash %}" method="post">
-                    {% csrf_token %}
-                    <input hidden name="token" value="{{ order_details.token }}"/>
-                    <a onclick="$(this).parent().submit()" class="btn btn-warning"><i
-                            class="fa fa-angle-left"></i> {% trans 'Back to overview' %}</a>
-                </form>
-            </div>
             <div class="col">
                 <a onclick="submitForm('create/','payment-form')"
                    class="btn btn-success float-right">{% trans 'Send' %} <i

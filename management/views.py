@@ -1,14 +1,12 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 # Create your views here.
 from django.views.generic import DetailView, ListView, View, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-
-from billing.utils import calculate_sum
 from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
+
 from cms.models import Page, Section
 from management.models import LdapSetting, MailSetting, LegalSetting
 from payment.models import PaymentDetail, Payment
@@ -467,29 +465,7 @@ class OrderAssignEmployeeView(LoginRequiredMixin, View):
             return json_response(500, x={})
 
 
-class AccountingView(LoginRequiredMixin, View):
-    model = Order
-    template_name = "accounting-dashboard.html"
 
-    def get(self, request):
-        total_netto = OrderItem.objects.aggregate(Sum('price'))
-        open_order_state_id = OrderState.objects.get(initial=True).id
-        all_order_items = OrderItem.objects.filter()
-        total_brutto = calculate_sum(all_order_items, True)
-        last_orders = OrderDetail.objects.all()[:5]
-        _open_orders_state = []
-        for order in OrderDetail.objects.all():
-            if not OrderState.last_state(order.state):
-                _open_orders_state.append(order)
-        counted_open_orders = len(_open_orders_state)
-        counted_open_shipments = OrderDetail.objects.filter(order__is_send=False).count()
-        counted_open_payments = Payment.objects.filter(is_paid=False).count()
-
-        return render(request, self.template_name,
-                      {'total_netto': total_netto, 'total_brutto': total_brutto,
-                       'counted_open_orders': counted_open_orders,
-                       'counted_open_payments': counted_open_payments, 'counted_open_shipments': counted_open_shipments,
-                       'last_orders': last_orders, 'open_order_state_id': open_order_state_id})
 
 
 class OrderPayView(View):

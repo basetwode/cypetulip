@@ -5,7 +5,7 @@ from django.views.generic import View, CreateView
 
 from permissions.mixins import LoginRequiredMixin
 from payment.models import PaymentDetail, PaymentMethod
-from shop.Errors import (FieldError,
+from shop.errors import (FieldError,
                          JsonResponse)
 from shop.models import Contact, Order
 from shop.order.utils import get_order_for_hash_and_contact
@@ -18,7 +18,7 @@ class PaymentView(View):
     context_object_name = 'payment_methods'
     model = PaymentMethod
 
-    def get(self, request):
+    def get(self, request, order):
         payment_methods = PaymentMethod.objects.all()
         return render(request, self.template_name, {'payment_methods': payment_methods})
 

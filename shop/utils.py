@@ -6,7 +6,7 @@ import time
 
 from django.http import HttpResponse
 
-from shop.Errors import FieldError, JsonResponse
+from shop.errors import FieldError, JsonResponse
 
 __author__ = 'Anselm'
 logger = logging.getLogger(__name__)
