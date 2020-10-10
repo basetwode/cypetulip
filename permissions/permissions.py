@@ -1,5 +1,7 @@
 import re
 
+from django.contrib.auth.mixins import AccessMixin
+
 from permissions.error_handler import raise_401
 # from models import App, AppPermissions
 from permissions.models import AppUrl, AppUrlPermission
@@ -125,3 +127,6 @@ def check_serve_perms(func):
             return raise_401(request, {'message': message})
 
     return decorator
+
+
+

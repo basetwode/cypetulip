@@ -13,7 +13,7 @@ class PermissionPostGetRequiredMixin(AccessMixin):
     """
     permission_post_required = []
     permission_get_required = []
-    permission_denied_url = 'permission_denied'
+    permission_denied_url = 'permissions:permission_denied'
 
     def get_login_url(self):
         if not self.request.user.is_authenticated:
@@ -44,7 +44,7 @@ class PermissionOwnsObjectMixin(AccessMixin):
     field_name = ""
     slug_field = ""
     slug_url_kwarg = ""
-    permission_denied_url = 'cms:permission_denied'
+    permission_denied_url = 'permissions:permission_denied'
 
     def get_slug_id(self):
         return self.slug_field if self.slug_field else self.id

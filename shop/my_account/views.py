@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 
-from cms.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin
+from permissions.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin
 from permissions.error_handler import raise_401
 from shop.models import Contact, Order, OrderItem, Product, OrderDetail, Address
 from shop.my_account.forms import CompanyForm, ContactForm
@@ -43,8 +43,8 @@ class OrderDetailView(View):
 
 
 class OrdersView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
-    permission_get_required = ['shop.view_orderdetail']
-    permission_post_required = ['shop.view_orderdetail']
+    permission_get_required = ['shop.view_orders']
+
     template_name = 'my_account/orders.html'
 
     def get(self, request, page=1, **kwargs):
@@ -76,8 +76,8 @@ class OrdersView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
 
 
 class MyAccountView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
-    permission_get_required = ['shop.change_contact']
-    permission_post_required = ['shop.change_contact']
+    permission_get_required = ['shop.view_my_account']
+
     template_name = 'my_account/my-account.html'
 
     def get(self, request):
@@ -93,7 +93,7 @@ class MyAccountView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
 
 
 class AccountSettingsView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
-    permission_get_required = ['shop.change_contact']
+    permission_get_required = ['shop.view_contact']
     permission_post_required = ['shop.change_contact']
     template_name = 'my_account/settings.html'
 
@@ -115,7 +115,7 @@ class AccountSettingsView(LoginRequiredMixin, PermissionPostGetRequiredMixin, Vi
 
 
 class CompanySettingsView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
-    permission_get_required = ['shop.change_company']
+    permission_get_required = ['shop.view_company']
     permission_post_required = ['shop.change_company']
     template_name = 'my_account/settings.html'
 
@@ -195,7 +195,9 @@ class SearchOrders(View):
         return _orders.order_by('-orderdetail__date_added'), search
 
 
-class AddressOverviewView(ListView):
+class AddressOverviewView(PermissionPostGetRequiredMixin, ListView):
+    permission_get_required = ['shop.view_address']
+
     template_name = 'my_account/address-overview.html'
     context_object_name = 'address'
     model = Address
@@ -209,7 +211,10 @@ class AddressOverviewView(ListView):
         return render(request, self.template_name, {'address': addresses, 'contact': contact})
 
 
-class AddressCreationView(CreateView):
+class AddressCreationView(PermissionPostGetRequiredMixin, CreateView):
+    permission_get_required = ['shop.add_address']
+    permission_post_required = ['shop.add_address']
+
     template_name = 'my_account/generic-create.html'
     context_object_name = 'address'
     model = Address
@@ -219,7 +224,10 @@ class AddressCreationView(CreateView):
         return reverse_lazy('shop:address_overview')
 
 
-class AddressEditView(UpdateView):
+class AddressEditView(PermissionPostGetRequiredMixin, UpdateView):
+    permission_get_required = ['shop.change_address']
+    permission_post_required = ['shop.change_address']
+
     template_name = 'my_account/generic-edit.html'
     context_object_name = 'address'
     model = Address
@@ -233,7 +241,10 @@ class AddressEditView(UpdateView):
         return reverse_lazy('shop:address_overview')
 
 
-class AddressDeleteView(DeleteView):
+class AddressDeleteView(PermissionPostGetRequiredMixin, DeleteView):
+    permission_get_required = ['shop.delete_address']
+    permission_post_required = ['shop.delete_address']
+
     model = Address
     slug_field = 'id'
     slug_url_kwarg = "url_param"

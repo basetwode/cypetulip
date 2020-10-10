@@ -41,7 +41,7 @@ class Contact(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    title = models.CharField(max_length=20)
+    title = models.CharField(max_length=20, blank=True, null=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     telephone = models.CharField(max_length=40)
     email = models.EmailField()

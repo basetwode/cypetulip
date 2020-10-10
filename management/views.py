@@ -1,5 +1,3 @@
-import json
-
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Sum
 from django.http import HttpResponse
@@ -10,7 +8,7 @@ from django.views.generic import DetailView, ListView, View, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 
 from billing.utils import calculate_sum
-from cms.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
+from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
 from cms.models import Page, Section
 from management.models import LdapSetting, MailSetting, LegalSetting
 from payment.models import PaymentDetail, Payment

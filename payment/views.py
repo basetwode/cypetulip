@@ -3,7 +3,7 @@ from django.template.defaultfilters import lower
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View, CreateView
 
-from cms.mixins import LoginRequiredMixin
+from permissions.mixins import LoginRequiredMixin
 from payment.models import PaymentDetail, PaymentMethod
 from shop.Errors import (FieldError,
                          JsonResponse)
