@@ -34,7 +34,8 @@ class ProductView(View):
 
         selected_category = ProductCategory.objects.filter(name=category)
         if selected_category.count() > 0 and selected_category[0].child_categories.all():
-            products = Product.objects.filter(is_public=True, category__in=selected_category[0].child_categories.all())
+            products = Product.objects.filter(is_public=True, category__in=selected_category[0].
+                                              child_categories.all())
         else:
             products = Product.objects.filter(is_public=True, category__in=selected_category)
         if not selected_category:
