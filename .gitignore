@@ -5,12 +5,10 @@
 *.pot
 *.pyc
 
-
 ;;directories to ignore
 .idea/
 venv/
 .vscode/
-db2.sqlite3
 **/**/migrations/**
 !**/migrations
 !**/migrations/__init__.py
