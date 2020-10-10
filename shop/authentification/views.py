@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.views.generic import View
@@ -94,8 +94,8 @@ class RegisterView(SignUpForm):
                                                 form.cleaned_data.get('password1'),
                                                 first_name=form.cleaned_data.get('first_name'),
                                                 last_name=form.cleaned_data.get('last_name'))
+                user.groups.add(Group.objects.get(name="client supervisor"))
                 user.save()
-                create_app_perms_for_user(username=user.username)
                 email = form.cleaned_data.get('email')
                 raw_password = form.cleaned_data.get('password1')
                 user = authenticate(username=email, password=raw_password)
