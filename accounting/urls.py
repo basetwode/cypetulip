@@ -4,6 +4,8 @@ __author__ = ''
 
 from accounting.views import AccountingView
 
+app_name = "accounting"
+
 urlpatterns = [
-    url(r'^accounting/$', AccountingView.as_view(), name="accounting"),
+    url(r'^accounting/$', AccountingView.as_view(), name="index"),
 ]

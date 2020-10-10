@@ -54,6 +54,7 @@ INSTALLED_APPS = (
     'mediaserver',
     'permissions',
     'shipping',
+    'accounting',
     'utils',
     'filebrowser',
     'django.contrib.admin',
