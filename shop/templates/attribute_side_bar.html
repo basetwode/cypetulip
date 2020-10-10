@@ -1,0 +1,70 @@
+{% load static %}
+{% load recurse %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% block head %}
+    <style>
+        #attributeForm {
+            margin-left: 15px;
+            padding-top: 20px;
+        }
+
+        .clearable span {
+            margin-left: 10px;
+        }
+    </style>
+{% endblock %}
+<div class="attributes categories-list">
+    <div style="padding-top: 20px">
+        <div class="">
+            <div class="">
+                <h4>
+                    <a>{% trans 'Shopping-Filters' %}</a>
+                </h4>
+            </div>
+            <div>
+                <form id="attributeForm" method="get" action="">
+                    {% for field in attribute_form %}
+                        {{ field.as_hidden }}
+                        <div>
+                            {% if field.value %}
+                                <a class="clearable" href="#" onclick="clearAttributeParam('{{ field.auto_id }}')"><i
+                                        class="fa fa-times"></i><span><b>{{ field.label }}</b>: {{ field.value }}</span></a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </form>
+                <div class="accordion list-group" id="attributesAccordion">
+
+                    {% for attribute_category in types %}
+                        <div class="list-group-item" id="label-{{ attribute_category.name }}">
+                            <a class="attribute-label" href="#" data-toggle="collapse"
+                               data-target="#collapseFilter-{{ attribute_category.name }}">
+                                {{ attribute_category.name }} <span class="fas fa-angle-down">
+                                                </span></a>
+                        </div>
+
+                        <div aria-labelledby="label-{{ attribute_category.name }}"
+                             id="collapseFilter-{{ attribute_category.name }}"
+                             data-parent="#attributesAccordion" class="collapse">
+                            {% for instance in type_instances %}
+                                {% if instance in attribute_category.productattributetypeinstance_set.all %}
+                                    <li class="list-group-item" id="v_hm">
+                                        <div class="heading">
+                                            <div class="arrowImage"></div>
+
+                                            <a class="attribute-item" href="#" class="link"
+                                               onclick="setAttributeParam('{{ attribute_category.name }}','{{ instance.value }}')"
+                                            >{{ instance.value }} ({{ instance.count }})</a>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

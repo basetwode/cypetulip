@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load recurse %}
+{% load get_type %}
+{% load i18n %}
+{% block head %}
+    <title>{% trans "Permission denied" %}</title>
+{% endblock %}
+
+{% block body %}
+    <div class="main">
+        <div class="content">
+            {% csrf_token %}
+            <div class="col-md-12">
+                <h4 class="h-bold">{% trans "Permission denied" %}</h4>
+                <p>
+
+                    {% if message %}
+                        {{ message | safe }}
+                    {% else %}
+                        {% trans "You don't have the required permissions to show this view. If you think this is wrong please contact our support" %}
+                    {% endif %}
+                </p>
+                <a href="{{ request.META.HTTP_REFERER }}"
+                   class="btn  btn-secondary">{% trans 'Go back' %}</a>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

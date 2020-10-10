@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load recurse %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% load i18n %}
+{% bootstrap_messages %}
+{% block head %}
+    <title>Products</title>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div style="overflow: auto" class="card-header">
+                    <h4 class="h-bold">{% trans 'Menu' %}</h4>
+                    <hr>
+                    <div class="col-md-12"><span>{{ contact.first_name }} {{ contact.last_name }}</span></div>
+                    <div class="col-md-12"><span
+                            style="font-size: small; font-weight: bold">{{ contact.company.name }}</span></div>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'shop:all_orders' %}"
+                       class="btn btn-fw btn-warning">{% trans 'All orders' %}</a>
+                    <a href="{% url 'shop:my_account' %}"
+                       class="btn btn-fw btn-warning">{% trans 'Go to your account' %}</a>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <a onclick="$('#settings-form').submit()"
+                       class="btn btn-warning">{% trans 'Save' %}</a>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="settings-form" enctype="multipart/form-data">{% csrf_token %}
+                        {% bootstrap_form form layout='horizontal' %}
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+{% endblock %}

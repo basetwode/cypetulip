@@ -1,0 +1,45 @@
+{% extends 'base-mgmt.html' %}
+{% load static %}
+{% load recurse %}
+{% load bootstrap4 %}
+
+{% load i18n %}
+{% bootstrap_messages %}
+{% block head %}
+    <title>Products</title>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <a class="btn btn-secondary" href="{{ request.META.HTTP_REFERER }}">{% trans 'Back' %}</a>
+    <a href="{% url 'payment_create' %}"
+       class="btn btn-primary">{% trans 'Add new Payment Method' %}</a>
+
+    <br>
+    <br>
+    <table class="table table-hover table-striped table-responsive-sm">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">{% trans 'Name' %}</th>
+            <th scope="col">{% trans 'Details' %}</th>
+            <th scope="col">{% trans 'Provider' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for method in payment_methods %}
+            <tr>
+                <td>{{ method.id }}</td>
+                <td>{{ method.name }}</td>
+                <td>{{ method.details }}</td>
+                <td>{{ method.provider }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+{% endblock %}

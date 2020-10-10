@@ -5,9 +5,10 @@
 *.pot
 *.pyc
 
-
 ;;directories to ignore
-migrations/
 .idea/
 venv/
 .vscode/
+**/**/migrations/**
+!**/migrations
+!**/migrations/__init__.py

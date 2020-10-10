@@ -1,0 +1,46 @@
+{% extends 'base-mgmt.html' %}
+{% load static %}
+{% load recurse %}
+{% load bootstrap4 %}
+
+{% load i18n %}
+{% bootstrap_messages %}
+{% block head %}
+    <title>Products</title>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+            <form method="post" enctype="multipart/form-data">{% csrf_token %}
+
+                <div class="card">
+                    <div class="card-header">
+                        <input class="btn btn-primary" type="submit" value="Save">
+                    </div>
+                    <div class="card-body">
+
+                        {% bootstrap_form form layout='horizontal' %}
+                    </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

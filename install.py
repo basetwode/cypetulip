@@ -2,22 +2,21 @@ import configparser
 import os
 import re
 import sys
-
-from Home import settings
-
-from Home.settings import BASE_DIR
 from os import sep
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Home.settings")
+from home import settings
+from home.settings import BASE_DIR
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "home.settings")
 
 __author__ = ''
 
 
 def install():
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Home.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "home.settings")
     print('Thanks for choosing Cypetulip\n')
     # First select directory for data
-    data_dir = input("Please choose directory for storing shop data [/var/Cypetulip/]: ")
+    data_dir = input("Please choose directory for storing shop data [/var/cypetulip/]: ")
 
     config = configparser.RawConfigParser()
     config.add_section('data')
@@ -25,7 +24,7 @@ def install():
     if data_dir:
         config.set('data', 'DATA_DIR', data_dir)
     else:
-        config.set('data', 'DATA_DIR', '/var/Cypetulip/')
+        config.set('data', 'DATA_DIR', '/var/cypetulip/')
 
     # Select database
     db_tech = input("Please choose database technologie\nOptions are [mysql,sqlite]: ")
@@ -55,7 +54,7 @@ def install():
     with open(BASE_DIR + sep + 'settings.conf', 'w') as configfile:
         config.write(configfile)
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Home.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "home.settings")
 
     from django.core.management import execute_from_command_line
     print('#######Initializing Database########')
@@ -68,17 +67,44 @@ def install():
     print('####Creating a superuser account####')
     execute_from_command_line(['', 'createsuperuser'])
     from django.contrib.auth.models import User
-    from Shop.models import Contact
+    from shop.models import Contact, Company, Address
+    execute_from_command_line(['', 'migrate'])
+    print('####Creating your company and first (admin) account####')
+    name = input("Your company name: ")
+    term_of_payment = input("Please add your term of payment (e.g. 10 days for paying) ")
+    street = input("Street: ")
+    number = input("Streetnumber: ")
+    zipcode = input("Zipcode: ")
+    city = input("City: ")
+    Address.objects.create(name=street + ' ' + number + ', ' + zipcode + ' ' + city, street=street,
+                           number=number, city=city, zipcode=zipcode)
+    company = Company.objects.create(name=name, term_of_payment=term_of_payment, street=street,
+                                     number=number, zipcode=zipcode, city=city)
     users = User.objects.all()
     for user in users:
-        contact = Contact()
+        first_name = input("Your first name: ")
+        last_name = input("Your last name: ")
+        title = input("Your title: ")
+        gender = input("Your gender(m/w/d): ")
+        telephone = input("Your phone number: ")
+        email = input("Your mail address: ")
+        while True:
+            language = input("Your language(de/en - default): ")
+            if (language == 'de') or (language == 'en'):
+                continue
+            else:
+                break
+
+        Contact.objects.create(user=user, company=company, first_name=first_name, last_name=last_name,
+                               title=title, gender=gender, telephone=telephone, email=email,
+                               language=language)
     # Then populate database for every app
     #
     # from django.core.management import execute_from_command_line
     #
     # execute_from_command_line(sys.argv)
-    from CMS.sql.init_data import populate_db as cms_populate
-    from Shop.sql.init_data import populate_db as shop_populate
+    from cms.sql.init_data import populate_db as cms_populate
+    from shop.sql.init_data import populate_db as shop_populate
     cms_populate()
     shop_populate()
 
@@ -88,9 +114,9 @@ def populate_permissions():
     import django
     django.setup()
 
-    from Permissions.models import AppUrl, App
-    from Permissions.utils import show_urls
-    from Home.urls import urlpatterns
+    from permissions.models import AppUrl, App
+    from permissions.utils import show_urls
+    from home.urls import urlpatterns
     urls = {}
     show_urls(urlpatterns, urls=urls)
     old_urls = AppUrl.objects.all().delete()
@@ -107,12 +133,12 @@ def populate_permissions():
                 app_url.save()
 
 
-def create_app_perms_for_user(user_name):
+def create_app_perms_for_user(username):
     import django
     django.setup()
     from django.contrib.auth.models import User
-    from Permissions.models import AppUrl, AppUrlPermission
-    user = User.objects.get(username=user_name)
+    from permissions.models import AppUrl, AppUrlPermission
+    user = User.objects.get(username=username)
     for app_url in AppUrl.objects.all():
         perm = AppUrlPermission(url=app_url, user=user, post_access=True, get_access=True)
         perm.save()
@@ -125,3 +151,5 @@ if __name__ == "__main__":
         create_app_perms_for_user(sys.argv[2])
     elif sys.argv[1] == '--install':
         install()
+    elif (sys.argv[1] == '--help') or (sys.argv[1] == ''):
+        print("You have the following choices: --populateperms, --grantaccess, --install, --help")

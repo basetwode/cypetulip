@@ -1,0 +1,46 @@
+{% load i18n %}
+{% load static %}
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="{% static 'bootstrap-select/css/bootstrap-select.min.css' %}">
+<!-- Latest compiled and minified JavaScript -->
+<script src="{% static 'bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+<script src="{% static 'utils.js' %}"></script>
+<div class="modal fade" id="change-state-modal" tabindex="-1" role="dialog" aria-labelledby="change-modal-title"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="change-modal-title">{% trans 'Change State' %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% trans 'Please choose the next state' %}
+                <br>
+                <br>
+                <div class="form-group">
+                    <select id="change-state-select" class="selectpicker form-control" data-live-search="true">
+                        {% for state in states %}
+                            <option value="{{ state.id }}"
+                                    data-tokens="{{ state.name }}">
+                                {{ state.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+                <form id="changeStateForm">
+                    {% csrf_token %}
+                </form>
+                <button class="btn btn-primary"
+                        onclick="changeState( '{{ order_hash }}')">{% trans 'Change' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

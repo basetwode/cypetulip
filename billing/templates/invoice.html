@@ -1,0 +1,231 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+{% load static %}
+{% load i18n %}
+{% load humanize %}
+<html>
+<head>
+    <title>Title</title>
+    <style type="text/css">
+        body {
+            font-weight: 200;
+            font-size: 14px;
+        }
+
+        .header {
+            font-size: 20px;
+            font-weight: 100;
+            text-align: center;
+            color: #007cae;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: 100;
+            /* text-align: right;*/
+            padding: 10px 20px 0px 20px;
+        }
+
+        .title span {
+            color: #007cae;
+        }
+
+        .details {
+            padding: 10px 20px 0px 20px;
+            text-align: left !important;
+            /*margin-left: 40%;*/
+        }
+
+        .hrItem {
+            border: none;
+            height: 1px;
+            /* Set the hr color */
+            color: #333; /* old IE */
+            background-color: #fff; /* Modern Browsers */
+        }
+
+        .clearfix:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        a {
+            color: #0087C3;
+            text-decoration: none;
+        }
+
+
+        header {
+            padding: 10px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #AAAAAA;
+        }
+
+        #logo {
+            float: left;
+            margin-top: 8px;
+        }
+
+        #logo img {
+            height: 70px;
+        }
+
+        #company {
+            float: right;
+            text-align: right;
+        }
+
+
+        #details {
+            margin-bottom: 50px;
+        }
+
+
+
+        #client .to {
+            color: #777777;
+        }
+
+        div.name {
+            font-size: 1.2em;
+            font-weight: normal;
+            margin: 0;
+        }
+
+        #invoice {
+            float: right;
+            text-align: right;
+            margin: 0;
+        }
+
+        #invoice h1 {
+            color: #0087C3;
+            margin: 0;
+        }
+
+        #invoice .date {
+            margin: 0;
+            font-size: 1.1em;
+            color: #777777;
+        }
+
+        table {
+            margin-top: 15px;
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-bottom: 20px;
+            -pdf-keep-in-frame-mode: truncate;
+            font-size: 14px;
+        }
+
+        #thanks {
+            font-size: 14px;
+            margin-bottom: 50px;
+        }
+
+        #notices {
+            padding-left: 6px;
+            border-left: 6px solid #0087C3;
+        }
+
+        #notices .notice {
+            font-size: 14px;
+        }
+
+        footer {
+            color: #777777;
+            width: 100%;
+            height: 30px;
+            position: absolute;
+            bottom: 0;
+            border-top: 1px solid #AAAAAA;
+            padding: 8px 0;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+<header class="clearfix">
+    <div id="logo">
+        <img src="{{ invoice_settings.logo.url }}"
+             alt="..."
+        /></div>
+    <div id="company">
+        <h2 class="name" style="margin: 0">{{ invoice_settings.company_name }}</h2>
+        <div>{{ invoice_settings.street }}
+            {{ invoice_settings.number }}, {{ invoice_settings.zipcode }} {{ invoice_settings.city }}</div>
+        <div>{{ invoice_settings.phone }}</div>
+        <div>{% trans 'Taxnumber' %} {{ invoice_settings.tax_number }}</div>
+        <div><a href="mailto:company@example.com">{{ invoice_settings.email }}</a></div>
+    </div>
+    </div>
+</header>
+<main>
+    <div id="details" class="clearfix">
+        <div id="client">
+            <div class="name">{{ contact.first_name }} {{ contact.last_name }}</div>
+            <div class="name">{{ company.street }} {{ company.number }}</div>
+            <div class="name">{{ company.zipcode }} {{ company.city }}</div>
+
+        </div>
+        <div id="invoice">
+            <h1>{% trans 'Invoice' %} {{order_detail.unique_nr}}</h1>
+            <div class="date">{% trans 'Invoice Date' %} {{ order_detail.date_bill|date:"d.m.Y" }}</div>
+            <div class="date">{% trans 'Due Date' %} {{order_detail.date_due|date:"d.m.Y"}}</div>
+        </div>
+    </div>
+    <table border="0" cellspacing="0" cellpadding="0">
+        <thead>
+        <tr>
+            <th style="text-align: left" class="no">#</th>
+            <th style="text-align: left" class="desc">DESCRIPTION</th>
+            <th style="text-align: left" class="unit">UNIT PRICE</th>
+            <th style="text-align: left" class="qty">QUANTITY</th>
+            <th style="text-align: left" class="total">TOTAL</th>
+        </tr>
+        </thead>
+        <tbody >
+        {% for item in order_items %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.product.name }}</td>
+                <td>
+                    {{ item.price|intcomma:True }} €</td>
+                <td>{{ item.count }}</td>
+                <td>{{ item.price_t }} €</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot >
+        <tr style="padding-top: 10px">
+            <td colspan="2"></td>
+            <td colspan="2">{% trans 'Subtotal' %}</td>
+            <td>{{ total_without_tax }} €</td>
+        </tr>
+        <tr>
+            <td colspan="2"></td>
+            <td colspan="2">{% trans 'Tax' %}</td>
+            <td>{{tax}} €</td>
+        </tr>
+        <tr>
+            <td colspan="2"></td>
+            <td colspan="2">{%  trans 'Grand Total' %}</td>
+            <td>{{ total }} €</td>
+        </tr>
+        </tfoot>
+    </table>
+    <div id="thanks">Thank you!</div>
+    <div id="notices">
+        <div>NOTICE:</div>
+        <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+    </div>
+</main>
+<footer>
+    Invoice was created on a computer and is valid without the signature and seal.
+</footer>
+</body>
+</html>
+-

@@ -1,0 +1,25 @@
+{% load i18n %}
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-title"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="delete-modal-title">{% trans 'Delete' %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{% url url url_param=id %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    {% trans 'Are you sure you want to delete?' %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary">{% trans 'Delete' %}</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

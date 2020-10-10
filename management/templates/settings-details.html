@@ -1,0 +1,53 @@
+{% extends 'base-mgmt.html' %}
+{% load recurse %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% load i18n %}
+{% bootstrap_messages %}
+{% block head %}
+    <script src="{% static 'onchange.js' %}"></script>
+    <script src="{% static 'utils.js' %}"></script>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+
+    <title>{% trans 'Settings' %}</title>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-9">
+            <form method="post">{% csrf_token %}
+
+                <div class="card">
+                    <div class="card-header">
+                        {% buttons %}
+                            <button type="submit" value="Save" class="btn btn-primary">{% trans 'Save' %}</button>
+                        {% endbuttons %}
+                    </div>
+                    <div class="card-body">
+                        {% bootstrap_form form layout='horizontal' %}
+
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+
+
+{% endblock %}

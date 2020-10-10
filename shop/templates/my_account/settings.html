@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load recurse %}
+{% load get_type %}
+{% load bootstrap4 %}
+
+{% bootstrap_messages %}
+{% load i18n %}
+{% block head %}
+    <title>Products</title>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div style="overflow: auto" class="card-header">
+                    <h4 class="h-bold">{% trans 'Menu' %}</h4>
+                    <hr>
+                    <div class="col-md-12"><span>{{ contact.first_name }} {{ contact.last_name }}</span></div>
+                    <div class="col-md-12"><span
+                            style="font-size: small; font-weight: bold">{{ contact.company.name }}</span></div>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'shop:all_orders' %}"
+                       class="btn btn-fw btn-warning">{% trans 'All orders' %}</a>
+                    <a href="{% url 'shop:my_account' %}"
+                       class="btn btn-fw btn-warning">{% trans 'Go to your account' %}</a>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card-group">
+
+                <div class="card">
+                    <div style="overflow: auto" class="card-header orders-overview">
+
+                        <div style="text-align: left; ">
+                            <a onclick="$('#settings-form').submit()"
+                               class="btn btn-warning">{% trans 'Save' %}</a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+
+                        <form method="post" id="settings-form"
+                              action="{% url next_url %}">
+                            {% csrf_token %}
+                            {% bootstrap_form form layout='horizontal' %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

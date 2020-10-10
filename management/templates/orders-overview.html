@@ -1,0 +1,89 @@
+{% extends 'base-mgmt.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load recurse %}
+
+{% load i18n %}
+{% block head %}
+    <title>Admin - All orders</title>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+    <script src="{% static 'onchange.js' %}"></script>
+    <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.structure.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.theme.min.css' %}" rel="stylesheet">
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'bootstrap-select/css/bootstrap-select.min.css' %}">
+    <script src="{% static 'bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12"><h1>{% trans 'All Orders' %}</h1></div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="card-title h4">{% trans 'Filter' %}</div>
+                    <form action="" method="get">
+
+                        {% bootstrap_form filter.form %}
+                        <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
+
+                    </form>
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+
+
+            {% if not orders %}
+                <div class="card mt-2">
+                    <div style="overflow: auto" class="card-header orders-overview">
+                        <div style="overflow: auto" class="row">
+                            {% trans 'Nothing found' %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="list-group">
+                {% for order_detail in filter.qs %}
+
+                    <a href="{% url 'management_detail_order' order_detail.order.order_hash %}"
+                       class="list-group-item list-group-item-action">
+                        <div class="row">
+                            <div class="col-md-3" style="text-align: left; ">
+                                {{ order_detail.contact.first_name }} {{ order_detail.contact.last_name }}
+                            </div>
+                            <div class="col-md-3" style="text-align: left; ">
+                                <strong> {% trans 'Orderdate' %}</strong>
+                                <br>
+                                {{ order_detail.date_added }}
+                            </div>
+                            <div class="col-md-2" style="text-align: left; ">
+                                <strong> {% trans 'State' %}</strong>
+                                <br>
+                                {{ order_detail.state.name }}
+                            </div>
+                            <div class="col-md-4" style="text-align: left; ">
+                                <strong> Ordernr.:
+                                    <small>{{ order_detail.unique_nr }}</small></strong>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

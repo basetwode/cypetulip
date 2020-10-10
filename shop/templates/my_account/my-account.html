@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load recurse %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% block head %}
+    <title>{% trans 'Your account' %}</title>
+    <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.structure.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.theme.min.css' %}" rel="stylesheet">
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'autocomplete.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <h4><b>{% trans "Your account" %}</b></h4>
+
+        <div class="card-deck">
+
+            <div class="card">
+
+                <div class="card-header text-center">
+                    <div>
+                        <i class="fas fa-shopping-basket fa-4x"></i>
+                    </div>
+                    <div>
+                        <strong>{% trans 'Your orders' %}</strong>
+                    </div>
+
+                </div>
+
+                <div class="card-body">
+                    <div class="col-12">
+                        <a href="{% url 'shop:all_orders' %}"
+                           class="btn btn-fw btn-warning">{% trans 'Your orders' %}</a>
+                    </div>
+                    <hr>
+                    <div class="col-12">
+                        <p>{% trans 'Search your orders' %}</p>
+                        <form action="{% url 'search_orders' %}">
+                            <div class="input-group">
+
+                                <input id="order-search" type="text" class="form-control"
+                                       placeholder="Search for...">
+                                <span class="input-group-btn">
+                                                    <button class="btn btn-warning" type="button">Go!</button>
+                                                  </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <p>{% trans 'Show orders, track or cancel them' %}</p>
+                </div>
+            </div>
+            <div class="card">
+
+                <div class="card-header text-center">
+                    <div>
+                        <i class="fas fa-money-bill fa-4x"></i>
+                    </div>
+                    <div>
+                        <strong>{% trans 'payment settings' %}</strong>
+                    </div>
+
+                </div>
+                <div class="card-body">
+                    <div class="col-12">
+                        <a href="{% url 'shop:login' %}"
+                           class="btn btn-fw btn-warning">{% trans 'Your payment methods' %}</a>
+
+                        <a href="{% url 'shop:login' %}"
+                           class="btn btn-fw btn-warning">{% trans 'Add a payment method' %}</a>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <p>{% trans 'Show or edit your payment methods' %}</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header text-center">
+                    <div>
+                        <i class="fas fa-user-check fa-4x"></i>
+                    </div>
+                    <div>
+                        <strong>{% trans 'Settings' %}</strong>
+                    </div>
+
+                </div>
+
+                <div class="card-body">
+                    <div class="col-12">
+                        <a href="{% url 'shop:account_settings' %}"
+                           class="btn btn-fw btn-warning">{% trans 'Change account settings' %}</a>
+                        <a href="{% url 'shop:company_settings' %}"
+                           class="btn btn-fw btn-warning">{% trans 'Change company settings' %}</a>
+                        <a href="{% url 'shop:address_overview' %}"
+                           class="btn btn-fw btn-warning">{% trans 'Show addresses' %}</a>
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    <p>{% trans 'Show or edit your payment methods' %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

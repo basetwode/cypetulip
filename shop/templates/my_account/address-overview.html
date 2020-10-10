@@ -1,0 +1,81 @@
+{% extends 'base-mgmt.html' %}
+{% load static %}
+{% load recurse %}
+{% load bootstrap4 %}
+
+{% load i18n %}
+{% bootstrap_messages %}
+{% block head %}
+    <title>{% trans 'Address Settings' %}</title>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div style="overflow: auto" class="card-header">
+                    <h4 class="h-bold">{% trans 'Menu' %}</h4>
+                    <hr>
+                    <div class="col-md-12"><span>{{ contact.first_name }} {{ contact.last_name }}</span></div>
+                    <div class="col-md-12"><span
+                            style="font-size: small; font-weight: bold">{{ contact.company.name }}</span></div>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'shop:all_orders' %}"
+                       class="btn btn-fw btn-warning">{% trans 'All orders' %}</a>
+                    <a href="{% url 'shop:my_account' %}"
+                       class="btn btn-fw btn-warning">{% trans 'Go to your account' %}</a>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="mb-3">
+                <a href="{% url 'shop:address_create' %}"
+                   class="btn btn-outline-dark">{% trans 'Add' %}</a>
+            </div>
+            <table class="table table-hover table-striped table-responsive-sm">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">{% trans 'Name' %}</th>
+                    <th scope="col">{% trans 'Street' %}</th>
+                    <th scope="col">{% trans 'Number' %}</th>
+                    <th scope="col">{% trans 'Zipcode' %}</th>
+                    <th scope="col">{% trans 'City' %}</th>
+                    <th scope="col">{% trans 'Contact' %}</th>
+                    <th scope="col">{% trans 'Configuration' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for entry in address %}
+                    <tr>
+                        <td>{{ entry.id }}</td>
+                        <td>{{ entry.name }}</td>
+                        <td>{{ entry.street }}</td>
+                        <td>{{ entry.number }}</td>
+                        <td>{{ entry.zipcode }}</td>
+                        <td>{{ entry.city }}</td>
+                        <td>{{ entry.contact }}</td>
+                        <td>
+                            <div>
+                                <a class="btn btn-outline-dark"
+                                   href="{% url 'shop:address_edit' entry.id %}">{% trans 'Edit' %}</a>
+                                <button class="btn btn-outline-dark" data-toggle="modal"
+                                        data-target="#delete-modal">{% trans 'Delete' %}</button>
+                                {% include 'delete-modal.html' with id=entry.id url='shop:address_delete' url_param='address_id' %}
+
+                            </div>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+{% endblock %}

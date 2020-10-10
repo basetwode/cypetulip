@@ -8,187 +8,1117 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-02 20:28+0100\n"
+"POT-Creation-Date: 2020-09-27 11:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\Home\settings.py:106
-msgid "German"
-msgstr "Deutsch"
-
-#: .\Home\settings.py:107
-msgid "English"
-msgstr "Englisch"
-
-#: .\CMS\templates\base.html:78
-msgid "World"
+#: .\billing\templates\invoice.html:161
+msgid "Taxnumber"
 msgstr ""
 
-#: .\CMS\templates\base.html:107
+#: .\billing\templates\invoice.html:175
+msgid "Invoice"
+msgstr "Rechnung"
+
+#: .\billing\templates\invoice.html:176
+msgid "Invoice Date"
+msgstr "Rechnungsdatum"
+
+#: .\billing\templates\invoice.html:177
+msgid "Due Date"
+msgstr "Fälligskeitsdatum"
+
+#: .\billing\templates\invoice.html:205
+#: .\management\templates\order-details.html:149
+#: .\payment\templates\bill\confirm.html:74
+#: .\payment\templates\bill\confirm.html:127
+#: .\shop\templates\my_account\orders-detail.html:140
+#: .\shop\templates\order\delivery.html:60
+#: .\shop\templates\order\overview.html:57
+#: .\shop\templates\order\shopping-cart-detail.html:51
+msgid "Subtotal"
+msgstr "Zwischensumme"
+
+#: .\billing\templates\invoice.html:210
+msgid "Tax"
+msgstr "Steuer"
+
+#: .\billing\templates\invoice.html:215
+#, fuzzy
+#| msgid "Total"
+msgid "Grand Total"
+msgstr "Gesamt"
+
+#: .\cms\templates\base.html:48
+msgid "Payment Methods"
+msgstr "Bezahlung"
+
+#: .\cms\templates\base.html:51
+msgid "Ship Methods"
+msgstr "Lieferung"
+
+#: .\cms\templates\base.html:52
+msgid "Free Ship"
+msgstr "Kostenfreie Lieferung"
+
+#: .\cms\templates\base.html:59
+msgid "Register"
+msgstr "Registrierung"
+
+#: .\cms\templates\navbar.html:53
 msgid "My account"
-msgstr "Mein Account"
+msgstr "Mein Konto"
 
-#: .\CMS\templates\base.html:108
-msgid "All orders"
-msgstr "Alle Bestellungen"
+#: .\cms\templates\navbar.html:55
+msgid "My orders"
+msgstr "Meine Bestellungen"
 
-#: .\CMS\templates\base.html:109
+#: .\cms\templates\navbar.html:57 .\management\templates\management.html:124
+#: .\management\templates\settings-details.html:13
+#: .\shop\templates\my_account\my-account.html:87
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: .\CMS\templates\base.html:111
+#: .\cms\templates\navbar.html:61
+msgid "Management"
+msgstr "Administration"
+
+#: .\cms\templates\navbar.html:64
 msgid "Logout"
-msgstr "Ausloggen"
+msgstr "Abmelden"
 
-#: .\CMS\templates\base.html:115
+#: .\cms\templates\navbar.html:69
 msgid "Login"
-msgstr "Einloggen"
+msgstr "Anmelden"
 
-#: .\CMS\templates\base.html:138
+#: .\cms\templates\notify-modal.html:9
+msgid ""
+"Ups, something went wrong. Please try again later or contact an "
+"administrator."
+msgstr ""
+
+#: .\cms\templates\notify-modal.html:14 .\cms\templates\notify-modal.html:21
+#: .\management\templates\assign-employee.html:37
+#: .\management\templates\change-state.html:35
+#: .\management\templates\delete-modal.html:18
+msgid "Close"
+msgstr "Schließen"
+
+#: .\cms\templates\notify-modal.html:17
 msgid "Sent"
-msgstr ""
+msgstr "Gesendet"
 
-#: .\CMS\templates\base.html:138
+#: .\cms\templates\notify-modal.html:17
 msgid "successfully"
+msgstr "erfolgreich"
+
+#: .\cms\templates\notify-modal.html:24
+msgid "Looks like you have missed some fields"
+msgstr "Sieht aus, als hätten Sie einige Felder vergessen"
+
+#: .\cms\templates\permission_denied.html:7
+#: .\cms\templates\permission_denied.html:15
+#: .\permissions\templates\errors\401.html:7
+#: .\permissions\templates\errors\401.html:15
+msgid "Permission denied"
+msgstr "Zugriff verweigert"
+
+#: .\cms\templates\permission_denied.html:21
+#: .\permissions\templates\errors\401.html:21
+msgid ""
+"You don't have the required permissions to show this view. If you think this "
+"is wrong please contact our support"
+msgstr ""
+"Sie haben nicht die Berechtigungen, um diese Seite anzuzeigen. Falls Sie "
+"denken dies ist inkorrekt, kontaktieren Sie bitte den Support. "
+
+#: .\cms\templates\permission_denied.html:25
+#: .\permissions\templates\errors\401.html:25
+msgid "Go back"
+msgstr "Zurück"
+
+#: .\home\settings.py:120
+msgid "German"
+msgstr "Deutsch"
+
+#: .\home\settings.py:121
+msgid "English"
+msgstr "Englisch"
+
+#: .\management\templates\accounting-dashboard.html:8
+#, fuzzy
+#| msgid "Accounting"
+msgid "accounting"
+msgstr "Buchhaltung"
+
+#: .\management\templates\accounting-dashboard.html:17
+msgid "Dashboard"
 msgstr ""
 
-#: .\Payment\templates\payment.html:26 .\Shop\templates\order\overview.html:25
-msgid "Checkout"
-msgstr "Bezahlen"
+#: .\management\templates\accounting-dashboard.html:24
+#, fuzzy
+#| msgid "Total: "
+msgid "Total Amount"
+msgstr "Gesamt: "
 
-#: .\Payment\templates\payment.html:34 .\Shop\templates\order\checkout.html:42
-#: .\Shop\templates\order\checkout.html:205
-#: .\Shop\templates\order\overview.html:33
-msgid "Overview"
-msgstr ""
+#: .\management\templates\accounting-dashboard.html:39
+#, fuzzy
+#| msgid "Open order"
+msgid "Open Orders"
+msgstr "Bestellung öffnen"
 
-#: .\Payment\templates\payment.html:43 .\Payment\templates\payment.html:51
-#: .\Shop\templates\order\overview.html:42
-#: .\Shop\templates\order\overview.html:210
-msgid "Payment"
+#: .\management\templates\accounting-dashboard.html:53
+msgid "Open Shipments"
+msgstr "Offene Lieferungen"
+
+#: .\management\templates\accounting-dashboard.html:67
+msgid "Open Payments"
 msgstr "Bezahlung"
 
-#: .\Payment\templates\payment.html:55
-msgid "Please choose a payment method"
+#: .\management\templates\accounting-dashboard.html:83
+msgid "Last Orders"
+msgstr "Bestellungen"
+
+#: .\management\templates\accounting-dashboard.html:90
+msgid "Ordernr"
+msgstr "Bestellung"
+
+#: .\management\templates\accounting-dashboard.html:91
+#: .\management\templates\order-details.html:69
+#: .\management\templates\orders-overview.html:67
+#: .\shop\templates\my_account\orders-detail.html:67
+#: .\shop\templates\my_account\orders.html:64
+msgid "Orderdate"
+msgstr "Bestelldatum"
+
+#: .\management\templates\accounting-dashboard.html:92
+msgid "Billdate"
+msgstr "Rechnung"
+
+#: .\management\templates\assign-employee.html:15
+msgid "Assign Employee"
+msgstr "Mitarbeiter zuweisen"
+
+#: .\management\templates\assign-employee.html:21
+msgid "Please choose your Employee"
+msgstr "Bitte Bezahlmethode auswählen"
+
+#: .\management\templates\assign-employee.html:42
+#: .\management\templates\order-details.html:316
+msgid "Assign"
+msgstr "Zuweisen"
+
+#: .\management\templates\categories-overview.html:20
+#: .\management\templates\customers-overview.html:23
+#: .\management\templates\employee-overview.html:20
+#: .\management\templates\generic-create.html:20
+#: .\management\templates\generic-edit.html:20
+#: .\management\templates\order-details.html:48
+#: .\management\templates\orders-overview.html:28
+#: .\management\templates\pages\pages-overview.html:21
+#: .\management\templates\pages\sections-overview.html:21
+#: .\management\templates\products-overview.html:20
+#: .\management\templates\settings-details.html:21
+#: .\management\templates\shipment-overview.html:20
+#: .\shop\templates\my_account\address-overview.html:19
+#: .\shop\templates\my_account\generic-create.html:20
+#: .\shop\templates\my_account\generic-edit.html:20
+#: .\shop\templates\my_account\orders-detail.html:47
+#: .\shop\templates\my_account\orders.html:20
+#: .\shop\templates\my_account\settings.html:18
+msgid "Menu"
+msgstr "Menu"
+
+#: .\management\templates\categories-overview.html:23
+#: .\management\templates\customers-overview.html:26
+#: .\management\templates\orders-overview.html:31
+#: .\management\templates\pages\pages-overview.html:24
+#: .\management\templates\pages\sections-overview.html:24
+#: .\management\templates\products-overview.html:23
+#: .\management\templates\shipment-overview.html:23
+msgid "Filter"
+msgstr "Filter"
+
+#: .\management\templates\categories-overview.html:27
+#: .\management\templates\customers-overview.html:30
+#: .\management\templates\orders-overview.html:35
+#: .\management\templates\pages\pages-overview.html:28
+#: .\management\templates\pages\sections-overview.html:28
+#: .\management\templates\products-overview.html:27
+#: .\management\templates\shipment-overview.html:27
+msgid "Go"
 msgstr ""
 
-#: .\Payment\templates\payment.html:102
-#: .\Shop\templates\order\shopping_cart_detail.html:63
+#: .\management\templates\categories-overview.html:31
 #, fuzzy
-#| msgid "Total: "
-msgid "Total"
-msgstr "Gesamt"
+#| msgid "Category"
+msgid "Add Category"
+msgstr "Kategorie"
 
-#: .\Payment\templates\payment.html:114
-msgid "Back to overview"
+#: .\management\templates\categories-overview.html:34
+#: .\management\templates\customers-overview.html:35
+#: .\management\templates\employee-overview.html:27
+#: .\management\templates\generic-create.html:25
+#: .\management\templates\generic-edit.html:26
+#: .\management\templates\order-details.html:56
+#: .\management\templates\orders-overview.html:40
+#: .\management\templates\pages\pages-overview.html:35
+#: .\management\templates\pages\sections-overview.html:35
+#: .\management\templates\products-overview.html:34
+#: .\management\templates\settings-details.html:26
+#: .\management\templates\shipment-overview.html:32
+msgid "Go back to management"
+msgstr "Zurück zur Administration"
+
+#: .\management\templates\categories-overview.html:46
+#: .\management\templates\customers-overview.html:46
+#: .\management\templates\products-overview.html:46
+#: .\payment\templates\payments-overview.html:26
+#: .\shop\templates\my_account\address-overview.html:43
+msgid "Name"
+msgstr "Name"
+
+#: .\management\templates\categories-overview.html:47
+msgid "Description"
+msgstr "Beschreibung"
+
+#: .\management\templates\categories-overview.html:48
+msgid "Parent Category"
+msgstr "Eltern Kategorie"
+
+#: .\management\templates\categories-overview.html:49
+#: .\management\templates\customers-overview.html:48
+#: .\management\templates\pages\pages-overview.html:51
+#: .\management\templates\pages\sections-overview.html:49
+#: .\management\templates\products-overview.html:48
+#: .\management\templates\shipment-overview.html:46
+#: .\shop\templates\my_account\address-overview.html:49
+msgid "Configuration"
+msgstr "Konfiguration"
+
+#: .\management\templates\categories-overview.html:62
+#: .\management\templates\pages\pages-overview.html:65
+#: .\management\templates\pages\sections-overview.html:62
+#: .\management\templates\products-overview.html:74
+#: .\shop\templates\my_account\address-overview.html:65
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: .\management\templates\categories-overview.html:64
+#: .\management\templates\delete-modal.html:7
+#: .\management\templates\delete-modal.html:19
+#: .\management\templates\pages\pages-overview.html:67
+#: .\management\templates\pages\sections-overview.html:64
+#: .\management\templates\products-overview.html:76
+#: .\shop\templates\my_account\address-overview.html:67
+msgid "Delete"
+msgstr "Löschen"
+
+#: .\management\templates\change-state.html:13
+msgid "Change State"
+msgstr "Status ändern"
+
+#: .\management\templates\change-state.html:19
+msgid "Please choose the next state"
+msgstr "Bitte wählen Sie den nächsten Status aus"
+
+#: .\management\templates\change-state.html:40
+msgid "Change"
+msgstr "Ändern"
+
+#: .\management\templates\customers-overview.html:47
+msgid "Company"
+msgstr "Unternehmen"
+
+#: .\management\templates\customers-overview.html:60
+msgid "Edit Contact"
+msgstr "Kontakt bearbeiten"
+
+#: .\management\templates\customers-overview.html:62
+msgid "Edit Company"
+msgstr "Unternehmen bearbeiten"
+
+#: .\management\templates\delete-modal.html:15
+msgid "Are you sure you want to delete?"
+msgstr "Wollen Sie wirklich löschen?"
+
+#: .\management\templates\employee-overview.html:24
+#, fuzzy
+#| msgid "Add new Employee"
+msgid "Add Employee"
+msgstr "Neuen Mitarbeiter anlegen"
+
+#: .\management\templates\employee-overview.html:37
+msgid "Firstname"
+msgstr "Vorname"
+
+#: .\management\templates\employee-overview.html:38
+#, fuzzy
+#| msgid "Lastname"
+msgid "Lastname"
+msgstr "Nachname"
+
+#: .\management\templates\management.html:8
+#: .\management\templates\management.html:20
+msgid "management"
+msgstr "Administration"
+
+#: .\management\templates\management.html:31
+msgid "Orders"
+msgstr "Bestellungen"
+
+#: .\management\templates\management.html:38
+#: .\shop\templates\my_account\address-overview.html:27
+#: .\shop\templates\my_account\generic-create.html:28
+#: .\shop\templates\my_account\generic-edit.html:28
+#: .\shop\templates\my_account\orders-detail.html:52
+#: .\shop\templates\my_account\orders.html:41
+#: .\shop\templates\my_account\settings.html:26
+msgid "All orders"
+msgstr "Alle Bestellungen"
+
+#: .\management\templates\management.html:40
+msgid "All shipments"
+msgstr "Alle Lieferungen"
+
+#: .\management\templates\management.html:42
+msgid "Search orders"
+msgstr "Bestellungen durchsuchen"
+
+#: .\management\templates\management.html:55
+#: .\shop\templates\my_account\my-account.html:54
+msgid "Show orders, track or cancel them"
+msgstr "Bestellung anzeigen, verfolgen oder stornieren"
+
+#: .\management\templates\management.html:64
+#: .\management\templates\management.html:70
+msgid "Customers"
+msgstr "Kunden"
+
+#: .\management\templates\management.html:72
+msgid "Add customer"
+msgstr "Kunde hinzufügen"
+
+#: .\management\templates\management.html:74
+msgid "Search customers"
+msgstr "Kunden durchsuchen"
+
+#: .\management\templates\management.html:87
+msgid ""
+"Search for customers through email, username, first and last name or company "
+"name"
 msgstr ""
+"Suchen Sie nach Kunden mittels E-Mail, Benutzername, Vor- und Nachname oder "
+"dem Unternehmensnamen."
 
-#: .\Payment\templates\payment.html:120
-msgid "Send"
-msgstr ""
+#: .\management\templates\management.html:96
+msgid "Products and Categories"
+msgstr "Produkte und Kategorien"
 
-#: .\Shop\templates\order\checkout.html:25
-#, fuzzy
-#| msgid " Shoppingcart "
-msgid "Shoppingcart"
-msgstr "Einkaufswagen"
-
-#: .\Shop\templates\order\checkout.html:34
-msgid "Check"
-msgstr "Überprüfen"
-
-#: .\Shop\templates\order\checkout.html:55
-#: .\Shop\templates\order\overview.html:55
-#: .\Shop\templates\order\shopping_cart_detail.html:29
-#, fuzzy
-#| msgid "Products"
-msgid "Product"
-msgstr "Produkt"
-
-#: .\Shop\templates\order\checkout.html:56
-#: .\Shop\templates\order\overview.html:56
-#: .\Shop\templates\order\shopping_cart_detail.html:30
-msgid "Price"
-msgstr "Preis"
-
-#: .\Shop\templates\order\checkout.html:58
-#: .\Shop\templates\order\overview.html:58
-#: .\Shop\templates\order\shopping_cart_detail.html:32
-msgid "Subtotal"
-msgstr "Teilsumme"
-
-#: .\Shop\templates\order\checkout.html:200
-#, fuzzy
-#| msgid "Your shoppingcart"
-msgid "Back to shoppingcart"
-msgstr "Zurück zum Einkaufswagen"
-
-#: .\Shop\templates\order\checkout.html:203
-#: .\Shop\templates\order\overview.html:208
-#: .\Shop\templates\order\shopping_cart.html:45
-#: .\Shop\templates\order\shopping_cart_detail.html:69
-#, fuzzy
-#| msgid "Total: "
-msgid "Total: "
-msgstr "Gesamt"
-
-#: .\Shop\templates\order\overview.html:107
-#: .\Shop\templates\order\overview.html:162
-msgid "File"
-msgstr ""
-
-#: .\Shop\templates\order\overview.html:118
-#: .\Shop\templates\order\overview.html:173
-msgid "Yes"
-msgstr ""
-
-#: .\Shop\templates\order\overview.html:205
-#, fuzzy
-#| msgid "Your shoppingcart"
-msgid "Back to checkout"
-msgstr "Zurück zum Einkaufswagen"
-
-#: .\Shop\templates\order\shopping_cart.html:7
-msgid " Shoppingcart "
-msgstr "Einkaufswagen"
-
-#: .\Shop\templates\order\shopping_cart.html:15
-#: .\Shop\templates\order\shopping_cart_detail.html:19
-msgid "Your shoppingcart"
-msgstr "Ihr Einkaufswagen"
-
-#: .\Shop\templates\order\shopping_cart_detail.html:67
-msgid "Continue Shopping"
-msgstr "Weiter einkaufen"
-
-#: .\Shop\templates\order\shopping_cart_detail.html:72
-#, fuzzy
-#| msgid "Checkout"
-msgid "Checkout "
-msgstr "Bezahlen"
-
-#: .\Shop\templates\product_detail.html:45 .\Shop\templates\products.html:41
-msgid "Categories"
-msgstr "Kategorien"
-
-#: .\Shop\templates\product_detail.html:112
-msgid "Add to cart"
-msgstr "Zum Einkaufswagen hinzufügen"
-
-#: .\Shop\templates\products.html:83
+#: .\management\templates\management.html:100
+#: .\management\templates\management.html:113 .\shop\templates\products.html:73
 msgid "Products"
 msgstr "Produkte"
 
-#, fuzzy
-#~| msgid " Shoppingcart "
-#~ msgid "shoppingcart"
-#~ msgstr "Einkaufswagen"
+#: .\management\templates\management.html:102
+#: .\management\templates\management.html:108
+msgid "Show"
+msgstr "Anzeigen"
 
-#~ msgid "payment"
-#~ msgstr "Bezahlung"
+#: .\management\templates\management.html:104
+msgid "Create new Product"
+msgstr "Neues Produkt"
+
+#: .\management\templates\management.html:106
+#: .\shop\templates\product-detail.html:38 .\shop\templates\products.html:36
+msgid "Categories"
+msgstr "Kategorien"
+
+#: .\management\templates\management.html:110
+msgid "Create new Category"
+msgstr "Neue Kategorie"
+
+#: .\management\templates\management.html:132
+msgid "Staff"
+msgstr "Mitarbeiter"
+
+#: .\management\templates\management.html:134
+msgid "permissions"
+msgstr "Berechtigungen"
+
+#: .\management\templates\management.html:139
+msgid "Legal Settings"
+msgstr "Unternehmens Einstellungen"
+
+#: .\management\templates\management.html:144
+msgid "mail"
+msgstr "Mail"
+
+#: .\management\templates\management.html:146
+msgid "ldap"
+msgstr "LDAP"
+
+#: .\management\templates\management.html:151
+msgid ""
+"All shop related settings. Manage permissions, staff and products and pages"
+msgstr "Einstellungen für Berechtigungen, Mitarbeiter, LDAP oder Mail"
+
+#: .\management\templates\management.html:160
+msgid "CMS"
+msgstr "CMS"
+
+#: .\management\templates\management.html:166
+#: .\management\templates\management.html:168
+msgid "Pages"
+msgstr "Seiten"
+
+#: .\management\templates\management.html:170
+#: .\management\templates\pages\pages-overview.html:32
+msgid "Add Page"
+msgstr "Seite hinzufügen"
+
+#: .\management\templates\management.html:172
+#: .\management\templates\management.html:174
+msgid "Sections"
+msgstr "Bereiche"
+
+#: .\management\templates\management.html:176
+#: .\management\templates\pages\sections-overview.html:32
+msgid "Add Section"
+msgstr "Bereich hinzufügen"
+
+#: .\management\templates\management.html:180
+msgid "Show and edit pages"
+msgstr "Seiten anzeigen und bearbeiten"
+
+#: .\management\templates\management.html:181
+msgid "Show and edit Sections"
+msgstr "Bereiche anzeigen und bearbeiten"
+
+#: .\management\templates\management.html:191
+msgid "Accounting"
+msgstr "Buchhaltung"
+
+#: .\management\templates\management.html:199
+#, fuzzy
+#| msgid "Open order"
+msgid "Open Dashboard"
+msgstr "Bestellung öffnen"
+
+#: .\management\templates\management.html:203
+msgid "Create or review accounting information"
+msgstr "Buchhaltung anzeigen oder bearbeiten"
+
+#: .\management\templates\order-details.html:52
+msgid "Manage orders"
+msgstr "Bestellungen verwalten"
+
+#: .\management\templates\order-details.html:54
+msgid "Go back to all orders"
+msgstr "Zurück zu allen Buchungen"
+
+#: .\management\templates\order-details.html:80
+#: .\payment\templates\bill\confirm.html:202
+#: .\shop\templates\my_account\orders-detail.html:88
+#: .\shop\templates\my_account\orders.html:78
+msgid "Total"
+msgstr "Gesamt"
+
+#: .\management\templates\order-details.html:84
+msgid "Paid via"
+msgstr "Bezahlt über"
+
+#: .\management\templates\order-details.html:88
+msgid "Already open bill"
+msgstr "Offene Rechnung"
+
+#: .\management\templates\order-details.html:92
+#, fuzzy
+#| msgid "Paid via"
+msgid "Shipped via"
+msgstr "Bezahlt über"
+
+#: .\management\templates\order-details.html:96
+msgid "Not yet shipped"
+msgstr ""
+
+#: .\management\templates\order-details.html:110
+#: .\management\templates\orders-overview.html:72
+#: .\shop\templates\my_account\orders-detail.html:79
+#: .\shop\templates\my_account\orders-detail.html:103
+#: .\shop\templates\my_account\orders.html:71
+#: .\shop\templates\my_account\orders.html:128
+msgid "State"
+msgstr "Status"
+
+#: .\management\templates\order-details.html:119
+#: .\management\templates\shipment-overview.html:42
+#: .\shop\templates\my_account\orders-detail.html:112
+#: .\shop\templates\my_account\orders.html:136
+msgid "Tracking"
+msgstr ""
+
+#: .\management\templates\order-details.html:130
+#, fuzzy
+#| msgid "Assign Employee"
+msgid "Assigned Employee"
+msgstr "Mitarbeiter zuweisen"
+
+#: .\management\templates\order-details.html:145
+#: .\payment\templates\bill\confirm.html:71
+#: .\shop\templates\my_account\orders-detail.html:136
+#: .\shop\templates\order\delivery.html:57
+#: .\shop\templates\order\overview.html:54
+#: .\shop\templates\order\shopping-cart-detail.html:48
+msgid "Product"
+msgstr "Produkt"
+
+#: .\management\templates\order-details.html:146
+#: .\management\templates\products-overview.html:47
+#: .\management\templates\shipment-overview.html:43
+#: .\payment\templates\bill\confirm.html:72
+#: .\payment\templates\bill\confirm.html:125
+#: .\shop\templates\my_account\orders-detail.html:137
+#: .\shop\templates\order\delivery.html:58
+#: .\shop\templates\order\overview.html:55
+#: .\shop\templates\order\shopping-cart-detail.html:49
+msgid "Price"
+msgstr "Preis"
+
+#: .\management\templates\order-details.html:204
+#: .\management\templates\order-details.html:266
+#: .\shop\templates\my_account\orders-detail.html:195
+#: .\shop\templates\my_account\orders-detail.html:257
+#: .\shop\templates\order\overview.html:113
+#: .\shop\templates\order\overview.html:169
+msgid "File"
+msgstr "Datei"
+
+#: .\management\templates\order-details.html:218
+#: .\management\templates\order-details.html:278
+#: .\shop\templates\my_account\orders-detail.html:209
+#: .\shop\templates\my_account\orders-detail.html:269
+#: .\shop\templates\order\overview.html:124
+#: .\shop\templates\order\overview.html:180
+msgid "Yes"
+msgstr "Ja"
+
+#: .\management\templates\order-details.html:312
+#: .\shop\templates\my_account\orders-detail.html:303
+msgid "Options"
+msgstr "Optionen"
+
+#: .\management\templates\order-details.html:314
+#: .\shop\templates\my_account\orders-detail.html:310
+msgid "Show bill"
+msgstr "Rechnung anzeigen"
+
+#: .\management\templates\order-details.html:319
+msgid "Set State"
+msgstr "Status setzen"
+
+#: .\management\templates\order-details.html:326
+#: .\shop\templates\my_account\orders-detail.html:307
+msgid "Cancel order"
+msgstr "Bestellung stornieren"
+
+#: .\management\templates\order-details.html:332
+msgid "Paid"
+msgstr "Bezahlt"
+
+#: .\management\templates\order-details.html:337
+msgid "Ship"
+msgstr "Versenden"
+
+#: .\management\templates\orders-overview.html:22
+#, fuzzy
+#| msgid "All orders"
+msgid "All Orders"
+msgstr "Alle Bestellungen"
+
+#: .\management\templates\orders-overview.html:52
+#: .\shop\templates\my_account\orders.html:54
+msgid "Nothing found"
+msgstr "Nichts gefunden"
+
+#: .\management\templates\pages\pages-overview.html:47
+msgid "Position"
+msgstr "Position"
+
+#: .\management\templates\pages\pages-overview.html:48
+msgid "Pagename"
+msgstr "Seitenname"
+
+#: .\management\templates\pages\pages-overview.html:49
+msgid "Enabled"
+msgstr "Aktiviert"
+
+#: .\management\templates\pages\pages-overview.html:50
+msgid "Link"
+msgstr "Link"
+
+#: .\management\templates\pages\sections-overview.html:46
+#, fuzzy
+#| msgid "Pages"
+msgid "Page"
+msgstr "Seiten"
+
+#: .\management\templates\pages\sections-overview.html:47
+msgid "Content"
+msgstr "Inhalt"
+
+#: .\management\templates\pages\sections-overview.html:48
+msgid "Picture"
+msgstr "Bild"
+
+#: .\management\templates\products-overview.html:31
+#, fuzzy
+#| msgid "Product"
+msgid "Add Product"
+msgstr "Produkt"
+
+#: .\management\templates\products-overview.html:44
+msgid "Category"
+msgstr "Kategorie"
+
+#: .\management\templates\products-overview.html:45
+msgid "Thumbnail"
+msgstr "Bild"
+
+#: .\management\templates\settings-details.html:37
+#: .\shop\templates\my_account\generic-create.html:39
+#: .\shop\templates\my_account\generic-edit.html:39
+#: .\shop\templates\my_account\settings.html:41
+msgid "Save"
+msgstr "Speichern"
+
+#: .\management\templates\shipment-overview.html:44
+msgid "Weight"
+msgstr ""
+
+#: .\management\templates\shipment-overview.html:45
+#: .\shop\templates\my_account\orders.html:140
+#, fuzzy
+#| msgid "Ship"
+msgid "Shipper"
+msgstr "Versenden"
+
+#: .\payment\templates\bill\confirm.html:23 .\payment\templates\payment.html:23
+#: .\shop\templates\order\delivery.html:23
+#: .\shop\templates\order\overview.html:19
+#: .\shop\templates\order\shopping-cart-detail.html:17
+#: .\shop\templates\order\shopping-cart-nav.html:7
+msgid "Shoppingcart"
+msgstr "Einkaufswagen"
+
+#: .\payment\templates\bill\confirm.html:30 .\payment\templates\payment.html:29
+#: .\shop\templates\order\delivery.html:28
+#: .\shop\templates\order\overview.html:26
+#: .\shop\templates\order\shopping-cart-detail.html:23
+msgid "Delivery"
+msgstr "Lieferung"
+
+#: .\payment\templates\bill\confirm.html:39
+#: .\payment\templates\bill\confirm.html:53 .\payment\templates\payment.html:37
+#: .\payment\templates\payment.html:50 .\shop\templates\order\delivery.html:35
+#: .\shop\templates\order\delivery.html:45
+#: .\shop\templates\order\delivery.html:276
+#: .\shop\templates\order\overview.html:33
+#: .\shop\templates\order\overview.html:44
+#: .\shop\templates\order\shopping-cart-detail.html:28
+#: .\shop\templates\order\shopping-cart-detail.html:38
+msgid "Overview"
+msgstr "Übersicht"
+
+#: .\payment\templates\bill\confirm.html:47 .\payment\templates\payment.html:44
+#: .\payment\templates\payment.html:59 .\shop\templates\order\delivery.html:40
+#: .\shop\templates\order\overview.html:39
+#: .\shop\templates\order\overview.html:233
+#: .\shop\templates\order\shopping-cart-detail.html:33
+msgid "Payment"
+msgstr "Bezahlung"
+
+#: .\payment\templates\bill\confirm.html:61
+msgid "Order overview"
+msgstr "Bestellübersicht"
+
+#: .\payment\templates\bill\confirm.html:62
+msgid "Please check whether the information you've entered are correct."
+msgstr "Bitte überprüfen Sie, ob ihre Eingaben korrekt sind."
+
+#: .\payment\templates\bill\confirm.html:66
+#: .\shop\templates\order\order-confirmed.html:17
+msgid "Your order"
+msgstr "Ihre Bestellung"
+
+#: .\payment\templates\bill\confirm.html:119
+msgid "Your payment"
+msgstr "Ihre Bezahlung"
+
+#: .\payment\templates\bill\confirm.html:124
+#, fuzzy
+#| msgid "Payment Methods"
+msgid "Payment Method"
+msgstr "Bezahlung"
+
+#: .\payment\templates\bill\confirm.html:155
+msgid "Your shipment details"
+msgstr "Ihre Lieferdetails"
+
+#: .\payment\templates\bill\confirm.html:160
+msgid "Address"
+msgstr "Adresse"
+
+#: .\payment\templates\bill\confirm.html:230
+msgid "Back to select payment"
+msgstr "Zurück zur Bezahlung"
+
+#: .\payment\templates\bill\confirm.html:237
+msgid "Submit order"
+msgstr "Bestellung bestätigen"
+
+#: .\payment\templates\payment.html:65
+msgid "Please choose a payment method"
+msgstr "Bitte Bezahlmethode auswählen"
+
+#: .\payment\templates\payment.html:121
+msgid "Back to overview"
+msgstr "Zurück zur Übersicht"
+
+#: .\payment\templates\payment.html:126
+msgid "Send"
+msgstr "Senden"
+
+#: .\payment\templates\payments-overview.html:16
+msgid "Back"
+msgstr "Zurück"
+
+#: .\payment\templates\payments-overview.html:18
+#, fuzzy
+#| msgid "Add a payment method"
+msgid "Add new Payment Method"
+msgstr "Neue Bezahlart hinzufügen"
+
+#: .\payment\templates\payments-overview.html:27
+#: .\shop\templates\product-detail.html:124
+#: .\shop\templates\product-detail.html:134
+msgid "Details"
+msgstr "Details"
+
+#: .\payment\templates\payments-overview.html:28
+msgid "Provider"
+msgstr ""
+
+#: .\permissions\templates\errors\404.html:8
+msgid "Page not found"
+msgstr "Seite nicht gefunden"
+
+#: .\permissions\templates\errors\404.html:11
+msgid "Unfortunatly we are not able to find the page you are looking for"
+msgstr ""
+
+#: .\shop\models.py:36
+msgid "Male"
+msgstr "Männlich"
+
+#: .\shop\models.py:37
+msgid "Female"
+msgstr "Weiblich"
+
+#: .\shop\models.py:38
+msgid "Others"
+msgstr "Divers"
+
+#: .\shop\templates\attribute_side_bar.html:24
+msgid "Filter Result"
+msgstr ""
+
+#: .\shop\templates\my_account\address-overview.html:9
+#, fuzzy
+#| msgid "Settings"
+msgid "Address Settings"
+msgstr "Einstellungen"
+
+#: .\shop\templates\my_account\address-overview.html:29
+#: .\shop\templates\my_account\generic-create.html:30
+#: .\shop\templates\my_account\generic-edit.html:30
+#: .\shop\templates\my_account\orders-detail.html:54
+#: .\shop\templates\my_account\orders.html:43
+#: .\shop\templates\my_account\settings.html:28
+msgid "Go to your account"
+msgstr "Zum Konto"
+
+#: .\shop\templates\my_account\address-overview.html:37
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: .\shop\templates\my_account\address-overview.html:44
+msgid "Street"
+msgstr "Straße"
+
+#: .\shop\templates\my_account\address-overview.html:45
+msgid "Number"
+msgstr "Nummer"
+
+#: .\shop\templates\my_account\address-overview.html:46
+msgid "Zipcode"
+msgstr "PLZ"
+
+#: .\shop\templates\my_account\address-overview.html:47
+msgid "City"
+msgstr "Stadt"
+
+#: .\shop\templates\my_account\address-overview.html:48
+msgid "Contact"
+msgstr "Kontakt"
+
+#: .\shop\templates\my_account\my-account.html:7
+#: .\shop\templates\my_account\my-account.html:17
+msgid "Your account"
+msgstr "Ihr Konto"
+
+#: .\shop\templates\my_account\my-account.html:28
+#: .\shop\templates\my_account\my-account.html:36
+msgid "Your orders"
+msgstr "Ihre Bestellungen"
+
+#: .\shop\templates\my_account\my-account.html:40
+msgid "Search your orders"
+msgstr "Bestellungen durchsuchen"
+
+#: .\shop\templates\my_account\my-account.html:64
+msgid "payment settings"
+msgstr "Bezahleinstellungen"
+
+#: .\shop\templates\my_account\my-account.html:71
+msgid "Your payment methods"
+msgstr "Ihre Bezahlmöglichkeiten"
+
+#: .\shop\templates\my_account\my-account.html:74
+msgid "Add a payment method"
+msgstr "Neue Bezahlart hinzufügen"
+
+#: .\shop\templates\my_account\my-account.html:78
+#: .\shop\templates\my_account\my-account.html:104
+msgid "Show or edit your payment methods"
+msgstr "Bezahlmöglichkeiten anzeigen oder bearbeiten"
+
+#: .\shop\templates\my_account\my-account.html:95
+msgid "Change account settings"
+msgstr "Kontoeinstellungen bearbeiten"
+
+#: .\shop\templates\my_account\my-account.html:97
+msgid "Change company settings"
+msgstr "Unternehmenseinstellungen bearbeiten"
+
+#: .\shop\templates\my_account\my-account.html:99
+msgid "Show addresses"
+msgstr "Adressen anzeigen"
+
+#: .\shop\templates\my_account\orders-detail.html:312
+msgid "Write review"
+msgstr "Bewertung schreiben"
+
+#: .\shop\templates\my_account\orders.html:91
+#, fuzzy
+#| msgid "Orderdate"
+msgid "Orderdetails"
+msgstr "Bestelldatum"
+
+#: .\shop\templates\my_account\orders.html:93
+msgid "Bill"
+msgstr "Rechnung"
+
+#: .\shop\templates\my_account\orders.html:102
+msgid "Customer Information"
+msgstr "Kundeninformationen"
+
+#: .\shop\templates\my_account\orders.html:155
+msgid "Order"
+msgstr "Bestellung"
+
+#: .\shop\templates\my_account\orders.html:230
+#: .\shop\templates\my_account\orders.html:233
+msgid "Previous"
+msgstr "Vorherige"
+
+#: .\shop\templates\my_account\orders.html:250
+#: .\shop\templates\my_account\orders.html:252
+msgid "Next"
+msgstr "Nächste"
+
+#: .\shop\templates\order\delivery.html:210
+#: .\shop\templates\order\overview.html:206
+#: .\shop\templates\order\shopping-cart-detail.html:91
+msgid "Empty Cart"
+msgstr "Leerer Einkaufswagen"
+
+#: .\shop\templates\order\delivery.html:220
+#: .\shop\templates\order\overview.html:219
+#: .\shop\templates\order\shopping-cart-detail.html:104
+#: .\shop\templates\order\shopping-cart-nav.html:19
+msgid "Total: "
+msgstr "Gesamt: "
+
+#: .\shop\templates\order\delivery.html:233
+#, fuzzy
+#| msgid "Address"
+msgid "Add Address"
+msgstr "Adresse"
+
+#: .\shop\templates\order\delivery.html:272
+msgid "Back to shoppingcart"
+msgstr "Zurück zum Einkaufswagen"
+
+#: .\shop\templates\order\order-confirmed.html:14
+msgid "We've received your order."
+msgstr "Wir haben Ihre Bestellung erhalten"
+
+#: .\shop\templates\order\order-confirmed.html:15
+msgid "Thanks for choosing our shop!"
+msgstr "Danke, dass Sie uns gewählt haben."
+
+#: .\shop\templates\order\order-confirmed.html:16
+msgid "You may want to check your profile for the current state of your order"
+msgstr ""
+
+#: .\shop\templates\order\overview.html:228
+msgid "Back to Shipment"
+msgstr "Zurück zur Lieferung"
+
+#: .\shop\templates\order\shopping-cart-detail.html:115
+msgid "Continue Shopping"
+msgstr "Weiter einkaufen"
+
+#: .\shop\templates\order\shopping-cart-detail.html:119
+msgid "Shipment"
+msgstr "Lieferungen"
+
+#: .\shop\templates\product-detail.html:105
+msgid "Add to cart"
+msgstr "Zum Einkaufswagen hinzufügen"
+
+#: .\shop\templates\product-detail.html:119
+#: .\shop\templates\product-detail.html:129
+#, fuzzy
+#| msgid "Description"
+msgid "Product Description"
+msgstr "Beschreibung"
+
+#: .\shop\templates\products.html:98
+msgid "Sale"
+msgstr ""
+
+#: .\shop\templates\products.html:130
+msgid "More Info"
+msgstr "Weitere Informationen"
+
+#: .\shop\templates\registration\password_change_form.html:14
+msgid "Password change"
+msgstr "Passwort ändern"
+
+#: .\shop\templates\registration\password_change_form.html:24
+#: .\shop\templates\registration\password_reset_form.html:25
+#, fuzzy
+#| msgid "Submit order"
+msgid "Submit"
+msgstr "Bestellung bestätigen"
+
+#: .\shop\templates\registration\password_reset_complete.html:10
+msgid "Password reset complete"
+msgstr "Passwort zurücksetzen abgeschlossen"
+
+#: .\shop\templates\registration\password_reset_complete.html:11
+msgid "Your new password has been set. You can log in now on the"
+msgstr "Ihr neues Passwort wurde gesetzt. Sie können sich jetzt anmelden."
+
+#: .\shop\templates\registration\password_reset_complete.html:12
+msgid "login page"
+msgstr "Login"
+
+#: .\shop\templates\registration\password_reset_confirm.html:12
+#: .\shop\templates\registration\password_reset_form.html:14
+msgid "Password reset"
+msgstr "Passwort zurücksetzen"
+
+#: .\shop\templates\registration\password_reset_confirm.html:16
+msgid "Change password"
+msgstr "Passwort ändern"
+
+#: .\shop\templates\registration\password_reset_done.html:10
+msgid "Check your inbox"
+msgstr "Prüfen Sie Ihren Posteingang"
+
+#: .\shop\templates\registration\password_reset_done.html:11
+msgid ""
+"We have emailed you instructions for setting your password. You should "
+"receive the email shortly!"
+msgstr ""
+"Wir haben Ihnen Anweisungen zum Zurücksetzen des Passworts gesendet. Bitte "
+"prüfen Sie Ihren Posteingang."
+
+#: .\shop\templates\registration\password_reset_form.html:17
+msgid "Please enter the e-mail address associated with your account"
+msgstr "Bitte geben Sie die E-Mailadresse Ihres Kontos ein"
+
+#~ msgid "Checkout"
+#~ msgstr "Checkout"
+
+#~ msgid "Open Accounting"
+#~ msgstr "Buchhaltung öffnen"
+
+#~ msgid "Filter by Category"
+#~ msgstr "Nach Kategorie filtern"
+
+#~ msgid "Account settings"
+#~ msgstr "Konto Einstellungen"
+
+#, fuzzy
+#~| msgid "Change personal settings"
+#~ msgid "Change address settings"
+#~ msgstr "Persönliche Einstellungen bearbeiten"
+
+#~ msgid "Open cart"
+#~ msgstr "Einkaufswagen öffnen"
+
+#~ msgid "Show and edit customers"
+#~ msgstr "Kunden anzeigen und bearbeiten"
+
+#~ msgid "Your shoppingcart"
+#~ msgstr "Ihr Einkaufswagen"
+
+#~ msgid "shop"
+#~ msgstr "Shop"
+
+#~ msgid "Customer"
+#~ msgstr "Kunde"
+
+#~ msgid "Active"
+#~ msgstr "Aktiv"
+
+#~ msgid "Edit your account details, such as your name"
+#~ msgstr "Bearbeiten Sie ihre Details, wie z. B. ihren Namen."
+
+#~ msgid "Your logo"
+#~ msgstr "Ihr Logo"
+
+#~ msgid "Company settings"
+#~ msgstr "Unternehmenseinstellungen"
+
+#~ msgid "Company details"
+#~ msgstr "Unternehmensdetails"
+
+#~ msgid "Edit your company details"
+#~ msgstr "Unternehmensdetails bearbeiten"
+
+#~ msgid "Manage your account"
+#~ msgstr "Konto verwalten"
+
+#~ msgid "Check"
+#~ msgstr "Prüfen"

@@ -1,0 +1,347 @@
+{% extends 'base-mgmt.html' %}
+{% load static %}
+{% load recurse %}
+
+{% load i18n %}
+{% block head %}
+    <script src="{% static 'onchange.js' %}"></script>
+    <script src="{% static 'utils.js' %}"></script>
+
+    <title>Products</title>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class=" col-md-3">
+            <div class="card">
+                {% for order_detail in order.orderdetail_set.all %}
+                    <h4 class="card-header">
+                        <div style="overflow: auto">
+                            <div class="col-md-12"><span>{{ order.company }}</span></div>
+                            <div class="col-md-12"><span style="font-size: small; font-weight: bold">
+                                    {{ order_detail.contact.first_name }} {{ order_detail.contact.last_name }}
+                                </span>
+                            </div>
+                        </div>
+                    </h4>
+                    <div class="card-body">
+
+
+                    <div class="col-sm-12">
+                        {{ order.company.street }} {{ order.company.number }}
+                    </div>
+                    <div class="col-sm-12">
+                        {{ order.company.zipcode }} {{ order.company.city }}
+                    </div>
+                    <div class="col-sm-12" style="margin-top: 5px">
+                        {{ order_detail.contact.telephone }}
+                    </div>
+                    <div class="col-sm-12">
+                        {{ order_detail.contact.email }}
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-header">
+                    <h4><strong>{% trans "Menu" %}</strong></h4>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12">
+                        <p>{% trans 'Manage orders' %}</p>
+                        <a href="{% url 'management_all_orders' %}"
+                           class="btn btn-fw btn-primary">{% trans 'Go back to all orders' %}</a>
+                        <a href="{% url 'management_index' %}"
+                           class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>
+                                {% trans 'Orderdate' %}
+                            </strong>
+                            <div>
+
+                                {% for order_detail in order.orderdetail_set.all %}
+                                    {{ order_detail.date_added }}
+                                {% endfor %}
+                            </div>
+
+                        </div>
+                        <div class="col-md-2">
+                            <strong>{% trans 'Total' %}</strong>
+                            <div>{{ order.total }} €</div>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>{% trans 'Paid via' %}</strong>
+                            {% if payment.is_paid %}
+                                <div>{{ payment_details.method.name }}</div>
+                            {% else %}
+                                {% trans 'Already open bill' %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-2">
+                            <strong>{% trans 'Shipped via' %}</strong>
+                            {% if order.is_send %}
+                                <div>{{ payment_details.method.name }}</div>
+                            {% else %}
+                                {% trans 'Not yet shipped' %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Ordernr.:</strong>
+                            <div><small>{{ order.orderdetail_set.first.unique_nr }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+
+                        <div class="col-md-2">
+                            <strong>
+                                {% trans 'State' %}
+                            </strong>
+                            <div>
+                                {% for order_detail in order.orderdetail_set.all %}
+                                    {{ order_detail.state.name }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-4"><strong>
+                            {% trans 'Tracking' %}
+                        </strong>
+                            <div>
+                                {% for order_detail in order.orderdetail_set.all %}
+                                    {{ order_detail.shipment.package.tracking_code }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-4">
+                            <strong>
+                                {% trans 'Assigned Employee' %}
+                            </strong>
+                            <div>
+                                {{ order_detail.orderdetail_set.first.assigned_employee.last_name|default:"None" }} {{ order_detail.orderdetail_set.first.assigned_employee.first_name }} {{ order_detail.orderdetail_set.first.assigned_employee.last_name }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body row">
+                    <div class="col-lg-9 col-md-12 col-sm-12">
+
+                        <table id="cart" class="table table-hover table-striped table-responsive-sm">
+                            <thead>
+                            <tr>
+                                <th style="width:50%">{% trans 'Product' %}</th>
+                                <th style="width:10%">{% trans 'Price' %}</th>
+
+                                <th style="width:22%"
+                                    class="text-center">{% trans 'Subtotal' %}</th>
+                                <th style="width:10%"></th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+                            <form id="order-form">
+                                <input type="submit" hidden id="#submit">
+                                {% for order in order_items %}
+                                    <tr>
+                                        <td data-th="Product">
+                                            <input type="hidden"
+                                                   name="[{{ order.id }}][prod]{{ order.product.id }}">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    {% if order.product.product.product_picture %}
+                                                        <img
+                                                                src="{{ order.product.product.product_picture.url }}"
+                                                                alt="..."
+                                                                class="img img-thumbnail img-fluid"/>
+                                                    {% else %}
+                                                        <i class="fa fa-4x fa-image img-thumbnail"></i>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <h4 class="nomargin">{{ order.product.name }}</h4>
+
+                                                    <p>{{ order.product.description|truncatechars:100 }}</p>
+                                                </div>
+
+
+                                            </div>
+                                        </td>
+                                        <td data-th="Price">{{ order.product.price }}</td>
+
+                                        <td id="subtotal-{{ order.id }}" data-th="Subtotal"
+                                            class="text-center">{{ order.product.price }} &euro;
+                                        </td>
+                                        <td class="actions" data-th="">
+                                        </td>
+                                    </tr>
+
+                                    {% for sub_item in order.orderitem_set.all %}
+                                        <tr id="{{ order.id }}-{{ sub_item.id }}"
+                                            style="border-top: none">
+                                            <td colspan="1">
+                                                <div class="col-sm-12 ">
+                                                    <div class="col-md-offset-1 col-md-12 sub-product required">
+                                                        <div class="col-md-offset-1 col-md-12">
+                                                            <h5>
+                                                                <i><b>{{ sub_item.product.name }}</b></i>
+                                                            </h5>
+                                                            <div class="col-md-12">
+                                                                {% if sub_item.fileorderitem %}
+                                                                    {% trans 'File' %}:
+                                                                    <div class="col-md-7"><a
+                                                                            href="{{ sub_item.fileorderitem.file.url }}">
+                                                                        {{ sub_item.fileorderitem.file_name }}
+                                                                    </a></div>
+                                                                    <div class="col-md-8 hidden-xs">
+                                                                        <img
+                                                                                src="{{ sub_item.fileorderitem.file.url }}"
+                                                                                alt="..."
+                                                                                class="img img-thumbnail img-fluid"/>
+                                                                    </div>
+                                                                {% elif sub_item.selectorderitem %}
+                                                                    {{ sub_item.selectorderitem.selected_item }}
+                                                                {% elif sub_item.checkboxorderitem %}
+                                                                    {% trans 'Yes' %}
+                                                                {% elif sub_item.numberorderitem %}
+                                                                    {{ sub_item.numberorderitem.number }}
+                                                                {% endif %}
+                                                                </p>
+                                                                <p class="error"
+                                                                   style="color: #FF4136"></p>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td colspan="2"
+                                                data-th="Price">{{ sub_item.product.price }} &euro;
+                                            </td>
+                                            <script>
+                                                $(document).ready(function () {
+                                                    addToSubTotal({{ order.id }}, {{ sub_item.product.price }})
+                                                });
+                                            </script>
+                                            <td>
+
+                                                {% if sub_product.is_multiple_per_item %}
+                                                    <button onclick="duplicateProduct(this,{{ order.id }},{{ sub_product.price }})"
+                                                            class="btn btn-secondary btn-sm"><i
+                                                            class="fa fa-plus-circle"></i>
+                                                    </button>
+                                                    {#                                        <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>#}
+                                                {% endif %}
+
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endfor %}
+
+                                {% for sub_item in order_items_once_only %}
+                                    <tr style="border-top: none">
+                                        <td colspan="2">
+                                            <div class="col-sm-12 ">
+                                                <div class="col-md-12 required">
+                                                    <div class="col-md-offset-1 col-md-9">
+                                                        <h4>{{ sub_item.product.name }}</h4>
+
+
+                                                        <div class="col-md-12">
+                                                            {% if sub_item.fileorderitem %}
+                                                                {% trans 'File' %}:
+                                                                <a href="{{ sub_item.fileorderitem.file.url }}">
+                                                                    {{ sub_item.fileorderitem.file_name }}
+                                                                </a>
+                                                                <div class="col-sm-2 hidden-xs"><img
+                                                                        src="{{ sub_item.fileorderitem.file.url }}"
+                                                                        alt="..."
+                                                                        class="img-fluid"/>
+                                                                </div>
+                                                            {% elif sub_item.selectorderitem %}
+                                                                {{ sub_item.selectorderitem.selected_item.name }}
+                                                            {% elif sub_item.checkboxorderitem %}
+                                                                {% trans 'Yes' %}
+                                                            {% elif sub_item.numberorderitem %}
+                                                                {{ sub_item.numberorderitem.number }}
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                        </td>
+                                        <td data-th="Subtotal"
+                                            class="text-center">{{ sub_item.product.price }} &euro;
+                                        </td>
+                                        <td>
+                                            <script>
+                                                $(document).ready(function () {
+                                                    addToSubTotal(0, {{ sub_item.product.price }})
+                                                });
+                                            </script>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                {% csrf_token %}
+
+                            </form>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div class="col-lg-3 col-md-12 col-sm-12">
+                        <h5 class="h-bold">{% trans 'Options' %}</h5>
+                        <a href="{% url 'invoice_pdf' order.order_hash %}" target="_blank"
+                           class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
+                        <a class="btn btn-fw btn-secondary" data-toggle="modal" style="color: #fff"
+                           data-target="#assign-employee-modal">{% trans 'Assign' %}</a>
+                        {% include 'assign-employee.html' with employees=employees order_hash=order.order_hash %}
+                        <a class="btn btn-fw btn-secondary" data-toggle="modal" style="color: #fff"
+                           data-target="#change-state-modal">{% trans 'Set State' %}</a>
+                        {% include 'change-state.html' with states=states order_hash=order.order_hash %}
+                        {% for order_detail in order.orderdetail_set.all %}
+                            <form action="{% url 'shop:detail_order_cancel_order' order.order_hash %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        {% if order_detail.state == order_detail.state.cancel_order_state %}disabled{% endif %}
+                                        class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
+                            </form>
+                        {% endfor %}
+                        <form action="{% url 'pay_order' order.order_hash %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" {% if payment.is_paid %}disabled{% endif %}
+                                    class="btn btn-fw btn-secondary">{% trans 'Paid' %}</button>
+                        </form>
+                        <form action="{% url 'ship_order' order.order_hash %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" {% if order.is_send %}disabled{% endif %}
+                                    class="btn btn-fw btn-secondary">{% trans 'Ship' %}</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

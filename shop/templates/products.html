@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load recurse %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% block head %}
+    <script src="{% static 'products.js' %}"></script>
+    <script src="{% static 'utils.js' %}"></script>
+    <title>Products</title>
+{% endblock %}
+
+{% block body %}
+    <div class="row products">
+        <div class="col-md-12 path">
+            <a href="/cms/home">
+                Home
+            </a>
+            >
+            <a href="/shop/products/?">
+                Products
+            </a>
+            {% if selected_category %}
+                >
+            {% endif %}
+            <a href="/shop/products/{{ selected_category }}">
+                {{ selected_category }}
+            </a>
+        </div>
+        <div class="col-md-3 categories">
+            <div class="position-sticky" style="top:50">
+                <div class="categories-list" id="accordionCategories">
+                    <div class="card border-0">
+                        <div class="">
+                            <h4>
+                                {% trans 'Categories' %}
+                            </h4>
+                        </div>
+                        <div id="collapseCategories" class="panel-collapse collapse show">
+                            <ul class="list-group">
+                                {% recurse category.child_categories.all with categories as category %}
+                                    {% loop %}
+                                        <li class="list-group-item" id="v_hm">
+                                            <div class="heading">
+                                                <div class="arrowImage"></div>
+                                                <a class="link"
+                                                   href="/shop/products/{{ category.name }}?">{{ category.name }}</a>
+                                            </div>
+                                            <ul class="list-group sub">{% child %}</ul>
+
+                                        </li>
+
+                                    {% endloop %}
+                                {% endrecurse %}
+
+
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+                {% include 'attribute_side_bar.html' %}
+            </div>
+        </div>
+        <div class="col-md-9 products">
+            <div class="products-img">
+                <div class="col-12">
+                    <img src="http://www.freelargeimages.com/wp-content/uploads/2014/12/Landscape_01.jpg">
+                </div>
+            </div>
+            <div class="col-12 products-list mt-3 card-deck">
+                <div class="row col-12">
+                    <h3>{% trans 'Products' %}</h3>
+                </div>
+
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+
+                        <div class="row g-3">
+                            {%  for product in products %}
+                            <div class="col-md-4">
+                                <div class="card"><a href="/shop/product/{{ product.name }}">
+                                    {% if product.product_picture %}
+                                        <img class="card-img-top"
+                                             src="{{ product.product_picture.url }}" alt=""/>
+                                    {% else %}
+                                        <i style="max-width: 150px; height: 150px"
+                                           class="fa fa-5x fa-image card-img-top"></i>
+                                    {% endif %}
+                                </a>
+
+
+                                    <div class="card-body product-text">
+                                        <div class="d-flex justify-content-between">
+                                            <span class="font-weight-bold"><a class="text-center"
+                                                                              href="/shop/product/{{ product.name }}">{{ product.name }}</a></span>
+                                            {% if product.special_price %}
+                                                <span style="text-decoration: line-through">{{ product.price_wt | floatformat:2 }} &euro;</span>
+                                                <strong style="color: red"
+                                                        class="font-weight-bold">{{ product.special_price_wt | floatformat:2 }}
+                                                    &euro;</strong>
+                                            {% else %}
+                                                <span>{{ product.price_wt | floatformat:2 }} &euro;</span>
+                                            {% endif %}</div>
+                                        {% if product.special_price %}
+                                            <span class="badge badge-pill badge-danger badge-primary">{% trans 'Sale' %}
+                                                        </span>
+                                        {% endif %}
+                                        <p class="card-text mb-1 mt-1">
+                                            {{ product.description|truncatechars:120 }}</p>
+                                        </div>
+                                        <div class="card-body">
+                                        {% regroup product.attributes.all by type as attributes_grouped %}
+                                        {% for attribute in attributes_grouped|slice:":3" %}
+                                                <div class="d-flex align-items-center flex-row guarantee"> <i class="fas fa-check-circle"></i> <span class="guarantee">{{ attribute.grouper.name }}:
+
+                                                    {% for attribute_item in attribute.list %}
+                                                        {{ attribute_item.value }}{% if not forloop.last %}, {% endif %}
+                                                    {% endfor %}</span> </div>
+                                        {% endfor %}
+
+                                    </div>
+                                    <hr>
+                                    <div class="card-body">
+                                        <div class="price-number">
+                                        </div>
+                                        <div class="clear"></div>
+                                        <div class="text-right buttons"> <a href="/shop/product/{{ product.name }}" class="btn btn-outline-dark">{%  trans 'More Info' %}</a>
+                                            <button class="btn btn-dark" onclick="addToCart('{{ product.name }}')">Add to cart</button> </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="row row-cols-1 row-cols-md-3">
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
