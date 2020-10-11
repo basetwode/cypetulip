@@ -1,5 +1,7 @@
 from django.db import models
 
+from mediaserver.upload import order_files_upload_handler, fs
+
 
 class Continent(models.Model):
     name = models.CharField(max_length=30)
@@ -34,4 +36,15 @@ class Package(models.Model):
 
 
 class Shipment(models.Model):
+    date_shipped = models.DateTimeField(auto_now_add=True)
+
+
+class PackageShipment(Shipment):
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
+
+
+class OnlineShipment(Shipment):
+    file = models.FileField(default=None, null=True,
+                            upload_to=order_files_upload_handler,
+                            storage=fs)
+    file_name = models.CharField(max_length=40, blank=True)

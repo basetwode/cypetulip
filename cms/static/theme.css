@@ -955,7 +955,8 @@ footer .box {
     height: 120px
 }
 
-.products .card-text {
+.products .card-body.product-attributes {
+    height: 80px;
 }
 
 .products .guarantee {
@@ -969,7 +970,7 @@ footer .box {
     color: #bfbebe
 }
 
-.products .buttons button {
+.products .buttons .btn {
     text-transform: uppercase;
     font-size: 12px;
     border-radius: 2px
