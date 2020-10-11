@@ -3,6 +3,7 @@
 {% load recurse %}
 {% load i18n %}
 {% load bootstrap4 %}
+{% load fb_versions %}
 {% load i18n %}
 {% block head %}
     <script src="{% static 'products.js' %}"></script>
@@ -28,7 +29,7 @@
             </a>
         </div>
         <div class="col-md-3 categories">
-            <div class="position-sticky" style="top:50">
+            <div class="position-sticky" style="top:60px">
                 <div class="categories-list" id="accordionCategories">
                     <div class="card border-0">
                         <div class="">
@@ -74,16 +75,17 @@
                 </div>
                 <div class="row g-3 col-12">
                     {% for product in products %}
-                        <div class="col-md-4">
-                            <div class="card"><a href="/shop/product/{{ product.name }}">
+                        <div class="product-card col-md-4">
+                            <div class="card card-hover">
+                                <a href="/shop/product/{{ product.name }}">
                                 {% if product.product_picture %}
                                     <img class="card-img-top"
-                                         src="{{ product.product_picture.url }}" alt=""/>
+                                         src="{% version product.product_picture 'medium' %}" alt=""/>
                                 {% else %}
                                     <i style="max-width: 150px; height: 150px"
                                        class="fa fa-5x fa-image card-img-top"></i>
                                 {% endif %}
-                            </a>
+                                </a>
 
 
                                 <div class="card-body product-text">
@@ -102,8 +104,8 @@
                                         <span class="badge badge-pill badge-danger badge-primary">{% trans 'Sale' %}
                                                         </span>
                                     {% endif %}
-                                    <p class="card-text mb-1 mt-1">
-                                        {{ product.description|truncatechars:120 }}</p>
+{#                                    <p class="card-text mb-1 mt-1">#}
+{#                                        {{ product.description|truncatechars:120|safe }}</p>#}
                                 </div>
                                 <div class="card-body product-attributes">
                                     {% regroup product.attributes.all by type as attributes_grouped %}
