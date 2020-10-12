@@ -6,9 +6,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.views.generic import View
 
-from install import create_app_perms_for_user
 from shop.authentification.forms import CompleteCompanyForm, SignUpForm
-from shop.models import Contact, Order, OrderItem
+from shop.models import Contact, Order, OrderItem, Address
 
 __author__ = ''
 
@@ -115,9 +114,14 @@ class CompanyView(CompleteCompanyForm):
                 form = CompleteCompanyForm(request.POST)
                 if form.is_valid():
                     company = form.save()
-                    Contact.objects.create(user=request.user, company=company, first_name=request.user.first_name,
-                                           last_name=request.user.last_name, title='',
-                                           gender='', telephone='', email=request.user.email, language='de')
+                    contact = Contact.objects.create(user=request.user, company=company,
+                                                     first_name=request.user.first_name,
+                                                     last_name=request.user.last_name, title='',
+                                                     gender='', telephone='', email=request.user.email, language='de')
+                    Address.objects.create(name='Standard', street=request.POST['street'],
+                                           number=request.POST['number'], zipcode=request.POST['zipcode'],
+                                           city=request.POST['city'],
+                                           contact=contact)
                     return redirect('/cms/home')
             else:
                 form = CompleteCompanyForm(initial={'term_of_payment': 10, 'name': request.user.username})
