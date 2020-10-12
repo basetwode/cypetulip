@@ -76,7 +76,6 @@
                                     <div class="col-sm-10">
                                         <h4 class="nomargin">{{ order.product.name }}</h4>
 
-                                        <p>{{ order.product.description|truncatechars:100 }}</p>
                                     </div>
 
                                 </div>
@@ -205,7 +204,6 @@
                         {% bootstrap_form_errors addressForm layout='horizontal' %}
                     {% endif %}
                     {% for entry in address %}
-                        {{ entry.id }}
                         <div class="card">
                             <div class="card-header" id="heading{{ entry.name }}">
                                 <h2 class="mb-0">

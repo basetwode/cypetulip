@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 
+from billing.utils import calculate_sum
 from permissions.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin
 from permissions.error_handler import raise_401
 from shop.models import Contact, Order, OrderItem, Product, OrderDetail, Address
@@ -24,17 +25,18 @@ class OrderDetailView(View):
             _order = Order.objects.get(order_hash=order)
             order_details = OrderDetail.objects.get(order_number=order)
             if _order:
-                total = 0
-                for order_item in _order.orderitem_set.all():
-                    total += order_item.product.price
-                _order.total = total
                 order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True,
                                                        product__in=Product.objects.all())
-
+                total_without_tax = calculate_sum(order_items)
+                total_with_tax = calculate_sum(order_items, True)
                 return render(request, self.template_name,
-                              {'order_details': order_details, 'order': _order, 'contact': contact,
-                               'order_items': order_items,
-                               'order_items_once_only': get_orderitems_once_only(_order)})
+                              {
+                                  'total': total_with_tax,
+                                  'total_without_tax': total_without_tax,
+                                  'tax': round(total_with_tax - total_without_tax, 2),
+                                  'order_details': order_details, 'order': _order, 'contact': contact,
+                                  'order_items': order_items,
+                                  'order_items_once_only': get_orderitems_once_only(_order)})
         else:
             return redirect('/shop/register')
 
@@ -54,10 +56,9 @@ class OrdersView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
             number_of_orders = '5'
             paginator = Paginator(_orders, number_of_orders)
             for order in _orders:
-                total = 0
-                for order_item in order.orderitem_set.all():
-                    total += order_item.product.price
-                order.total = total
+                order_items = OrderItem.objects.filter(order=order, order_item__isnull=True,
+                                                       product__in=Product.objects.all())
+                order.total_wt = calculate_sum(order_items,True)
             try:
                 _orders = paginator.page(page)
             except PageNotAnInteger:
