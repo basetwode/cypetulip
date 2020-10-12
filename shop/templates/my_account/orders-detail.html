@@ -86,7 +86,7 @@
                         </div>
                         <div class="col-md-2 col-sm-2">
                             <strong>{% trans 'Total' %}</strong>
-                            <div>{{ order.total }} €</div>
+                            <div>{{ total|floatformat:2 }} €</div>
                         </div>
                         <div class="col-md-5 col-sm-5">
                             <strong>Ordernr.:</strong>
@@ -134,11 +134,10 @@
                             <thead>
                             <tr>
                                 <th style="width:50%">{% trans 'Product' %}</th>
-                                <th style="width:10%">{% trans 'Price' %}</th>
+                                <th style="width:20%">{% trans 'Price' %}</th>
 
                                 <th style="width:22%"
                                     class="text-center">{% trans 'Subtotal' %}</th>
-                                <th style="width:10%"></th>
                             </tr>
                             </thead>
 
@@ -152,7 +151,7 @@
                                             <input type="hidden"
                                                    name="[{{ order.id }}][prod]{{ order.product.id }}">
                                             <div class="row">
-                                                <div class="col-md-3">
+                                                <div class="col-md-6">
                                                     {% if order.product.product.product_picture %}
                                                         <img style="max-width: 150px"
                                                              src="{{ order.product.product.product_picture.url }}"
@@ -162,21 +161,28 @@
                                                         <i class="fa fa-4x fa-image img-thumbnail"></i>
                                                     {% endif %}
                                                 </div>
-                                                <div class="col-md-9">
-                                                    <h4 class="nomargin">{{ order.product.name }}</h4>
-
-                                                    <p>{{ order.product.description|truncatechars:100 }}</p>
+                                                <div class="col-md-6">
+                                                    <h5 class="nomargin">{{ order.product.name }}</h5>
                                                 </div>
 
 
                                             </div>
                                         </td>
-                                        <td data-th="Price">{{ order.product.price }}</td>
+                                        <td data-th="Price">
+                                            {% if order.product.special_price %}
+                                                {{ order.product.special_price | floatformat:2 }} &euro;
+                                            {% else %}
+                                                {{ order.product.price | floatformat:2 }} &euro;
+                                            {% endif %}
+                                        </td>
 
                                         <td id="subtotal-{{ order.id }}" data-th="Subtotal"
-                                            class="text-center">{{ order.product.price }} &euro;
-                                        </td>
-                                        <td class="actions" data-th="">
+                                            class="text-center">
+                                            {% if order.product.special_price_wt %}
+                                                {{ order.product.special_price_wt | floatformat:2 }} &euro;
+                                            {% else %}
+                                                {{ order.product.price_wt | floatformat:2 }} &euro;
+                                            {% endif %}
                                         </td>
                                     </tr>
 

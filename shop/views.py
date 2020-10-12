@@ -9,6 +9,7 @@ from django.views.generic import View
 
 from permissions.error_handler import raise_404
 from shop.forms import ProductAttributeForm
+from shop.mixins import TaxView
 from shop.models import (Contact, Order, OrderDetail, OrderState,
                          Product, ProductCategory, OrderItem, ProductAttributeType, ProductAttributeTypeInstance)
 # Create your views here.
@@ -27,7 +28,7 @@ class IndexView(View):
         return HttpResponse('result')
 
 
-class ProductView(View):
+class ProductView(TaxView):
     template_name = 'products.html'
 
     def get(self, request, category):
@@ -71,15 +72,6 @@ class ProductView(View):
     def post(self, request):
         # <view logic>
         return HttpResponse('result')
-
-    @staticmethod
-    def add_tax_to_product(products):
-        products.annotate(tprice=Round((Case(
-            When(special_price=False, then='price'),
-            When(special_price__gte=0, then='special_price'),
-            default='price',
-            output_field=FloatField(),
-        ) * (F('tax') + 1), FloatField(), 2)))
 
 
 class ProductDetailView(View):

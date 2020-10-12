@@ -103,7 +103,7 @@ class ProductSubItem(models.Model):
         return round(self.price * (1 + self.tax), 2)
 
     def special_price_wt(self):
-        return round(self.special_price * (1 + self.tax), 2)
+        return round(self.special_price * (1 + self.tax), 2) if self.special_price else None
 
     def bprice_wt(self):
         return self.special_price_wt() if self.special_price else self.price_wt()

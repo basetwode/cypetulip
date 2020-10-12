@@ -78,7 +78,7 @@
                         </div>
                         <div class="col-md-2">
                             <strong>{% trans 'Total' %}</strong>
-                            <div>{{ order.total }} €</div>
+                            <div>{{ total }} €</div>
                         </div>
                         <div class="col-md-2">
                             <strong>{% trans 'Paid via' %}</strong>
@@ -174,7 +174,6 @@
                                                 <div class="col-md-9">
                                                     <h4 class="nomargin">{{ order.product.name }}</h4>
 
-                                                    <p>{{ order.product.description|truncatechars:100 }}</p>
                                                 </div>
 
 
