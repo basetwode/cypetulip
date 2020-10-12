@@ -2,6 +2,7 @@
 {% load static %}
 {% load i18n %}
 {% load recurse %}
+{% load fb_versions %}
 
 {% block head %}
     <script src="{% static 'utils.js' %}"></script>
@@ -29,65 +30,34 @@
             </a>
 
         </div>
-        <div class="col-md-3" id="accordionCategories">
-            <div class="card border-0">
-                <div class="card-header">
-                    <h4>
-                        <a data-toggle="collapse" data-parent="#accordionCategories" href="#collapseCategories">
-                                                <span class="fas fa-angle-down">
-                                                </span>{% trans 'Categories' %}</a>
-                    </h4>
-                </div>
-                <div id="collapseCategories" class="panel-collapse collapse show">
-                    <ul class="list-group">
-                        {% recurse category.child_categories.all with categories as category %}
-
-                            {% loop %}
-                                <li class="list-group-item" id="v_hm">
-                                    <div class="heading">
-                                        <div class="arrowImage"></div>
-                                        <a class="link"
-                                           href="/shop/products/{{ category.name }}">{{ category.name }}</a>
-                                    </div>
-                                    <ul class="list-group sub">{% child %}</ul>
-                                </li>
-                            {% endloop %}
-                        {% endrecurse %}
-                    </ul>
-                </div>
-            </div>
+        <div class="col-md-4">
+            {% if product.product_picture %}
+                <a class="thumbnail fancybox" rel="ligthbox"
+                   href="{% version product.product_picture 'large' %}">
+                <img style=" width: 100%; height: auto; max-width: 25vw;"
+                     src="{% version product.product_picture 'medium' %}"
+                     alt="..."
+                     class="img-fluid"/>
+            {% else %}
+                <i style=" width: 100%; height: auto; max-width: 25vw;"
+                   class="fa fa-4x fa-image img-thumbnail"></i>
+            {% endif %}
+            </a>
         </div>
-        <div class="col-md-9">
-            <div class=" card">
+        <div class="products col-md-8">
+            <div class="card">
 
                 <div class="product">
-                    <div class="card-header">
+                    <div class="card-body">
                         <h3>{{ product.name }}</h3>
                     </div>
                     <div class="row no-gutters">
-                        <div class="col-md-3"
-                             style="max-width: 200px; max-height: 400px border-bottom: 1px solid rgba(0,0,0,.125);display: block; margin: auto 25 auto 25;">
-                            {% if product.product_picture %}
-                                <a class="thumbnail fancybox" rel="ligthbox"
-                                   href="{{ product.product_picture.url }}">
-                                <img style=" width: 100%; height: auto; max-width: 25vw;"
-                                     src="{{ product.product_picture.url }}"
-                                     alt="..."
-                                     class="img-fluid"/>
-                            {% else %}
-                                <i style=" width: 100%; height: auto; max-width: 25vw;"
-                                   class="fa fa-4x fa-image img-thumbnail"></i>
-                            {% endif %}
-                            </a>
-                        </div>
-                        <div class="col-md-8" style=" border-left: 1px solid rgba(0,0,0,.125);">
+
+                        <div class="col-md-12" style=" border-left: 1px solid rgba(0,0,0,.125);">
                             <div class="card-body">
                                 <div class="card-text">
                                     <p>
                                         {{ product.category.name }}
-                                    </p>
-                                    <p>
-                                        {{ product.description }}
                                     </p>
                                     <p class="price">
                                         {% if product.special_price %}
@@ -104,64 +74,64 @@
                                         <button type="button" onclick="addToCart('{{ product.name }}')"
                                                 class="btn btn-secondary btn-md">{% trans 'Add to cart' %}</button>
                                     </form>
+                                    <p>
+                                        {{ product.description|safe }}
+                                    </p>
                                 </div>
 
                             </div>
                         </div>
                     </div>
-                    <div class="bg-light card-body">
-                        <div class="mb-5">
-                            <ul class="nav nav-tabs nav-pills with-arrow lined flex-column flex-sm-row text-center"
-                                role="tablist">
-                                <li class="nav-item  flex-sm-fill">
-                                    <a class="active nav-link text-uppercase font-weight-bold rounded-0"
-                                       data-toggle="tab"
-                                       href="#description">{% trans 'Product Description' %}</a>
-                                </li>
-                                <li class="nav-item flex-sm-fill">
-                                    <a class="nav-link text-uppercase font-weight-bold rounded-0"
-                                       data-toggle="tab"
-                                       href="#details">{% trans 'Details' %}</a></li>
-                                <li class="nav-item flex-sm-fill">
-                                <a class="nav-link text-uppercase font-weight-bold rounded-0"
-                                   data-toggle="tab"
-                                   href="#technical-details">{% trans 'Technical Details' %}</a></li>
-                            </ul>
-                            <div class="tab-content">
-                                <div id="description" role="tabpanel"
-                                     class="tab-pane fade px-4 pt-5 show active">
-                                    <h3>{% trans 'Product Description' %}</h3>
 
-                                    <p>{{ product.description }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 bg-light">
+            <div class="mb-5">
+                <ul class="nav nav-tabs nav-pills with-arrow lined flex-column flex-sm-row text-center"
+                    role="tablist">
+                    <li class="nav-item  flex-sm-fill">
+                        <a class="active nav-link text-uppercase font-weight-bold rounded-0"
+                           data-toggle="tab"
+                           href="#description">{% trans 'Product Description' %}</a>
+                    </li>
+                    <li class="nav-item flex-sm-fill">
+                        <a class="nav-link text-uppercase font-weight-bold rounded-0"
+                           data-toggle="tab"
+                           href="#details">{% trans 'Details' %}</a></li>
+                    <li class="nav-item flex-sm-fill">
+                        <a class="nav-link text-uppercase font-weight-bold rounded-0"
+                           data-toggle="tab"
+                           href="#technical-details">{% trans 'Technical Details' %}</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="description" role="tabpanel"
+                         class="tab-pane fade px-4 pt-5 show active">
+                        <p>{{ product.description|safe}}</p>
+                    </div>
+                    <div id="details" role="tabpanel" class="tab-pane fade px-4 pt-5">
+                        <p>{{ product.details|safe }}</p>
+                    </div>
+                    <div id="technical-details" role="tabpanel" class="tab-pane fade px-4 pt-5">
+                        {% regroup product.attributes.all by type as attributes_grouped %}
+                        {% for attribute in attributes_grouped %}
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <b> {{ attribute.grouper.name }}:</b>
                                 </div>
-                                <div id="details" role="tabpanel" class="tab-pane fade px-4 pt-5">
-                                    <h3>{% trans 'Details' %}</h3>
-                                    <p>{{ product.details }}</p>
-                                </div>
-                                <div id="technical-details" role="tabpanel" class="tab-pane fade px-4 pt-5">
-                                <h3>{% trans 'Technical Details' %}</h3>
-                                    {% regroup product.attributes.all by type as attributes_grouped %}
-                                    {% for attribute in attributes_grouped %}
-                                        <div class="row">
-                                            <div class="col-md-3">
-                                                <b> {{ attribute.grouper.name }}:</b>
-                                            </div>
-                                            <div class="col-md-2">
-                                                {% for attribute_item in attribute.list %}
-                                                    {{ attribute_item.value }}<br>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
+                                <div class="col-md-2">
+                                    {% for attribute_item in attribute.list %}
+                                        {{ attribute_item.value }}<br>
                                     {% endfor %}
-                                    </div>
+                                </div>
                             </div>
-                            </div>
-                        </div>
-
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
+
+    </div>
     </div>
 
 

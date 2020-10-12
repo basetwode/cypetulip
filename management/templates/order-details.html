@@ -130,7 +130,7 @@
                                 {% trans 'Assigned Employee' %}
                             </strong>
                             <div>
-                                {{ order_detail.orderdetail_set.first.assigned_employee.last_name|default:"None" }} {{ order_detail.orderdetail_set.first.assigned_employee.first_name }} {{ order_detail.orderdetail_set.first.assigned_employee.last_name }}
+                                {{ order.orderdetail_set.first.assigned_employee.last_name|default:"None" }} {{ order.orderdetail_set.first.assigned_employee.first_name }}
                             </div>
                         </div>
                     </div>

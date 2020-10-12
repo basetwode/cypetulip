@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
 from django.utils.translation import gettext_lazy as _
+from tinymce import HTMLField
 
 from mediaserver.upload import (company_files_upload_handler, fs, order_files_upload_handler,
                                 public_files_upload_handler, rand_key)
@@ -88,8 +89,8 @@ class ProductSubItem(models.Model):
     special_price = models.FloatField(default=False, blank=True, null=True)
     tax = models.FloatField(default=0.19, blank=False, null=False)
     name = models.CharField(max_length=30)
-    description = models.CharField(max_length=300)
-    details = models.CharField(max_length=300)
+    description = HTMLField('Description')
+    details = HTMLField('Details')
     requires_file_upload = models.BooleanField(default=False)
     is_required = models.BooleanField(default=False)
     is_multiple_per_item = models.BooleanField(default=False)
