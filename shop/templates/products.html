@@ -64,12 +64,14 @@
             </div>
         </div>
         <div class="col-md-9 products">
-            <div class="products-img">
-                <div class="col-12">
-                    <img src="http://www.freelargeimages.com/wp-content/uploads/2014/12/Landscape_01.jpg">
-                </div>
-            </div>
-            <div class="products-list mt-3 card-deck">
+            {% if sections %}
+                {% for section in sections %}
+                    <div class="col-12">
+                        {{ section.content|safe }}
+                    </div>
+                {% endfor %}
+        {% endif %}
+            <div class="products-list card-deck">
                 <div class="row col-12">
                     <h3>{% trans 'Products' %}</h3>
                 </div>
@@ -138,6 +140,11 @@
                     {% endfor %}
                 </div>
 
+
+            </div>
+            <div class="pagination text-xs-center justify-content-center"
+                 style="align-content: center; text-align: center">
+                {% bootstrap_pagination products extra=request.GET.urlencode %}
             </div>
         </div>
     </div>

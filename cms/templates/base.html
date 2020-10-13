@@ -4,7 +4,7 @@
 {% bootstrap_css %}
 {% bootstrap_javascript jquery='full' %}
 {% get_current_language as language %}
-
+{% spaceless %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,8 +19,8 @@
     <title>Cypetulip</title>
     <script src="{% static 'js/functions.js' %}"></script>
     <script src="{% static 'cms/js/site-loader.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css"
+    <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}"
           media="screen">
     <!-- Fontawesome Freee Icons for this template -->
     <link href="{% static 'fontawesome-free/css/all.min.css' %}" rel="stylesheet">
@@ -97,3 +97,4 @@
 <!-- /container -->
 </body>
 </html>
+{% endspaceless %}

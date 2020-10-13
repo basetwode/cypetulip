@@ -54,7 +54,7 @@
                     <tr>
                         <td>{{ section.id }}</td>
                         <td>{{ section.page }}</td>
-                        <td>{{ section.content }}</td>
+                        <td>{{ section.content|safe|truncatechars:800 }}</td>
                         <td>{{ section.picture }}</td>
                         <td>
                             <div>

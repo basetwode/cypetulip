@@ -215,15 +215,11 @@ BOOTSTRAP4 = {
     },
     # The URL to the jQuery JavaScript file (slim)
     "jquery_slim_url": {
-        "url": "https://code.jquery.com/jquery-3.3.1.slim.min.js",
-        "integrity": "sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo",
-        "crossorigin": "anonymous",
+        "url": "/static/js/jquery-3.5.1.slim.min.js",
     },
     # The URL to the Popper.js JavaScript file (slim)
     "popper_url": {
-        "url": "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js",
-        "integrity": "sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49",
-        "crossorigin": "anonymous",
+        "url": "/static/js/popper.min.js",
     },
     # Put JavaScript in the HEAD section of the HTML document (only relevant if you use bootstrap4.html)
     'javascript_in_head': False,
