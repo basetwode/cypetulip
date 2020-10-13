@@ -995,3 +995,7 @@ footer .box {
 .product .card-body {
     font-size: 16px;
 }
+
+.btn {
+    margin-left: 5px;
+}

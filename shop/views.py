@@ -1,11 +1,12 @@
 from datetime import datetime
 
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import When, FloatField, Case, Count, F
 from django.db.models.functions import Round
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import View
+from django.views.generic import View, ListView
 
 from cms.models import Section
 from permissions.error_handler import raise_404
@@ -29,13 +30,24 @@ class IndexView(View):
         return HttpResponse('result')
 
 
-class ProductView(TaxView):
+class ProductView(TaxView, ListView):
     template_name = 'products.html'
+    context_object_name = 'products'
+    paginate_by = 9
 
-    def get(self, request, category):
-        sections = Section.objects.filter(page__page_name="Products")
+    def _get_url_page(self, products_list, page):
+        paginator = Paginator(products_list, self.paginate_by)
+        try:
+            url_list = paginator.page(page)
+        except PageNotAnInteger:
+            url_list = paginator.page(1)
+        except EmptyPage:
+            url_list = paginator.page(paginator.num_pages)
+        return url_list
 
-        selected_category = ProductCategory.objects.filter(name=category)
+    def get_queryset(self):
+
+        selected_category = ProductCategory.objects.filter(name=self.kwargs['category'])
         if selected_category.count() > 0 and selected_category[0].child_categories.all():
             products = Product.objects.filter(is_public=True, category__in=selected_category[0].
                                               child_categories.all())
@@ -43,18 +55,29 @@ class ProductView(TaxView):
             products = Product.objects.filter(is_public=True, category__in=selected_category)
         if not selected_category:
             products = Product.objects.filter(is_public=True)
-        categories = ProductCategory.objects.filter(is_main_category=True)
 
         product_attribute_categories = ProductAttributeType.objects. \
             filter(productattributetypeinstance__product__in=products).annotate(count=Count('name', distinct=True))
-        attribute_form = ProductAttributeForm(product_attribute_categories, request.GET)
+        attribute_form = ProductAttributeForm(product_attribute_categories, self.request.GET)
 
         selected_attribute_types = ProductAttributeType.objects.filter(name__in=attribute_form.data)
         selected_attributes = ProductAttributeTypeInstance.objects.filter(type__in=selected_attribute_types). \
             filter(value__in=attribute_form.data.values())
 
-        for selected_attribute in selected_attributes:
-            products = products.filter(attributes__id=selected_attribute.id)
+        products = products.filter(attributes__id__in=selected_attributes) if selected_attributes else products
+        return products
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(ProductView, self).get_context_data(**kwargs)
+
+        sections = Section.objects.filter(page__page_name="Products")
+
+        categories = ProductCategory.objects.filter(is_main_category=True)
+        products = self.object_list
+
+        product_attribute_categories = ProductAttributeType.objects. \
+            filter(productattributetypeinstance__product__in=products).annotate(count=Count('name', distinct=True))
+        attribute_form = ProductAttributeForm(product_attribute_categories, self.request.GET)
 
         # Update available list of attributes
         product_attribute_categories = ProductAttributeType.objects. \
@@ -62,19 +85,14 @@ class ProductView(TaxView):
         product_attribute_types = ProductAttributeTypeInstance.objects. \
             filter(product__in=products).annotate(count=Count('value', product__in=products))
 
-        self.add_tax_to_product(products)
+        products = self._get_url_page(products, self.request.GET.get('page'))
 
-        return render(request, self.template_name, {'sections': sections,
-                                                    'products': products,
-                                                    'categories': categories,
-                                                    'types': product_attribute_categories,
-                                                    'type_instances': product_attribute_types,
-                                                    'attribute_form': attribute_form,
-                                                    'selected_category': category})
-
-    def post(self, request):
-        # <view logic>
-        return HttpResponse('result')
+        return {**context, **{'sections': sections, 'products': products,
+                          'categories': categories,
+                          'types': product_attribute_categories,
+                          'type_instances': product_attribute_types,
+                          'attribute_form': attribute_form,
+                          'selected_category': self.kwargs['category']}}
 
 
 class ProductDetailView(View):
