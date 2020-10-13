@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View
 
+from cms.models import Section
 from permissions.error_handler import raise_404
 from shop.forms import ProductAttributeForm
 from shop.mixins import TaxView
@@ -32,6 +33,7 @@ class ProductView(TaxView):
     template_name = 'products.html'
 
     def get(self, request, category):
+        sections = Section.objects.filter(page__page_name="Products")
 
         selected_category = ProductCategory.objects.filter(name=category)
         if selected_category.count() > 0 and selected_category[0].child_categories.all():
@@ -62,7 +64,8 @@ class ProductView(TaxView):
 
         self.add_tax_to_product(products)
 
-        return render(request, self.template_name, {'products': products,
+        return render(request, self.template_name, {'sections': sections,
+                                                    'products': products,
                                                     'categories': categories,
                                                     'types': product_attribute_categories,
                                                     'type_instances': product_attribute_types,

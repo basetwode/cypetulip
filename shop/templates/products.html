@@ -64,12 +64,14 @@
             </div>
         </div>
         <div class="col-md-9 products">
-            <div class="products-img">
-                <div class="col-12">
-                    <!-- TODO Make this configurable by using sections -->
-                </div>
-            </div>
-            <div class="products-list mt-3 card-deck">
+            {% if sections %}
+                {% for section in sections %}
+                    <div class="col-12">
+                        {{ section.content|safe }}
+                    </div>
+                {% endfor %}
+        {% endif %}
+            <div class="products-list card-deck">
                 <div class="row col-12">
                     <h3>{% trans 'Products' %}</h3>
                 </div>
