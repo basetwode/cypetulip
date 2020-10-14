@@ -1,6 +1,7 @@
 from django.db import models
 
-from mediaserver.upload import order_files_upload_handler, fs
+from mediaserver.upload import fs, shipment_files_upload_handler
+from shop.models import OrderDetail
 
 
 class Continent(models.Model):
@@ -36,6 +37,7 @@ class Package(models.Model):
 
 
 class Shipment(models.Model):
+    order = models.ForeignKey(OrderDetail, on_delete=models.SET_NULL, null=True, blank=True, )
     date_shipped = models.DateTimeField(auto_now_add=True)
 
 
@@ -45,6 +47,6 @@ class PackageShipment(Shipment):
 
 class OnlineShipment(Shipment):
     file = models.FileField(default=None, null=True,
-                            upload_to=order_files_upload_handler,
+                            upload_to=shipment_files_upload_handler,
                             storage=fs)
     file_name = models.CharField(max_length=40, blank=True)

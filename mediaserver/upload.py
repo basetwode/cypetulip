@@ -23,6 +23,11 @@ def order_files_upload_handler(order, filename):
     return "orders/{hash}/{file}".format(hash=order.order.order_hash, file=__create_hash(filename))
 
 
+def shipment_files_upload_handler(shipment, filename):
+    shipment.file_name = filename
+    return "orders/{hash}/shipping/{file}".format(hash=shipment.order.order.order_hash, file=__create_hash(filename))
+
+
 def public_files_upload_handler(instance, filename):
     return "public/{file}".format(file=__create_hash(filename))
 

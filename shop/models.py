@@ -7,7 +7,6 @@ from tinymce import HTMLField
 
 from mediaserver.upload import (company_files_upload_handler, fs, order_files_upload_handler,
                                 public_files_upload_handler, rand_key)
-from shipping.models import Shipment
 
 
 class Company(models.Model):
@@ -259,8 +258,6 @@ class OrderDetail(models.Model):
                                          related_name='shipment_address')
     billing_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True,
                                         related_name='billing_address')
-    shipment = models.ForeignKey(Shipment, on_delete=models.CASCADE, null=True, blank=True,
-                                 related_name='shipment')
 
     def unique_nr(self):
         return "CTNR" + str(self.id).rjust(10, "0")

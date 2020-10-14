@@ -61,8 +61,10 @@ class ProductView(TaxView, ListView):
             filter(productattributetypeinstance__product__in=products).annotate(count=Count('name', distinct=True))
         attribute_form = ProductAttributeForm(product_attribute_categories, self.request.GET)
 
-        attribute_filter = (Q(type__name=k, value=v) for k,v in attribute_form.data.items())
-        selected_attributes = ProductAttributeTypeInstance.objects.filter(reduce(operator.or_, attribute_filter))
+        attribute_filter = (Q(type__name=k, value=v) for k, v in attribute_form.data.items()) \
+            if attribute_form.data else None
+        selected_attributes = ProductAttributeTypeInstance.objects.filter(reduce(operator.or_, attribute_filter)) \
+            if attribute_filter else []
 
         for selected_attribute in selected_attributes:
             products = products.filter(attributes__id__in=[selected_attribute.id])
