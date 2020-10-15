@@ -24,6 +24,7 @@ from payment import urls as payment_urls
 from permissions import urls as perm_urls
 from shop import urls as shop_urls
 from accounting import urls as accounting_urls
+from shipping import urls as shipping_urls
 
 # from Accounting import urls as accounting_urls
 # from home import settings
@@ -52,6 +53,7 @@ urlpatterns = [
     url(r'^billing/', include(billing_urls.urlpatterns)),
     url(r'^payment/', include(payment_urls, namespace='payment')),
     url(r'^accounting/', include(accounting_urls, namespace='accounting')),
+    url(r'^shipping/', include(shipping_urls, namespace='shipping')),
 ]
 
 # if settings.DEBUG:

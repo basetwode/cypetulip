@@ -29,15 +29,27 @@
             </div>
         </div>
         <div class="col-9">
-            <form method="post">{% csrf_token %}
+            <form enctype="multipart/form-data" method="post">{% csrf_token %}
 
                 <div class="card">
                     <div class="card-header">
-                        {% buttons %}
-                            <button type="submit" value="Save" class="btn btn-primary">{% trans 'Save' %}</button>
-                        {% endbuttons %}
+                        <div class="row">
+                            <div class="col-2">
+
+                                {% buttons %}
+                                    <button type="submit" value="Save" class="btn btn-primary">{% trans 'Save' %}</button>
+                                {% endbuttons %}
+                            </div>
+                            <div class="col-10">
+                                {% block page_name %}<h2>{{ page_name }}</h2>{% endblock %}
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
+                        {% block page_info %}{{ page_info }}{% endblock %}
+                    </div>
+                    <div class="card-body">
+                        {{ form.errors }}
                         {% bootstrap_form form layout='horizontal' %}
 
                     </div>

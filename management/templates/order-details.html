@@ -91,7 +91,15 @@
                         <div class="col-md-2">
                             <strong>{% trans 'Shipped via' %}</strong>
                             {% if order.is_send %}
-                                <div>{{ payment_details.method.name }}</div>
+                                {% for order_detail in order.orderdetail_set.all %}
+                                    {% for shipment in order_detail.shipment_set.all %}
+                                        {% if shipment.packageshipment %}
+                                            <div>#{{ forloop.counter }} {{ shipment.packageshipment.package.shipper.name  }}</div>
+                                        {% else %}
+                                            <div>#{{ forloop.counter }} {% trans 'Online' %}</div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
                             {% else %}
                                 {% trans 'Not yet shipped' %}
                             {% endif %}
@@ -120,7 +128,13 @@
                         </strong>
                             <div>
                                 {% for order_detail in order.orderdetail_set.all %}
-                                    {{ order_detail.shipment.package.tracking_code }}
+                                    {% for shipment in order_detail.shipment_set.all %}
+                                        {% if shipment.packageshipment %}
+                                            <div>#{{ forloop.counter }} {% trans 'Package: ' %}{{ shipment.packageshipment.package.tracking_code  }}</div>
+                                        {% else %}
+                                            <div>#{{ forloop.counter }} {% trans 'Online' %}</div>
+                                        {% endif %}
+                                    {% endfor %}
                                 {% endfor %}
                             </div>
                         </div>
@@ -330,11 +344,71 @@
                             <button type="submit" {% if payment.is_paid %}disabled{% endif %}
                                     class="btn btn-fw btn-secondary">{% trans 'Paid' %}</button>
                         </form>
-                        <form action="{% url 'ship_order' order.order_hash %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" {% if order.is_send %}disabled{% endif %}
-                                    class="btn btn-fw btn-secondary">{% trans 'Ship' %}</button>
-                        </form>
+                        <button href="#" class="btn btn-fw btn-secondary" data-toggle="modal"
+                           {% if order.is_send %}disabled{% endif %}
+                           data-target="#create-modal">{% trans 'Ship' %}</button>
+                        {% include 'create-shipment.html' with order_hash=order.order_hash  %}
+
+
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    <h5>{% trans 'Shipments' %}</h5>
+                    <div class="col-12">
+
+                        <table id="cart" class="table table-hover table-striped table-responsive-sm">
+                            <thead>
+                            <tr>
+                                <th style="width:5%">{% trans '#' %}</th>
+                                <th style="width:7%">{% trans 'Type' %}</th>
+
+                                <th style="width:22%"
+                                    class="text-center">{% trans 'Date shipped' %}</th>
+                                <th style="width:40%">{% trans 'Details' %}</th>
+                                <th style="width:10%">{% trans 'Actions' %}</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for order_detail in order.orderdetail_set.all %}
+                                {% for shipment in order_detail.shipment_set.all %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{% if shipment.packageshipment %} {% trans 'Package' %}{% else %}{% trans 'Online' %}{% endif %}</td>
+                                        <td>{{ shipment.date_shipped }}</td>
+                                        <td>
+                                            {% if shipment.packageshipment %}
+                                                <p>{% trans 'Price: ' %}{{ shipment.packageshipment.package.price  }}</p>
+                                                <p>{% trans 'Weight: ' %}{{ shipment.packageshipment.package.weight  }}</p>
+                                                <p>{% trans 'Shipper: ' %}{{ shipment.packageshipment.package.shipper.name  }}</p>
+                                                <p>{% trans 'Tracking Code: ' %}{{ shipment.packageshipment.package.tracking_code  }}</p>
+                                            {% else %}
+                                                {% trans 'File: ' %}<a href="{{ shipment.onlineshipment.file.url }}">{{ shipment.onlineshipment.file_name }}</a>
+                                            {% endif %}
+
+                                        </td>
+                                        <td> {% if shipment.packageshipment %}
+                                            <a class="btn btn-fw btn-secondary" href="{% url 'shipping:packageshipment_show' shipment.packageshipment.package.id %}">Open</a>
+                                        {% else %}
+                                            <a class="btn btn-fw btn-secondary" href="{% url 'shipping:onlineshipment_show' shipment.id %}">Open</a>
+                                        {% endif %}
+
+                                            <a href="#" class="btn btn-outline-dark" data-toggle="modal"
+                                               data-target="#delete-modal">{% trans 'Delete' %}</a>
+                                            {% include 'delete-modal.html' with id=shipment.id order_hash=order.order_hash url='shipping:shipment_delete' url_param='filesubitem_delete_id' %}
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr><td></td><td></td><td></td><td>{% trans 'No shipments' %}</td><td></td></tr>
+                                {% endfor %}
+                            {% endfor %}
+                            </tbody>
+
+                        </table>
+
+
+
 
                     </div>
                 </div>

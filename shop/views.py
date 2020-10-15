@@ -1,7 +1,9 @@
+import operator
 from datetime import datetime
+from functools import reduce
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import When, FloatField, Case, Count, F
+from django.db.models import When, FloatField, Case, Count, F, Q
 from django.db.models.functions import Round
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -46,7 +48,6 @@ class ProductView(TaxView, ListView):
         return url_list
 
     def get_queryset(self):
-
         selected_category = ProductCategory.objects.filter(name=self.kwargs['category'])
         if selected_category.count() > 0 and selected_category[0].child_categories.all():
             products = Product.objects.filter(is_public=True, category__in=selected_category[0].
@@ -60,11 +61,14 @@ class ProductView(TaxView, ListView):
             filter(productattributetypeinstance__product__in=products).annotate(count=Count('name', distinct=True))
         attribute_form = ProductAttributeForm(product_attribute_categories, self.request.GET)
 
-        selected_attribute_types = ProductAttributeType.objects.filter(name__in=attribute_form.data)
-        selected_attributes = ProductAttributeTypeInstance.objects.filter(type__in=selected_attribute_types). \
-            filter(value__in=attribute_form.data.values())
+        attribute_filter = (Q(type__name=k, value=v) for k, v in attribute_form.data.items()) \
+            if attribute_form.data else None
+        selected_attributes = ProductAttributeTypeInstance.objects.filter(reduce(operator.or_, attribute_filter)) \
+            if attribute_filter else []
 
-        products = products.filter(attributes__id__in=selected_attributes) if selected_attributes else products
+        for selected_attribute in selected_attributes:
+            products = products.filter(attributes__id__in=[selected_attribute.id])
+
         return products
 
     def get_context_data(self, *, object_list=None, **kwargs):
