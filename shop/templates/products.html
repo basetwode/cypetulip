@@ -6,8 +6,6 @@
 {% load fb_versions %}
 {% load i18n %}
 {% block head %}
-    <script src="{% static 'products.js' %}"></script>
-    <script src="{% static 'utils.js' %}"></script>
     <title>Products</title>
 {% endblock %}
 
@@ -148,4 +146,10 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block renderblocking %}
+
+    <script src="{% static 'products.js' %}"></script>
+    <script src="{% static 'utils.js' %}"></script>
+
 {% endblock %}
