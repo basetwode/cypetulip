@@ -13,7 +13,11 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/favicon.ico">
-
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
     <title>Cypetulip</title>
 
     {% block head %}
@@ -21,6 +25,8 @@
 </head>
 
 <body role="document">
+
+{% bootstrap_css %}
 <!-- Modal -->
 {% include 'loading-spinner.html' %}
 <header class="shop-header py-3">
@@ -76,7 +82,6 @@
     </div>
 </footer>
 
-{% bootstrap_css %}
 {% bootstrap_javascript jquery='full' %}
 <script src="{% static 'js/functions.js' %}"></script>
 <script src="{% static 'cms/js/site-loader.js' %}"></script>
