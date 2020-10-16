@@ -1,0 +1,23 @@
+{% load static %}
+{% load i18n %}
+
+<div style="background:#f2f2f2;padding:40px 0;">
+    <div style="width:700px;background:#fff;border-style:solid;border-width:1px;border-color:#eaeaea #cccccc #a6a6a6;border-radius:4px;box-shadow:0 2px 2px #cdcdcd;margin:0 auto;">
+        <h1 style="font-size: 20px; margin-left: 30px">SHOP_NAME</h1>
+        <div style="padding:30px 55px 40px;min-height:300px;border-top:1px solid #efefef;background:transparent url('https://cloud.bwk-technik.de/media/img/email_bg.jpg') scroll repeat-x center top;">
+{##}
+{#            {% if subscription.subscribed_user.customer %}#}
+{#                <p style="color:#121214;font-size:14px;">{% if subscription.subscribed_user.customer.title == 'M' %}{%trans 'Dear Mr.'%}{% else %}{%trans 'Dear Mrs.'%}{%endif%}#}
+{#                    {{ subscription.subscribed_user.last_name }},</p>#}
+{#            {% endif %}#}
+
+            <div style="font-size:14px;color:#434144;">
+                <p>
+                    {% block body %}
+
+                    {% endblock %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

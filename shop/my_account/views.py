@@ -177,7 +177,7 @@ class SearchOrders(View):
             if contact:
                 company = contact.company
                 if company:
-                    _orders = Order.objects.filter(is_send=True, company=company)
+                    _orders = Order.objects.filter(company=company)
                 else:
                     return redirect('/shop/companies/create')
             else:

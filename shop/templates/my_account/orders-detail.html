@@ -113,7 +113,13 @@
                         </strong>
                             <div>
                                 {% for order_detail in order.orderdetail_set.all %}
-                                    {{ order_detail.shipment.package.tracking_code }}
+                                    {% for shipment in order_detail.shipment_set.all %}
+                                        {% if shipment.packageshipment %}
+                                            <div>#{{ forloop.counter }} {% trans 'Package: ' %}{{ shipment.packageshipment.package.tracking_code  }}</div>
+                                        {% else %}
+                                            <div>#{{ forloop.counter }} {% trans 'Online' %}</div>
+                                        {% endif %}
+                                    {% endfor %}
                                 {% endfor %}
                             </div>
                         </div>
@@ -316,6 +322,52 @@
                            class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
                         <a href="{% url 'shop:detail_order_write_review' order.order_hash %}"
                            class="btn btn-fw btn-secondary">{% trans 'Write review' %}</a>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <b>{% trans 'Shipments' %}</b>
+                    <div class="col-12 pt-2">
+
+                        <table id="cart" class="table table-hover table-striped table-responsive-sm">
+                            <thead>
+                            <tr>
+                                <th style="width:5%">{% trans '#' %}</th>
+                                <th style="width:7%">{% trans 'Type' %}</th>
+
+                                <th style="width:22%"
+                                    class="text-center">{% trans 'Date shipped' %}</th>
+                                <th style="width:40%">{% trans 'Details' %}</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for order_detail in order.orderdetail_set.all %}
+                                {% for shipment in order_detail.shipment_set.all %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{% if shipment.packageshipment %} {% trans 'Package' %}{% else %}{% trans 'Online' %}{% endif %}</td>
+                                        <td>{{ shipment.date_shipped }}</td>
+                                        <td>
+                                            {% if shipment.packageshipment %}
+                                                <p>{% trans 'Shipper: ' %}{{ shipment.packageshipment.package.shipper.name  }}</p>
+                                                <p>{% trans 'Tracking Code: ' %}{{ shipment.packageshipment.package.tracking_code  }}</p>
+                                            {% else %}
+                                                {% trans 'File: ' %}<a href="{{ shipment.onlineshipment.file.url }}">{{ shipment.onlineshipment.file_name }}</a>
+                                            {% endif %}
+
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr><td></td><td></td><td></td><td>{% trans 'No shipments' %}</td><td></td></tr>
+                                {% endfor %}
+                            {% endfor %}
+                            </tbody>
+
+                        </table>
+
+
+
+
                     </div>
                 </div>
             </div>
