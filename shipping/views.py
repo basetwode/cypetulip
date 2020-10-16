@@ -6,13 +6,14 @@ from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from django.utils.translation import ugettext_lazy as _
 
 from cms.mixins import GenericCreateView
+from management.mixins import NotifyCustomerCreateView, NotifyCustomerUpdateView
 from permissions.mixins import PermissionPostGetRequiredMixin
 from shipping.forms import OnlineShipmentForm, PackageForm
 from shipping.models import OnlineShipment, PackageShipment, Package, Shipment
 from shop.models import OrderDetail
 
 
-class CreateOnlineShipment(PermissionPostGetRequiredMixin, GenericCreateView):
+class CreateOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateView, GenericCreateView):
     model = OnlineShipment
     form_class = OnlineShipmentForm
     template_name = 'settings-details.html'
@@ -30,6 +31,7 @@ class CreateOnlineShipment(PermissionPostGetRequiredMixin, GenericCreateView):
         order: OrderDetail = self.get_order()
         shipment: OnlineShipment = form.save(commit=False)
         shipment.order = order
+        self.contact = self.get_order().contact
         return super().form_valid(form)
 
     def get_order(self):
@@ -37,7 +39,7 @@ class CreateOnlineShipment(PermissionPostGetRequiredMixin, GenericCreateView):
         return get_object_or_404(OrderDetail, order__order_hash=order_hash)
 
 
-class CreatePackageShipment(PermissionPostGetRequiredMixin, GenericCreateView, CreateView):
+class CreatePackageShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateView, GenericCreateView):
     model = Package
     form_class = PackageForm
     permission_get_required = ['shipping.view_packagehipment']
@@ -55,6 +57,7 @@ class CreatePackageShipment(PermissionPostGetRequiredMixin, GenericCreateView, C
         package_shipment = PackageShipment(package=package)
         package_shipment.order = order
         package_shipment.save()
+        self.contact = self.get_order().contact
         return super().form_valid(form)
 
     def get_order(self):
@@ -62,7 +65,7 @@ class CreatePackageShipment(PermissionPostGetRequiredMixin, GenericCreateView, C
         return get_object_or_404(OrderDetail, order__order_hash=order_hash)
 
 
-class ShowOnlineShipment(PermissionPostGetRequiredMixin, UpdateView):
+class ShowOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerUpdateView, UpdateView):
     model = OnlineShipment
     template_name = 'settings-details.html'
     slug_field = 'id'
@@ -80,6 +83,10 @@ class ShowOnlineShipment(PermissionPostGetRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('management_detail_order', kwargs={'order': self.object.order.order.order_hash})
+
+    def form_valid(self, form):
+        self.contact = self.object.order.contact
+        return super().form_valid(form)
 
 
 class ShowPackageShipment(PermissionPostGetRequiredMixin, UpdateView):
@@ -103,6 +110,10 @@ class ShowPackageShipment(PermissionPostGetRequiredMixin, UpdateView):
 
     def get_order(self):
         return get_object_or_404(PackageShipment, package=self.object).order
+
+    def form_valid(self, form):
+        self.contact = self.get_order().contact
+        return super().form_valid(form)
 
 
 class DeleteShipment(PermissionPostGetRequiredMixin, DeleteView):

@@ -59,7 +59,7 @@
             {% endif %}
             {% for order in orders %}
                 <div class="card mb-4">
-                    <div style="overflow: auto" class="card-header orders-overview">
+                    <div style="overflow: auto;background-color: #ececec" class="card-header orders-overview" >
                         <div style="overflow: auto" class="row">
                             <div class="col-md-3 col-xs-3" style="text-align: left; ">
                                 <strong> {% trans 'Orderdate' %}</strong>
@@ -135,11 +135,17 @@
                                     </div>
                                     <div>
                                         {% trans 'Tracking' %}: <span
-                                            style="color: #2c7b91"><b>{{ order_detail.shipment.package.tracking_code }}</b></span>
-                                    </div>
-                                    <div>
-                                        {% trans 'Shipper' %}: <span
-                                            style="color: #2c7b91"><b>{{ order_detail.shipment.package.shipper }}</b></span>
+                                            style="color: #2c7b91">
+                                        {% for shipment in order_detail.shipment_set.all %}
+                                            {% if shipment.packageshipment %}
+                                                <div>#{{ forloop.counter }} {% trans 'Package: ' %}<b>{{ shipment.packageshipment.package.tracking_code  }}</b></div>
+                                            {% else %}
+                                                <div>#{{ forloop.counter }} {% trans 'Online' %}</div>
+                                            {% endif %}
+                                            {% empty %}
+                                            -
+                                        {% endfor %}
+                                    </span>
                                     </div>
 
                                 {% endfor %}
