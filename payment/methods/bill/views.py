@@ -2,7 +2,9 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import View
 
+from management.mixins import NotifyCustomerCreateView
 from payment.models import Payment, PaymentDetail
+from shop.mixins import EmailConfirmView
 from shop.models import Contact, Order, OrderItem, Product, OrderDetail
 from shop.utils import create_hash
 
@@ -28,7 +30,7 @@ class BillConfirmView(View):
                        'shipment': order_details.shipment_address})
 
 
-class BillSubmitView(View):
+class BillSubmitView( EmailConfirmView, View):
 
     def get(self, request, order):
         pass
@@ -42,5 +44,7 @@ class BillSubmitView(View):
         payment_details = PaymentDetail.objects.get(order=_order[0], user=contact[0])
         payment = Payment(is_paid=False, token=create_hash(), details=payment_details)
         payment.save()
-
+        self.object = _order[0]
+        self.notify_client(contact[0])
+        self.notify_staff()
         return redirect(reverse("shop:confirmed_order", args=[order]))

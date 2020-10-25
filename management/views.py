@@ -5,6 +5,8 @@ from django.urls import reverse_lazy
 # Create your views here.
 from django.views.generic import DetailView, ListView, View, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
+
+from billing.utils import calculate_sum
 from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
 
 from cms.models import Page, Section
@@ -95,14 +97,12 @@ class ManagementOrderDetailView(LoginRequiredMixin, DetailView):
             pass
         _states = OrderState.objects.all()
         if _order:
-            total = 0
-            for order_item in _order.orderitem_set.all():
-                total += order_item.product.price
-            _order.total = total
             order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True,
                                                    product__in=Product.objects.all())
+
+            total = calculate_sum(order_items)
             return render(request, self.template_name,
-                          {'order_details': _order, 'order': _order, 'contact': contact,
+                          {'order_details': _order, 'order': _order, 'contact': contact, 'total': total,
                            'order_items': order_items, 'employees': employees,
                            'order_items_once_only': get_orderitems_once_only(_order), 'payment': _payment,
                            'payment_details': _payment_details, 'states': _states})

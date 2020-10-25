@@ -1,5 +1,6 @@
 from cms.models import Page
 from home import settings
+from management.models import LegalSetting
 
 __author__ = ''
 
@@ -20,4 +21,12 @@ def get_sites(request):
 def get_page_title(request):
     return {
         'title': settings.SHOP_NAME
+    }
+
+
+def get_legal_information(request):
+    legal = LegalSetting.objects.first()
+
+    return {
+        'legal': legal
     }

@@ -86,6 +86,7 @@ class Employee(models.Model):
 class ProductSubItem(models.Model):
     price = models.FloatField()
     special_price = models.FloatField(default=False, blank=True, null=True)
+    price_on_request = models.BooleanField(default=False, blank=True, null=True)
     tax = models.FloatField(default=0.19, blank=False, null=False)
     name = models.CharField(max_length=30)
     description = HTMLField('Description')
@@ -212,6 +213,7 @@ class Product(ProductSubItem):
                                                    symmetrical=False,
                                                    related_name='sub_products')
     attributes = models.ManyToManyField(ProductAttributeTypeInstance, blank=True)
+    stock = models.IntegerField(default=0, blank=True, null=True)
 
     def __str__(self):
         return self.name + ' - public ' + str(self.is_public)
@@ -278,6 +280,14 @@ class OrderItem(models.Model):
         OrderItemState, on_delete=models.CASCADE, null=True, blank=True, )
     count = models.IntegerField(default=1)
     price = models.FloatField(default=None, blank=True, null=True)
+    price_wt = models.FloatField(default=None, blank=True, null=True)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.price = self.product.special_price if self.product.special_price else self.product.price
+        self.price_wt = self.product.bprice_wt()
+        models.Model.save(self, force_insert, force_update,
+                          using, update_fields)
 
 
 # Corresponding OrderItems for the subproducts

@@ -14,6 +14,7 @@ from xhtml2pdf import pisa
 from billing.utils import calculate_sum, Round
 from home import settings
 from management.models import LegalSetting
+from payment.models import PaymentDetail
 from shop.models import Order, OrderDetail, OrderItem
 
 
@@ -54,16 +55,21 @@ class GeneratePDF(View):
         legal_settings = LegalSetting.objects.first()
         total_without_tax = calculate_sum(order_items)
         total_with_tax = calculate_sum(order_items, True)
+        payment_detail = PaymentDetail.objects.get(order=_order)
+        tax_rate = int(round(total_with_tax / total_without_tax, 2)*100)-100
+
         context = {
             'total': total_with_tax,
             'total_without_tax': total_without_tax,
             'tax': round(total_with_tax - total_without_tax, 2),
+            'tax_rate': tax_rate,
             'order': _order,
             'order_detail': order_detail,
             'order_items': order_items,
             'contact': contact,
             'company': company,
-            'invoice_settings': legal_settings
+            'payment_detail': payment_detail,
+            'invoice_settings': legal_settings,
         }
         pdf = self.render_to_pdf('invoice.html', context)
         if pdf:

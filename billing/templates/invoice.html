@@ -86,6 +86,10 @@
             color: #777777;
         }
 
+        #client {
+            padding-left: 30px;
+        }
+
         div.name {
             font-size: 1.2em;
             font-weight: normal;
@@ -110,7 +114,7 @@
         }
 
         table {
-            margin-top: 15px;
+            margin-top: 35px;
             width: 100%;
             border-collapse: collapse;
             border-spacing: 0;
@@ -131,6 +135,7 @@
 
         #notices .notice {
             font-size: 14px;
+            padding-left: 30px;
         }
 
         footer {
@@ -177,14 +182,14 @@
             <div class="date">{% trans 'Due Date' %} {{order_detail.date_due|date:"d.m.Y"}}</div>
         </div>
     </div>
-    <table border="0" cellspacing="0" cellpadding="0">
+    <table id="overview" border="0" cellspacing="0" cellpadding="0">
         <thead>
         <tr>
             <th style="text-align: left" class="no">#</th>
-            <th style="text-align: left" class="desc">DESCRIPTION</th>
-            <th style="text-align: left" class="unit">UNIT PRICE</th>
-            <th style="text-align: left" class="qty">QUANTITY</th>
-            <th style="text-align: left" class="total">TOTAL</th>
+            <th style="text-align: left" class="desc">{% trans 'Description' %}</th>
+            <th style="text-align: left" class="unit">{% trans 'Unit price' %}</th>
+            <th style="text-align: left" class="qty">{% trans 'Quantity' %}</th>
+            <th style="text-align: left" class="total">{% trans 'Total' %}</th>
         </tr>
         </thead>
         <tbody >
@@ -193,7 +198,7 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ item.product.name }}</td>
                 <td>
-                    {{ item.price|intcomma:True }} €</td>
+                    {{ item.price|floatformat:2 }} €</td>
                 <td>{{ item.count }}</td>
                 <td>{{ item.price_t }} €</td>
             </tr>
@@ -203,29 +208,38 @@
         <tr style="padding-top: 10px">
             <td colspan="2"></td>
             <td colspan="2">{% trans 'Subtotal' %}</td>
-            <td>{{ total_without_tax }} €</td>
+            <td>{{ total_without_tax|floatformat:2 }} €</td>
         </tr>
         <tr>
             <td colspan="2"></td>
-            <td colspan="2">{% trans 'Tax' %}</td>
-            <td>{{tax}} €</td>
+            <td colspan="2">{% trans 'Tax' %} ({{ tax_rate }}%)</td>
+            <td>{{tax|floatformat:2}} €</td>
         </tr>
         <tr>
             <td colspan="2"></td>
             <td colspan="2">{%  trans 'Grand Total' %}</td>
-            <td>{{ total }} €</td>
+            <td>{{ total|floatformat:2 }} €</td>
         </tr>
         </tfoot>
     </table>
-    <div id="thanks">Thank you!</div>
+    <div id="thanks">{% trans 'Thank you for your order!' %}</div>
     <div id="notices">
-        <div>NOTICE:</div>
-        <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+        {% if payment_detail.method.name == 'Bill' %}
+            <div>NOTICE:<br>{% trans 'Please send the aforementioned invoice total to the following account' %}</div>
+            <div class="notice">
+                {{ invoice_settings.account_holder }}<br>
+                IBAN: {{ invoice_settings.iban }}<br>
+                BIC: {{ invoice_settings.bic }}
+            </div>
+        {% else %}
+
+        {% endif %}
     </div>
 </main>
 <footer>
-    Invoice was created on a computer and is valid without the signature and seal.
+    <div style="margin-top: 40px;text-align: center">
+        {% trans 'Invoice was created on a computer and is valid without the signature and seal.' %}
+    </div>
 </footer>
 </body>
 </html>
--

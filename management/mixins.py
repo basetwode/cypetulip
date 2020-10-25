@@ -11,11 +11,15 @@ class NotifyCustomerUpdateView(UpdateView, EmailMixin):
     contact = None
     subject = _("Shipment for your order has changed")
     text = ""
+    order_object = None
 
     def form_valid(self, form):
+        response = super(NotifyCustomerUpdateView, self).form_valid(form)
         translation.activate('de')
-        self.send_mail(self.contact, self.subject, self.text, {'contact': self.contact})
-        return super(NotifyCustomerUpdateView, self).form_valid(form)
+        self.send_mail(self.contact, self.subject, self.text, {'contact': self.contact, 'order': self.order_object,
+                                                               'object': self.object,
+                                                               'host': self.request.META['HTTP_HOST']})
+        return response
 
 
 class NotifyCustomerCreateView(CreateView, EmailMixin):
@@ -23,8 +27,14 @@ class NotifyCustomerCreateView(CreateView, EmailMixin):
     contact = None
     subject = _("Your order has been shipped")
     text = ""
+    order_object = None
 
     def form_valid(self, form):
+        response = super(NotifyCustomerCreateView, self).form_valid(form)
         translation.activate('de')
-        self.send_mail(self.contact, self.subject, self.text, {'contact': self.contact})
-        return super(NotifyCustomerCreateView, self).form_valid(form)
+        self.send_mail(self.contact, self.subject, self.text, {**self.get_context_data(), **{'contact': self.contact,
+                                                                                             'object': self.object,
+                                                                                             'host': self.request.META[
+                                                                                                 'HTTP_HOST'],
+                                                                                             'order': self.order_object}})
+        return response
