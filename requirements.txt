@@ -26,7 +26,7 @@ django-oauth-toolkit==1.2.0
 django-oauth2-provider==0.2.6.1
 django-simple-history==2.11.0
 django-tempus-dominus==5.1.2.13
-django-tinymce4-lite==1.7.5
+django-tinymce4-lite==1.8.0
 django-toolbelt==0.0.1
 django-uwsgi==0.2.2
 django-wkhtmltopdf==3.2.0

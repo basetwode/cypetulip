@@ -1,31 +1,36 @@
 from rest_framework import routers, viewsets, serializers
-from rest_framework.serializers import HyperlinkedModelSerializer
 
 from shop.models import Product, ProductCategory, ProductAttributeType, ProductAttributeTypeInstance, ProductSubItem
-
-from rest_framework.authentication import SessionAuthentication
+from shop.rest import AddressViewSet, AccountViewSet
 
 
 class ProductAttributeTypeSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
+
     class Meta:
         model = ProductAttributeType
         fields = '__all__'
 
+
 class ProductAttributeTypeInstanceSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
+
     class Meta:
         model = ProductAttributeTypeInstance
         fields = '__all__'
 
+
 class ProductCategorySerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
+
     class Meta:
         model = ProductCategory
         fields = '__all__'
 
+
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
+
     class Meta:
         model = Product
         fields = '__all__'
@@ -33,9 +38,11 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
 
 class ProductSubItemSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
+
     class Meta:
         model = ProductSubItem
         fields = '__all__'
+
 
 ###############################################################
 
@@ -71,3 +78,5 @@ router.register(r'categories', ProductCategoryViewSet)
 router.register(r'productattributetypes', ProductAttributeTypeViewSet)
 router.register(r'productattributetypeinstances', ProductAttributeTypeInstanceViewSet)
 router.register(r'productsubitem', ProductSubItemViewSet)
+router.register(r'accounts', AccountViewSet)
+router.register(r'addresses', AddressViewSet)

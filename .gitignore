@@ -4,6 +4,7 @@
 *.log
 *.pot
 *.pyc
+*.sqlite3
 
 ;;directories to ignore
 .idea/

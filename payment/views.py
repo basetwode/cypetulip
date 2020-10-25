@@ -3,11 +3,10 @@ from django.template.defaultfilters import lower
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View, CreateView
 
-from permissions.mixins import LoginRequiredMixin
 from payment.models import PaymentDetail, PaymentMethod
 from shop.errors import (FieldError,
                          JsonResponse)
-from shop.models import Contact, Order
+from shop.models import Contact, Order, OrderDetail
 from shop.order.utils import get_order_for_hash_and_contact
 from shop.utils import json_response, check_params
 from .methods.forms import PaymentFormFactory, get_all_payment_forms_as_dict
@@ -56,7 +55,7 @@ class PaymentConfirmationView(View):
         print(payment_method)
 
 
-class PaymentCreationView(LoginRequiredMixin, CreateView):
+class PaymentCreationView(CreateView):
     template_name = 'generic-create.html'
     context_object_name = PaymentDetail
     model = PaymentDetail
@@ -67,23 +66,20 @@ class PaymentCreationView(LoginRequiredMixin, CreateView):
 
     @check_params(required_arguments={'method': '[0-9]'}, message="Please select a payment method")
     def post(self, request, order):
-        contact = Contact.objects.filter(user=request.user)
-        company = contact[0].company
-        _order = Order.objects.get(order_hash=order, is_send=False, company=company)
-
-        payment_details = PaymentDetail.objects.filter(order=_order, user=contact[0])
+        _order = Order.objects.get(order_hash=order)
+        order_details = OrderDetail.objects.get(order=_order)
+        payment_details = PaymentDetail.objects.filter(order=_order)
         payment_details.delete()
 
         choosen_payment_method = PaymentMethod.objects.get(id=request.POST['method'])
         form = PaymentFormFactory(choosen_payment_method.name, request.POST)
         if form.is_valid():
             payment_instance = form.save(commit=False)
-            payment_instance.user = Contact.objects.get(user=request.user)
+            payment_instance.user = order_details.contact
             payment_instance.order = _order
             payment_instance.method = PaymentMethod.objects.get(id=request.POST['method'])
             payment_instance.save()
             result = json_response(code=200, x=JsonResponse(
-                # next_url=reverse('payment:methods:bill:index')).dump())
                 next_url=reverse('payment:%s' % lower(payment_instance.method.name),
                                  args=[order])).dump())
         else:

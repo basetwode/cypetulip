@@ -8,8 +8,7 @@ from shop.my_account.views import (AccountSettingsView, CompanySettingsView,
                                    MyAccountView, OrderDetailView, OrdersView,
                                    SearchOrders, AddressCreationView, AddressEditView, AddressDeleteView,
                                    AddressOverviewView)
-from shop.order.checkout import DeliveryView
-from shop.order.views import ShoppingCartDetailView, ShoppingCartView
+from shop.order.views import ShoppingCartDetailView, ShoppingCartView, DeliveryView
 from shop.views import *
 
 __author__ = ''
