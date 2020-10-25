@@ -193,10 +193,10 @@
 
                                             </div>
                                         </td>
-                                        <td data-th="Price">{{ order.product.price }}</td>
+                                        <td data-th="Price">{{ order.price }}</td>
 
                                         <td id="subtotal-{{ order.id }}" data-th="Subtotal"
-                                            class="text-center">{{ order.product.price }} &euro;
+                                            class="text-center">{{ order.price }} &euro;
                                         </td>
                                         <td class="actions" data-th="">
                                         </td>
@@ -339,13 +339,18 @@
                                         class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
                             </form>
                         {% endfor %}
+                        <form action="{% url 'accept_order' order.order_hash %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="btn btn-fw btn-secondary">{% trans 'Send Invoice' %}</button>
+                        </form>
                         <form action="{% url 'pay_order' order.order_hash %}" method="post">
                             {% csrf_token %}
                             <button type="submit" {% if payment.is_paid %}disabled{% endif %}
                                     class="btn btn-fw btn-secondary">{% trans 'Paid' %}</button>
                         </form>
                         <button href="#" class="btn btn-fw btn-secondary" data-toggle="modal"
-                           {% if order.is_send %}disabled{% endif %}
+                           {% if order.is_send %}{% endif %}
                            data-target="#create-modal">{% trans 'Ship' %}</button>
                         {% include 'create-shipment.html' with order_hash=order.order_hash  %}
 

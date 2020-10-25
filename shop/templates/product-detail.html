@@ -68,11 +68,18 @@
                                             <span>{{ product.price_wt | floatformat:2 }} &euro;</span>
                                         {% endif %}
                                     </p>
+                                    {% if product.stock <= 4 and product.stock > 0 %}
+                                        <p class="stock-alarm">{% trans 'We only have a few items left!' %}</p>
+                                    {% endif %}
                                     <br>
                                     <form id="add-cart-form">
                                         {% csrf_token %}
-                                        <button type="button" onclick="addToCart('{{ product.name }}')"
-                                                class="btn btn-secondary btn-md">{% trans 'Add to cart' %}</button>
+                                        {%  if product.stock > 0 or product.stock == -1 %}
+                                            <button type="button" onclick="addToCart('{{ product.name }}')"
+                                                    class="btn btn-secondary btn-md">{% trans 'Add to cart' %}</button>
+                                        {% else %}
+                                            <button disabled class="btn btn-outline-dark">{% trans 'Not in stock' %}</button>
+                                        {% endif %}
                                     </form>
                                     <p>
                                         {{ product.description|safe }}

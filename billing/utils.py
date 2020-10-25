@@ -8,10 +8,10 @@ class Round(Func):
 
 
 def calculate_sum(order_items, include_tax=False):
-    total = (order_items.annotate(
-        _price=Round(F('price') * ((F('product__tax') + 1)
-                                   if include_tax else 1.0) * Cast(F('count'), FloatField()), 2)
-    ).aggregate(
-        total=Round(Sum('_price', field="_price"),2))['total']
-    )
+    if include_tax:
+        total = order_items.aggregate(
+            total=Round(Sum('price_wt', field="price"), 2))['total']
+    else:
+        total = order_items.aggregate(
+            total=Round(Sum('price', field="price"), 2))['total']
     return total

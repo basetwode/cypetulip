@@ -39,23 +39,46 @@
                 <thead class="thead-dark">
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">{% trans 'Tracking' %}</th>
-                    <th scope="col">{% trans 'Price' %}</th>
-                    <th scope="col">{% trans 'Weight' %}</th>
-                    <th scope="col">{% trans 'Shipper' %}</th>
-                    <th scope="col">{% trans 'Configuration' %}</th>
+                    <th scope="col">{% trans 'Type' %}</th>
+                    <th scope="col">{% trans 'Order' %}</th>
+                    <th scope="col">{% trans 'Details' %}</th>
+                    <th scope="col">{% trans 'Actions' %}</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for shipment in filter.qs %}
                     <tr>
                         <td>{{ shipment.id }}</td>
-                        <td>{{ shipment.package.tracking_code }}</td>
-                        <td>{{ shipment.package.price }} €</td>
-                        <td>{{ shipment.package.weight }}</td>
-                        <td>{{ shipment.package.shipper }}</td>
+                        <td>{% if shipment.packageshipment %} {% trans 'Package' %}{% else %}
+                            {% trans 'Online' %}{% endif %}</td>
 
                         <td>
+                            <a href="{% url 'management_detail_order' shipment.order.order.order_hash %}">{{ shipment.order.unique_nr }}</a>
+                        </td>
+
+                        <td>
+                            {% if shipment.packageshipment %}
+                                <p>{% trans 'Price: ' %}{{ shipment.packageshipment.package.price }}</p>
+                                <p>{% trans 'Weight: ' %}{{ shipment.packageshipment.package.weight }}</p>
+                                <p>{% trans 'Shipper: ' %}{{ shipment.packageshipment.package.shipper.name }}</p>
+                                <p>{% trans 'Tracking Code: ' %}{{ shipment.packageshipment.package.tracking_code }}</p>
+                            {% else %}
+                                {% trans 'File: ' %}
+                                <a href="{{ shipment.onlineshipment.file.url }}">{{ shipment.onlineshipment.file_name }}</a>
+                            {% endif %}
+
+                        </td>
+                        <td> {% if shipment.packageshipment %}
+                            <a class="btn btn-fw btn-secondary"
+                               href="{% url 'shipping:packageshipment_show' shipment.packageshipment.package.id %}">Open</a>
+                        {% else %}
+                            <a class="btn btn-fw btn-secondary"
+                               href="{% url 'shipping:onlineshipment_show' shipment.id %}">Open</a>
+                        {% endif %}
+
+                            <a href="#" class="btn btn-fw btn-outline-dark" data-toggle="modal"
+                               data-target="#delete-modal">{% trans 'Delete' %}</a>
+                            {% include 'delete-modal.html' with id=shipment.id order_hash=shipment.order.order.order_hash url='shipping:shipment_delete' url_param='filesubitem_delete_id' %}
                         </td>
                     </tr>
                 {% endfor %}

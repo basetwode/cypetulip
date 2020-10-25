@@ -8,8 +8,8 @@ from django.urls import reverse_lazy
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 
 from billing.utils import calculate_sum
-from permissions.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin
 from permissions.error_handler import raise_401
+from permissions.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin
 from shop.models import Contact, Order, OrderItem, Product, OrderDetail, Address
 from shop.my_account.forms import CompanyForm, ContactForm
 from shop.order.utils import get_orderitems_once_only
@@ -20,25 +20,21 @@ class OrderDetailView(View):
     template_name = 'my_account/orders-detail.html'
 
     def get(self, request, order):
-        contact = Contact.objects.filter(user=request.user)
-        if contact:
-            _order = Order.objects.get(order_hash=order)
-            order_details = OrderDetail.objects.get(order_number=order)
-            if _order:
-                order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True,
-                                                       product__in=Product.objects.all())
-                total_without_tax = calculate_sum(order_items)
-                total_with_tax = calculate_sum(order_items, True)
-                return render(request, self.template_name,
-                              {
-                                  'total': total_with_tax,
-                                  'total_without_tax': total_without_tax,
-                                  'tax': round(total_with_tax - total_without_tax, 2),
-                                  'order_details': order_details, 'order': _order, 'contact': contact,
-                                  'order_items': order_items,
-                                  'order_items_once_only': get_orderitems_once_only(_order)})
-        else:
-            return redirect('/shop/register')
+        _order = Order.objects.get(order_hash=order)
+        order_details = OrderDetail.objects.get(order_number=order)
+        if _order:
+            order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True,
+                                                   product__in=Product.objects.all())
+            total_without_tax = calculate_sum(order_items)
+            total_with_tax = calculate_sum(order_items, True)
+            return render(request, self.template_name,
+                          {
+                              'total': total_with_tax,
+                              'total_without_tax': total_without_tax,
+                              'tax': round(total_with_tax - total_without_tax, 2),
+                              'order_details': order_details, 'order': _order, 'contact': order_details.contact,
+                              'order_items': order_items,
+                              'order_items_once_only': get_orderitems_once_only(_order)})
 
     def post(self, request):
         pass
@@ -52,7 +48,7 @@ class OrdersView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
     def get(self, request, page=1, **kwargs):
         contact = Contact.objects.filter(user=request.user)
         if contact:
-            _orders, search = SearchOrders.filter_orders(request)
+            _orders, search = SearchOrders.filter_orders(request, False)
             number_of_orders = '5'
             paginator = Paginator(_orders, number_of_orders)
             for order in _orders:

@@ -14,6 +14,9 @@ class Country(models.Model):
     continent = models.ForeignKey(
         Continent, on_delete=models.CASCADE, null=True, blank=True, related_name='continent', )
 
+    class Meta:
+        verbose_name_plural = "Countries"
+
 
 class Region(models.Model):
     name = models.CharField(max_length=30)

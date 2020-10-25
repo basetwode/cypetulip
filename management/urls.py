@@ -14,12 +14,14 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               ContactEditView, CompanyEditView, LegalSettingsDetailView, EmployeeOverviewView,
                               EmployeeCreationView, OrderAssignEmployeeView, OrderPayView,
                               OrderShipView, OrderChangeStateView, ShipmentOverviewView, FileSubItemCreationView,
-                              FileSubItemEditView, FileSubItemOverviewView, FileSubItemDeleteView)
+                              FileSubItemEditView, FileSubItemOverviewView, FileSubItemDeleteView,
+                              OrderAcceptInvoiceView)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
 
 from shop.views import OrderCancelView
+
 
 urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
@@ -83,6 +85,8 @@ urlpatterns = [
         OrderShipView.as_view(), name="ship_order"),
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/states/change$',
         OrderChangeStateView.as_view(), name="change_state_order"),
+    url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/accept$',
+        OrderAcceptInvoiceView.as_view(), name="accept_order"),
 
     url(r'^employees/create/$', EmployeeCreationView.as_view(), name="create_employee"),
 

@@ -1,17 +1,13 @@
 {% load static %}
 {% load i18n %}
 
-<div style="background:#f2f2f2;padding:40px 0;">
-    <div style="width:700px;background:#fff;border-style:solid;border-width:1px;border-color:#eaeaea #cccccc #a6a6a6;border-radius:4px;box-shadow:0 2px 2px #cdcdcd;margin:0 auto;">
-        <h1 style="font-size: 20px; margin-left: 30px">SHOP_NAME</h1>
-        <div style="padding:30px 55px 40px;min-height:300px;border-top:1px solid #efefef;background:transparent url('https://cloud.bwk-technik.de/media/img/email_bg.jpg') scroll repeat-x center top;">
-{##}
-{#            {% if subscription.subscribed_user.customer %}#}
-{#                <p style="color:#121214;font-size:14px;">{% if subscription.subscribed_user.customer.title == 'M' %}{%trans 'Dear Mr.'%}{% else %}{%trans 'Dear Mrs.'%}{%endif%}#}
-{#                    {{ subscription.subscribed_user.last_name }},</p>#}
-{#            {% endif %}#}
 
-            <div style="font-size:14px;color:#434144;">
+<div style="background:#f2f2f2;padding:40px 0;">
+    <div style="max-width:700px;background:#fff;border-style:solid;border-width:1px;border-color:#eaeaea #cccccc #a6a6a6;border-radius:4px;box-shadow:0 2px 2px #cdcdcd;margin:0 auto;">
+        <img style="padding:10px; max-height: 50px" src="cid:{{ legal.logo.name }}">
+        <div style="padding:30px 55px 40px;min-height:300px;border-top:1px solid #efefef;">
+
+            <div style="font-size:14px;color:#434144;padding-top:15px">
                 <p>
                     {% block body %}
 
@@ -20,4 +16,22 @@
             </div>
         </div>
     </div>
+    <div style="max-width:700px;background:#f0f0f0;border-style:solid;border-width:1px;border-color:#eaeaea #cccccc #a6a6a6;border-radius:4px;box-shadow:0 2px 2px #cdcdcd;margin:0 auto;">
+    <div style="padding:30px 55px 40px;min-height:100px;border-top:1px solid #efefef;text-align: center">
+
+        <div style="font-size:14px;color:#434144;">
+            <p>
+                <h4>{{ legal.company_name }}</h4>
+            </p>
+            <p>
+            {{ legal.street }} {{ legal.number }}
+            </p>
+            <p>{{ legal.zipcode }} {{ legal.city }}</p>
+            <p>{% trans 'Phone' %}: {{ legal.phone }}</p>
+            <p>{% trans 'E-Mail' %}: {{ legal.mail }}</p>
+            <p>{% trans 'Tax-ID' %}: {{ legal.tax_number }}</p>
+            <p>{% trans 'Commercial Register' %}: {{ legal.register_number }}</p>
+        </div>
+    </div>
+</div>
 </div>

@@ -23,12 +23,14 @@ class CreateOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateV
     page_info = _("This will create a digital shipment, meaning that the customer "
                   "will be able to download the file directly from his account. "
                   "If the user ordered the file anonymously, it'll be send by mail")
+    order_object = None
 
     def get_success_url(self):
         return reverse('management_detail_order', kwargs={'order': self.object.order.order.order_hash})
 
     def form_valid(self, form):
         order: OrderDetail = self.get_order()
+        self.order_object = order
         shipment: OnlineShipment = form.save(commit=False)
         shipment.order = order
         self.contact = self.get_order().contact
@@ -47,12 +49,14 @@ class CreatePackageShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreate
     template_name = 'settings-details.html'
     page_name = _("Ship order")
     page_info = _("This will create a shipment and notify the customer that the item's been shipped")
+    order_object = None
 
     def get_success_url(self):
         return reverse('management_detail_order', kwargs={'order': self.kwargs['order']})
 
     def form_valid(self, form):
         order: OrderDetail = self.get_order()
+        self.order_object = order
         package = form.save(commit=True)
         package_shipment = PackageShipment(package=package)
         package_shipment.order = order
@@ -86,6 +90,7 @@ class ShowOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerUpdateVie
 
     def form_valid(self, form):
         self.contact = self.object.order.contact
+        self.order_object = self.object.order
         return super().form_valid(form)
 
 
@@ -113,6 +118,7 @@ class ShowPackageShipment(PermissionPostGetRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         self.contact = self.get_order().contact
+        self.order_object = self.get_order()
         return super().form_valid(form)
 
 

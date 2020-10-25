@@ -1,0 +1,33 @@
+{% extends 'mail/base.html' %}
+{% load i18n %}
+
+{% block body %}
+    {% url 'management_detail_order' order.order_hash as overview %}
+
+    <p style="font-size:17px;color:#434144;"></p>
+
+    <p style="font-size:14px;color:#434144;">
+    <h5>{% trans 'New Order' %} {{order.unique_nr}}</h5>
+    <table style="width: 100%">
+        <thead></thead>
+        <tbody>
+        {% for order_item in order.orderitem_set.all %}
+            <tr>
+                <td>
+                    <img style="padding:10px; max-height: 50px" src="cid:{{ order_item.product.product.product_picture.name }}">
+                </td>
+                <td>{{ order_item.product.name }}</td>
+                <td>  {% if order_item.product.special_price_wt %}
+                    {{ order_item.product.special_price_wt | floatformat:2 }} &euro;
+                {% else %}
+                    {{ order_item.product.price_wt | floatformat:2 }} &euro;
+                {% endif %}</td>
+            </tr>
+        {% endfor %}
+        <tr><td></td><td>{% trans 'Total' %}</td><td> {{ total | floatformat:2 }} &euro;</td></tr>
+        </tbody>
+    </table>
+    <p>{% trans 'A new order has been placed:' %}</p>
+    <a href="http://{{ host }}{{ overview }}">{{order.unique_nr}}</a> <br>
+    </p>
+{% endblock %}

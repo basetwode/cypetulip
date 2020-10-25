@@ -10,6 +10,7 @@
     <script src="{% static 'utils.js' %}"></script>
     <link href="{% static 'management.css' %}" rel="stylesheet">
 
+    {{ form.media }}
     <title>{% trans 'Settings' %}</title>
 {% endblock %}
 
@@ -28,24 +29,21 @@
 
             </div>
         </div>
-        <div class="col-9">
+        <div class="col-lg-9">
             <form enctype="multipart/form-data" method="post">{% csrf_token %}
 
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-2">
-
-                                {% buttons %}
-                                    <button type="submit" value="Save" class="btn btn-primary">{% trans 'Save' %}</button>
-                                {% endbuttons %}
-                            </div>
-                            <div class="col-10">
-                                {% block page_name %}<h2>{{ page_name }}</h2>{% endblock %}
-                            </div>
+                            {% buttons %}
+                                <button type="submit" value="Save" class="btn btn-primary">{% trans 'Save' %}</button>
+                            {% endbuttons %}
                         </div>
                     </div>
                     <div class="card-body">
+                        <div class="">
+                            {% block page_name %}<h2>{{ page_name }}</h2>{% endblock %}
+                        </div>
                         {% block page_info %}{{ page_info }}{% endblock %}
                     </div>
                     <div class="card-body">

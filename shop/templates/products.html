@@ -10,6 +10,7 @@
 {% endblock %}
 
 {% block body %}
+    {% bootstrap_messages %}
     <div class="row products">
         <div class="col-md-12 path">
             <a href="/cms/home">
@@ -126,10 +127,14 @@
                                     </div>
                                     <div class="clear"></div>
                                     <div class="text-right buttons"><a href="/shop/product/{{ product.name }}"
-                                                                       class="btn btn-outline-dark">{% trans 'More Info' %}</a>
+                                                                       class="btn btn-outline-dark">{% trans 'Details' %}</a>
+                                        {% if product.stock > 0 or product.stock == -1 %}
                                         <button class="btn btn-dark" onclick="addToCart('{{ product.name }}')">Add to
                                             cart
                                         </button>
+                                        {% else %}
+                                            <button disabled class="btn btn-outline-dark">{% trans 'Not in stock' %}</button>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

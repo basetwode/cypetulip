@@ -14,6 +14,7 @@ from xhtml2pdf import pisa
 from billing.utils import calculate_sum, Round
 from home import settings
 from management.models import LegalSetting
+from payment.models import PaymentDetail
 from shop.models import Order, OrderDetail, OrderItem
 
 
@@ -40,9 +41,9 @@ class HTMLPreview(View):
         return render(request, 'invoice.html', context)
 
 
-class GeneratePDF(View):
-    def get(self, request, order):
-        _order = Order.objects.get(order_hash=order)
+
+class GeneratePDFFile():
+    def generate(self, _order):
         order_detail = OrderDetail.objects.get(order=_order)
         contact = order_detail.contact
         company = _order.company
@@ -54,28 +55,23 @@ class GeneratePDF(View):
         legal_settings = LegalSetting.objects.first()
         total_without_tax = calculate_sum(order_items)
         total_with_tax = calculate_sum(order_items, True)
+        payment_detail = PaymentDetail.objects.get(order=_order)
+        tax_rate = int(round(total_with_tax / total_without_tax, 2)*100)-100
+
         context = {
             'total': total_with_tax,
             'total_without_tax': total_without_tax,
             'tax': round(total_with_tax - total_without_tax, 2),
+            'tax_rate': tax_rate,
             'order': _order,
             'order_detail': order_detail,
             'order_items': order_items,
             'contact': contact,
             'company': company,
-            'invoice_settings': legal_settings
+            'payment_detail': payment_detail,
+            'invoice_settings': legal_settings,
         }
-        pdf = self.render_to_pdf('invoice.html', context)
-        if pdf:
-            response = HttpResponse(pdf, content_type='application/pdf')
-            filename = "Invoice_%s.pdf" % _order.order_hash
-            content = "inline; filename='%s'" % filename
-            download = request.GET.get("download")
-            if download:
-                content = "attachment; filename='%s'" % filename
-            response['Content-Disposition'] = content
-            return response
-        return HttpResponse("Not found")
+        return self.render_to_pdf('invoice.html', context)
 
     def render_to_pdf(self, template_src, context_dict=None):
         if context_dict is None:
@@ -85,7 +81,7 @@ class GeneratePDF(View):
         result = BytesIO()
         pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result, link_callback=self.link_callback)
         if not pdf.err:
-            return HttpResponse(result.getvalue(), content_type='application/pdf')
+            return result
         return None
 
     def link_callback(self, uri, rel):
@@ -113,3 +109,20 @@ class GeneratePDF(View):
                 'media URI must start with %s or %s' % (sUrl, mUrl)
             )
         return path
+
+
+
+class GeneratePDF(GeneratePDFFile, View):
+    def get(self, request, order):
+        _order = Order.objects.get(order_hash=order)
+        pdf = HttpResponse(self.generate(_order).getvalue(), content_type='application/pdf')
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Invoice_%s.pdf" % _order.order_hash
+            content = "inline; filename='%s'" % filename
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" % filename
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
