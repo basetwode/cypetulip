@@ -3,8 +3,7 @@ from datetime import datetime
 from functools import reduce
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import When, FloatField, Case, Count, F, Q
-from django.db.models.functions import Round
+from django.db.models import Count, Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -14,7 +13,7 @@ from cms.models import Section
 from permissions.error_handler import raise_404
 from shop.forms import ProductAttributeForm
 from shop.mixins import TaxView
-from shop.models import (Contact, Order, OrderDetail, OrderState,
+from shop.models import (Order, OrderDetail, OrderState,
                          Product, ProductCategory, OrderItem, ProductAttributeType, ProductAttributeTypeInstance)
 # Create your views here.
 from shop.utils import json_response
@@ -131,9 +130,7 @@ class OrderConfirmedView(View):
     template_name = 'order/order-confirmed.html'
 
     def get(self, request, order):
-        contact = Contact.objects.filter(user=request.user)
-        company = contact[0].company
-        _order = Order.objects.get(order_hash=order, company=company)
+        _order = Order.objects.get(order_hash=order)
         order_detail = OrderDetail.objects.get(order=_order.id)
         order_detail.date_bill = datetime.now()
 
@@ -152,9 +149,7 @@ class OrderConfirmedView(View):
             return render(request, self.template_name, {'order': _order})
 
     def post(self, request, order):
-        contact = Contact.objects.filter(user=request.user)
-        company = contact[0].company
-        _order = Order.objects.get(order_hash=order, is_send=False, company=company)
+        _order = Order.objects.get(order_hash=order)
         _order.is_send = True
 
         _order.save()

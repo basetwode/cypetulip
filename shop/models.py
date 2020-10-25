@@ -12,13 +12,16 @@ from mediaserver.upload import (company_files_upload_handler, fs, order_files_up
 class Company(models.Model):
     name = models.CharField(max_length=100)
     company_id = models.CharField(max_length=100, blank=True, null=True)
-    term_of_payment = models.IntegerField()
+    term_of_payment = models.IntegerField(default=10)
     street = models.CharField(max_length=40, default=None)
     number = models.CharField(max_length=5, default=None)
     zipcode = models.CharField(max_length=5, default=None)
     city = models.CharField(max_length=30, default=None)
     logo = models.FileField(default=None, null=True, blank=True,
                             upload_to=company_files_upload_handler, storage=fs)
+
+    class Meta:
+        verbose_name_plural = "Companies"
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -58,6 +61,9 @@ class Address(models.Model):
     zipcode = models.CharField(max_length=5, default=None)
     city = models.CharField(max_length=100, default=None)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, default=None, blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "Addresses"
 
 
 class ProductCategory(models.Model):
