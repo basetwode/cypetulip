@@ -1,5 +1,7 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views.generic import View
+from django.utils.translation import gettext as _
 
 from shop.errors import JsonResponse, Error, FieldError
 from shop.models import (Contact, Order, OrderDetail, OrderItem,
@@ -30,9 +32,14 @@ class ShoppingCartView(View):
                         order_detail.save()
                     else:
                         order = order[0]
-
-                    item = OrderItem(order=order, product=product_obj[0], count=1)
-                    item.save()
+                    if self.is_stock_sufficient(order, product_obj[0]):
+                        item = OrderItem(order=order, product=product_obj[0], count=1)
+                        item.save()
+                    else:
+                        messages.error(self.request, _('Were sorry, we can not add %(article)s to your shopping '
+                                                       'cart because our stocks are insufficient') % {'article': product})
+                        error_list = JsonResponse(errors=[Error(418, 'Insufficient stock')], success=False)
+                        return json_response(code=418, x=error_list.dump(), )
 
                 return render(request, self.template_name)
             else:
@@ -56,6 +63,9 @@ class ShoppingCartView(View):
 
             return render(request, self.template_name)
 
+    def is_stock_sufficient(self, order, product):
+        order_items_count_with_product = order.orderitem_set.filter(product=product).count()
+        return 0 < product.stock > order_items_count_with_product
 
 class ShoppingCartDetailView(View):
     template_name = 'order/shopping-cart-detail.html'

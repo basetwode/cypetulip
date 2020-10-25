@@ -5,7 +5,7 @@ import datetime
 from django.core.validators import MaxValueValidator
 from django.db import models
 
-from shop.models import Contact, Order
+from shop.models import Contact, Order, Product
 
 # Create your models here.
 
@@ -60,3 +60,12 @@ class Payment(models.Model):
     is_paid = models.BooleanField()
     token = models.CharField(max_length=30)
     details = models.ForeignKey(PaymentDetail, on_delete=models.CASCADE)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.pk is None:
+            for order_item in self.details.order.orderitem_set.all():
+                if hasattr(order_item.product, 'product'):
+                    order_item.product.product.decrease_stock()
+        models.Model.save(self, force_insert, force_update,
+                          using, update_fields)

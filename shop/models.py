@@ -204,6 +204,7 @@ class ProductAttributeTypeInstance(models.Model):
 
 
 class Product(ProductSubItem):
+    stock = models.IntegerField(default=0, blank=True, null=True)
     product_picture = models.ImageField(default=None, null=True, blank=True,
                                         upload_to=public_files_upload_handler,
                                         storage=fs)
@@ -213,11 +214,17 @@ class Product(ProductSubItem):
                                                    symmetrical=False,
                                                    related_name='sub_products')
     attributes = models.ManyToManyField(ProductAttributeTypeInstance, blank=True)
-    stock = models.IntegerField(default=0, blank=True, null=True)
 
     def __str__(self):
         return self.name + ' - public ' + str(self.is_public)
 
+    def decrease_stock(self):
+        self.stock = self.stock -1 if self.stock > 0 else self.stock
+        self.save()
+
+    def increase_stock(self):
+        self.stock = self.stock + 1 if self.stock > -1 else self.stock
+        self.save()
 
 class Order(models.Model):
     order_id = models.IntegerField(null=True, blank=True)
@@ -260,10 +267,39 @@ class OrderDetail(models.Model):
                                          related_name='shipment_address')
     billing_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True,
                                         related_name='billing_address')
+    is_cancelled = models.BooleanField(default=False, blank=True, null=True, editable=False)
 
     def unique_nr(self):
         return "CTNR" + str(self.id).rjust(10, "0")
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.__was_canceled():
+            self.__increase_stocks()
+            self.is_cancelled = True
+        elif self.__was_uncancelled():
+            self.__decrease_stocks()
+            self.is_cancelled = False
+        models.Model.save(self, force_insert, force_update,
+                          using, update_fields)
+
+    def __increase_stocks(self):
+        for order_item in self.order.orderitem_set.all():
+            if isinstance(order_item.product.product, Product):
+                order_item.product.product.increase_stock()
+
+    def __decrease_stocks(self):
+        for order_item in self.order.orderitem_set.all():
+            if isinstance(order_item.product.product, Product):
+                order_item.product.product.decrease_stock()
+
+    def __was_canceled(self):
+        return self.state == OrderState.objects.get(initial=True).cancel_order_state and \
+            not self.is_cancelled
+
+    def __was_uncancelled(self):
+        return self.state != OrderState.objects.get(initial=True).cancel_order_state and \
+            self.is_cancelled
 
 # Like a surcharge or discount or product or whatever.
 
@@ -284,8 +320,10 @@ class OrderItem(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        self.price = self.product.special_price if self.product.special_price else self.product.price
-        self.price_wt = self.product.bprice_wt()
+
+        if not self.price_wt:
+            self.price = self.product.special_price if self.product.special_price else self.product.price
+            self.price_wt = self.product.bprice_wt()
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
 

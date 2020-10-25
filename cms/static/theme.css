@@ -970,6 +970,13 @@ footer .box {
     margin-left: 4px;
     font-weight: 700
 }
+.products .stock-alarm {
+    color: #ff8812;
+}
+.products .stock-alarm:before {
+    font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f0f3";
+    padding-right: 3px;
+}
 
 .products hr {
     margin: 0.2rem 0;
