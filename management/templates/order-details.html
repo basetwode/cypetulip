@@ -339,6 +339,11 @@
                                         class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
                             </form>
                         {% endfor %}
+                        <form action="{% url 'accept_order' order.order_hash %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="btn btn-fw btn-secondary">{% trans 'Send Invoice' %}</button>
+                        </form>
                         <form action="{% url 'pay_order' order.order_hash %}" method="post">
                             {% csrf_token %}
                             <button type="submit" {% if payment.is_paid %}disabled{% endif %}

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -5,8 +7,10 @@ from django.urls import reverse_lazy
 # Create your views here.
 from django.views.generic import DetailView, ListView, View, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
+from django.utils.translation import ugettext_lazy as _
 
 from billing.utils import calculate_sum
+from billing.views import GeneratePDFFile
 from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
 
 from cms.models import Page, Section
@@ -20,6 +24,7 @@ from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Com
 from shop.my_account.views import SearchOrders
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
+from utils.mixins import EmailMixin
 from utils.views import CreateUpdateView
 
 
@@ -465,9 +470,6 @@ class OrderAssignEmployeeView(LoginRequiredMixin, View):
             return json_response(500, x={})
 
 
-
-
-
 class OrderPayView(View):
     def post(self, request, order_hash):
         _order = Order.objects.get(order_hash=order_hash)
@@ -502,6 +504,35 @@ class OrderChangeStateView(View):
             return redirect(request.META.get('HTTP_REFERER'))
         except:
             return json_response(500, x={})
+
+
+class OrderAcceptInvoiceView(View, EmailMixin):
+    email_template = 'mail/order_accepted_invoice.html'
+
+    def post(self, request, order_hash):
+        _order = OrderDetail.objects.get(order_number=order_hash)
+        if _order.state.initial:
+            _order.state = _order.state.next_state
+            _order.assigned_employee = Employee.objects.get(user=request.user)
+            _order.date_bill = datetime.now()
+
+        try:
+            self.send_invoice(_order)
+            _order.save()
+            return redirect(request.META.get('HTTP_REFERER'))
+        except  Exception as e:
+            return json_response(500, x={})
+
+    def send_invoice(self, _order, ):
+        pdf = GeneratePDFFile().generate(_order.order)
+        total = calculate_sum(_order.order.orderitem_set, True)
+        self.send_mail(_order.contact, _('Your Invoice ')+_order.unique_nr(),'',{'object':_order.order,
+                                                                                 'contact': _order.contact,
+                                                                                 'total' : total,
+                                                                                 'order': _order.order,
+                                                                                 'files': {_('Invoice')+"_"+_order.unique_nr()+".pdf":pdf.getvalue()},
+                                                                                 'host': self.request.META['HTTP_HOST']})
+
 
 
 class ShipmentOverviewView(LoginRequiredMixin, ListView):

@@ -41,9 +41,9 @@ class HTMLPreview(View):
         return render(request, 'invoice.html', context)
 
 
-class GeneratePDF(View):
-    def get(self, request, order):
-        _order = Order.objects.get(order_hash=order)
+
+class GeneratePDFFile():
+    def generate(self, _order):
         order_detail = OrderDetail.objects.get(order=_order)
         contact = order_detail.contact
         company = _order.company
@@ -71,17 +71,7 @@ class GeneratePDF(View):
             'payment_detail': payment_detail,
             'invoice_settings': legal_settings,
         }
-        pdf = self.render_to_pdf('invoice.html', context)
-        if pdf:
-            response = HttpResponse(pdf, content_type='application/pdf')
-            filename = "Invoice_%s.pdf" % _order.order_hash
-            content = "inline; filename='%s'" % filename
-            download = request.GET.get("download")
-            if download:
-                content = "attachment; filename='%s'" % filename
-            response['Content-Disposition'] = content
-            return response
-        return HttpResponse("Not found")
+        return self.render_to_pdf('invoice.html', context)
 
     def render_to_pdf(self, template_src, context_dict=None):
         if context_dict is None:
@@ -91,7 +81,7 @@ class GeneratePDF(View):
         result = BytesIO()
         pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result, link_callback=self.link_callback)
         if not pdf.err:
-            return HttpResponse(result.getvalue(), content_type='application/pdf')
+            return result
         return None
 
     def link_callback(self, uri, rel):
@@ -119,3 +109,20 @@ class GeneratePDF(View):
                 'media URI must start with %s or %s' % (sUrl, mUrl)
             )
         return path
+
+
+
+class GeneratePDF(GeneratePDFFile, View):
+    def get(self, request, order):
+        _order = Order.objects.get(order_hash=order)
+        pdf = HttpResponse(self.generate(_order).getvalue(), content_type='application/pdf')
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Invoice_%s.pdf" % _order.order_hash
+            content = "inline; filename='%s'" % filename
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" % filename
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")

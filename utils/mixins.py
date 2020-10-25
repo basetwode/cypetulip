@@ -58,6 +58,10 @@ class EmailThread(threading.Thread):
                 finally:
                     logo_file.close()
 
+                if self.context['files']:
+                    for file_name, file in self.context['files'].items():
+                        email.attach(file_name, file, )
+
                 if isinstance(self.context['object'], OnlineShipment):
                     email.attach_file(self.context['object'].file.path)
 
