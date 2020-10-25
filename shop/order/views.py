@@ -37,7 +37,7 @@ class ShoppingCartView(View):
                         item = OrderItem(order=order, product=product_obj[0], count=1)
                         item.save()
                     else:
-                        messages.error(self.request, _('Were sorry, we can not add %(article)s to your shopping '
+                        messages.error(self.request, _('We\'re sorry, we can not add %(article)s to your shopping '
                                                        'cart because our stocks are insufficient') % {'article': product})
                         error_list = JsonResponse(errors=[Error(418, 'Insufficient stock')], success=False)
                         return json_response(code=418, x=error_list.dump(), )
@@ -66,7 +66,7 @@ class ShoppingCartView(View):
 
     def is_stock_sufficient(self, order, product):
         order_items_count_with_product = order.orderitem_set.filter(product=product).count()
-        return 0 < product.stock > order_items_count_with_product
+        return product.stock == -1 or ( product.stock > order_items_count_with_product)
 
 class ShoppingCartDetailView(View):
     template_name = 'order/shopping-cart-detail.html'
