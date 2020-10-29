@@ -28,7 +28,7 @@ class ContactSerializer(serializers.ModelSerializer):
 
 
 class AddressSerializer(serializers.ModelSerializer):
-    contact = ContactSerializer()
+    contact = ContactSerializer(required=False)
 
     def create(self, request):
         contact = request.pop('contact', None)
@@ -51,8 +51,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class AccountViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
-    queryset = Contact.objects.all()
-    serializer_class = ContactSerializer
+    queryset = Company.objects.all()
 
     def create(self, request):
         """
@@ -82,4 +81,21 @@ class AddressViewSet(viewsets.ModelViewSet):
             contact = Contact.objects.get(user=user)
             return Address.objects.filter(contact=contact)
         else:
-            raise NotFound
+            raise NotFound()
+
+
+class ContactViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+
+    def get_queryset(self):
+        """
+        This view should return a contact for the authenticated user
+        for the currently authenticated user.
+        """
+        if self.request.user.is_authenticated:
+            user = self.request.user
+            return Contact.objects.filter(user=user)
+        else:
+            raise NotFound()

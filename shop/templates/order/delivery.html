@@ -241,68 +241,105 @@
                                 </div>
 
                                 <div class="modal-body">
-                                    <div class="form-horizontal form-group row"><label
-                                            class=" col-3 col-form-label">{% trans 'firstname' %}</label>
-                                        <div class="col-9"><input v-model="account.firstname" required type="text"
-                                                                  class="form-control"
-                                                                  type="text"></div>
-                                        <br></div>
-                                    <div class="form-horizontal form-group row"><label
-                                            class=" col-3 col-form-label">{% trans 'lastname' %}</label>
-                                        <div class="col-9"><input v-model="account.lastname" required type="text"
-                                                                  class="form-control"
-                                                                  type="text"></div>
-                                        <br></div>
-                                    <div class="form-horizontal form-group row"><label
-                                            class=" col-3 col-form-label">{% trans 'e-mail' %}</label>
-                                        <div class="col-9"><input v-model="account.email" required type="email"
-                                                                  class="form-control"
-                                                                  type="text"></div>
-                                        <br></div>
-                                    <div class="form-horizontal form-group row"><label
-                                            class=" col-3 col-form-label">{% trans 'gender' %}</label>
-                                        <div class="col-9"><input v-model="account.gender" required type="text"
-                                                                  class="form-control"
-                                                                  type="text"></div>
-                                        <br></div>
-                                    <div class="form-horizontal form-group row"><label
-                                            class=" col-3 col-form-label">{% trans 'telephone' %}</label>
-                                        <div class="col-9"><input v-model="account.telephone" required type="tel"
-                                                                  class="form-control"
-                                                                  type="text"></div>
-                                        <br></div>
-                                    <div class="form-horizontal form-group row"><label
-                                            class=" col-3 col-form-label">{% trans 'description of address' %}</label>
-                                        <div class="col-9"><input v-model="account.description" required type="text"
-                                                                  class="form-control" type="text"></div>
-                                        <br></div>
-                                    <div class="form-horizontal form-group row"><label
-                                            class=" col-3 col-form-label">{% trans 'street' %}</label>
-                                        <div class="col-9"><input v-model="account.street" required type="text"
-                                                                  class="form-control"
-                                                                  type="text"></div>
-                                        <br></div>
-                                    <div class="form-horizontal form-group row"><label
-                                            class=" col-3 col-form-label">{% trans 'number' %}</label>
-                                        <div class="col-9"><input v-model="account.number" required type="number"
-                                                                  class="form-control"
-                                                                  type="text"></div>
-                                        <br></div>
-                                    <div class="form-horizontal form-group row"><label
-                                            class=" col-3 col-form-label">{% trans 'zipcode' %}</label>
-                                        <div class="col-9"><input v-model="account.zipcode" max="99999" maxlength="5"
-                                                                  required
-                                                                  type="number" class="form-control"
-                                                                  type="text"></div>
-                                        <br></div>
-                                    <div class="form-horizontal form-group row"><label
-                                            class=" col-3 col-form-label">{% trans 'city' %}</label>
-                                        <div class="col-9"><input v-model="account.city " required type="text"
-                                                                  class="form-control"
-                                                                  type="text"></div>
-                                        <br></div>
+                                    {% if not user.is_authenticated %}
+                                        <div class="row">
+                                            <div class="col-3"><label class="col-form-label">{% trans 'Title' %}<strong>:
+                                                *</strong>
+                                            </label>
+                                                <select v-model="account.title" required
+                                                        class="form-control">
+                                                    <option value="D">{% trans 'Dr.' %}</option>
+                                                    <option value="P">{% trans 'Prof.' %}</option>
+                                                    <option value="PD">{% trans 'Prof. Dr.' %}</option>
+                                                </select></div>
+                                            <div class="col-3">
+                                                <label class="col-form-label">{% trans 'Gender' %}<strong>: *</strong>
+                                                </label>
+                                                <select v-model="account.gender" required
+                                                        class="form-control">
+                                                    <option value="M">{% trans 'Mr' %}</option>
+                                                    <option value="F">{% trans 'Mrs' %}</option>
+                                                    <option value="D">{% trans 'Divers' %}</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <label class=" col-form-label">{% trans 'firstname' %}<strong>:
+                                                    *</strong></label>
+                                                <input v-model="account.firstname" required type="text"
+                                                       class="form-control"
+                                                       type="text">
+                                            </div>
+                                            <div class="col-6"><label
+                                                    class="col-form-label">{% trans 'lastname' %}<strong>:
+                                                *</strong>
+                                            </label>
+                                                <input v-model="account.lastname" required type="text"
+                                                       class="form-control"
+                                                       type="text">
+                                            </div>
+                                        </div>
+                                        <div><label
+                                                class="col-form-label">{% trans 'e-mail' %}<strong>: *</strong>
+                                        </label>
+                                            <input v-model="account.email" required type="email"
+                                                   class="form-control"
+                                                   type="text">
+                                        </div>
+
+                                        <div><label
+                                                class="col-form-label">{% trans 'telephone' %}<strong>: *</strong>
+                                        </label>
+                                            <input v-model="account.telephone" required type="tel"
+                                                   class="form-control"
+                                                   type="text">
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <label
+                                                class="col-form-label">{% trans 'description of address' %}<strong>:
+                                            *</strong> </label>
+                                        <input v-model="account.description" required type="text"
+                                               class="form-control" type="text">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-9"><label
+                                                class="col-form-label">{% trans 'street' %}<strong>: *</strong> </label>
+                                            <input v-model="account.street" required type="text"
+                                                   class="form-control"
+                                                   type="text">
+                                        </div>
+                                        <div class="col-3"><label
+                                                class="col-form-label">{% trans 'number' %}<strong>: *</strong> </label>
+                                            <input v-model="account.number" required type="number"
+                                                   class="form-control"
+                                                   type="text">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3"><label
+                                                class="col-form-label">{% trans 'zipcode' %}<strong>: *</strong>
+                                        </label>
+                                            <input v-model="account.zipcode" max="99999" maxlength="5"
+                                                   required
+                                                   type="number" class="form-control"
+                                                   type="text">
+                                        </div>
+                                        <div class="col-9"><label
+                                                class="col-form-label">{% trans 'city' %}<strong>: *</strong> </label>
+                                            <input v-model="account.city " required type="text"
+                                                   class="form-control"
+                                                   type="text">
+                                        </div>
+                                    </div>
+
                                 </div>
                                 <div class="modal-footer">
+                                    <div>
+                                        * {% trans 'Required fields' %}
+                                    </div>
                                     <button type="button" class="btn btn-secondary"
                                             data-dismiss="modal">{% trans 'Close' %}</button>
                                     <button type="button" v-on:click="addAccount"
@@ -348,11 +385,11 @@
 
                 <div class="row mt-1">
                     <div class="col">
-                        <a href="/shop/cart/" class="btn btn-warning ml-0"><i
+                        <a href="{% url 'shop:shopping_cart' %}" class="btn btn-warning ml-0"><i
                                 class="fa fa-angle-left"></i> {% trans 'Back to shoppingcart' %}</a>
                     </div>
                     <div class="col">
-                        <a onclick="submitForm('/shop/delivery/{{ order_details.order_hash }}','order-form')"
+                        <a v-on:click="submitDelivery"
                            class="btn btn-success float-right">{% trans 'Payment' %} <i
                                 class="fa fa-angle-right"></i></a>
                     </div>
@@ -367,6 +404,7 @@
                     delimiters: ['[[', ']]'],
                     el: '#addressFormInput',
                     data: {
+                        contact: {},
                         account: {
                             firstname: "",
                             lastname: "",
@@ -379,7 +417,8 @@
                             zipcode: "",
                             city: ""
                         },
-                        addresses: []
+                        addresses: [],
+                        "shipment-address": "",
                     },
                     mounted() {
                         this.reloadData()
@@ -389,25 +428,34 @@
                             axios.get('/api/v1/addresses')
                                 .then(response => {
                                     this.addresses = response.data
-                                })
+                                });
+                            axios.get('/api/v1/contacts')
+                                .then(response => {
+                                    this.contact = response.data
+                                });
                         },
                         addAccount: function () {
-                            var company = {
-                                name: this.account.email,
-                                street: this.account.street,
-                                number: this.account.number,
-                                zipcode: this.account.zipcode,
-                                city: this.account.city
-                            }, contact = {
-                                first_name: this.account.firstname,
-                                last_name: this.account.lastname,
-                                gender: this.account.gender,
-                                email: this.account.email,
-                                title: this.account.title,
-                                telephone: this.account.telephone,
-                                language: this.account.language,
-                                company: company
-                            }, address = {
+                            if (this.contact === {}) {
+                                company = {
+                                    name: this.account.email,
+                                    street: this.account.street,
+                                    number: this.account.number,
+                                    zipcode: this.account.zipcode,
+                                    city: this.account.city
+                                }, contact = {
+                                    first_name: this.account.firstname,
+                                    last_name: this.account.lastname,
+                                    gender: this.account.gender,
+                                    email: this.account.email,
+                                    title: this.account.title,
+                                    telephone: this.account.telephone,
+                                    language: this.account.language,
+                                    company: company
+                                }
+                            } else {
+                                contact = this.contact[0];
+                            }
+                            var address = {
                                 name: this.account.description,
                                 street: this.account.street,
                                 number: this.account.number,
@@ -416,7 +464,7 @@
                                 contact: contact
                             };
                             axios.post('/api/v1/accounts/', {
-                                company, contact, address
+                                address
                             })
                                 .then(response => {
                                     this.addresses.push(response.data);
@@ -437,6 +485,30 @@
                                     console.log(error);
                                 })
                         },
+                        submitDelivery: function () {
+                            loadingSpinner = $('#loading-spinner');
+                            loadingSpinner.removeClass('overlay-hidden');
+                            axios.post('/shop/delivery/{{ order_details.order_hash }}', {
+                                data
+                            })
+                                .then(response => {
+                                    $('#alert-success').show();
+                                    loadingSpinner.addClass('overlay-hidden');
+                                    loadingSpinner.addClass('overlay-hidden');
+                                    var nextForm = $('#next-step-form');
+                                    if (response.next_url.length > 0) {
+                                        nextForm.attr('action', response.next_url);
+                                    }
+                                    nextForm.find('#next-step-token').val(response.token);
+                                    nextForm.submit();
+                                }, error => {
+                                    $('#alert-warning').hide();
+                                    $('#alert-danger').hide();
+                                    loadingSpinner.addClass('overlay-hidden');
+                                    parseErrors(response);
+                                    console.log(error);
+                                })
+                        }
                     }
                 });
             </script>

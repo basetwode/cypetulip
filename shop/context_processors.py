@@ -1,7 +1,27 @@
 __author__ = 'Anselm'
 
+from functools import wraps
+
+from django import db
+
 from shop.models import (Contact, Order, OrderItem,
                          Product)
+
+
+def cleanup_db_connections(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            r_val = func(*args, **kwargs)
+        except db.OperationalError as e:
+            db.close_old_connections()
+            r_val = func(*args, **kwargs)
+        finally:
+            db.close_old_connections()
+
+        return r_val
+
+    return wrapper
 
 
 def get_open_orders(request):
@@ -16,6 +36,7 @@ def get_open_orders(request):
         return collect_open_orders(order)
     else:
         request.session.save()
+    db.close_old_connections()
     return open_orders
 
 

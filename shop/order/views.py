@@ -1,8 +1,8 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import View
 from django.utils.translation import gettext as _
+from django.views.generic import View
 
 from shop.errors import Error, FieldError
 from shop.errors import JsonResponse
@@ -131,12 +131,6 @@ class ShoppingCartDetailView(View):
 
 class DeliveryView(View):
     template_name = 'order/delivery.html'
-
-    def delete(self, request, product_id):
-        instance = OrderItem.objects.get(id=product_id)
-        instance.delete()
-
-        return render(request, self.template_name)
 
     def get(self, request, order):
         orders = Order.objects.filter(order_hash=order, is_send=False)
