@@ -7,7 +7,6 @@ from shop.models import Address, Contact, Company
 
 
 class CompanySerializer(serializers.ModelSerializer):
-
     def create(self, request):
         return Company.objects.create(**request)
 
@@ -20,6 +19,10 @@ class ContactSerializer(serializers.ModelSerializer):
     company = CompanySerializer()
 
     def create(self, request):
+        company = request.pop('company', None)
+        if company:
+            company = Company.objects.create(**company)
+            request['company'] = company
         return Contact.objects.create(**request)
 
     class Meta:
@@ -28,17 +31,8 @@ class ContactSerializer(serializers.ModelSerializer):
 
 
 class AddressSerializer(serializers.ModelSerializer):
-    contact = ContactSerializer(required=False)
 
     def create(self, request):
-        contact = request.pop('contact', None)
-        if contact:
-            company = contact.pop('company', None)
-            if company:
-                company = Company.objects.get_or_create(**company)[0]
-                contact['company'] = company
-                contact = Contact.objects.get_or_create(**contact)[0]
-                request['contact'] = contact
         return Address.objects.create(**request)
 
     class Meta:
@@ -49,7 +43,7 @@ class AddressSerializer(serializers.ModelSerializer):
 ###############################################################
 
 
-class AccountViewSet(viewsets.ViewSet):
+class GuestViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
     queryset = Company.objects.all()
 
@@ -58,12 +52,29 @@ class AccountViewSet(viewsets.ViewSet):
         Create a new account based on contact, company and address.
         """
         if request.method == 'POST':
-            address_serializer = AddressSerializer(data=request.data['address'])
-            if address_serializer.is_valid():
-                address_serializer.save()
-                return Response(address_serializer.data)
+            if self.request.user.is_authenticated:
+                address_serializer = AddressSerializer(data=request.data['address'])
+                if address_serializer.is_valid():
+                    address = address_serializer.save()
+                    address.contact = Contact.objects.get(user=self.request.user)
+                    address.save()
+                    return Response(address_serializer.data)
+                else:
+                    return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                address_serializer = AddressSerializer(data=request.data['address'])
+                contact_serializer = ContactSerializer(data=request.data['contact'])
+                if address_serializer.is_valid():
+                    address = address_serializer.save()
+                    if contact_serializer.is_valid():
+                        contact = contact_serializer.save()
+                        address.contact = contact
+                        address.save()
+                        return Response(address_serializer.data)
+                    else:
+                        return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AddressViewSet(viewsets.ModelViewSet):

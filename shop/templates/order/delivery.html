@@ -435,36 +435,31 @@
                                 });
                         },
                         addAccount: function () {
-                            if (this.contact === {}) {
-                                company = {
-                                    name: this.account.email,
-                                    street: this.account.street,
-                                    number: this.account.number,
-                                    zipcode: this.account.zipcode,
-                                    city: this.account.city
-                                }, contact = {
-                                    first_name: this.account.firstname,
-                                    last_name: this.account.lastname,
-                                    gender: this.account.gender,
-                                    email: this.account.email,
-                                    title: this.account.title,
-                                    telephone: this.account.telephone,
-                                    language: this.account.language,
-                                    company: company
-                                }
-                            } else {
-                                contact = this.contact[0];
-                            }
-                            var address = {
-                                name: this.account.description,
+                            company = {
+                                name: this.account.email,
                                 street: this.account.street,
                                 number: this.account.number,
                                 zipcode: this.account.zipcode,
-                                city: this.account.city,
-                                contact: contact
-                            };
+                                city: this.account.city
+                            }, contact = {
+                                first_name: this.account.firstname,
+                                last_name: this.account.lastname,
+                                gender: this.account.gender,
+                                email: this.account.email,
+                                title: this.account.title,
+                                telephone: this.account.telephone,
+                                language: this.account.language,
+                                company: company
+                            },
+                                address = {
+                                    name: this.account.description,
+                                    street: this.account.street,
+                                    number: this.account.number,
+                                    zipcode: this.account.zipcode,
+                                    city: this.account.city,
+                                };
                             axios.post('/api/v1/accounts/', {
-                                address
+                                address, contact
                             })
                                 .then(response => {
                                     this.addresses.push(response.data);
