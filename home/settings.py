@@ -94,7 +94,6 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'shop.context_processors.get_open_orders',
                 'shop.context_processors.language',
-                'shop.context_processors.cleanup_db_connections'
             ],
         },
     },
