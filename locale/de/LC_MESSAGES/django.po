@@ -26,7 +26,7 @@ msgstr "Buchhaltung"
 
 #: .\accounting\templates\accounting-dashboard.html:17
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashboard"
 
 #: .\accounting\templates\accounting-dashboard.html:24
 #, fuzzy
@@ -70,7 +70,7 @@ msgstr "Rechnung"
 
 #: .\billing\templates\invoice.html:161
 msgid "Taxnumber"
-msgstr ""
+msgstr "Steuernummer"
 
 #: .\billing\templates\invoice.html:175
 msgid "Invoice"
@@ -267,7 +267,7 @@ msgstr "Filter"
 #: .\management\templates\products-overview.html:27
 #: .\management\templates\shipment-overview.html:27
 msgid "Go"
-msgstr ""
+msgstr "Los"
 
 #: .\management\templates\categories-overview.html:31
 #, fuzzy
