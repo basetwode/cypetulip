@@ -5,6 +5,7 @@ from email.mime.image import MIMEImage
 from django.core.checks import translation
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.views import View
 
 from management.models import LegalSetting
 from shipping.models import OnlineShipment
@@ -86,3 +87,14 @@ class EmailThread(threading.Thread):
                 print("Error when sending mail... retrying")
                 time.sleep(15)
         return result
+
+
+class PaginatedFilterViews(View):
+    def get_context_data(self, **kwargs):
+        context = super(PaginatedFilterViews, self).get_context_data(**kwargs)
+        if self.request.GET:
+            querystring = self.request.GET.copy()
+            if self.request.GET.get('page'):
+                del querystring['page']
+            context['querystring'] = querystring.urlencode()
+        return context

@@ -175,20 +175,13 @@
                                             </div>
                                         </td>
                                         <td data-th="Price">
-                                            {% if order.product.special_price %}
-                                                {{ order.product.special_price | floatformat:2 }} &euro;
-                                            {% else %}
-                                                {{ order.product.price | floatformat:2 }} &euro;
-                                            {% endif %}
+
+                                                {{ order.price | floatformat:2 }} &euro;
                                         </td>
 
                                         <td id="subtotal-{{ order.id }}" data-th="Subtotal"
                                             class="text-center">
-                                            {% if order.product.special_price_wt %}
-                                                {{ order.product.special_price_wt | floatformat:2 }} &euro;
-                                            {% else %}
-                                                {{ order.product.price_wt | floatformat:2 }} &euro;
-                                            {% endif %}
+                                                {{ order.price_wt | floatformat:2 }} &euro;
                                         </td>
                                     </tr>
 

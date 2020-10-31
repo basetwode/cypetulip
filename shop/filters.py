@@ -1,4 +1,6 @@
 import django_filters
+from django.db.models import Q
+from django.utils.translation import ugettext_lazy as _
 
 from cms.models import Section, Page
 from shipping.models import Package
@@ -6,9 +8,23 @@ from shop.models import OrderDetail, Product, Contact, ProductCategory, FileSubI
 
 
 class OrderDetailFilter(django_filters.FilterSet):
+
+    free_field_filter = django_filters.CharFilter(field_name="free_field_filter", label=_('Search orders'),
+                                                  method='custom_field_filter')
+
     class Meta:
         model = OrderDetail
-        fields = ['state', 'contact']
+        fields = ['state',]
+
+    def custom_field_filter(self, queryset, name, value):
+        if value.isdigit():
+            return queryset.filter(Q(date_added__year=value) |
+                                   Q(date_added__month=value))
+        else:
+            return queryset.filter(
+                Q(orderitem__product__name__icontains=value) |
+                Q(order__order_hash__icontains=value)
+            )
 
 
 class ProductFilter(django_filters.FilterSet):

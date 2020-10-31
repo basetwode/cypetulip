@@ -6,14 +6,17 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
+from django_filters.views import FilterView
 
 from billing.utils import calculate_sum
 from permissions.error_handler import raise_401
 from permissions.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin
+from shop.filters import OrderDetailFilter
 from shop.models import Contact, Order, OrderItem, Product, OrderDetail, Address
 from shop.my_account.forms import CompanyForm, ContactForm
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
+from utils.mixins import PaginatedFilterViews
 
 
 class OrderDetailView(View):
@@ -40,7 +43,25 @@ class OrderDetailView(View):
         pass
 
 
-class OrdersView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
+class OrdersView(LoginRequiredMixin, PermissionPostGetRequiredMixin,  PaginatedFilterViews, FilterView):
+    permission_get_required = ['shop.view_orders']
+    model = OrderDetail
+    template_name = 'my_account/orders.html'
+    paginate_by = 20
+    filterset_class = OrderDetailFilter
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        contact = Contact.objects.get(user=self.request.user)
+        context = super(OrdersView, self).get_context_data(**kwargs)
+        return {**context, **{'contact': contact}}
+
+    def get_queryset(self):
+        contact = Contact.objects.get(user=self.request.user)
+        return super(OrdersView, self).get_queryset().filter(state__isnull=False, order__company=contact.company) \
+            .order_by('-date_added')
+
+
+class OrdersViewOld(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
     permission_get_required = ['shop.view_orders']
 
     template_name = 'my_account/orders.html'

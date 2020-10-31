@@ -48,7 +48,7 @@
         <div class="col-sm-12 col-md-9">
 
 
-            {% if not orders %}
+            {% if  object_list.count == 0 %}
                 <div class="card mt-2">
                     <div style="overflow: auto" class="card-header orders-overview">
                         <div style="overflow: auto" class="row">
@@ -58,7 +58,7 @@
                 </div>
             {% endif %}
             <div class="list-group">
-                {% for order_detail in filter.qs %}
+                {% for order_detail in object_list%}
 
                     <a href="{% url 'management_detail_order' order_detail.order.order_hash %}"
                        class="list-group-item list-group-item-action">
@@ -84,6 +84,11 @@
                     </a>
                 {% endfor %}
 
+            </div>
+
+            <div class="pt-3 pagination text-xs-center justify-content-center"
+                 style="align-content: center; text-align: center">
+                {% bootstrap_pagination page_obj extra=request.GET.urlencode %}
             </div>
         </div>
     </div>

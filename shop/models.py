@@ -7,6 +7,7 @@ from django.dispatch.dispatcher import receiver
 from django.utils.translation import gettext_lazy as _
 from tinymce import HTMLField
 
+from billing.utils import calculate_sum
 from mediaserver.upload import (company_files_upload_handler, fs, order_files_upload_handler,
                                 public_files_upload_handler, rand_key)
 
@@ -110,7 +111,10 @@ class ProductSubItem(models.Model):
     is_once_per_order = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{str(self.product.category)+' | ' if hasattr(self, 'product') else ''}{self.name} | {self.price}"
+        if hasattr(self, 'product'):
+            return f"{self.product.category} | {self.name} ({self.product.get_stock()}) | {self.price} €"
+        else:
+            return f"{self.name} | {self.price}"
 
     def price_wt(self):
         return round(self.price * (1 + self.tax), 2)
@@ -241,6 +245,9 @@ class Product(ProductSubItem):
         self.stock = self.stock + 1 if self.stock > -1 else self.stock
         self.save()
 
+    def get_stock(self):
+        return f"{self.stock if self.stock > -1 else '~'}"
+
 
 class IndividualOffer(models.Model):
     date_added = models.DateTimeField(auto_now=True,blank=True)
@@ -277,6 +284,10 @@ class Order(models.Model):
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
 
+    def delete(self, using=None, keep_parents=False):
+        self.orderdetail_set.first().increase_stocks()
+        super(Order, self).delete(using, keep_parents)
+
     def __str__(self):
         return str(self.order_id)
 
@@ -303,20 +314,20 @@ class OrderDetail(models.Model):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         if self.__was_canceled():
-            self.__increase_stocks()
+            self.increase_stocks()
             self.is_cancelled = True
         elif self.__was_uncancelled():
-            self.__decrease_stocks()
+            self.decrease_stocks()
             self.is_cancelled = False
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
 
-    def __increase_stocks(self):
+    def increase_stocks(self):
         for order_item in self.order.orderitem_set.all():
             if isinstance(order_item.product.product, Product):
                 order_item.product.product.increase_stock()
 
-    def __decrease_stocks(self):
+    def decrease_stocks(self):
         for order_item in self.order.orderitem_set.all():
             if isinstance(order_item.product.product, Product):
                 order_item.product.product.decrease_stock()
@@ -328,6 +339,9 @@ class OrderDetail(models.Model):
     def __was_uncancelled(self):
         return self.state != OrderState.objects.get(initial=True).cancel_order_state and \
             self.is_cancelled
+
+    def total_wt(self):
+        return calculate_sum(self.orderitem_set, True)
 
 # Like a surcharge or discount or product or whatever.
 
@@ -357,6 +371,11 @@ class OrderItem(models.Model):
             self.price_wt = round(self.price * (1 + self.product.tax), 2)
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
+
+    def delete(self, using=None, keep_parents=False):
+        if hasattr(self.product, 'product'):
+            self.product.product.increase_stock()
+        super(OrderItem, self).delete(using, keep_parents)
 
     def __str__(self):
         return f"{self.count}x {self.product.name} {self.price}"
