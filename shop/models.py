@@ -7,6 +7,7 @@ from django.dispatch.dispatcher import receiver
 from django.utils.translation import gettext_lazy as _
 from tinymce import HTMLField
 
+from billing.utils import calculate_sum
 from mediaserver.upload import (company_files_upload_handler, fs, order_files_upload_handler,
                                 public_files_upload_handler, rand_key)
 
@@ -338,6 +339,9 @@ class OrderDetail(models.Model):
     def __was_uncancelled(self):
         return self.state != OrderState.objects.get(initial=True).cancel_order_state and \
             self.is_cancelled
+
+    def total_wt(self):
+        return calculate_sum(self.orderitem_set, True)
 
 # Like a surcharge or discount or product or whatever.
 

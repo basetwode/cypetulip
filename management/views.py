@@ -9,25 +9,26 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, View, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from django.utils.translation import ugettext_lazy as _
+from django_filters.views import FilterView
 
 from billing.utils import calculate_sum
 from billing.views import GeneratePDFFile
+from management.filters import OrderDetailFilter
 from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
 
 from cms.models import Page, Section
 from management.models import LdapSetting, MailSetting, LegalSetting
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME
 from shipping.models import Shipment
-from shop.filters import OrderDetailFilter, ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
+from shop.filters import ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
     PageFilter, ShipmentPackageFilter, FileSubItemFilter
 from management.forms import OrderDetailForm, OrderForm, OrderItemForm
 from shop.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
     FileSubItem, IndividualOffer
-from shop.my_account.views import SearchOrders
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
-from utils.mixins import EmailMixin
+from utils.mixins import EmailMixin, PaginatedFilterViews
 from utils.views import CreateUpdateView
 
 
@@ -49,38 +50,19 @@ class ManagementView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
         pass
 
 
-class ManagementOrderOverviewView(LoginRequiredMixin, View):
+class ManagementOrderOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView):
+    model = OrderDetail
     template_name = 'orders-overview.html'
+    paginate_by = 20
+    filterset_class = OrderDetailFilter
 
-    def get(self, request, page=1, **kwargs):
-        if not request.user.is_staff:
-            contact = Contact.objects.get(user=request.user)
-        else:
-            contact = {}
-        _orders, search = SearchOrders.filter_orders(request, True)
-        filter = OrderDetailFilter(request.GET, queryset=OrderDetail.objects.filter(state__isnull=False).order_by('-date_added'))
-        employees = Employee.objects.all()
-        number_of_orders = '5'
-        paginator = Paginator(_orders, number_of_orders)
-        for order in _orders:
-            total = 0
-            for order_item in order.orderitem_set.all():
-                total += order_item.product.price
-            order.total = total
-        try:
-            _orders = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            _orders = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            _orders = paginator.page(paginator.num_pages)
-        return render(request, self.template_name,
-                      {'orders': _orders, 'contact': contact, 'search': search,
-                       'employees': employees, 'filter': filter})
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(ManagementOrderOverviewView, self).get_context_data(**kwargs)
+        return {**context, **{'employees': Employee.objects.all()}}
 
-    def post(self, request):
-        pass
+    def get_queryset(self):
+        return super(ManagementOrderOverviewView, self).get_queryset().filter(state__isnull=False)\
+            .order_by('-date_added')
 
 
 class ManagementOrderDetailView(LoginRequiredMixin, DetailView):
