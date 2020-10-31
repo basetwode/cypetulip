@@ -1,0 +1,24 @@
+
+{% load i18n %}
+
+<div class="modal fade" id="price_on_request" tabindex="-1" role="dialog" aria-labelledby="price_on_request" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="price_on_request">{% trans 'Price on request' %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% blocktrans %}
+                    We offer products in our shop, that depend heavily on customers' demands. Please use the link provided
+                    below to request an indivudal offer for this product.
+                {% endblocktrans %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

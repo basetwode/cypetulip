@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.contrib import messages
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -15,12 +16,14 @@ from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixi
 
 from cms.models import Page, Section
 from management.models import LdapSetting, MailSetting, LegalSetting
-from payment.models import PaymentDetail, Payment
+from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME
 from shipping.models import Shipment
 from shop.filters import OrderDetailFilter, ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
     PageFilter, ShipmentPackageFilter, FileSubItemFilter
+from shop.forms import OrderDetailForm, OrderForm, OrderItemForm
+from shop.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
-    FileSubItem
+    FileSubItem, IndividualOffer
 from shop.my_account.views import SearchOrders
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
@@ -55,7 +58,7 @@ class ManagementOrderOverviewView(LoginRequiredMixin, View):
         else:
             contact = {}
         _orders, search = SearchOrders.filter_orders(request, True)
-        filter = OrderDetailFilter(request.GET, queryset=OrderDetail.objects.all())
+        filter = OrderDetailFilter(request.GET, queryset=OrderDetail.objects.filter(state__isnull=False).order_by('-date_added'))
         employees = Employee.objects.all()
         number_of_orders = '5'
         paginator = Paginator(_orders, number_of_orders)
@@ -476,8 +479,12 @@ class OrderPayView(View):
         _payment_detail = PaymentDetail.objects.get(order=_order)
         _payment = Payment.objects.get(details=_payment_detail)
         _payment.is_paid = True
+        _order_detail = OrderDetail.objects.get(order_number=order_hash)
+        _order_detail.state = OrderState.objects.get(is_paid_state=True)
+        _order_detail.save()
         try:
             _payment.save()
+            messages.success(request, _("Order saved"))
             return redirect(request.META.get('HTTP_REFERER'))
         except:
             return json_response(500, x={})
@@ -519,9 +526,11 @@ class OrderAcceptInvoiceView(View, EmailMixin):
         try:
             self.send_invoice(_order)
             _order.save()
+            messages.success(request, _("Invoice sent"))
             return redirect(request.META.get('HTTP_REFERER'))
-        except  Exception as e:
-            return json_response(500, x={})
+        except Exception as e:
+            messages.error(request, _("Something went wrong"))
+            return redirect(request.META.get('HTTP_REFERER'))
 
     def send_invoice(self, _order, ):
         pdf = GeneratePDFFile().generate(_order.order)
@@ -530,8 +539,10 @@ class OrderAcceptInvoiceView(View, EmailMixin):
                                                                                  'contact': _order.contact,
                                                                                  'total' : total,
                                                                                  'order': _order.order,
-                                                                                 'files': {_('Invoice')+"_"+_order.unique_nr()+".pdf":pdf.getvalue()},
+                                                                                 'files': {_('Invoice')+"_"+_order.unique_nr()+
+                                                                                           ".pdf":pdf.getvalue()},
                                                                                  'host': self.request.META['HTTP_HOST']})
+
 
 
 
@@ -546,3 +557,139 @@ class ShipmentOverviewView(LoginRequiredMixin, ListView):
                       {'filter': filter})
 
 
+class IndividualOfferRequestOverview(LoginRequiredMixin, ListView):
+    template_name = 'individualoffers-overview.html'
+    model = IndividualOffer
+    paginate_by = 50
+    ordering = ['-date_added']
+
+
+class IndividualOfferRequestView(LoginRequiredMixin, DetailView):
+    template_name = 'individualoffer.html'
+    model = IndividualOffer
+    context_object_name = 'offer'
+    slug_url_kwarg = 'offer_id'
+    pk_url_kwarg = 'offer_id'
+
+
+class DeleteIndividualOfferRequest(LoginRequiredMixin, DeleteView):
+    model = IndividualOffer
+    success_url = reverse_lazy('individualoffers_overview')
+    pk_url_kwarg = 'offer_id'
+
+    def get_success_url(self):
+        messages.success(self.request, _('Individual offer request deleted'))
+        return super().get_success_url()
+
+
+class DeleteOrder(DeleteView):
+    model = Order
+    template_name = 'generic-create-form.html'
+    slug_url_kwarg = 'order_hash'
+    slug_field = 'order_hash'
+
+    def get_success_url(self):
+        messages.success(self.request, _('Order deleted'))
+        return reverse_lazy('management_all_orders')
+
+
+class CreateOrderView(WizardView):
+    page_title = _('Select customer')
+    template_name = 'generic-create-form.html'
+    order_id = None
+    slug_field = 'id'
+    slug_url_kwarg = 'id'
+    model = Order
+    form_class = OrderForm
+
+    def get_initial(self):
+        initial = super(CreateOrderView, self).get_initial()
+        if 'contact' in self.request.GET and self.request.GET['contact']:
+            initial['company'] = Contact.objects.get(id=self.request.GET['contact']).company.id
+        return initial
+
+    def form_valid(self, form):
+        order = form.save(commit=False)
+        if 'ior' in self.request.GET and self.request.GET['ior']:
+            order.individual_offer_request = IndividualOffer.objects.get(id=self.request.GET['ior'])
+        return super(CreateOrderView, self).form_valid(form)
+
+    def get_back_url(self):
+        if self.get_object():
+            return reverse_lazy('management_detail_order',
+                                kwargs={'order': self.get_object().order_hash})
+        else:
+            return reverse_lazy('individualoffers_overview')
+
+    def get_success_url(self):
+        order_detail, created = OrderDetail.objects.get_or_create(order=self.object, state=OrderState.objects.get(initial=True),
+                                                                  order_number=self.object.order_hash)
+        return reverse_lazy('create_order_detail', kwargs={'parent_id':self.object.id, 'id': order_detail.id})
+
+
+class CreateOrderDetailView(WizardView):
+    page_title = _('Define order details')
+    model = OrderDetail
+    pk_url_kwarg = 'id'
+    form_class = OrderDetailForm
+
+    def get_back_url(self):
+        return reverse_lazy('create_order', kwargs={'id': self.get_parent_id()})
+
+    def get_success_url(self):
+        return reverse_lazy('create_order_item', kwargs={'id': '', 'parent_id':self.get_object().id})
+
+    def form_valid(self, form):
+        order_detail = form.save(commit=False)
+        if order_detail.state is None:
+            order_detail.state = OrderState.objects.get(initial=True)
+        form.save()
+        if order_detail.order.paymentdetail_set.count() == 0:
+            payment_detail = PaymentDetail(order=order_detail.order, method=PaymentMethod.objects.get(name=PAYMENTMETHOD_BILL_NAME),
+                                       user=order_detail.contact)
+            payment_detail.save()
+            payment = Payment(details=payment_detail, is_paid=False)
+            payment.save()
+
+        return super(CreateOrderDetailView, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        form_kwargs = super(CreateOrderDetailView, self).get_form_kwargs()
+        return {**form_kwargs, **{'contacts':Contact.objects.filter(company=self.object.order.company)}}
+
+
+class CreateOrderItem(RepeatableWizardView):
+    page_title = _('Select products')
+    form_class = OrderItemForm
+    model = OrderItem
+    pk_url_kwarg = 'id'
+    parent_key = 'order_detail'
+    self_url = 'create_order_item'
+    delete_url = 'delete_order_item'
+
+    def form_valid(self, form):
+        order_item = form.save(commit=False)
+        order_item.order_detail = OrderDetail.objects.get(id=self.get_parent_id())
+        order_item.order = Order.objects.get(id=order_item.order_detail.order.id)
+        return super(CreateOrderItem, self).form_valid(form)
+
+    def get_back_url(self):
+        return reverse_lazy('create_order_detail', kwargs={'id': self.get_parent_id(),
+                                                           'parent_id': OrderDetail.objects.get(id=self.get_parent_id()).order.id})
+
+    def get_next_url(self):
+        return reverse_lazy('management_detail_order',
+                            kwargs={'order': OrderDetail.objects.get(id=self.get_parent_id()).order.order_hash})
+
+    def get_success_url(self):
+        return reverse_lazy('create_order_item', kwargs={'id':'', 'parent_id':self.get_parent_id()})
+
+
+class DeleteOrderItem(DeleteView):
+    model = OrderItem
+    template_name = 'generic-create-form.html'
+    pk_url_kwarg = 'id'
+
+    def get_success_url(self):
+        return reverse_lazy('create_order_item', kwargs={'id': '',
+                                                           'parent_id': OrderDetail.objects.get(id=self.kwargs['parent_id']).id})

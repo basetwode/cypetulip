@@ -38,6 +38,8 @@
                    class="btn btn-primary">{% trans 'All orders' %}</a>
                 <a href="{% url 'all_shipments' %}"
                    class="btn btn-primary">{% trans 'All shipments' %}</a>
+                <a href="{% url 'individualoffers_overview' %}"
+                   class="btn btn-primary">{% trans 'Offer requests' %}</a>
                 <hr>
                 <p>{% trans 'Search orders' %}</p>
                 <form action="{% url 'search_orders' %}">

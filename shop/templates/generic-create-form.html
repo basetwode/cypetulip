@@ -1,0 +1,94 @@
+{% extends 'base-mgmt.html' %}
+{% load static %}
+{% load recurse %}
+{% load bootstrap4 %}
+
+{% load i18n %}
+{% bootstrap_messages %}
+{% block head %}
+    <title>Products</title>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+    {{ form.media }}
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>{{ page_title }}</h2>
+                    </div>
+                    {% if object_list.count == 0 %}
+                        <span class="pt-3 pl-3 warning">{% trans 'Please add at least one item to proceed' %}</span>
+                    {% endif %}
+                    {% if object_list %}
+                        <div class="card-body">
+                            <h3>{% trans 'Select an item to edit' %}</h3>
+                            <table class="table">
+                                <thead>
+                                    <th>{% trans 'Item' %}</th>
+                                    <th>{% trans 'Actions' %}</th>
+                                </thead>
+                                <tbody>
+                                    {% for object in object_list %}
+                                        <tr>
+                                            <td>
+                                                {{ object }}
+                                            </td>
+                                            <td>
+                                                <a class="btn-secondary btn" href="{% url self_url parent_id object.id  %}">{% trans 'Edit' %}</a><br>
+                                                <form method="post" action="{% url delete_url parent_id object.id  %}">
+                                                    {% csrf_token %}
+                                                    <input type="submit" class="btn-danger btn" value="{% trans 'Delete' %}"><br>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    {% endif %}
+                    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                    <div class="card-body">
+
+                        {% if object_list %}
+                            <h3>{% trans 'Add another item' %}</h3>
+                        {% endif %}
+                        {% bootstrap_form form layout='horizontal' %}
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{return_url}}"
+                           class="btn btn-primary">{% trans 'Back' %}</a>
+                        {% if next_url %}
+                            <input class="float-right btn btn-warning"  type="submit" value="{% trans 'Save' %}">
+                            <a href="{{next_url}}"
+                               class="btn float-right btn-primary {% if object_list.count == 0 %}disabled{% endif %}">{% trans 'Continue' %}</a></div>
+
+                        {% else %}
+                            <input class="float-right btn btn-primary" type="submit" value="{% trans 'Continue' %}">
+                        {% endif %}
+                    </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

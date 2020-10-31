@@ -318,8 +318,10 @@
                             <button type="submit" {% if not order_details.state.initial %}disabled{% endif %}
                                     class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
                         </form>
+                        {% if order_details.bill_date %}
                         <a target="_blank" href="{% url 'invoice_pdf' order.order_hash %}"
                            class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
+                        {% endif %}
                         <a href="{% url 'shop:detail_order_write_review' order.order_hash %}"
                            class="btn btn-fw btn-secondary">{% trans 'Write review' %}</a>
                     </div>

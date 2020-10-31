@@ -15,13 +15,14 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               EmployeeCreationView, OrderAssignEmployeeView, OrderPayView,
                               OrderShipView, OrderChangeStateView, ShipmentOverviewView, FileSubItemCreationView,
                               FileSubItemEditView, FileSubItemOverviewView, FileSubItemDeleteView,
-                              OrderAcceptInvoiceView)
+                              OrderAcceptInvoiceView, DeleteIndividualOfferRequest, IndividualOfferRequestOverview,
+                              IndividualOfferRequestView, CreateOrderView, CreateOrderDetailView, CreateOrderItem,
+                              DeleteOrderItem, DeleteOrder)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
 
 from shop.views import OrderCancelView
-
 
 urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
@@ -77,8 +78,19 @@ urlpatterns = [
     url(r'^employees/$', EmployeeOverviewView.as_view(), name="employee_overview"),
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/assign/$',
         OrderAssignEmployeeView.as_view(), name="assign_employee"),
+    url(r'^orders/create/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+        CreateOrderView.as_view(), name="create_order"),
+    url(r'^orders/detail/create/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+        CreateOrderDetailView.as_view(), name="create_order_detail"),
+    url(r'^orders/item/create/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+        CreateOrderItem.as_view(), name="create_order_item"),
+    url(r'^orders/item/delete/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+        DeleteOrderItem.as_view(), name="delete_order_item"),
+
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/cancel/$',
         OrderCancelView.as_view(), name="cancel_order"),
+    url(r'^orders/(?P<order_hash>[a-zA-Z0-9\\s\-_ ]+)/delete/$',
+        DeleteOrder.as_view(), name="delete_order"),
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/pay/$',
         OrderPayView.as_view(), name="pay_order"),
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/ship/$',
@@ -87,6 +99,11 @@ urlpatterns = [
         OrderChangeStateView.as_view(), name="change_state_order"),
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/accept$',
         OrderAcceptInvoiceView.as_view(), name="accept_order"),
+
+    url(r'^offers/$', IndividualOfferRequestOverview.as_view(), name="individualoffers_overview"),
+    url(r'^offers/(?P<offer_id>[a-zA-Z0-9\\s\-_ ]+)/$', IndividualOfferRequestView.as_view(), name="individualoffer_view"),
+    url(r'^offers/(?P<offer_id>[a-zA-Z0-9\\s\-_ ]+)/delete$',
+        DeleteIndividualOfferRequest.as_view(), name="individualoffer_delete"),
 
     url(r'^employees/create/$', EmployeeCreationView.as_view(), name="create_employee"),
 

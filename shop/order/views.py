@@ -19,6 +19,11 @@ class ShoppingCartView(View):
     def post(self, request, product):
 
         product_obj = Product.objects.filter(name=product)
+        if product_obj.count() > 0 and product_obj[0].price_on_request:
+            messages.error(self.request, _('We\'re sorry, we can not add %(article)s to your shopping '
+                                           'cart because it can only be ordered using our individual offer form') % {'article': product})
+            error_list = JsonResponse(errors=[Error(419, 'Error')], success=False)
+            return json_response(code=418, x=error_list.dump(), )
         if request.user.is_authenticated:
             contact = Contact.objects.filter(user=request.user)
             if contact:

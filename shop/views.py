@@ -2,19 +2,23 @@ import operator
 from datetime import datetime
 from functools import reduce
 
+from django.contrib import messages
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Count, Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.views.generic import View, ListView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import View, ListView, FormView
+from django.utils.translation import ugettext_lazy as _
+
 
 from cms.models import Section
 from permissions.error_handler import raise_404
-from shop.forms import ProductAttributeForm
-from shop.mixins import TaxView
+from shop.forms import ProductAttributeForm, IndividualOfferForm
+from shop.mixins import TaxView, EmailNotifyStaffView
 from shop.models import (Order, OrderDetail, OrderState,
-                         Product, ProductCategory, OrderItem, ProductAttributeType, ProductAttributeTypeInstance)
+                         Product, ProductCategory, OrderItem, ProductAttributeType, ProductAttributeTypeInstance,
+                         Contact)
 # Create your views here.
 from shop.utils import json_response
 
@@ -171,3 +175,35 @@ class OrderCancelView(View):
             return redirect(request.META.get('HTTP_REFERER'))
         except:
             return json_response(500, x={})
+
+
+class IndividualOfferView(EmailNotifyStaffView, FormView):
+    form_class = IndividualOfferForm
+    template_name = 'order/offer.html'
+    success_url = reverse_lazy('shop:products',kwargs={'category': ''})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product'] = Product.objects.get(name=self.kwargs['product'])
+        return context
+
+    def get_initial(self, form_class=None):
+
+        initial = super().get_initial()
+        if self.request.user.is_authenticated:
+            contact = Contact.objects.get(user=self.request.user)
+            initial['mail'] = contact.email
+        return initial
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        if self.request.user.is_authenticated:
+            self.object.contact = Contact.objects.get(user=self.request.user)
+        self.object.product = Product.objects.get(name=self.kwargs['product'])
+        self.object.save()
+        self.notify()
+        messages.success(self.request, _("Thank you for your request, we'll contact you soon"))
+        return HttpResponseRedirect(self.get_success_url())
+
+    # todo: create mgmt view and send an email upon save
+    # todo: extend mail with link

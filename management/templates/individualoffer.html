@@ -1,0 +1,124 @@
+{% extends 'base-mgmt.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load recurse %}
+{% load fb_versions %}
+
+{% load i18n %}
+{% block head %}
+    <title>Admin - All orders</title>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+    <script src="{% static 'onchange.js' %}"></script>
+    <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.structure.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui.theme.min.css' %}" rel="stylesheet">
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'bootstrap-select/css/bootstrap-select.min.css' %}">
+    <script src="{% static 'bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12"><h1>{% trans 'All individual offers' %}</h1></div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'management_index' %}"
+                                          class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                    <a href="{% url 'individualoffers_overview' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to offer overview' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+
+
+            <div class="list-group">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-md-12 pb-3">
+                                                <h1>{% trans 'Individual offer request' %}</h1>
+                                            </div>
+                                            <div class="col-md-6" style="text-align: left; ">
+                                                {% if offer.contact %}
+                                                    {{ offer.contact.first_name }} {{ offer.contact.last_name }}
+                                                {% else %}
+                                                    {{ offer.mail }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-6" style="text-align: left; ">
+                                                <strong> {% trans 'Date' %}</strong>
+                                                {{ offer.date_added|date:"SHORT_DATE_FORMAT" }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row pb-3">
+                                            <div class="col-md-4 ">
+                                                <img style=" width: 100%; height: auto; max-width: 25vw;"
+                                                     src="{% version offer.product.product_picture 'medium' %}"
+                                                     alt="..."
+                                                     class="img-fluid"/>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <h4>{{ offer.product.name }}</h4>
+                                                <div>{{ offer.product.description|safe|truncatechars:200 }}</div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-offset-4 col-md-8" style="text-align: left; ">
+                                            <strong> {% trans 'Message' %}</strong>
+                                            <br>
+                                            {{ offer.message }}
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+
+
+                                        {% if offer.order_set.count > 0 %}
+                                            <h4>{% trans 'Orders' %}: </h4>
+                                            <div class="row pl-3">
+                                                {% for order in offer.order_set.all %}
+
+                                                    <a href="{% url 'management_detail_order' order.order_hash %}"
+                                                       class=" list-group-item list-group-item-action">
+                                                        <div class="pl-4 col-md-12">
+                                                            {% trans 'Order' %}:
+                                                            {{ order.orderdetail_set.first.unique_nr }}
+                                                        </div>
+                                                    </a>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="{% url 'create_order' '' %}?product={{offer.product.id}}&contact={{offer.contact.id}}&ior={{ offer.id }}"
+                                           class="btn float-right btn-primary">{% trans 'Create order' %}</a>
+                                        <form method="post" action="{% url 'individualoffer_delete' offer.id  %}">
+                                            {% csrf_token %}
+                                            <input type="submit" class="btn-danger btn" value="{% trans 'Delete' %}"><br>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
