@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load recurse %}
+{% load bootstrap4 %}
+{% load fb_versions %}
+
+{% load i18n %}
+{% bootstrap_messages %}
+{% block head %}
+    <title>Products</title>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    {{ form.media }}
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+                    <hr>
+                    <a href="{% url 'shop:products' '' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Back to products' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+            <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                <div class="card">
+                    <div class="card-header">
+                        <h3>{% trans 'Request an individual offer' %}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                        <div class="col-md-4">
+                            <img style=" width: 100%; height: auto; max-width: 25vw;"
+                                 src="{% version product.product_picture 'medium' %}"
+                                 alt="..."
+                                 class="img-fluid"/>
+                        </div>
+                        <div class="col-md-8">
+                            <h4>{{ product.name }}</h4>
+                            <div>{{ product.description|safe|truncatechars:200 }}</div>
+
+                        </div>
+                    </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-12 pt-4">
+                                {{ form.errors }}
+                                {% block form %}
+                                    {% bootstrap_form form  layout='horizontal' %}
+                                    <input class="btn btn-primary btn-block" type="submit" value="Send">
+                                {% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+{% endblock %}

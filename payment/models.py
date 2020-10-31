@@ -12,7 +12,7 @@ from shop.models import Contact, Order, Product
 
 YEAR_CHOICES = [(r, r) for r in range(datetime.datetime.now().year, datetime.datetime.now().year + 11)]
 MONTH_CHOICES = [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10), (11, 11), (12, 12)]
-
+PAYMENTMETHOD_BILL_NAME = 'Bill'
 
 # Details for logging in to the api
 class PaymentProvider(models.Model):

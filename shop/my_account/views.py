@@ -51,10 +51,10 @@ class OrdersView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
             _orders, search = SearchOrders.filter_orders(request, False)
             number_of_orders = '5'
             paginator = Paginator(_orders, number_of_orders)
-            for order in _orders:
-                order_items = OrderItem.objects.filter(order=order, order_item__isnull=True,
-                                                       product__in=Product.objects.all())
-                order.total_wt = calculate_sum(order_items,True)
+            # for order in _orders:
+            #     order_items = OrderItem.objects.filter(order=order, order_item__isnull=True,
+            #                                            product__in=Product.objects.all())
+            #     order.total_wt = calculate_sum(order_items,True)
             try:
                 _orders = paginator.page(page)
             except PageNotAnInteger:
@@ -167,13 +167,13 @@ class SearchOrders(View):
     @staticmethod
     def filter_orders(request, admin=False):
         if request.user.is_staff or admin:
-            _orders = Order.objects.filter(is_send=True)
+            _orders = Order.objects.filter(orderdetail__state__isnull=False)
         else:
             contact = Contact.objects.get(user=request.user)
             if contact:
                 company = contact.company
                 if company:
-                    _orders = Order.objects.filter(company=company)
+                    _orders = Order.objects.filter(company=company, orderdetail__state__isnull=False)
                 else:
                     return redirect('/shop/companies/create')
             else:

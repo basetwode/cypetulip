@@ -6,9 +6,10 @@ from django.views.generic import CreateView
 from django.utils.translation import ugettext_lazy as _
 
 from billing.utils import calculate_sum, Round
-from management.models import MailSetting
+from management.models import MailSetting, LegalSetting
 from shop.models import Contact, OrderDetail, OrderItem
 from utils.mixins import EmailMixin
+from utils.views import CreateUpdateView
 
 
 class TaxView(View):
@@ -20,6 +21,23 @@ class TaxView(View):
             default='price',
             output_field=FloatField(),
         ) * (F('tax') + 1), FloatField(), 2)))
+
+
+class EmailNotifyStaffView(EmailMixin, View):
+    email_template = "mail/new_individual_offer_request.html"
+    subject = _("New individual offer request")
+    text = ""
+    object = None
+
+    def notify(self):
+        mail_settings = MailSetting.objects.first()
+        contact = Contact()
+        contact.email = mail_settings.contact_new_order
+        self.send_mail(contact, self.subject, self.text, {'contact': contact,
+                                                          'files': None,
+                                                          'object': self.object,
+                                                          'host': self.request.META[
+                                                              'HTTP_HOST']})
 
 
 class EmailConfirmView(EmailMixin, View):
@@ -67,3 +85,41 @@ class EmailConfirmView(EmailMixin, View):
                                                  'total': total,
                                                  'host': self.request.META[
                                                      'HTTP_HOST']})
+
+
+class WizardView(CreateUpdateView):
+    template_name = 'generic-create-form.html'
+    page_title = ''
+
+    def get_back_url(self):
+        return None
+
+
+    def get_success_url(self):
+        super(WizardView, self).get_success_url()
+
+    def get_context_data(self, **kwargs):
+        return {**super().get_context_data(**kwargs),
+                **{'return_url': self.get_back_url(),
+                   'page_title': self.page_title}}
+
+    def get_parent_id(self):
+        return self.kwargs['parent_id'] if 'parent_id' in self.kwargs else None
+
+
+class RepeatableWizardView(WizardView):
+    parent_key = ''
+    self_url = ''
+    delete_url = ''
+
+
+    def get_next_url(self):
+        return self.get_success_url()
+
+    def get_context_data(self, **kwargs):
+        return {**super().get_context_data(**kwargs),
+                **{'next_url': self.get_next_url(),
+                   'self_url': self.self_url,
+                   'delete_url': self.delete_url,
+                   'parent_id': self.get_parent_id(),
+                   'object_list': self.model.objects.filter(**{self.parent_key: self.get_parent_id()})}}

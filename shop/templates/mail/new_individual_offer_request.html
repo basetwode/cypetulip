@@ -1,0 +1,15 @@
+{% extends 'mail/base.html' %}
+{% load i18n %}
+
+{% block body %}
+
+    <p style="font-size:17px;color:#434144;"></p>
+
+    <p style="font-size:14px;color:#434144;">
+    <h4>{% trans 'New individual offer request' %} </h4>
+    <h5>{{ object.product.name }}</h5>
+    <p>{% trans 'From' %}: {{ object.mail }}</p>
+    <p style="padding-top: 10px">{{ object.message }}</p>
+    <a href="http://{{ host }}{{ overview }}">{{order.unique_nr}}</a> <br>
+    </p>
+{% endblock %}

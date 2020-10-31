@@ -1,4 +1,5 @@
 # Create your views here.
+from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import  reverse
@@ -10,7 +11,7 @@ from management.mixins import NotifyCustomerCreateView, NotifyCustomerUpdateView
 from permissions.mixins import PermissionPostGetRequiredMixin
 from shipping.forms import OnlineShipmentForm, PackageForm
 from shipping.models import OnlineShipment, PackageShipment, Package, Shipment
-from shop.models import OrderDetail
+from shop.models import OrderDetail, OrderState
 
 
 class CreateOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateView, GenericCreateView):
@@ -34,6 +35,9 @@ class CreateOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateV
         shipment: OnlineShipment = form.save(commit=False)
         shipment.order = order
         self.contact = self.get_order().contact
+        order.state = OrderState.objects.get(is_sent_state=True)
+        order.save()
+        messages.success(self.request, _("Shipment created"))
         return super().form_valid(form)
 
     def get_order(self):
@@ -62,6 +66,9 @@ class CreatePackageShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreate
         package_shipment.order = order
         package_shipment.save()
         self.contact = self.get_order().contact
+        order.state = OrderState.objects.get(is_sent_state=True)
+        order.save()
+        messages.success(self.request, _("Shipment created"))
         return super().form_valid(form)
 
     def get_order(self):

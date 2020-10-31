@@ -978,6 +978,10 @@ footer .box {
     padding-right: 3px;
 }
 
+.products .badge-price-on-request {
+    cursor: pointer;
+}
+
 .products hr {
     margin: 0.2rem 0;
     color: #bfbebe
@@ -1005,4 +1009,9 @@ footer .box {
 
 .btn {
     margin-left: 5px;
+    margin-top: 5px;
+}
+
+.list-group-item-light {
+    background-color: #fbfbfb;
 }

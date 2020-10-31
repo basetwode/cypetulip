@@ -1,5 +1,5 @@
 import os
-from datetime import timedelta
+from datetime import timedelta, datetime
 from io import BytesIO
 
 from django.db.models import FloatField, F
@@ -50,6 +50,8 @@ class GeneratePDFFile():
         order_items = OrderItem.objects.filter(order=_order).annotate(
             price_t=Round(F('price') * Cast(F('count'), FloatField()),2),
         )
+        if not order_detail.date_bill:
+            order_detail.date_bill = datetime.now()
         order_detail.date_due = order_detail.date_bill + timedelta(days=company.term_of_payment)
 
         legal_settings = LegalSetting.objects.first()

@@ -66,4 +66,6 @@ urlpatterns = [
         auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     url(r'^reset/done/$', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
+    url(r'offer/(?P<product>[\S0-9_.-\\s\- ]+)$', IndividualOfferView.as_view(), name="individual_offer"),
+
 ]

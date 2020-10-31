@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import pre_delete
@@ -65,6 +67,9 @@ class Address(models.Model):
     class Meta:
         verbose_name_plural = "Addresses"
 
+    def __str__(self):
+        return self.contact.__str__() + " | " + self.name
+
 
 class ProductCategory(models.Model):
     description = models.CharField(max_length=300)
@@ -84,6 +89,8 @@ class Employee(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.first_name + " " + self.last_name
 
 # This is an orderable item which shows up when ordering a product that is public.
 # like squaremeter notes on a plan
@@ -103,7 +110,7 @@ class ProductSubItem(models.Model):
     is_once_per_order = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name + ' - required ' + str(self.is_required)
+        return f"{str(self.product.category)+' | ' if hasattr(self, 'product') else ''}{self.name} | {self.price}"
 
     def price_wt(self):
         return round(self.price * (1 + self.tax), 2)
@@ -172,6 +179,8 @@ class OrderState(models.Model):
         'self', on_delete=models.CASCADE, null=True, blank=True, related_name='cancel_state', )
     next_state = models.ForeignKey(
         'self', on_delete=models.CASCADE, null=True, blank=True, related_name='previous_state', )
+    is_paid_state = models.BooleanField(default=False)
+    is_sent_state = models.BooleanField(default=False)
 
     # todo states have corresponding actions that also need to be linked!
 
@@ -232,6 +241,18 @@ class Product(ProductSubItem):
         self.stock = self.stock + 1 if self.stock > -1 else self.stock
         self.save()
 
+
+class IndividualOffer(models.Model):
+    date_added = models.DateTimeField(auto_now=True,blank=True)
+    mail = models.EmailField()
+    message = models.CharField(max_length=1000)
+    contact = models.ForeignKey(Contact, null=True, blank=True, default=None, editable=False, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, editable=False, null=True, on_delete=models.SET_NULL)
+
+    def is_new(self):
+        return (datetime.now().date() - self.date_added.date()).days < 3
+
+
 class Order(models.Model):
     order_id = models.IntegerField(null=True, blank=True)
     order_hash = models.CharField(max_length=30, null=True, blank=True)
@@ -239,6 +260,7 @@ class Order(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, )
     token = models.CharField(max_length=25, blank=True, null=True)
     session = models.CharField(max_length=40, blank=True, null=True)
+    individual_offer_request = models.ForeignKey(IndividualOffer, on_delete=models.SET_NULL, blank=True, null=True, editable=False)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -312,7 +334,8 @@ class OrderDetail(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product = models.ForeignKey(ProductSubItem, on_delete=models.CASCADE)
+    order_detail = models.ForeignKey(OrderDetail, on_delete=models.CASCADE, default=None, blank=True, null=True)
+    product = models.ForeignKey(ProductSubItem,null=True,blank=True, on_delete=models.CASCADE)
     order_item = models.ForeignKey(
         'OrderItem', on_delete=models.CASCADE, null=True, blank=True, )
     employee = models.ForeignKey(
@@ -325,14 +348,18 @@ class OrderItem(models.Model):
     price_wt = models.FloatField(default=None, blank=True, null=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+             update_fields=None, recalculate_tax=False):
 
-        if not self.price_wt:
+        if not self.price_wt and self.product and not self.product.price_on_request:
             self.price = self.product.special_price if self.product.special_price else self.product.price
             self.price_wt = self.product.bprice_wt()
+        if self.product.price_on_request and not self.price_wt:
+            self.price_wt = round(self.price * (1 + self.product.tax), 2)
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
 
+    def __str__(self):
+        return f"{self.count}x {self.product.name} {self.price}"
 
 # Corresponding OrderItems for the subproducts
 class FileOrderItem(OrderItem):
@@ -360,6 +387,8 @@ class Discount(models.Model):
 
 class WorkingTime(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+
+
 
 
 # Delete files not only db object

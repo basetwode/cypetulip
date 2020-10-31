@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load recurse %}
 {% load fb_versions %}
+{% load bootstrap4 %}
 
 {% block head %}
     <script src="{% static 'utils.js' %}"></script>
@@ -10,6 +11,9 @@
 {% endblock %}
 
 {% block body %}
+
+    {% include 'modals/price_on_request.html' with product=product %}
+    {% bootstrap_messages %}
 
     <div class="row">
         <div class="col-md-12 path">
@@ -60,7 +64,11 @@
                                         {{ product.category.name }}
                                     </p>
                                     <p class="price">
-                                        {% if product.special_price %}
+                                        {% if product.price_on_request %}
+                                            <span data-toggle="modal" data-target="#price_on_request"
+                                              class="badge badge-pill badge-success badge-primary badge-price-on-request">{% trans 'Price on request' %}
+                                                        </span>
+                                        {% elif product.special_price %}
                                             <span style="text-decoration: line-through">{{ product.price_wt | floatformat:2 }} &euro;</span>
                                             <strong style="color: red">{{ product.special_price_wt | floatformat:2 }}
                                                 &euro;</strong>
@@ -74,7 +82,10 @@
                                     <br>
                                     <form id="add-cart-form">
                                         {% csrf_token %}
-                                        {%  if product.stock > 0 or product.stock == -1 %}
+                                        {% if product.price_on_request %}
+                                            <a type="button"
+                                               class="btn btn-secondary btn-md" href="{% url 'shop:individual_offer' product.name %}">{% trans 'Request offer' %}</a>
+                                        {% elif product.stock > 0 or product.stock == -1 %}
                                             <button type="button" onclick="addToCart('{{ product.name }}')"
                                                     class="btn btn-secondary btn-md">{% trans 'Add to cart' %}</button>
                                         {% else %}
