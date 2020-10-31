@@ -20,7 +20,7 @@ from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_
 from shipping.models import Shipment
 from shop.filters import OrderDetailFilter, ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
     PageFilter, ShipmentPackageFilter, FileSubItemFilter
-from shop.forms import OrderDetailForm, OrderForm, OrderItemForm
+from management.forms import OrderDetailForm, OrderForm, OrderItemForm
 from shop.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
     FileSubItem, IndividualOffer
@@ -622,8 +622,11 @@ class CreateOrderView(WizardView):
             return reverse_lazy('individualoffers_overview')
 
     def get_success_url(self):
-        order_detail, created = OrderDetail.objects.get_or_create(order=self.object, state=OrderState.objects.get(initial=True),
+        order_detail, created = OrderDetail.objects.get_or_create(order=self.object,
                                                                   order_number=self.object.order_hash)
+        if not order_detail.state:
+            order_detail.state = OrderState.objects.get(initial=True)
+            order_detail.save()
         return reverse_lazy('create_order_detail', kwargs={'parent_id':self.object.id, 'id': order_detail.id})
 
 
@@ -671,6 +674,8 @@ class CreateOrderItem(RepeatableWizardView):
         order_item = form.save(commit=False)
         order_item.order_detail = OrderDetail.objects.get(id=self.get_parent_id())
         order_item.order = Order.objects.get(id=order_item.order_detail.order.id)
+        if hasattr(order_item.product, 'product'):
+            order_item.product.product.decrease_stock()
         return super(CreateOrderItem, self).form_valid(form)
 
     def get_back_url(self):

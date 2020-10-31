@@ -172,8 +172,8 @@
     <div id="details" class="clearfix">
         <div id="client">
             <div class="name">{{ contact.first_name }} {{ contact.last_name }}</div>
-            <div class="name">{{ company.street }} {{ company.number }}</div>
-            <div class="name">{{ company.zipcode }} {{ company.city }}</div>
+            <div class="name">{{ order_detail.billing_address.street }} {{ order_detail.billing_address.number }}</div>
+            <div class="name">{{ order_detail.billing_address.zipcode }} {{ order_detail.billing_address.city }}</div>
 
         </div>
         <div id="invoice">
