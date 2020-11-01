@@ -1,7 +1,7 @@
 from rest_framework import routers, viewsets, serializers
 
 from shop.models import Product, ProductCategory, ProductAttributeType, ProductAttributeTypeInstance, ProductSubItem
-from shop.rest import AddressViewSet, GuestViewSet, ContactViewSet
+from shop.rest import AddressViewSet, GuestViewSet, ContactViewSet, DeliveryViewSet
 
 
 class ProductAttributeTypeSerializer(serializers.HyperlinkedModelSerializer):
@@ -81,3 +81,4 @@ router.register(r'productsubitem', ProductSubItemViewSet)
 router.register(r'accounts', GuestViewSet)
 router.register(r'addresses', AddressViewSet)
 router.register(r'contacts', ContactViewSet)
+router.register(r'deliveries', DeliveryViewSet)

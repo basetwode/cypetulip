@@ -3,7 +3,8 @@ from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from shop.models import Address, Contact, Company
+from shop.models import Address, Contact, Company, Order, OrderDetail
+from shop.utils import create_hash
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -38,6 +39,11 @@ class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = '__all__'
+
+
+class OrderShipmentSerializer(serializers.Serializer):
+    order = serializers.CharField(max_length=200, required=False)
+    shipment = serializers.CharField(max_length=1)
 
 
 ###############################################################
@@ -110,3 +116,28 @@ class ContactViewSet(viewsets.ModelViewSet):
             return Contact.objects.filter(user=user)
         else:
             raise NotFound()
+
+
+class DeliveryViewSet(viewsets.ViewSet):
+    permission_classes = [AllowAny]
+    queryset = Order.objects.all()
+
+    def create(self, request):
+        order_serializer = OrderShipmentSerializer(data=request.data)
+        if order_serializer.is_valid():
+            order = request.data['order']
+            _order = Order.objects.filter(order_hash=order, is_send=False)
+            order_details = OrderDetail.objects.get(order_number=order)
+            if _order.count() > 0:
+                token = create_hash()
+                shipment_address = Address.objects.get(id=request.data['shipment'])
+                order_details.shipment_address = shipment_address
+                order_details.save()
+                ord = _order[0]
+                ord.token = token
+                ord.save()
+                return Response(order_serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(order_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(order_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

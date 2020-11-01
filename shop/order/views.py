@@ -8,7 +8,7 @@ from shop.errors import Error, FieldError
 from shop.errors import JsonResponse
 from shop.models import Contact, Order, OrderItem, Product, ProductSubItem, Address
 from shop.order.forms import ItemBuilder, SubItemForm, OrderDetail
-from shop.utils import create_hash, json_response, check_params
+from shop.utils import create_hash, json_response
 
 __author__ = 'Anselm'
 
@@ -43,7 +43,8 @@ class ShoppingCartView(View):
                         item.save()
                     else:
                         messages.error(self.request, _('We\'re sorry, we can not add %(article)s to your shopping '
-                                                       'cart because our stocks are insufficient') % {'article': product})
+                                                       'cart because our stocks are insufficient') % {
+                                           'article': product})
                         error_list = JsonResponse(errors=[Error(418, 'Insufficient stock')], success=False)
                         return json_response(code=418, x=error_list.dump(), )
 
@@ -71,7 +72,8 @@ class ShoppingCartView(View):
 
     def is_stock_sufficient(self, order, product):
         order_items_count_with_product = order.orderitem_set.filter(product=product).count()
-        return product.stock == -1 or ( product.stock > order_items_count_with_product)
+        return product.stock == -1 or (product.stock > order_items_count_with_product)
+
 
 class ShoppingCartDetailView(View):
     template_name = 'order/shopping-cart-detail.html'
@@ -148,19 +150,23 @@ class DeliveryView(View):
         else:
             return redirect(reverse('shop:shopping_cart'))
 
-    @check_params(required_arguments={'shipment-address': '[0-9]'}, message="Please select an address")
     def post(self, request, order):
-        _order = Order.objects.filter(order_hash=order, is_send=False)
-        order_details = OrderDetail.objects.get(order_number=order)
-        if _order.count() > 0:
-            token = create_hash()
-            shipment_address = Address.objects.get(id=request.POST.get("shipment-address"))
-            order_details.shipment_address = shipment_address
-            order_details.save()
-            ord = _order[0]
-            ord.token = token
-            ord.save()
-            return json_response(200, x={'token': token, 'order': _order[0].order_hash, 'next_url': '', })
+        if request.body.read("shipment"):
+            _order = Order.objects.filter(order_hash=order, is_send=False)
+            order_details = OrderDetail.objects.get(order_number=order)
+            if _order.count() > 0:
+                token = create_hash()
+                shipment_address = Address.objects.get(id=request.body.get("shipment"))
+                order_details.shipment_address = shipment_address
+                order_details.save()
+                ord = _order[0]
+                ord.token = token
+                ord.save()
+                return json_response(200, x={'token': token, 'order': _order[0].order_hash, 'next_url': '', })
+            else:
+                errors = []
+                result = json_response(code=400, x=JsonResponse(success=False, errors=errors).dump())
+                return result
         else:
             errors = []
             result = json_response(code=400, x=JsonResponse(success=False, errors=errors).dump())

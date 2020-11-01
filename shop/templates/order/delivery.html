@@ -16,9 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
     </script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script type='text/javascript'>
-        const csrfmiddlewaretoken = '{{ csrf_token }}';
-    </script>
+
     <title>{{ product.name }}</title>
 {% endblock %}
 
@@ -43,7 +41,7 @@
                 </div>
                 <div class="stepwizard-step">
                     <a type="button" class="btn btn-outline-success btn-circle"><i
-                            class="far fa-check-square "></i></a>
+                            class="fas fa-check-square"></i></a>
                     <p><small>{% trans "Overview" %}</small></p>
                 </div>
             </div>
@@ -52,6 +50,7 @@
     <div class="row">
         <div class="col-md-12">
             <form id="order-form" method="post">
+
                 {% csrf_token %}
                 <table id="cart" class="table table-hover table-striped table-responsive-md">
                     <thead>
@@ -241,6 +240,17 @@
                                 </div>
 
                                 <div class="modal-body">
+                                    <div v-if="errors.address.length">
+                                        <div class="alert alert-danger" role="alert">
+                                            <b>{% trans 'Please correct the following error(s):' %}</b>
+                                            <ul class="text-decoration-none">
+                                                <li v-for="error in errors.address">
+                                                    [[ error ]]
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
                                     {% if not user.is_authenticated %}
                                         <div class="row">
                                             <div class="col-3"><label class="col-form-label">{% trans 'Title' %}<strong>:
@@ -349,6 +359,17 @@
                         </div>
                     </div>
 
+                    <div v-if="errors.shipment.length">
+                        <div class="alert alert-danger" role="alert">
+                            <b>{% trans 'Please correct the following error(s):' %}</b>
+                            <ul class="text-decoration-none">
+                                <li v-for="error in errors.shipment">
+                                    {% trans 'Shipment' %}: [[ error ]]
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
                     <div class="accordion">
 
                         <div class="btn btn-outline-dark mb-1 ml-0" data-toggle="modal" type="button"
@@ -361,6 +382,7 @@
                                                name="shipment-address" data-toggle="collapse"
                                                :data-target="`#body${entry.id}`"
                                                aria-expanded="false" :aria-controls="`#body${entry.name}`"
+                                               v-model="shipment"
                                                v-bind:value="entry.id">
                                         <label :for="`input${entry.id}`"
                                                data-toggle="collapse" :data-target="`#body${entry.id}`">
@@ -381,29 +403,35 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row mt-1">
+                        <div class="col">
+                            <a href="{% url 'shop:shopping_cart' %}" class="btn btn-warning ml-0"><i
+                                    class="fa fa-angle-left"></i> {% trans 'Back to shoppingcart' %}</a>
+                        </div>
+                        <div class="col">
+                            <a v-on:click="submitDelivery"
+                               class="btn btn-success float-right">{% trans 'Payment' %} <i
+                                    class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="row mt-1">
-                    <div class="col">
-                        <a href="{% url 'shop:shopping_cart' %}" class="btn btn-warning ml-0"><i
-                                class="fa fa-angle-left"></i> {% trans 'Back to shoppingcart' %}</a>
-                    </div>
-                    <div class="col">
-                        <a v-on:click="submitDelivery"
-                           class="btn btn-success float-right">{% trans 'Payment' %} <i
-                                class="fa fa-angle-right"></i></a>
-                    </div>
-                </div>
+
             </form>
 
             <form id="next-step-form" action="/payment/{{ order_details.order_hash }}" method="get">
             </form>
-
+            <script type='text/javascript'>
+                var csrfmiddlewaretoken = '{{ csrf_token }}';
+                var order = '{{ order_details.order_hash }}';
+            </script>
             <script>
                 var app = new Vue({
                     delimiters: ['[[', ']]'],
                     el: '#addressFormInput',
                     data: {
+                        csrfmiddlewaretoken: csrfmiddlewaretoken,
                         contact: {},
                         account: {
                             firstname: "",
@@ -418,7 +446,9 @@
                             city: ""
                         },
                         addresses: [],
-                        "shipment-address": "",
+                        shipment: "",
+                        order: order,
+                        errors: {shipment: [], address: []},
                     },
                     mounted() {
                         this.reloadData()
@@ -435,7 +465,7 @@
                                 });
                         },
                         addAccount: function () {
-                            company = {
+                            let company = {
                                 name: this.account.email,
                                 street: this.account.street,
                                 number: this.account.number,
@@ -450,19 +480,22 @@
                                 telephone: this.account.telephone,
                                 language: this.account.language,
                                 company: company
-                            },
-                                address = {
-                                    name: this.account.description,
-                                    street: this.account.street,
-                                    number: this.account.number,
-                                    zipcode: this.account.zipcode,
-                                    city: this.account.city,
-                                };
+                            }, address = {
+                                name: this.account.description,
+                                street: this.account.street,
+                                number: this.account.number,
+                                zipcode: this.account.zipcode,
+                                city: this.account.city,
+                            };
+                            loadingSpinner = $('#loading-spinner');
+                            loadingSpinner.removeClass('overlay-hidden');
                             axios.post('/api/v1/accounts/', {
                                 address, contact
                             })
                                 .then(response => {
+                                    this.errors.address = [];
                                     this.addresses.push(response.data);
+                                    loadingSpinner.addClass('overlay-hidden');
                                     $('#add-modal').modal('hide');
                                     this.account = {
                                         firstname: "",
@@ -476,33 +509,35 @@
                                         zipcode: "",
                                         city: ""
                                     }
-                                }, error => {
-                                    console.log(error);
                                 })
+                                .catch(error => {
+                                    this.errors.address.push(error.response.data);
+                                    loadingSpinner.addClass('overlay-hidden')
+                                }).finally(() => loadingSpinner.addClass('overlay-hidden'))
                         },
                         submitDelivery: function () {
                             loadingSpinner = $('#loading-spinner');
                             loadingSpinner.removeClass('overlay-hidden');
-                            axios.post('/shop/delivery/{{ order_details.order_hash }}', {
-                                data
+                            shipment = this.shipment
+                            axios.post('/api/v1/deliveries/', {
+                                order,
+                                shipment
+
+                            }, {
+                                headers: {
+                                    'X-CSRFToken': this.csrfmiddlewaretoken
+                                }
                             })
                                 .then(response => {
-                                    $('#alert-success').show();
-                                    loadingSpinner.addClass('overlay-hidden');
+                                    this.errors.shipment = [];
                                     loadingSpinner.addClass('overlay-hidden');
                                     var nextForm = $('#next-step-form');
-                                    if (response.next_url.length > 0) {
-                                        nextForm.attr('action', response.next_url);
-                                    }
-                                    nextForm.find('#next-step-token').val(response.token);
                                     nextForm.submit();
-                                }, error => {
-                                    $('#alert-warning').hide();
-                                    $('#alert-danger').hide();
-                                    loadingSpinner.addClass('overlay-hidden');
-                                    parseErrors(response);
-                                    console.log(error);
                                 })
+                                .catch(error => {
+                                    loadingSpinner.addClass('overlay-hidden');
+                                    this.errors = error.response.data;
+                                }).finally(() => loadingSpinner.addClass('overlay-hidden'))
                         }
                     }
                 });
