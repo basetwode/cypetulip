@@ -72,15 +72,15 @@ class GuestViewSet(viewsets.ViewSet):
                 contact_serializer = ContactSerializer(data=request.data['contact'])
                 if address_serializer.is_valid():
                     address = address_serializer.save()
-                    if contact_serializer.is_valid():
-                        contact = contact_serializer.save()
-                        address.contact = contact
-                        address.save()
-                        return Response(address_serializer.data)
-                    else:
-                        return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                if contact_serializer.is_valid():
+                    contact = contact_serializer.save()
+                    address.contact = contact
+                    address.save()
+                    return Response(address_serializer.data)
                 else:
-                    return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    errors = {**address_serializer.errors, **contact_serializer.errors}
+                    errors.pop("company", None)
+                    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AddressViewSet(viewsets.ModelViewSet):
