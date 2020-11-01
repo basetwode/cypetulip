@@ -243,9 +243,10 @@
                                     <div v-if="errors.address.length">
                                         <div class="alert alert-danger" role="alert">
                                             <b>{% trans 'Please correct the following error(s):' %}</b>
-                                            <ul class="text-decoration-none">
-                                                <li v-for="error in errors.address">
-                                                    [[ error ]]
+                                            <ul>
+                                                <li class="text-decoration-none"
+                                                    v-for="(value, propertyName) in errors.address[0]">
+                                                    {% trans '[[  propertyName]]' %} : [[ value[0] ]]
                                                 </li>
                                             </ul>
                                         </div>
@@ -352,7 +353,7 @@
                                     </div>
                                     <button type="button" class="btn btn-secondary"
                                             data-dismiss="modal">{% trans 'Close' %}</button>
-                                    <button type="button" v-on:click="addAccount"
+                                    <button type="submit" v-on:click="addAccount"
                                             class="btn btn-primary">{% trans 'Add' %}</button>
                                 </div>
                             </div>
@@ -363,8 +364,8 @@
                         <div class="alert alert-danger" role="alert">
                             <b>{% trans 'Please correct the following error(s):' %}</b>
                             <ul class="text-decoration-none">
-                                <li v-for="error in errors.shipment">
-                                    {% trans 'Shipment' %}: [[ error ]]
+                                <li v-for="(value, propertyName) in errors.shipment[0]">
+                                    {% trans '[[propertyName]]' %}: [[ value[0] ]]
                                 </li>
                             </ul>
                         </div>
