@@ -6,9 +6,9 @@ from django.views.generic import View
 
 from shop.errors import Error, FieldError
 from shop.errors import JsonResponse
-from shop.models import Contact, Order, OrderItem, Product, ProductSubItem, Address
+from shop.models import Contact, Order, OrderItem, Product, ProductSubItem
 from shop.order.forms import ItemBuilder, SubItemForm, OrderDetail
-from shop.utils import create_hash, json_response
+from shop.utils import json_response
 
 __author__ = 'Anselm'
 
@@ -21,7 +21,8 @@ class ShoppingCartView(View):
         product_obj = Product.objects.filter(name=product)
         if product_obj.count() > 0 and product_obj[0].price_on_request:
             messages.error(self.request, _('We\'re sorry, we can not add %(article)s to your shopping '
-                                           'cart because it can only be ordered using our individual offer form') % {'article': product})
+                                           'cart because it can only be ordered using our individual offer form') % {
+                               'article': product})
             error_list = JsonResponse(errors=[Error(419, 'Error')], success=False)
             return json_response(code=418, x=error_list.dump(), )
         if request.user.is_authenticated:
@@ -149,28 +150,6 @@ class DeliveryView(View):
                                                         'sub_products_once_only': sub_products_once_only})
         else:
             return redirect(reverse('shop:shopping_cart'))
-
-    def post(self, request, order):
-        if request.body.read("shipment"):
-            _order = Order.objects.filter(order_hash=order, is_send=False)
-            order_details = OrderDetail.objects.get(order_number=order)
-            if _order.count() > 0:
-                token = create_hash()
-                shipment_address = Address.objects.get(id=request.body.get("shipment"))
-                order_details.shipment_address = shipment_address
-                order_details.save()
-                ord = _order[0]
-                ord.token = token
-                ord.save()
-                return json_response(200, x={'token': token, 'order': _order[0].order_hash, 'next_url': '', })
-            else:
-                errors = []
-                result = json_response(code=400, x=JsonResponse(success=False, errors=errors).dump())
-                return result
-        else:
-            errors = []
-            result = json_response(code=400, x=JsonResponse(success=False, errors=errors).dump())
-            return result
 
 
 def create_form(request, all_forms, key, value, **kwargs):
