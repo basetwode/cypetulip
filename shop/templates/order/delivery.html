@@ -536,7 +536,7 @@
                                 })
                                 .catch(error => {
                                     loadingSpinner.addClass('overlay-hidden');
-                                    this.errors = error.response.data;
+                                    this.errors.shipment.push(error.response.data);
                                 }).finally(() => loadingSpinner.addClass('overlay-hidden'))
                         }
                     }
