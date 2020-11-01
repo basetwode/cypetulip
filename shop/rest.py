@@ -43,7 +43,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class OrderShipmentSerializer(serializers.Serializer):
     order = serializers.CharField(max_length=200, required=False)
-    shipment = serializers.CharField(max_length=1)
+    shipment = serializers.CharField()
 
 
 ###############################################################
