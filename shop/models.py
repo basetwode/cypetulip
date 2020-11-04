@@ -301,6 +301,7 @@ class OrderDetail(models.Model):
     state = models.ForeignKey(OrderState, on_delete=models.CASCADE, null=True,
                               blank=True, )
     date_bill = models.DateTimeField(null=True, blank=True)
+    bill_sent = models.BooleanField(default=False, blank=True)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True, )
     shipment_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True,
                                          related_name='shipment_address')
@@ -378,7 +379,7 @@ class OrderItem(models.Model):
         super(OrderItem, self).delete(using, keep_parents)
 
     def __str__(self):
-        return f"{self.count}x {self.product.name} {self.price}"
+        return f"{self.count}x {self.product.name if self.product else ''} {self.price}"
 
 # Corresponding OrderItems for the subproducts
 class FileOrderItem(OrderItem):

@@ -143,7 +143,8 @@ class OrderConfirmedView(View):
                 order_item.product.special_price else order_item.product.price
             order_item.save()
 
-        order_detail.state = OrderState.objects.get(initial=True)
+        if not order_detail.state:
+            order_detail.state = OrderState.objects.get(initial=True)
         order_detail.save()
         if _order.is_send:
             return redirect(reverse("detail_order", args=[order]))
@@ -205,5 +206,3 @@ class IndividualOfferView(EmailNotifyStaffView, FormView):
         messages.success(self.request, _("Thank you for your request, we'll contact you soon"))
         return HttpResponseRedirect(self.get_success_url())
 
-    # todo: create mgmt view and send an email upon save
-    # todo: extend mail with link

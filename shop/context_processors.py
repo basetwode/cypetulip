@@ -8,7 +8,7 @@ def get_open_orders(request):
     if request.user.is_authenticated:
         contact = Contact.objects.filter(user=request.user)
         if contact.count() > 0:
-            order = Order.objects.filter(is_send=False, company=contact[0].company)
+            order = Order.objects.filter(company=contact[0].company, orderdetail__state__isnull=True)
             return collect_open_orders(order)
     elif request.session.session_key:
         order = Order.objects.filter(is_send=False, session=request.session.session_key)

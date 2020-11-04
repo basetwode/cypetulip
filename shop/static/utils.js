@@ -61,6 +61,7 @@ function submitForm(url, form) {
             var nextForm = $('#next-step-form');
             if (response.next_url.length > 0) {
                 nextForm.attr('action', response.next_url);
+                nextForm.attr('method','get');
             }
             nextForm.find('#next-step-token').val(response.token);
             nextForm.submit();

@@ -1,3 +1,5 @@
+from functools import reduce
+
 from django.shortcuts import redirect, render
 from django.template.defaultfilters import lower
 from django.urls import reverse, reverse_lazy
@@ -9,7 +11,7 @@ from shop.errors import (FieldError,
 from shop.models import Contact, Order, OrderDetail
 from shop.order.utils import get_order_for_hash_and_contact
 from shop.utils import json_response, check_params
-from .methods.forms import PaymentFormFactory, get_all_payment_forms_as_dict
+from .methods.forms import PaymentFormFactory, get_all_payment_forms_as_dict, LegalForm
 
 
 class PaymentView(View):
@@ -18,17 +20,20 @@ class PaymentView(View):
     model = PaymentMethod
 
     def get(self, request, order):
-        payment_methods = PaymentMethod.objects.all()
-        return render(request, self.template_name, {'payment_methods': payment_methods})
+        payment_methods = PaymentMethod.objects.filter(enabled=True)
+        payment_forms = get_all_payment_forms_as_dict()
+        for method in payment_methods:
+            method.form = PaymentFormFactory(method.name)
+        return render(request, self.template_name, { 'payment_methods': payment_methods, 'forms': payment_forms, 'legal_form': LegalForm()})
 
     def post(self, request, order):
-        payment_methods = PaymentMethod.objects.all()
+        payment_methods = PaymentMethod.objects.filter(enabled=True)
         payment_forms = get_all_payment_forms_as_dict()
         for method in payment_methods:
             method.form = PaymentFormFactory(method.name)
         order_object = get_order_for_hash_and_contact(Contact.objects.filter(user=request.user), order)
         return render(request, self.template_name,
-                      {'order_details': order_object, 'payment_methods': payment_methods, 'forms': payment_forms})
+                      {'order_details': order_object, 'payment_methods': payment_methods, 'forms': payment_forms, 'legal_form': LegalForm()})
 
 
 class PaymentConfirmationView(View):
@@ -68,12 +73,15 @@ class PaymentCreationView(CreateView):
     def post(self, request, order):
         _order = Order.objects.get(order_hash=order)
         order_details = OrderDetail.objects.get(order=_order)
+        order_details.contact = Contact.objects.get(user=self.request.user)
+        order_details.save()
         payment_details = PaymentDetail.objects.filter(order=_order)
         payment_details.delete()
 
         choosen_payment_method = PaymentMethod.objects.get(id=request.POST['method'])
         form = PaymentFormFactory(choosen_payment_method.name, request.POST)
-        if form.is_valid():
+        legal_form = LegalForm(request.POST)
+        if form.is_valid() and legal_form.is_valid():
             payment_instance = form.save(commit=False)
             payment_instance.user = order_details.contact
             payment_instance.order = _order
@@ -83,14 +91,15 @@ class PaymentCreationView(CreateView):
                 next_url=reverse('payment:%s' % lower(payment_instance.method.name),
                                  args=[order])).dump())
         else:
-            result = self.__form_is_not_valid(form)
+            result = self.__form_is_not_valid(form, legal_form)
 
         return result
 
     def paypal(self, order, form):
         pass
 
-    def __form_is_not_valid(self, form):
-        errors = [FieldError(field_name=k, message=v) for k, v in form.errors.items()]
+    def __form_is_not_valid(self, form1, form2):
+        form_items = {**form1.errors, **form2.errors}
+        errors = [FieldError(field_name=k, message=v) for k, v in form_items.items()]
         error_list = JsonResponse(errors=errors, success=False)
         return json_response(code=400, x=error_list.dump())

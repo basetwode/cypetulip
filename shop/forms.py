@@ -1,5 +1,7 @@
-from django.forms import CharField, ModelForm, Textarea
+from django.forms import CharField, ModelForm, Textarea, BooleanField
 from django.utils.datastructures import MultiValueDictKeyError
+from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
 
 from shop.models import ProductAttributeType, IndividualOffer
 
@@ -37,11 +39,22 @@ class ProductAttributeForm(ModelForm):
 
 
 class IndividualOfferForm(ModelForm):
+
+    gdpr = BooleanField(required=True,
+                        label=mark_safe(_("I hereby consent to the processing of my personal data. "
+                                "The information is only collected and processed for processing the contact request and "
+                                "is only stored for the period of communication, but for a maximum of 6 months. If a contract"
+                                " is concluded based on this request, legal retention periods apply. "
+                                "For more information, see our <a href='/cms/privacy-policy'>privacy policy</a>")))
+
     class Meta:
         model = IndividualOffer
         fields = '__all__'
         widgets = {
             'message': Textarea(attrs={'cols': 80, 'rows': 10}),
+        }
+        labels = {
+            'gdpr': 'this is a label'
         }
 
 

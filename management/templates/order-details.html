@@ -345,7 +345,7 @@
 
             </div>
 
-            <div class="col-lg-3 col-md-12 col-sm-12">
+            <div class="col-lg-3 col-md-12 col-sm-12 text-center">
                 <h5 class="h-bold">{% trans 'Options' %}</h5>
                 <a href="{% url 'create_order' order.id %}"
                    class="btn btn-fw btn-warning">{% trans 'Edit order' %}</a>
@@ -369,6 +369,9 @@
                     {% csrf_token %}
                     <button type="submit"
                             class="btn btn-fw btn-secondary">{% trans 'Send Invoice' %}</button>
+                    {% for order_detail in order.orderdetail_set.all %}
+                        {% if not order_detail.bill_sent %}<small>{% trans 'Invoice has not been sent yet' %}</small>{% endif %}
+                    {% endfor %}
                 </form>
                 <form action="{% url 'pay_order' order.order_hash %}" method="post">
                     {% csrf_token %}
@@ -450,6 +453,42 @@
                             </tr>
                         {% endfor %}
                     {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div><div class="card-footer">
+            <h5>{% trans 'Payments' %}</h5>
+            <div class="col-12">
+
+                <table id="cart" class="table table-hover table-striped table-responsive-sm">
+                    <thead>
+                    <tr>
+                        <th style="width:5%">{% trans '#' %}</th>
+                        <th style="width:7%">{% trans 'Type' %}</th>
+                        <th style="width:40%">{% trans 'Details' %}</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for payment in order.paymentdetail_set.all %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ payment.method.name }}</td>
+                                <td>{% if payment.paypal %}
+                                    <b>{% trans 'Order ID' %}: </b>{{ payment.paypal.paypal_order_id }}<br>
+                                    <b>{% trans 'Transaction ID' %}: </b>{{ payment.paypal.paypal_transaction_id }}<br>
+                                    <b>{% trans 'Payer ID' %}: </b>{{ payment.paypal.paypal_payer_id }}<br>
+                                {% else %} {% endif %}</td>
+
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>{% trans 'No payments' %}</td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
 
                 </table>

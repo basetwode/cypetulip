@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load recurse %}
 {% load get_type %}
+{% load bootstrap4 %}
 {% block head %}
     <script src="{% static 'payment_utils.js' %}"></script>
     <script src="{% static 'utils.js' %}"></script>
@@ -47,7 +48,7 @@
 
                 <div class="col-12">
                     <h4>{% trans 'Payment' %}</h4>
-                    <form id="payment-form" class="form-horizontal"
+                    <form id="payment-form" class="form-horizontal" method="get"
                           action="/payment/create/{{ order_details.order_hash }}">
                         {% csrf_token %}
                         <div id="method">
@@ -66,10 +67,10 @@
                                                    data-target="#body{{ payment_method.name }}"
                                                    aria-expanded="false" aria-controls="#body{{ payment_method.name }}"
                                                    value="{{ payment_method.id }}">
-                                            <label for="input{{ payment_method.name }}"
+                                            <label class="pl-2" for="input{{ payment_method.name }}"
                                                    data-toggle="collapse" data-target="#body{{ payment_method.name }}"
                                             >
-                                                <i class="fa fa-{{ payment_method.name|lower }}"></i>
+                                                <i class="fab fa-cc-{{ payment_method.name|lower }}"></i>
                                                 {{ payment_method.name }}</label>
                                         </h2>
                                     </div>
@@ -79,42 +80,36 @@
                                          data-parent="#paymentFormInput">
                                         <div class="card-body">
                                             {{ payment_method.details }}<p></p>
-                                            {% for field in payment_method.form %}
+                                            {% bootstrap_form payment_method.form %}
 
-                                                <div id="{{ field.html_name }}" class="form-group">
-                                                    <label class="control-label col-sm-2">{{ field.label }}
-                                                    </label>
-                                                    <div class="col-sm-10">
-                                                        {{ field|addcss:'form-control' }}
-                                                        <p class="error" style="color: #FF4136"></p>
-                                                    </div>
-                                                    <div class="col-sm-12">
-
-                                                    </div>
-                                                </div>
-                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>
                             {% endfor %}
                         </div>
+                        <div class="row">
+                            <div class="p-4 col-12">
+
+                                {% bootstrap_form legal_form %}
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
-            <div class="col">
-                <a onclick="submitForm('create/','payment-form')"
-                   class="btn btn-success float-right">{% trans 'Send' %} <i
-                        class="fa fa-angle-right"></i></a>
-            </div>
-
-
-            <form id="next-step-form" action="confirm/" method="post">
-                {% csrf_token %}
-
-                <input id="next-step-token" type="hidden" name="token" value="{{ order_details.order_hash }}">
-            </form>
+        <div class="col pb-3">
+            <a onclick="submitForm('create/','payment-form')"
+               class="btn btn-success float-right">{% trans 'Send' %} <i
+                    class="fa fa-angle-right"></i></a>
         </div>
+
+
+        <form id="next-step-form" action="confirm/" method="post">
+            {% csrf_token %}
+
+            <input id="next-step-token" type="hidden" name="token" value="{{ order_details.order_hash }}">
+        </form>
+    </div>
 
     </div>
 

@@ -30,7 +30,7 @@ class ShoppingCartView(View):
             if contact:
                 if product_obj.count() > 0 and contact.count() > 0:
                     company = contact[0].company
-                    order = Order.objects.filter(is_send=False, company=company)
+                    order = Order.objects.filter(orderdetail__state__isnull=True, company=company)
                     if order.count() == 0:
                         order = Order(is_send=False, company=company)
                         order.save()

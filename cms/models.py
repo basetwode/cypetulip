@@ -1,8 +1,19 @@
+from enum import Enum
+
 from django.db import models
 # Create your models here.
 from tinymce import HTMLField
+from django.utils.translation import ugettext_lazy as _
+
 
 from mediaserver.upload import fs, public_files_upload_handler
+
+
+class PredefinedPages(Enum):
+    PRIVACY_POLICY = _('Privacy Policy')
+    GENERAL_BUSINESS_TERMS = _('General business terms')
+    CANCELLATION_POLICY = _('Cancellation policy')
+    LEGAL = _('Legal')
 
 
 class Page(models.Model):

@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load recurse %}
 {% load get_type %}
+{% load bootstrap4 %}
 {% block head %}
     <script src="{% static 'payment_utils.js' %}"></script>
     <script src="{% static 'utils.js' %}"></script>
@@ -12,6 +13,7 @@
 {% endblock %}
 
 {% block body %}
+    {% bootstrap_messages %}
     <div class="main">
         <div class="content col-md-12">
             <div class="payment-overview-step row">

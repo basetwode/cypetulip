@@ -100,11 +100,11 @@
 
                         <div class="col-md-2">
                             <strong>
-                                {% trans 'State' %}
+                                {% trans 'Payment' %}
                             </strong>
                             <div>
-                                {% for order_detail in order.orderdetail_set.all %}
-                                    {{ order_detail.state.name }}
+                                {% for payment in order.paymentdetail_set.all %}
+                                    {% trans 'via ' %}{{ payment.method.name }}
                                 {% endfor %}
                             </div>
                         </div>
@@ -311,7 +311,7 @@
                             <button type="submit" {% if not order_details.state.initial %}disabled{% endif %}
                                     class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
                         </form>
-                        {% if order_details.bill_date %}
+                        {% if order_details.bill_sent %}
                         <a target="_blank" href="{% url 'invoice_pdf' order.order_hash %}"
                            class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
                         {% endif %}

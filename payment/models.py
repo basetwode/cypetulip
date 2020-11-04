@@ -17,8 +17,9 @@ PAYMENTMETHOD_BILL_NAME = 'Bill'
 # Details for logging in to the api
 class PaymentProvider(models.Model):
     api = models.CharField(max_length=100)
-    user_name = models.CharField(max_length=40)
-    secret = models.CharField(max_length=50)
+    user_name = models.CharField(max_length=200)
+    secret = models.CharField(max_length=200)
+    use_sandbox = models.BooleanField(default=True, blank=True)
 
 
 # method like paypal and sofort
@@ -26,7 +27,7 @@ class PaymentMethod(models.Model):
     name = models.CharField(max_length=30)
     details = models.CharField(max_length=500, default='')
     provider = models.ForeignKey(PaymentProvider, on_delete=models.CASCADE, blank=True, null=True)
-
+    enabled = models.BooleanField(default=True, blank=True)
 
 class CardType(models.Model):
     name = models.CharField(max_length=20)
@@ -55,10 +56,16 @@ class Bill(PaymentDetail):
     pass
 
 
+class PayPal(PaymentDetail):
+    paypal_order_id = models.CharField(max_length=70, blank=True, null=True, default="")
+    paypal_transaction_id = models.CharField(max_length=70, blank=True, null=True, default="")
+    paypal_payer_id = models.CharField(max_length=70, blank=True, null=True, default="")
+
+
 # The object for orders to determine wether order has been paid or not and stuff
 class Payment(models.Model):
     is_paid = models.BooleanField()
-    token = models.CharField(max_length=30)
+    token = models.CharField(max_length=100)
     details = models.ForeignKey(PaymentDetail, on_delete=models.CASCADE)
 
     def save(self, force_insert=False, force_update=False, using=None,

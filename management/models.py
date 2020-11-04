@@ -36,7 +36,8 @@ class LegalSetting(models.Model):
     register_number = models.CharField(max_length=50, default=None)
     logo = models.FileField(default=None, null=True, blank=True,
                             upload_to=public_files_upload_handler, storage=fs)
-    cancellation_policy = HTMLField(null=True, blank=True, default=None)
     iban = models.CharField(max_length=20, null=True, blank=True, default=None)
     bic = models.CharField(max_length=20, null=True, blank=True, default=None)
     account_holder = models.CharField(max_length=20, null=True, blank=True, default=None)
+    cancellation_policy = HTMLField(null=True, blank=True, default=None)
+    general_business_term = HTMLField(null=True, blank=True, default=None)

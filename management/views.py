@@ -500,11 +500,15 @@ class OrderAcceptInvoiceView(View, EmailMixin):
 
     def post(self, request, order_hash):
         _order = OrderDetail.objects.get(order_number=order_hash)
+
         if _order.state.initial:
             _order.state = _order.state.next_state
             _order.assigned_employee = Employee.objects.get(user=request.user)
+        if not _order.date_bill:
             _order.date_bill = datetime.now()
-
+            _order.assigned_employee = Employee.objects.get(user=request.user)
+        _order.bill_sent = True
+        _order.save()
         try:
             self.send_invoice(_order)
             _order.save()
