@@ -55,6 +55,8 @@ class CreditCard(PaymentDetail):
 class Bill(PaymentDetail):
     pass
 
+class Prepayment(PaymentDetail):
+    pass
 
 class PayPal(PaymentDetail):
     paypal_order_id = models.CharField(max_length=70, blank=True, null=True, default="")

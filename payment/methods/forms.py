@@ -3,7 +3,7 @@ from django.forms import BooleanField
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from payment.models import Bill, CreditCard, PayPal
+from payment.models import Bill, CreditCard, PayPal, Prepayment
 
 
 class LegalForm(forms.Form):
@@ -54,6 +54,17 @@ class PayPalForm(PaymentForm):
     @staticmethod
     def _name():
         return 'PayPal'
+
+
+class PrepaymentForm(PaymentForm):
+    class Meta:
+        model = Prepayment
+        fields = '__all__'
+        exclude = ['user', 'order', 'method']
+
+    @staticmethod
+    def _name():
+        return 'Prepayment'
 
 
 def PaymentFormFactory(class_name, form=None):

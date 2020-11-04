@@ -2,6 +2,7 @@ from django.conf.urls import url
 
 from payment.methods.bill.views import BillConfirmView, BillSubmitView
 from payment.methods.paypal.views import PaypalPaymentConfirmationView, PaypalSubmitView
+from payment.methods.prepayment.views import PrepaymentConfirmView, PrepaymentSubmitView
 from payment.views import (PaymentConfirmationView, PaymentCreationView,
                            PaymentView)
 
@@ -21,6 +22,11 @@ urlpatterns = [
         BillConfirmView.as_view(), name="bill"),
     url(r"^(?P<order>[\S0-9_.-\\s\-_ ]*)/bill/submit/$",
         BillSubmitView.as_view(), name="bill_submit"),
+
+    url(r"^(?P<order>[\S0-9_.-\\s\-_ ]*)/prepayment/$",
+        PrepaymentConfirmView.as_view(), name="prepayment"),
+    url(r"^(?P<order>[\S0-9_.-\\s\-_ ]*)/prepayment/submit/$",
+        PrepaymentSubmitView.as_view(), name="prepayment_submit"),
 
     url(r"^(?P<order>[\S0-9_.-\\s\-_ ]*)/create/$",
         PaymentCreationView.as_view(), name="payment_create"),
