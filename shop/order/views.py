@@ -39,8 +39,9 @@ class ShoppingCartView(View):
                         order_detail.save()
                     else:
                         order = order[0]
+                    order_detail = OrderDetail.objects.get(order=order)
                     if self.is_stock_sufficient(order, product_obj[0]):
-                        item = OrderItem(order=order, product=product_obj[0], count=1)
+                        item = OrderItem(order=order, order_detail=order_detail, product=product_obj[0], count=1)
                         item.save()
                     else:
                         messages.error(self.request, _('We\'re sorry, we can not add %(article)s to your shopping '

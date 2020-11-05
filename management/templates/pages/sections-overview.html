@@ -61,7 +61,7 @@
                                 <a class="btn btn-outline-dark"
                                    href="{% url 'section_edit' section.id %}">{% trans 'Edit' %}</a>
                                 <button class="btn btn-outline-dark" data-toggle="modal"
-                                        data-target="#delete-modal">{% trans 'Delete' %}</button>
+                                        data-target="#delete-modal-{{ section.id }}">{% trans 'Delete' %}</button>
 
                                 {% include 'delete-modal.html' with id=section.id url='section_delete' url_param='section_id' %}
                             </div>
