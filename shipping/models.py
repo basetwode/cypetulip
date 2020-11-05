@@ -1,7 +1,7 @@
 from django.db import models
 
 from mediaserver.upload import fs, shipment_files_upload_handler
-from shop.models import OrderDetail
+from shop.models import OrderDetail, OrderItem
 
 
 class Continent(models.Model):
@@ -42,6 +42,7 @@ class Package(models.Model):
 class Shipment(models.Model):
     order = models.ForeignKey(OrderDetail, on_delete=models.SET_NULL, null=True, blank=True, )
     date_shipped = models.DateTimeField(auto_now_add=True)
+    order_items_shipped = models.ManyToManyField(OrderItem, null=True, blank=True)
 
 
 class PackageShipment(Shipment):

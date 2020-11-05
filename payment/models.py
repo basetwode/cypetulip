@@ -41,6 +41,10 @@ class PaymentDetail(models.Model):
     method = models.ForeignKey(PaymentMethod, on_delete=models.CASCADE)
     user = models.ForeignKey(Contact, on_delete=models.CASCADE, blank=True)
 
+    def delete(self, using=None, keep_parents=False):
+        self.payment_set.delete()
+        super(PaymentDetail, self).delete(using, keep_parents)
+
 
 # TODO: a credit card should belong to an user or company
 class CreditCard(PaymentDetail):

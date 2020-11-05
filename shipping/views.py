@@ -44,6 +44,10 @@ class CreateOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateV
         order_hash = self.kwargs['order'] if 'order' in self.kwargs else None
         return get_object_or_404(OrderDetail, order__order_hash=order_hash)
 
+    def get_form_kwargs(self):
+        form_kwargs = super(CreateOnlineShipment, self).get_form_kwargs()
+        return {**form_kwargs, **{'order_detail': self.get_order()}}
+
 
 class CreatePackageShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateView, GenericCreateView):
     model = Package
@@ -65,6 +69,9 @@ class CreatePackageShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreate
         package_shipment = PackageShipment(package=package)
         package_shipment.order = order
         package_shipment.save()
+        package_shipment.order_items_shipped.clear()
+        package_shipment.order_items_shipped.add(*form.cleaned_data['order_items_shipped'])
+        package_shipment.save()
         self.contact = self.get_order().contact
         order.state = OrderState.objects.get(is_sent_state=True)
         order.save()
@@ -74,6 +81,10 @@ class CreatePackageShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreate
     def get_order(self):
         order_hash = self.kwargs['order'] if 'order' in self.kwargs else None
         return get_object_or_404(OrderDetail, order__order_hash=order_hash)
+
+    def get_form_kwargs(self):
+        form_kwargs = super(CreatePackageShipment, self).get_form_kwargs()
+        return {**form_kwargs, **{'order_detail': self.get_order()}}
 
 
 class ShowOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerUpdateView, UpdateView):

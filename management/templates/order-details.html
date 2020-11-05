@@ -225,7 +225,6 @@
                                 <td class="actions" data-th="">
                                 </td>
                             </tr>
-
                             {% for sub_item in order.orderitem_set.all %}
                                 <tr id="{{ order.id }}-{{ sub_item.id }}"
                                     style="border-top: none">
@@ -400,8 +399,7 @@
                         <th style="width:5%">{% trans '#' %}</th>
                         <th style="width:7%">{% trans 'Type' %}</th>
 
-                        <th style="width:22%"
-                            class="text-center">{% trans 'Date shipped' %}</th>
+                        <th style="width:22%">{% trans 'Date shipped' %}</th>
                         <th style="width:40%">{% trans 'Details' %}</th>
                         <th style="width:10%">{% trans 'Actions' %}</th>
                     </tr>
@@ -414,7 +412,14 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td>{% if shipment.packageshipment %} {% trans 'Package' %}{% else %}
                                     {% trans 'Online' %}{% endif %}</td>
-                                <td>{{ shipment.date_shipped }}</td>
+                                <td>{{ shipment.date_shipped }}<br><p></p>
+                                    <small><b>{% trans 'Shipped products: ' %}</b></small><br>
+                                    {% for shipped_product in shipment.order_items_shipped.all %}
+                                        <p class="pl-3 pt-2">{{ shipped_product.product.name }}</p>
+                                    {% empty %}
+                                        <p  class="pl-3 pt-2"><small>{% trans 'No products associated with this shipment' %}</small></p>
+                                    {% endfor %}
+                                </td>
                                 <td>
                                     {% if shipment.packageshipment %}
                                         <p>{% trans 'Price: ' %}{{ shipment.packageshipment.package.price }}</p>

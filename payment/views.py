@@ -5,7 +5,7 @@ from django.template.defaultfilters import lower
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View, CreateView
 
-from payment.models import PaymentDetail, PaymentMethod
+from payment.models import PaymentDetail, PaymentMethod, Payment
 from shop.errors import (FieldError,
                          JsonResponse)
 from shop.models import Contact, Order, OrderDetail
@@ -75,6 +75,7 @@ class PaymentCreationView(CreateView):
         order_details = OrderDetail.objects.get(order=_order)
         order_details.contact = Contact.objects.get(user=self.request.user)
         order_details.save()
+
         payment_details = PaymentDetail.objects.filter(order=_order)
         payment_details.delete()
 
