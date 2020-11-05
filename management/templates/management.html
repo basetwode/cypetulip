@@ -33,13 +33,16 @@
 
             </div>
             <div class="card-body">
-
+                <h5 class="card-title">{% trans 'Orders' %}</h5>
                 <a href="{% url 'management_all_orders' %}"
                    class="btn btn-primary">{% trans 'All orders' %}</a>
+                <a href="{% url 'create_order' '' %}"
+                   class="btn btn-primary">{% trans 'Create new order' %}</a>
+                <hr>
                 <a href="{% url 'all_shipments' %}"
                    class="btn btn-primary">{% trans 'All shipments' %}</a>
                 <a href="{% url 'individualoffers_overview' %}"
-                   class="btn btn-primary">{% trans 'Offer requests' %}</a>
+                   class="btn btn-primary">{% trans 'All offer-requests' %}</a>
                 <hr>
                 <p>{% trans 'Search orders' %}</p>
                 <form action="{% url 'search_orders' %}">

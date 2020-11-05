@@ -73,7 +73,7 @@
                                 <a class="btn btn-outline-dark"
                                    href="{% url 'filesubitem_edit' filesubitem.id %}">{% trans 'Edit' %}</a>
                                 <button class="btn btn-outline-dark" data-toggle="modal"
-                                        data-target="#delete-modal">{% trans 'Delete' %}</button>
+                                        data-target="#delete-modal-{{ filesubitem.id}}">{% trans 'Delete' %}</button>
                                 {% include 'delete-modal.html' with id=filesubitem.id url='filesubitem_delete' url_param='filesubitem_delete_id' %}
 
                             </div>

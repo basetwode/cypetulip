@@ -590,6 +590,10 @@ class DeleteOrder(DeleteView):
         messages.success(self.request, _('Order deleted'))
         return reverse_lazy('management_all_orders')
 
+    def delete(self, request, *args, **kwargs):
+        Shipment.objects.filter(order=self.get_object().orderdetail_set.first()).delete()
+        return super(DeleteOrder, self).delete(request, *args, **kwargs)
+
 
 class CreateOrderView(WizardView):
     page_title = _('Select customer')

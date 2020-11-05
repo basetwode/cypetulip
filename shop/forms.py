@@ -1,8 +1,11 @@
+from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV2Checkbox
 from django.forms import CharField, ModelForm, Textarea, BooleanField
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
+from management.models import ShopSetting
 from shop.models import ProductAttributeType, IndividualOffer
 
 
@@ -57,4 +60,10 @@ class IndividualOfferForm(ModelForm):
             'gdpr': 'this is a label'
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        settings = ShopSetting.objects.first()
 
+        self.fields['captcha'] = ReCaptchaField(widget=ReCaptchaV2Checkbox,
+                                                public_key=settings.google_recaptcha_publickey,
+                                                private_key=settings.google_recaptcha_privatekey)

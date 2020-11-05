@@ -444,7 +444,7 @@
                                 {% endif %}
 
                                     <a href="#" class="btn btn-outline-dark" data-toggle="modal"
-                                       data-target="#delete-modal">{% trans 'Delete' %}</a>
+                                       data-target="#delete-modal-{{ shipment.id }}">{% trans 'Delete' %}</a>
                                     {% include 'delete-modal.html' with id=shipment.id order_hash=order.order_hash url='shipping:shipment_delete' url_param='filesubitem_delete_id' %}
                                 </td>
                             </tr>
