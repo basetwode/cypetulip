@@ -14,6 +14,7 @@ class PredefinedPages(Enum):
     GENERAL_BUSINESS_TERMS = _('General business terms')
     CANCELLATION_POLICY = _('Cancellation policy')
     LEGAL = _('Legal')
+    CONTACT = _('Contact')
 
 
 class Page(models.Model):

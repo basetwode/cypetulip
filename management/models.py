@@ -24,6 +24,11 @@ class LdapSetting(models.Model):
     ldap_group_filter = models.CharField(max_length=1000)
 
 
+class ShopSetting(models.Model):
+    google_recaptcha_publickey = models.CharField(max_length=100)
+    google_recaptcha_privatekey = models.CharField(max_length=100)
+
+
 class LegalSetting(models.Model):
     company_name = models.CharField(max_length=100)
     street = models.CharField(max_length=40, default=None)

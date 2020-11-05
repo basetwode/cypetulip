@@ -1,0 +1,15 @@
+{% extends 'mail/base.html' %}
+{% load i18n %}
+
+{% block body %}
+
+    <p style="font-size:17px;color:#434144;"></p>
+
+    <p style="font-size:14px;color:#434144;">
+    <h4>{% trans 'New individual contact request' %} </h4>
+    <p>{% trans 'Name' %}: {{ request_name }}</p>
+    <p>{% trans 'Email' %}: {{ request_email }}</p>
+    <p>{% trans 'Phone' %}: {{ request_phone }}</p>
+    <p>{% trans 'Message' %}: {{ request_message }}</p>
+    </p>
+{% endblock %}

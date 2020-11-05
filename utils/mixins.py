@@ -63,10 +63,10 @@ class EmailThread(threading.Thread):
                     for file_name, file in self.context['files'].items():
                         email.attach(file_name, file, )
 
-                if isinstance(self.context['object'], OnlineShipment):
+                if 'object' in self.context and isinstance(self.context['object'], OnlineShipment):
                     email.attach_file(self.context['object'].file.path)
 
-                if isinstance(self.context['object'], Order):
+                if 'object' in self.context and isinstance(self.context['object'], Order):
                     for order_item in self.context['object'].orderitem_set.all():
                         product_file = order_item.product.product.product_picture.open("rb")
                         try:

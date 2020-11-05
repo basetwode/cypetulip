@@ -1,12 +1,19 @@
-from django.http import HttpResponse
+from django.contrib import messages
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.views.generic import View, TemplateView
+from django.urls import reverse
+from django.views.generic import View, TemplateView, FormView
+from django.utils.translation import ugettext_lazy as _
 
+from cms.forms import ContactForm
 from cms.models import CSSSetting, Page, Section
+from management.models import LegalSetting, MailSetting
 from permissions.error_handler import raise_404
 
 
 # Create your views here.
+from shop.models import Contact
+from utils.mixins import EmailMixin
 
 
 class AdminView(View):
@@ -66,3 +73,25 @@ class CSSView(View):
 
 class PermissionDeniedView(TemplateView):
     template_name = 'permission_denied.html'
+
+
+class ContactView(FormView, EmailMixin):
+    template_name = 'contact.html'
+    email_template = "mail/new_contact_request.html"
+    form_class = ContactForm
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        mail_setting = MailSetting.objects.first()
+        contact = Contact()
+        contact.email = mail_setting.contact_new_order
+
+        self.send_mail(contact, _("New contact request"), "",
+                       {'contact': contact,
+                        'request_name': data['name'],
+                        'request_email': data['email'],
+                        'request_phone': data['phone'],
+                        'request_message': data['message'],
+                        })
+        messages.success(self.request, _('Thank you for your request, we will contact you as soon as possible!'))
+        return HttpResponseRedirect(reverse('contact'))

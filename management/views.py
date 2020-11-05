@@ -17,7 +17,7 @@ from management.filters import OrderDetailFilter
 from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
 
 from cms.models import Page, Section
-from management.models import LdapSetting, MailSetting, LegalSetting
+from management.models import LdapSetting, MailSetting, LegalSetting, ShopSetting
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME
 from shipping.models import Shipment
 from shop.filters import ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
@@ -122,6 +122,18 @@ class MailSettingsDetailView(LoginRequiredMixin, CreateUpdateView):
 
     def get_success_url(self):
         return reverse_lazy('mail_settings_details', kwargs={'mail_settings_id': self.object.id})
+
+
+class ShopSettingsDetailView(LoginRequiredMixin, CreateUpdateView):
+    template_name = 'settings-details.html'
+    shop_settings_id = None
+    slug_field = 'id'
+    slug_url_kwarg = 'shop_settings_id'
+    model = ShopSetting
+    fields = '__all__'
+
+    def get_success_url(self):
+        return reverse_lazy('shop_settings_details', kwargs={'shop_settings_id': self.object.id})
 
 
 class LdapSettingsDetailView(LoginRequiredMixin, CreateUpdateView):
