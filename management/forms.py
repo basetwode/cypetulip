@@ -1,4 +1,5 @@
-from django.forms import ModelForm, CharField
+from django.forms import ModelForm, CharField, Form, BooleanField, Textarea
+from django.utils.translation import ugettext_lazy as _
 
 from shop.models import OrderDetail, Address, Order, OrderItem
 from utils.forms import SearchField, SearchableSelect
@@ -60,3 +61,14 @@ class OrderItemForm(ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.Meta.required:
             self.fields[field].required = True
+
+
+class PaymentProviderForm(Form):
+    prepayment_enabled = BooleanField(label=_("Prepayment enabled"), required=False)
+    prepayment_description = CharField(label=_("Prepayment description"), required=False, widget=Textarea)
+    invoice_enabled = BooleanField(label=_('Invoice enabled'), required=False)
+    invoice_description = CharField(label=_("Invoice description"), required=False, widget=Textarea)
+    paypal_enabled = BooleanField(label=_('Paypal enabled'), required=False)
+    paypal_description = CharField(label=_("Paypal description"), required=False, widget=Textarea)
+    paypal_user = CharField(max_length=100, required=False,label=_('Paypal Client ID'))
+    paypal_secret = CharField(max_length=100, required=False, label=_('Paypal Secret'))

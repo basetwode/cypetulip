@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 # Create your views here.
 from django.views.generic import DetailView, ListView, View, DeleteView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.utils.translation import ugettext_lazy as _
 from django_filters.views import FilterView
 
@@ -18,11 +18,11 @@ from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixi
 
 from cms.models import Page, Section
 from management.models import LdapSetting, MailSetting, LegalSetting, ShopSetting
-from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME
+from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME, PaymentProvider
 from shipping.models import Shipment
 from shop.filters import ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
     PageFilter, ShipmentPackageFilter, FileSubItemFilter
-from management.forms import OrderDetailForm, OrderForm, OrderItemForm
+from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm
 from shop.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
     FileSubItem, IndividualOffer
@@ -700,3 +700,55 @@ class DeleteOrderItem(DeleteView):
     def get_success_url(self):
         return reverse_lazy('create_order_item', kwargs={'id': '',
                                                            'parent_id': OrderDetail.objects.get(id=self.kwargs['parent_id']).id})
+
+
+class PaymentProviderSettings(FormView):
+    template_name = 'payment-settings.html'
+    form_class = PaymentProviderForm
+    success_url = reverse_lazy('payment_settings_details')
+
+    def form_valid(self, form):
+        paypal_provider = PaymentProvider.objects.get(api="PayPal")
+        paypal_method = PaymentMethod.objects.get(provider=paypal_provider)
+        invoice_provider = PaymentProvider.objects.get(api="Bill")
+        invoice_method = PaymentMethod.objects.get(provider=invoice_provider)
+        prepayment_provider = PaymentProvider.objects.get(api="Prepayment")
+        prepayment_method = PaymentMethod.objects.get(provider=prepayment_provider)
+
+        invoice_method.enabled = form.cleaned_data['invoice_enabled']
+        invoice_method.details = form.cleaned_data['prepayment_description']
+        prepayment_method.enabled = form.cleaned_data['prepayment_enabled']
+        prepayment_method.details = form.cleaned_data['invoice_description']
+        paypal_method.enabled = form.cleaned_data['paypal_enabled']
+        paypal_method.details = form.cleaned_data['paypal_description']
+        paypal_provider.user_name = form.cleaned_data['paypal_user']
+        paypal_provider.secret = form.cleaned_data['paypal_secret']
+
+        invoice_method.save()
+        prepayment_method.save()
+        paypal_method.save()
+        paypal_provider.save()
+        messages.success(self.request, _("Payment settings saved!"))
+        return super(PaymentProviderSettings, self).form_valid(form)
+
+    def get_initial(self):
+        initial = super(PaymentProviderSettings, self).get_initial()
+        paypal_provider,created = PaymentProvider.objects.get_or_create(api="PayPal")
+        paypal_method,created = PaymentMethod.objects.get_or_create(provider=paypal_provider, name="PayPal")
+        invoice_provider,created = PaymentProvider.objects.get_or_create(api="Bill")
+        invoice_method,created = PaymentMethod.objects.get_or_create(provider=invoice_provider, name="Bill")
+        prepayment_provider,created = PaymentProvider.objects.get_or_create(api="Prepayment")
+        prepayment_method,created = PaymentMethod.objects.get_or_create(provider=prepayment_provider, name="Prepayment")
+        initial.update({'prepayment_enabled': prepayment_method.enabled,
+                        'prepayment_description': prepayment_method.details,
+                        'invoice_enabled': invoice_method.enabled,
+                        'invoice_description': invoice_method.details,
+                        'paypal_enabled': paypal_method.enabled,
+                        'paypal_description': paypal_method.details,
+                        'paypal_user': paypal_provider.user_name,
+                        'paypal_secret': paypal_provider.secret,
+                        })
+        return initial
+
+
+

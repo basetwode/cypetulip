@@ -1,0 +1,66 @@
+{% extends 'base-mgmt.html' %}
+{% load recurse %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% load i18n %}
+{% block head %}
+    <script src="{% static 'onchange.js' %}"></script>
+    <script src="{% static 'utils.js' %}"></script>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+
+    {{ form.media }}
+    <title>{% trans 'Payment Settings' %}</title>
+{% endblock %}
+
+{% block body %}
+    {% bootstrap_messages %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <form enctype="multipart/form-data" method="post">{% csrf_token %}
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <h2>{% trans 'Shop Paymentsettings' %}</h2>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="">
+                            {% trans 'Edit your shops payment settings' %}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {{ form.errors }}
+                        {% bootstrap_form form layout='horizontal' %}
+
+                    </div>
+                    <div class="card-footer">
+                        {% buttons %}
+                            <button type="submit" value="Save" class="float-right btn btn-primary">{% trans 'Save' %}</button>
+                        {% endbuttons %}
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+
+
+{% endblock %}

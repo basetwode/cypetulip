@@ -17,7 +17,7 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               FileSubItemEditView, FileSubItemOverviewView, FileSubItemDeleteView,
                               OrderAcceptInvoiceView, DeleteIndividualOfferRequest, IndividualOfferRequestOverview,
                               IndividualOfferRequestView, CreateOrderView, CreateOrderDetailView, CreateOrderItem,
-                              DeleteOrderItem, DeleteOrder, ShopSettingsDetailView)
+                              DeleteOrderItem, DeleteOrder, ShopSettingsDetailView, PaymentProviderSettings)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
@@ -41,6 +41,8 @@ urlpatterns = [
         name='legal_settings_details'),
     url(r"^settings/shop/(?P<shop_settings_id>[a-zA-Z0-9_.-]*)$", ShopSettingsDetailView.as_view(),
         name='shop_settings_details'),
+    url(r"^settings/payment/$", PaymentProviderSettings.as_view(),
+        name='payment_settings_details'),
 
     url(r'orders/search/', SearchOrders.as_view(), name="search_orders"),
     url(r'^orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)$', ManagementOrderDetailView.as_view(),
