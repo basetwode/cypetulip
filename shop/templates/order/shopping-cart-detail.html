@@ -279,9 +279,10 @@
                             },
                             getOrderTotal: function() {
                                 let instance = this
-                                return this.order.order_items.reduce(function(price, order_item_b) {
-                                    return price + instance.getOrderItemTotal(order_item_b)
-                                },0).toFixed(2)
+                                if(this.order.order_items)
+                                    return this.order.order_items.reduce(function(price, order_item_b) {
+                                        return price + instance.getOrderItemTotal(order_item_b)
+                                    },0).toFixed(2)
                             },
                             getOrderItemsForSubproduct: function(orderItem, subproductId) {
                                 return orderItem.order_items.filter(oi => oi.product.id === subproductId)
