@@ -94,13 +94,13 @@ class ShoppingCartDetailView(View):
             contact = Contact.objects.filter(user=request.user)
             if contact:
                 company = contact[0].company
-                order = Order.objects.filter(is_send=False, company=company)
+                order = Order.objects.filter(orderdetail__state__isnull=True, company=company)
                 if order.count() == 0:
                     order = ['']
                 return render(request, self.template_name, {'order_details': order[0]})
             return redirect('/cms/home')
         else:
-            order = Order.objects.filter(is_send=False, session=request.session.session_key)
+            order = Order.objects.filter(orderdetail__state__isnull=True, session=request.session.session_key)
             if order.count() == 0:
                 order = ['']
             return render(request, self.template_name, {'order_details': order[0]})

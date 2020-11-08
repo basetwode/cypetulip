@@ -128,7 +128,9 @@ class ProductSubItem(models.Model):
 
 class FileSubItem(ProductSubItem):
     # name = models.CharField(max_length=20)
-    pass
+    file = models.FileField(default=None, null=True, blank=True,
+                            upload_to=order_files_upload_handler, storage=fs)
+
 
 
 class FileExtensionItem(models.Model):
@@ -147,6 +149,8 @@ class SelectItem(models.Model):
     name = models.CharField(max_length=50)
     select = models.ForeignKey(SelectSubItem, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
 
 # can be used for number of this item like 4 trousers
 class NumberSubItem(ProductSubItem):
@@ -380,6 +384,8 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.count}x {self.product.name if self.product else ''} {self.price}"
+
+
 
 # Corresponding OrderItems for the subproducts
 class FileOrderItem(OrderItem):
