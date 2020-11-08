@@ -1,0 +1,40 @@
+{% load static %}
+{% load i18n %}
+
+
+{% if header.is_enabled %}
+    <header class="shop-header py-3">
+        <div class="container">
+            {% if header.layout == 1 %}
+                <div class="row flex-nowrap justify-content-between">
+                    <div class="col-12">
+                        {{ header.content_column_one | safe }}
+                    </div>
+                </div>
+            {% endif %}
+            {% if header.layout == 2 %}
+                <div class="row flex-nowrap justify-content-between">
+                    <div class="col-6">
+                        {{ header.content_column_one | safe }}
+                    </div>
+                    <div class="col-6 justify-content-end d-flex">
+                        {{ header.content_column_two | safe }}
+                    </div>
+                </div>
+            {% endif %}
+            {% if header.layout == 3 %}
+                <div class="row flex-nowrap justify-content-between">
+                    <div class="col-4">
+                        {{ header.content_column_one | safe }}
+                    </div>
+                    <div class="col-4  text-center">
+                        {{ header.content_column_two | safe }}
+                    </div>
+                    <div class="col-4 d-flex  justify-content-end">
+                        {{ header.content_column_three | safe }}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+{% endif %}

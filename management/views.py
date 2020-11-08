@@ -1,28 +1,26 @@
 from datetime import datetime
 
 from django.contrib import messages
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 # Create your views here.
 from django.views.generic import DetailView, ListView, View, DeleteView
 from django.views.generic.edit import CreateView, UpdateView, FormView
-from django.utils.translation import ugettext_lazy as _
 from django_filters.views import FilterView
 
 from billing.utils import calculate_sum
 from billing.views import GeneratePDFFile
-from management.filters import OrderDetailFilter
-from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
-
 from cms.models import Page, Section
-from management.models import LdapSetting, MailSetting, LegalSetting, ShopSetting
+from management.filters import OrderDetailFilter
+from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm
+from management.models import LdapSetting, MailSetting, LegalSetting, ShopSetting, Header, Footer
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME, PaymentProvider
+from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
 from shipping.models import Shipment
 from shop.filters import ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
-    PageFilter, ShipmentPackageFilter, FileSubItemFilter
-from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm
+    PageFilter, ShipmentPackageFilter, FileSubItemFilter, FooterFilter, HeaderFilter
 from shop.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
     FileSubItem, IndividualOffer
@@ -61,7 +59,7 @@ class ManagementOrderOverviewView(LoginRequiredMixin, PaginatedFilterViews, Filt
         return {**context, **{'employees': Employee.objects.all()}}
 
     def get_queryset(self):
-        return super(ManagementOrderOverviewView, self).get_queryset().filter(state__isnull=False)\
+        return super(ManagementOrderOverviewView, self).get_queryset().filter(state__isnull=False) \
             .order_by('-date_added')
 
 
@@ -182,8 +180,8 @@ class ProductsOverviewView(LoginRequiredMixin, ListView):
                       {'filter': filter})
 
 
-class FileSubItemOverviewView(LoginRequiredMixin, ListView):
-    template_name = 'filesubitems-overview.html'
+class SubItemOverviewView(LoginRequiredMixin, ListView):
+    template_name = 'subitems-overview.html'
     context_object_name = 'filesubitem'
     model = FileSubItem
 
@@ -287,38 +285,38 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
         return reverse_lazy('products_overview')
 
 
-class FileSubItemCreationView(LoginRequiredMixin, CreateView):
+class SubItemCreationView(LoginRequiredMixin, CreateView):
     template_name = 'generic-create.html'
-    context_object_name = 'filesubitem'
+    context_object_name = 'subitem'
     model = FileSubItem
     fields = '__all__'
 
     def get_success_url(self):
-        return reverse_lazy('filesubitem_overview')
+        return reverse_lazy('subitem_overview')
 
 
-class FileSubItemEditView(LoginRequiredMixin, UpdateView):
+class SubItemEditView(LoginRequiredMixin, UpdateView):
     template_name = 'generic-edit.html'
-    context_object_name = 'filesubitem'
+    context_object_name = 'subitem'
     model = FileSubItem
     fields = '__all__'
 
     product_id = None
     slug_field = 'id'
-    slug_url_kwarg = 'filesubitem_id'
+    slug_url_kwarg = 'subitem_id'
 
     def get_success_url(self):
         return reverse_lazy('filesubitem_overview')
 
 
-class FileSubItemDeleteView(LoginRequiredMixin, DeleteView):
+class SubItemDeleteView(LoginRequiredMixin, DeleteView):
     model = FileSubItem
     slug_field = 'id'
     slug_url_kwarg = "url_param"
     template = ''
 
     def get_success_url(self):
-        return reverse_lazy('filesubitem_overview')
+        return reverse_lazy('subitem_overview')
 
 
 class CategoryCreationView(LoginRequiredMixin, CreateView):
@@ -533,15 +531,15 @@ class OrderAcceptInvoiceView(View, EmailMixin):
     def send_invoice(self, _order, ):
         pdf = GeneratePDFFile().generate(_order.order)
         total = calculate_sum(_order.order.orderitem_set, True)
-        self.send_mail(_order.contact, _('Your Invoice ')+_order.unique_nr(),'',{'object':_order.order,
-                                                                                 'contact': _order.contact,
-                                                                                 'total' : total,
-                                                                                 'order': _order.order,
-                                                                                 'files': {_('Invoice')+"_"+_order.unique_nr()+
-                                                                                           ".pdf":pdf.getvalue()},
-                                                                                 'host': self.request.META['HTTP_HOST']})
-
-
+        self.send_mail(_order.contact, _('Your Invoice ') + _order.unique_nr(), '', {'object': _order.order,
+                                                                                     'contact': _order.contact,
+                                                                                     'total': total,
+                                                                                     'order': _order.order,
+                                                                                     'files': {_(
+                                                                                         'Invoice') + "_" + _order.unique_nr() +
+                                                                                               ".pdf": pdf.getvalue()},
+                                                                                     'host': self.request.META[
+                                                                                         'HTTP_HOST']})
 
 
 class ShipmentOverviewView(LoginRequiredMixin, ListView):
@@ -629,7 +627,7 @@ class CreateOrderView(WizardView):
         if not order_detail.state:
             order_detail.state = OrderState.objects.get(initial=True)
             order_detail.save()
-        return reverse_lazy('create_order_detail', kwargs={'parent_id':self.object.id, 'id': order_detail.id})
+        return reverse_lazy('create_order_detail', kwargs={'parent_id': self.object.id, 'id': order_detail.id})
 
 
 class CreateOrderDetailView(WizardView):
@@ -642,7 +640,7 @@ class CreateOrderDetailView(WizardView):
         return reverse_lazy('create_order', kwargs={'id': self.get_parent_id()})
 
     def get_success_url(self):
-        return reverse_lazy('create_order_item', kwargs={'id': '', 'parent_id':self.get_object().id})
+        return reverse_lazy('create_order_item', kwargs={'id': '', 'parent_id': self.get_object().id})
 
     def form_valid(self, form):
         order_detail = form.save(commit=False)
@@ -650,8 +648,9 @@ class CreateOrderDetailView(WizardView):
             order_detail.state = OrderState.objects.get(initial=True)
         form.save()
         if order_detail.order.paymentdetail_set.count() == 0:
-            payment_detail = PaymentDetail(order=order_detail.order, method=PaymentMethod.objects.get(name=PAYMENTMETHOD_BILL_NAME),
-                                       user=order_detail.contact)
+            payment_detail = PaymentDetail(order=order_detail.order,
+                                           method=PaymentMethod.objects.get(name=PAYMENTMETHOD_BILL_NAME),
+                                           user=order_detail.contact)
             payment_detail.save()
             payment = Payment(details=payment_detail, is_paid=False)
             payment.save()
@@ -660,7 +659,7 @@ class CreateOrderDetailView(WizardView):
 
     def get_form_kwargs(self):
         form_kwargs = super(CreateOrderDetailView, self).get_form_kwargs()
-        return {**form_kwargs, **{'contacts':Contact.objects.filter(company=self.object.order.company)}}
+        return {**form_kwargs, **{'contacts': Contact.objects.filter(company=self.object.order.company)}}
 
 
 class CreateOrderItem(RepeatableWizardView):
@@ -682,14 +681,15 @@ class CreateOrderItem(RepeatableWizardView):
 
     def get_back_url(self):
         return reverse_lazy('create_order_detail', kwargs={'id': self.get_parent_id(),
-                                                           'parent_id': OrderDetail.objects.get(id=self.get_parent_id()).order.id})
+                                                           'parent_id': OrderDetail.objects.get(
+                                                               id=self.get_parent_id()).order.id})
 
     def get_next_url(self):
         return reverse_lazy('management_detail_order',
                             kwargs={'order': OrderDetail.objects.get(id=self.get_parent_id()).order.order_hash})
 
     def get_success_url(self):
-        return reverse_lazy('create_order_item', kwargs={'id':'', 'parent_id':self.get_parent_id()})
+        return reverse_lazy('create_order_item', kwargs={'id': '', 'parent_id': self.get_parent_id()})
 
 
 class DeleteOrderItem(DeleteView):
@@ -699,7 +699,8 @@ class DeleteOrderItem(DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('create_order_item', kwargs={'id': '',
-                                                           'parent_id': OrderDetail.objects.get(id=self.kwargs['parent_id']).id})
+                                                         'parent_id': OrderDetail.objects.get(
+                                                             id=self.kwargs['parent_id']).id})
 
 
 class PaymentProviderSettings(FormView):
@@ -733,12 +734,13 @@ class PaymentProviderSettings(FormView):
 
     def get_initial(self):
         initial = super(PaymentProviderSettings, self).get_initial()
-        paypal_provider,created = PaymentProvider.objects.get_or_create(api="PayPal")
-        paypal_method,created = PaymentMethod.objects.get_or_create(provider=paypal_provider, name="PayPal")
-        invoice_provider,created = PaymentProvider.objects.get_or_create(api="Bill")
-        invoice_method,created = PaymentMethod.objects.get_or_create(provider=invoice_provider, name="Bill")
-        prepayment_provider,created = PaymentProvider.objects.get_or_create(api="Prepayment")
-        prepayment_method,created = PaymentMethod.objects.get_or_create(provider=prepayment_provider, name="Prepayment")
+        paypal_provider, created = PaymentProvider.objects.get_or_create(api="PayPal")
+        paypal_method, created = PaymentMethod.objects.get_or_create(provider=paypal_provider, name="PayPal")
+        invoice_provider, created = PaymentProvider.objects.get_or_create(api="Bill")
+        invoice_method, created = PaymentMethod.objects.get_or_create(provider=invoice_provider, name="Bill")
+        prepayment_provider, created = PaymentProvider.objects.get_or_create(api="Prepayment")
+        prepayment_method, created = PaymentMethod.objects.get_or_create(provider=prepayment_provider,
+                                                                         name="Prepayment")
         initial.update({'prepayment_enabled': prepayment_method.enabled,
                         'prepayment_description': prepayment_method.details,
                         'invoice_enabled': invoice_method.enabled,
@@ -751,4 +753,99 @@ class PaymentProviderSettings(FormView):
         return initial
 
 
+class HeadersOverviewView(LoginRequiredMixin, ListView):
+    template_name = 'pages/headers-overview.html'
+    context_object_name = 'headers'
+    model = Header
 
+    def get(self, request, *args, **kwargs):
+        filter = HeaderFilter(request.GET, queryset=Header.objects.all())
+        return render(request, self.template_name,
+                      {'filter': filter})
+
+
+class HeaderCreateView(LoginRequiredMixin, CreateView):
+    template_name = 'generic-create.html'
+    context_object_name = 'header'
+    model = Header
+    fields = '__all__'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context['header'] = Header.objects.all()
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('headers_overview')
+
+
+class HeaderEditView(LoginRequiredMixin, UpdateView):
+    template_name = 'generic-edit.html'
+    context_object_name = 'header'
+    model = Header
+    fields = '__all__'
+
+    slug_field = 'id'
+    slug_url_kwarg = 'header_id'
+
+    def get_success_url(self):
+        return reverse_lazy('headers_overview')
+
+
+class HeaderDeleteView(LoginRequiredMixin, DeleteView):
+    model = Header
+    slug_field = 'id'
+    slug_url_kwarg = "url_param"
+    template = ''
+
+    def get_success_url(self):
+        return reverse_lazy('headers_overview')
+
+
+class FootersOverviewView(LoginRequiredMixin, ListView):
+    template_name = 'pages/footers-overview.html'
+    context_object_name = 'footers'
+    model = Footer
+
+    def get(self, request, *args, **kwargs):
+        filter = FooterFilter(request.GET, queryset=Footer.objects.all())
+        return render(request, self.template_name,
+                      {'filter': filter})
+
+
+class FooterCreateView(LoginRequiredMixin, CreateView):
+    template_name = 'generic-create.html'
+    context_object_name = 'footer'
+    model = Footer
+    fields = '__all__'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context['footer'] = Footer.objects.all()
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('footers_overview')
+
+
+class FooterEditView(LoginRequiredMixin, UpdateView):
+    template_name = 'generic-edit.html'
+    context_object_name = 'footer'
+    model = Footer
+    fields = '__all__'
+
+    slug_field = 'id'
+    slug_url_kwarg = 'footer_id'
+
+    def get_success_url(self):
+        return reverse_lazy('footers_overview')
+
+
+class FooterDeleteView(LoginRequiredMixin, DeleteView):
+    model = Footer
+    slug_field = 'id'
+    slug_url_kwarg = "url_param"
+    template = ''
+
+    def get_success_url(self):
+        return reverse_lazy('footers_overview')

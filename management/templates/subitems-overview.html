@@ -1,0 +1,90 @@
+{% extends 'base-mgmt.html' %}
+{% load static %}
+{% load recurse %}
+{% load bootstrap4 %}
+
+{% load i18n %}
+{% bootstrap_messages %}
+{% block head %}
+    <title>Products</title>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="card-title h4">{% trans 'Filter' %}</div>
+                    <form action="" method="get">
+
+                        {% bootstrap_form filter.form %}
+                        <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
+
+                    </form>
+                    <a href="{% url 'subitem_create' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Add SubItem' %}</a>
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+            <table class="table table-hover table-striped table-responsive-sm">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">{% trans 'Category' %}</th>
+                    <th scope="col">{% trans 'Thumbnail' %}</th>
+                    <th scope="col">{% trans 'Name' %}</th>
+                    <th scope="col">{% trans 'Price' %}</th>
+                    <th scope="col">{% trans 'Configuration' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for subitem in filter.qs %}
+                    <tr>
+                        <td>{{ subitem.id }}</td>
+                        <td>{{ subitem.category }}</td>
+                        <td class="thumbnail">
+                            <div>
+                                {% if subitem.product_picture %}
+                                    <img style="height: 5rem" alt="..."
+                                         src="{{ subitem.product_picture.url }}"
+                                         class="img-thumbnail">
+                                {% else %}
+                                    <i class="fa fa-4x fa-image img-thumbnail"></i>
+                                {% endif %}
+
+                            </div>
+                        </td>
+                        <td>{{ subitem.name }}</td>
+                        <td>{{ subitem.price }} €</td>
+
+                        <td>
+                            <div>
+                                <a class="btn btn-outline-dark"
+                                   href="{% url 'subitem_edit' subitem.id %}">{% trans 'Edit' %}</a>
+                                <button class="btn btn-outline-dark" data-toggle="modal"
+                                        data-target="#delete-modal-{{ filesubitem.id }}">{% trans 'Delete' %}</button>
+                                {% include 'delete-modal.html' with id=subitem.id url='subitem_delete' url_param='subitem_delete_id' %}
+
+                            </div>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

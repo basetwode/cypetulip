@@ -3,12 +3,8 @@
 <a href="#shopping-cart" class="dropdown-toggle nav-link"
    data-target="#shopping-cart" data-toggle="dropdown" role="button"
    aria-haspopup="true"
-   aria-expanded="false"><i class="fa fa-shopping-cart"></i>
-    <span class="hidden-sm">{% trans 'Shoppingcart' %}
-        {% if number_items > 0 %}
-            ({{ number_items }})
-        {% endif %}
-                            </span>
+   aria-expanded="false"><i class="fa fa-shopping-cart"></i><span
+        class="ml-1 badge badge-dark">{{ open_orders | length }}</span>
     <span class="caret"></span>
 </a>
 <div class="dropdown-menu dropdown-menu-right padding-1rem" id="shoppingcart">
@@ -17,7 +13,7 @@
             <a href="{% url 'shop:shopping_cart' %}"
                class="col-3 btn btn-secondary btn-sm text-align-right"><i class="fa fa-shopping-cart"></i></a>
             <strong class="col-3 text-right my-auto">{% trans 'Total: ' %}</strong>
-            <span class="col-5 text-right my-auto">{{ total_cart }} &euro;</span>
+            <span class="col-5 text-right my-auto">{{ total_cart | floatformat }} &euro;</span>
         </div>
 
     </div>

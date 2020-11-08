@@ -13,11 +13,13 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               SettingsView, ProductDeleteView, SectionDeleteView, PageDeleteView, CategoryDeleteView,
                               ContactEditView, CompanyEditView, LegalSettingsDetailView, EmployeeOverviewView,
                               EmployeeCreationView, OrderAssignEmployeeView, OrderPayView,
-                              OrderShipView, OrderChangeStateView, ShipmentOverviewView, FileSubItemCreationView,
-                              FileSubItemEditView, FileSubItemOverviewView, FileSubItemDeleteView,
+                              OrderShipView, OrderChangeStateView, ShipmentOverviewView, SubItemCreationView,
+                              SubItemEditView, SubItemOverviewView, SubItemDeleteView,
                               OrderAcceptInvoiceView, DeleteIndividualOfferRequest, IndividualOfferRequestOverview,
                               IndividualOfferRequestView, CreateOrderView, CreateOrderDetailView, CreateOrderItem,
-                              DeleteOrderItem, DeleteOrder, ShopSettingsDetailView, PaymentProviderSettings)
+                              DeleteOrderItem, DeleteOrder, ShopSettingsDetailView, PaymentProviderSettings,
+                              HeaderCreateView, HeaderEditView, HeadersOverviewView, HeaderDeleteView, FooterCreateView,
+                              FooterDeleteView, FooterEditView, FootersOverviewView)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
@@ -58,11 +60,11 @@ urlpatterns = [
     url(r'^products/(?P<url_param>[a-zA-Z0-9_.-]+)/delete/$', ProductDeleteView.as_view(), name="product_delete"),
     url(r'^products/$', ProductsOverviewView.as_view(), name="products_overview"),
 
-    url(r'^filesubitems/create/$', FileSubItemCreationView.as_view(), name="create_filesubitem"),
-    url(r'^filesubitems/(?P<filesubitem_id>[a-zA-Z0-9_.-]+)/$', FileSubItemEditView.as_view(), name="filesubitem_edit"),
-    url(r'^filesubitems/(?P<url_param>[a-zA-Z0-9_.-]+)/delete/$', FileSubItemDeleteView.as_view(),
-        name="filesubitem_delete"),
-    url(r'^filesubitems/$', FileSubItemOverviewView.as_view(), name="filesubitem_overview"),
+    url(r'^subitems/create/$', SubItemCreationView.as_view(), name="subitem_create"),
+    url(r'^subitems/(?P<subitem_id>[a-zA-Z0-9_.-]+)/$', SubItemEditView.as_view(), name="subitem_edit"),
+    url(r'^subitems/(?P<url_param>[a-zA-Z0-9_.-]+)/delete/$', SubItemDeleteView.as_view(),
+        name="subitem_delete"),
+    url(r'^subitems/$', SubItemOverviewView.as_view(), name="subitem_overview"),
 
     url(r'^customers/$', CustomersOverviewView.as_view(), name="customers_overview"),
     url(r'^customers/search/$', SearchCustomers.as_view(), name="search_customers"),
@@ -78,6 +80,16 @@ urlpatterns = [
     url(r'^sections/(?P<url_param>[a-zA-Z0-9_.-]+)/delete/$', SectionDeleteView.as_view(), name="section_delete"),
     url(r'^sections/$', SectionsOverviewView.as_view(), name="sections"),
     url(r'^sections/(?P<section_id>[a-zA-Z0-9_.-]+)/$', SectionEditView.as_view(), name="section_edit"),
+
+    url(r'^headers/create/$', HeaderCreateView.as_view(), name="header_create"),
+    url(r'^headers/(?P<url_param>[a-zA-Z0-9_.-]+)/delete/$', HeaderDeleteView.as_view(), name="header_delete"),
+    url(r'^headers/$', HeadersOverviewView.as_view(), name="headers_overview"),
+    url(r'^headers/(?P<header_id>[a-zA-Z0-9_.-]+)/$', HeaderEditView.as_view(), name="header_edit"),
+
+    url(r'^footers/create/$', FooterCreateView.as_view(), name="footer_create"),
+    url(r'^footers/(?P<url_param>[a-zA-Z0-9_.-]+)/delete/$', FooterDeleteView.as_view(), name="footer_delete"),
+    url(r'^footers/$', FootersOverviewView.as_view(), name="footers_overview"),
+    url(r'^footers/(?P<footer_id>[a-zA-Z0-9_.-]+)/$', FooterEditView.as_view(), name="footer_edit"),
 
     url(r'^employees/$', EmployeeOverviewView.as_view(), name="employee_overview"),
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/assign/$',

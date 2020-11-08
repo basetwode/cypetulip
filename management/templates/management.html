@@ -108,11 +108,11 @@
                 <a href="{% url 'create_product' %}"
                    class="btn btn-primary">{% trans 'Create new Product' %}</a>
                 <hr>
-                <h5 class="card-title">{% trans 'File Subitems' %}</h5>
-                <a href="{% url 'filesubitem_overview' %}"
+                <h5 class="card-title">{% trans 'Subitems' %}</h5>
+                <a href="{% url 'subitem_overview' %}"
                    class="btn btn-primary">{% trans 'Show' %}</a>
-                <a href="{% url 'create_filesubitem' %}"
-                   class="btn btn-primary">{% trans 'Create new FileSubItem' %}</a>
+                <a href="{% url 'subitem_create' %}"
+                   class="btn btn-primary">{% trans 'Create new SubItem' %}</a>
                 <hr>
                 <h5 class="card-title">{% trans 'Categories' %}</h5>
                 <a href="{% url 'categories_overview' %}"
@@ -189,6 +189,19 @@
                    class="btn btn-primary mr-1">{% trans 'Sections' %}</a>
                 <a href="{% url 'create_section' %}"
                    class="btn btn-primary">{% trans 'Add Section' %}</a>
+                <hr>
+                <div class="card-text">{% trans 'Header' %}</div>
+                <a href="{% url 'headers_overview' %}"
+                   class="btn btn-primary mr-1">{% trans 'Headers' %}</a>
+                <a href="{% url 'header_create' %}"
+                   class="btn btn-primary">{% trans 'Add Header' %}</a>
+                <hr>
+                <div class="card-text">{% trans 'Footer' %}</div>
+                <a href="{% url 'footers_overview' %}"
+                   class="btn btn-primary mr-1">{% trans 'Footers' %}</a>
+                <a href="{% url 'footer_create' %}"
+                   class="btn btn-primary">{% trans 'Add Footer' %}</a>
+
 
             </div>
             <div class="card-footer">

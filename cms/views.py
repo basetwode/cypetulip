@@ -2,15 +2,13 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import View, TemplateView, FormView
 from django.utils.translation import ugettext_lazy as _
+from django.views.generic import View, TemplateView, FormView
 
 from cms.forms import ContactForm
 from cms.models import CSSSetting, Page, Section
-from management.models import LegalSetting, MailSetting
+from management.models import MailSetting
 from permissions.error_handler import raise_404
-
-
 # Create your views here.
 from shop.models import Contact
 from utils.mixins import EmailMixin

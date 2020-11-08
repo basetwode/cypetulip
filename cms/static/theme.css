@@ -86,10 +86,6 @@ footer .box {
     margin: 0 auto;
 }
 
-.footer > .container {
-    padding-right: 50%;
-    padding-left: 50%;
-}
 
 .card-container.card {
     max-width: 350px;
