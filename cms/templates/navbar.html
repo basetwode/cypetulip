@@ -19,11 +19,32 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="navbar-nav navbar-left">
                 {% for page in sites %}
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}/">{% endif %}
-                           {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
-                    </li>
+                    {% if page.page_name == 'products' %}
+                        <li class="nav-item nav-link dropdown">
+                            <a role="button" style="color: rgba(0,0,0,.5);"
+                               href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}
+                                   /">{% endif %}
+                               {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
+                            <a class="dropdown-toggle" href="#" id="productCategories" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                               style="color: rgba(0,0,0,.5);">
+                                <span class="caret"></span>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="productCategories">
+                                {% for category in categories %}
+                                    <a class="dropdown-item"
+                                       href="{% url 'shop:products' category.name %}">{{ category.name }}</a>
+                                {% endfor %}
+                            </div>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}
+                                   /">{% endif %}
+                               {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
+                        </li>
+                    {% endif %}
                 {% endfor %}
             </ul>
             <ul class="ml-auto nav navbar-nav navbar-right ">

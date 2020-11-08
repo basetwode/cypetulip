@@ -96,6 +96,7 @@ TEMPLATES = [
                 'shop.context_processors.language',
                 'shop.context_processors.header',
                 'shop.context_processors.footer',
+                'shop.context_processors.categories',
             ],
         },
     },

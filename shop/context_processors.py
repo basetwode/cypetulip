@@ -4,7 +4,7 @@ from cms.models import Page
 from management.models import Header, Footer
 from payment.models import PaymentMethod
 from shop.models import (Contact, Order, OrderItem,
-                         Product)
+                         Product, ProductCategory)
 
 
 def get_open_orders(request):
@@ -34,7 +34,8 @@ def collect_open_orders(order):
         for order in items:
             total += order.product.bprice_wt()
             number_items += 1
-        return {'open_orders': items, 'total_cart': total, 'number_items': number_items, 'total_order': sum}
+        return {'open_orders': items, 'total_cart': total, 'number_items': number_items, 'total_order': sum,
+                }
     else:
         return {'open_orders': [], 'total_cart': 0, 'number_items': 0, 'total_order': 0}
 
@@ -63,3 +64,8 @@ def footer(request):
         return {'footer': footer[0], 'pages': pages, 'payment_methods': payment_methods}
     else:
         return {'footer': ''}
+
+
+def categories(request):
+    categories_list = ProductCategory.objects.all()
+    return {'categories': categories_list}
