@@ -88,10 +88,10 @@
 
                                 </div>
                             </td>
-                            <td data-th="Price">{{ order.product.price }}</td>
+                            <td data-th="Price">{{ order.price_wt }}</td>
 
                             <td id="subtotal-{{ order.id }}" data-th="Subtotal"
-                                class="text-center">{{ order.product.bprice_wt }} &euro;
+                                class="text-center">{{ order.total_wt }} &euro;
                             </td>
                             <td class="actions" data-th="">
 
@@ -137,12 +137,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td colspan="2" data-th="Price">{{ sub_item.product.price }} &euro;</td>
-                                <script>
-                                    $(document).ready(function () {
-                                        addToSubTotal({{ order.id }}, {{ sub_item.product.price }})
-                                    });
-                                </script>
+                                <td colspan="2" data-th="Price">{{ sub_item.price_wt }} &euro;</td>
                                 <td>
 
                                     {% if sub_product.is_multiple_per_item %}
@@ -196,9 +191,6 @@
                             </td>
                             <td>
                                 <script>
-                                    $(document).ready(function () {
-                                        addToSubTotal(0, {{ sub_item.product.price }})
-                                    });
                                 </script>
                             </td>
                         </tr>
@@ -219,7 +211,7 @@
                         <td style="width:50%"></td>
                         <td style="width:10%"></td>
                         <td style="width:22%" class="text-center"><strong>{% trans 'Total: ' %}<span
-                                id="total">{{ total_cart }}</span> &euro;</strong></td>
+                                id="total">{{ open_orders.first.order_detail.total_wt }}</span> &euro;</strong></td>
                         <td style="width:10%"></td>
                     </tr>
                 </table>

@@ -94,10 +94,10 @@
 
                                         </div>
                                     </td>
-                                    <td data-th="Price">{{ order.product.price }}</td>
+                                    <td data-th="Price">{{ order.price_wt}}</td>
 
                                     <td id="subtotal-{{ order.id }}" data-th="Subtotal"
-                                        class="text-center">{{ order.product.price }} &euro;
+                                        class="text-center">{{ order.total_wt }} &euro;
                                     </td>
                                     <td class="actions" data-th="">
                                     </td>
@@ -115,9 +115,9 @@
                             <thead>
                             <tr>
                                 <th style="width:50%">{% trans 'Payment Method' %}</th>
-                                <th style="width:10%">{% trans 'Price' %}</th>
+                                <th style="width:10%"></th>
 
-                                <th style="width:22%" class="text-center">{% trans 'Subtotal' %}</th>
+                                <th style="width:22%" class="text-center">{% trans 'Total' %}</th>
                                 <th style="width:10%"></th>
 
                             </tr>
@@ -126,9 +126,9 @@
                             <tbody>
                             <tr>
                                 <td style="width:50%">{{ payment_details.method.name }}</td>
-                                <td style="width:10%">{{ total_cart }}</td>
+                                <td style="width:10%"></td>
 
-                                <td style="width:22%" class="text-center">{{ total_cart }}</td>
+                                <td style="width:22%" class="text-center">{{ order_items.first.order_detail.total_wt }}</td>
                                 <td style="width:10%"></td>
 
                             </tr>
@@ -208,7 +208,7 @@
                     </td>
                     <td colspan="1" class="hidden-xs"></td>
                     <td class="hidden-xs text-center"><strong>
-                        <span style="font-size: larger;font-family: Arial" id="total">{{ total_order }} &euro;</span>
+                        <span style="font-size: larger;font-family: Arial" id="total">{{ order_items.first.order_detail.total_wt }} &euro;</span>
                     </strong></td>
                     <td>
                     </td>

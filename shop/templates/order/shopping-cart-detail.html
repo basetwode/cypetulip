@@ -203,7 +203,7 @@
                         <td style="width:50%"></td>
                         <td style="width:10%"></td>
                         <td style="width:22%" class="text-center"><strong>{% trans 'Total: ' %}<span
-                                id="total">{{ total_cart }}</span> &euro;</strong></td>
+                                id="total">[[getOrderTotal()]]</span> &euro;</strong></td>
                         <td style="width:10%"></td>
                     </tr>
 
@@ -276,6 +276,12 @@
                                 return orderItem.price_wt + orderItem.order_items.reduce(function(price, order_item_b) {
                                     return price + order_item_b.product.bprice_wt
                                 },0)
+                            },
+                            getOrderTotal: function() {
+                                let instance = this
+                                return this.order.order_items.reduce(function(price, order_item_b) {
+                                    return price + instance.getOrderItemTotal(order_item_b)
+                                },0).toFixed(2)
                             },
                             getOrderItemsForSubproduct: function(orderItem, subproductId) {
                                 return orderItem.order_items.filter(oi => oi.product.id === subproductId)

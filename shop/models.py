@@ -348,6 +348,9 @@ class OrderDetail(models.Model):
     def total_wt(self):
         return calculate_sum(self.orderitem_set, True)
 
+    def total(self):
+        return calculate_sum(self.orderitem_set, False)
+
 # Like a surcharge or discount or product or whatever.
 
 
@@ -385,7 +388,11 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.count}x {self.product.name if self.product else ''} {self.price}"
 
+    def total_wt(self):
+        return calculate_sum(self.orderitem_set, True) + self.price_wt
 
+    def total(self):
+        return calculate_sum(self.orderitem_set, False) + self.price
 
 # Corresponding OrderItems for the subproducts
 class FileOrderItem(OrderItem):

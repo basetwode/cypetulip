@@ -82,7 +82,8 @@
                         </div>
                         <div class="col-md-2">
                             <strong>{% trans 'Total' %}</strong>
-                            <div>{{ total }} €</div>
+                            <div>{{ order.orderdetail_set.first.total }} €</div>
+                            <div>{{ order.orderdetail_set.first.total_wt }} € {% trans 'incl. Tax' %}</div>
                         </div>
                         <div class="col-md-2">
                             <strong>{% trans 'Paid via' %}</strong>
@@ -220,7 +221,7 @@
                                 <td data-th="Price">{{ order.price }}</td>
 
                                 <td id="subtotal-{{ order.id }}" data-th="Subtotal"
-                                    class="text-center">{{ order.price }} &euro;
+                                    class="text-center">{{ order.total }} &euro;
                                 </td>
                                 <td class="actions" data-th="">
                                 </td>
@@ -266,13 +267,8 @@
                                         </div>
                                     </td>
                                     <td colspan="2"
-                                        data-th="Price">{{ sub_item.product.price }} &euro;
+                                        data-th="Price">{{ sub_item.price }} &euro;
                                     </td>
-                                    <script>
-                                        $(document).ready(function () {
-                                            addToSubTotal({{ order.id }}, {{ sub_item.product.price }})
-                                        });
-                                    </script>
                                     <td>
 
                                         {% if sub_product.is_multiple_per_item %}
@@ -324,14 +320,9 @@
                                     </div>
                                 </td>
                                 <td data-th="Subtotal"
-                                    class="text-center">{{ sub_item.product.price }} &euro;
+                                    class="text-center">{{ sub_item.price }} &euro;
                                 </td>
                                 <td>
-                                    <script>
-                                        $(document).ready(function () {
-                                            addToSubTotal(0, {{ sub_item.product.price }})
-                                        });
-                                    </script>
                                 </td>
                             </tr>
                         {% endfor %}

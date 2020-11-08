@@ -86,7 +86,7 @@
                         </div>
                         <div class="col-md-2 col-sm-2">
                             <strong>{% trans 'Total' %}</strong>
-                            <div>{{ total|floatformat:2 }} €</div>
+                            <div>{{ order.orderdetail_set.first.total_wt|floatformat:2 }} €</div>
                         </div>
                         <div class="col-md-5 col-sm-5">
                             <strong>Ordernr.:</strong>
@@ -176,12 +176,12 @@
                                         </td>
                                         <td data-th="Price">
 
-                                                {{ order.price | floatformat:2 }} &euro;
+                                                {{ order.total | floatformat:2 }} &euro;
                                         </td>
 
                                         <td id="subtotal-{{ order.id }}" data-th="Subtotal"
                                             class="text-center">
-                                                {{ order.price_wt | floatformat:2 }} &euro;
+                                                {{ order.total_wt | floatformat:2 }} &euro;
                                         </td>
                                     </tr>
 
@@ -228,22 +228,7 @@
                                             <td colspan="2"
                                                 data-th="Price">{{ sub_item.product.price }} &euro;
                                             </td>
-                                            <script>
-                                                $(document).ready(function () {
-                                                    addToSubTotal({{ order.id }}, {{ sub_item.product.price }})
-                                                });
-                                            </script>
-                                            <td>
 
-                                                {% if sub_product.is_multiple_per_item %}
-                                                    <button onclick="duplicateProduct(this,{{ order.id }},{{ sub_product.price }})"
-                                                            class="btn btn-secondary btn-sm"><i
-                                                            class="fa fa-plus-circle"></i>
-                                                    </button>
-                                                    {#                                        <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>#}
-                                                {% endif %}
-
-                                            </td>
                                         </tr>
                                     {% endfor %}
                                 {% endfor %}
