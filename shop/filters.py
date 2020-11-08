@@ -3,18 +3,18 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
 from cms.models import Section, Page
+from management.models import Header, Footer
 from shipping.models import Package
 from shop.models import OrderDetail, Product, Contact, ProductCategory, FileSubItem
 
 
 class OrderDetailFilter(django_filters.FilterSet):
-
     free_field_filter = django_filters.CharFilter(field_name="free_field_filter", label=_('Search orders'),
                                                   method='custom_field_filter')
 
     class Meta:
         model = OrderDetail
-        fields = ['state',]
+        fields = ['state', ]
 
     def custom_field_filter(self, queryset, name, value):
         if value.isdigit():
@@ -67,3 +67,15 @@ class ShipmentPackageFilter(django_filters.FilterSet):
     class Meta:
         model = Package
         fields = ['shipper']
+
+
+class HeaderFilter(django_filters.FilterSet):
+    class Meta:
+        model = Header
+        fields = ['is_enabled', 'layout']
+
+
+class FooterFilter(django_filters.FilterSet):
+    class Meta:
+        model = Footer
+        fields = ['is_enabled', 'layout']

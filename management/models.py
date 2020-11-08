@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 from tinymce import HTMLField
 
 from mediaserver.upload import public_files_upload_handler, fs
@@ -46,3 +47,57 @@ class LegalSetting(models.Model):
     account_holder = models.CharField(max_length=20, null=True, blank=True, default=None)
     cancellation_policy = HTMLField(null=True, blank=True, default=None)
     general_business_term = HTMLField(null=True, blank=True, default=None)
+
+
+class Layout(models.IntegerChoices):
+    ONE_COLUMN = 1, _('One Column Layout')
+    TWO_COLUMN = 2, _('Two Column Layout')
+    THREE_COLUMN = 3, _('Three Column Layout')
+
+
+class Header(models.Model):
+    name = models.CharField(max_length=40, default='Standard')
+    language = models.CharField(max_length=2, default='en')
+    is_enabled = models.BooleanField()
+    layout = models.IntegerField(choices=Layout.choices, default=Layout.THREE_COLUMN)
+    content_column_one = HTMLField('Content Column One', null=True, blank=True)
+    content_column_two = HTMLField('Content Column Two', null=True, blank=True)
+    content_column_three = HTMLField('Content Column Three', null=True, blank=True)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        enabled_headers = Header.objects.filter(is_enabled=True, language=self.language).exclude(id=self.id)
+        if enabled_headers:
+            for header in enabled_headers:
+                header.is_enabled = False
+                header.save()
+        models.Model.save(self, force_insert, force_update,
+                          using, update_fields)
+
+    def delete(self, using=None, keep_parents=False):
+        super(Header, self).delete(using, keep_parents)
+
+
+class Footer(models.Model):
+    name = models.CharField(max_length=40, default='Standard')
+    is_enabled = models.BooleanField()
+    language = models.CharField(max_length=2, default='en')
+    sitemap = models.BooleanField()
+    payment_methods = models.BooleanField()
+    layout = models.IntegerField(choices=Layout.choices, default=Layout.THREE_COLUMN)
+    content_column_one = HTMLField('Content Column One', null=True, blank=True)
+    content_column_two = HTMLField('Content Column Two', null=True, blank=True)
+    content_column_three = HTMLField('Content Column Three', null=True, blank=True)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        enabled_footers = Footer.objects.filter(is_enabled=True, language=self.language).exclude(id=self.id)
+        if enabled_footers:
+            for footer in enabled_footers:
+                footer.is_enabled = False
+                footer.save()
+        models.Model.save(self, force_insert, force_update,
+                          using, update_fields)
+
+    def delete(self, using=None, keep_parents=False):
+        super(Footer, self).delete(using, keep_parents)

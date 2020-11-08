@@ -1,0 +1,83 @@
+{% extends 'base-mgmt.html' %}
+{% load recurse %}
+{% load static %}
+{% load bootstrap4 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{% load i18n %}
+{% bootstrap_messages %}
+{% block head %}
+    <title>Products</title>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="card-title h4">{% trans 'Filter' %}</div>
+                    <form action="" method="get">
+
+                        {% bootstrap_form filter.form %}
+                        <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
+
+                    </form>
+                    <a href="{% url 'footer_create' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Add Footer' %}</a>
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+
+            <table class="table table-hover table-striped table-responsive-sm">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">{% trans 'Name' %}</th>
+                    <th scope="col">{% trans 'Active' %}</th>
+                    <th scope="col">{% trans 'Sitemap' %}</th>
+                    <th scope="col">{% trans 'Layout (Columns)' %}</th>
+                    <th scope="col">{% trans 'Language' %}</th>
+                    <th scope="col">{% trans 'Payment Methods' %}</th>
+                    <th scope="col">{% trans 'Configuration' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for footer in filter.qs %}
+                    <tr>
+                        <td>{{ footer.id }}</td>
+                        <td>{{ footer.name }}</td>
+                        <td>{{ footer.is_enabled }}</td>
+                        <td>{{ footer.sitemap }}</td>
+                        <td>{{ footer.layout }}</td>
+                        <td>{{ footer.language }}</td>
+                        <td>{{ footer.payment_methods }}</td>
+                        <td>
+                            <div>
+                                <a class="btn btn-outline-dark"
+                                   href="{% url 'footer_edit' footer.id %}">{% trans 'Edit' %}</a>
+                                <button class="btn btn-outline-dark" data-toggle="modal"
+                                        data-target="#delete-modal-{{ footer.id }}">{% trans 'Delete' %}</button>
+
+                                {% include 'delete-modal.html' with id=footer.id url='footer_delete' url_param='footer_id' %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+{% endblock %}

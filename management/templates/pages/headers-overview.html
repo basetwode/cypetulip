@@ -1,14 +1,15 @@
 {% extends 'base-mgmt.html' %}
-{% load static %}
 {% load recurse %}
+{% load static %}
 {% load bootstrap4 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
 
 {% load i18n %}
 {% bootstrap_messages %}
 {% block head %}
     <title>Products</title>
-    <script src="{% static 'autocomplete.js' %}"></script>
-    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
     <link href="{% static 'management.css' %}" rel="stylesheet">
 {% endblock %}
 
@@ -27,8 +28,8 @@
                         <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
 
                     </form>
-                    <a href="{% url 'create_filesubitem' %}"
-                       class="btn btn-fw btn-primary">{% trans 'Add FileSubItem' %}</a>
+                    <a href="{% url 'header_create' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Add Header' %}</a>
                     <hr>
                     <a href="{% url 'management_index' %}"
                        class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
@@ -37,54 +38,42 @@
             </div>
         </div>
         <div class="col-sm-12 col-md-9">
+
             <table class="table table-hover table-striped table-responsive-sm">
                 <thead class="thead-dark">
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">{% trans 'Category' %}</th>
-                    <th scope="col">{% trans 'Thumbnail' %}</th>
                     <th scope="col">{% trans 'Name' %}</th>
-                    <th scope="col">{% trans 'Price' %}</th>
+                    <th scope="col">{% trans 'Active' %}</th>
+                    <th scope="col">{% trans 'Layout (Columns)' %}</th>
+                    <th scope="col">{% trans 'Language' %}</th>
                     <th scope="col">{% trans 'Configuration' %}</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for filesubitem in filter.qs %}
+                {% for header in filter.qs %}
                     <tr>
-                        <td>{{ filesubitem.id }}</td>
-                        <td>{{ filesubitem.category }}</td>
-                        <td class="thumbnail">
-                            <div>
-                                {% if filesubitem.product_picture %}
-                                    <img style="height: 5rem" alt="..."
-                                         src="{{ filesubitem.product_picture.url }}"
-                                         class="img-thumbnail">
-                                {% else %}
-                                    <i class="fa fa-4x fa-image img-thumbnail"></i>
-                                {% endif %}
-
-                            </div>
-                        </td>
-                        <td>{{ filesubitem.name }}</td>
-                        <td>{{ filesubitem.price }} €</td>
-
+                        <td>{{ header.id }}</td>
+                        <td>{{ header.name }}</td>
+                        <td>{{ header.is_enabled }}</td>
+                        <td>{{ header.layout }}</td>
+                        <td>{{ header.language }}</td>
                         <td>
                             <div>
                                 <a class="btn btn-outline-dark"
-                                   href="{% url 'filesubitem_edit' filesubitem.id %}">{% trans 'Edit' %}</a>
+                                   href="{% url 'header_edit' header.id %}">{% trans 'Edit' %}</a>
                                 <button class="btn btn-outline-dark" data-toggle="modal"
-                                        data-target="#delete-modal-{{ filesubitem.id}}">{% trans 'Delete' %}</button>
-                                {% include 'delete-modal.html' with id=filesubitem.id url='filesubitem_delete' url_param='filesubitem_delete_id' %}
+                                        data-target="#delete-modal-{{ header.id }}">{% trans 'Delete' %}</button>
 
+                                {% include 'delete-modal.html' with id=header.id url='header_delete' url_param='header_id' %}
                             </div>
-
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
 
             </table>
+
         </div>
     </div>
-
 {% endblock %}
