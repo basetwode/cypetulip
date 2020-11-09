@@ -66,8 +66,9 @@ class ShoppingCartView(View):
                     order_detail.save()
                 else:
                     order = order[0]
+                    order_detail = OrderDetail.objects.get(order=order)
 
-                item = OrderItem(order=order, product=product_obj[0], count=1)
+                item = OrderItem(order=order, order_detail=order_detail, product=product_obj[0], count=1)
                 item.save()
 
             return render(request, self.template_name)

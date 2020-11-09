@@ -282,6 +282,7 @@ class DeliveryViewSet(viewsets.ViewSet):
 
 
 class OrderViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = OrderDetail.objects.all()
     serializer_class = OrderSerializer
     lookup_field = 'order__order_hash'
@@ -292,12 +293,6 @@ class OrderViewSet(viewsets.ModelViewSet):
         for the currently authenticated user.
         """
         request = self.request
-        if request.method == 'PUT':
-            order_serializer = OrderSerializer(data=request.data)
-            if order_serializer.is_valid():
-                pass
-            else :
-                return Response(order_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         if request.user.is_authenticated:
             contact = Contact.objects.filter(user=request.user)
@@ -305,27 +300,74 @@ class OrderViewSet(viewsets.ModelViewSet):
                 company = contact[0].company
                 return OrderDetail.objects.filter(state__isnull=True, order__company=company)
         else:
-            return OrderDetail.objects.filter(is_send=False, order__session=request.session.session_key)
+            return OrderDetail.objects.filter(state__isnull=True, order__session=request.session.session_key)
 
 
 class OrderItemViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemDeserializer
 
+    def get_queryset(self):
+        queryset = super(OrderItemViewSet, self).get_queryset()
+        if self.request.user.is_authenticated:
+            queryset.filter(order__company=Company.objects.get(contact__user=self.request.user))
+        else:
+            queryset.filter(order__session=self.request.session.session_key)
+        return queryset
+
 
 class FileOrderItemViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = FileOrderItem.objects.all()
     serializer_class = FileOrderItemSerializer
 
+    def get_queryset(self):
+        queryset = super(FileOrderItemViewSet, self).get_queryset()
+        if self.request.user.is_authenticated:
+            queryset.filter(order__company=Company.objects.get(contact__user=self.request.user))
+        else:
+            queryset.filter(order__session=self.request.session.session_key)
+        return queryset
+
 
 class SelectOrderItemViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = SelectOrderItem.objects.all()
     serializer_class = SelectOrderItemSerializer
 
+    def get_queryset(self):
+        queryset = super(SelectOrderItemViewSet, self).get_queryset()
+        if self.request.user.is_authenticated:
+            queryset.filter(order__company=Company.objects.get(contact__user=self.request.user))
+        else:
+            queryset.filter(order__session=self.request.session.session_key)
+        return queryset
+
+
 class NumberOrderItemViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = NumberOrderItem.objects.all()
     serializer_class = NumberOrderItemSerializer
 
+    def get_queryset(self):
+        queryset = super(NumberOrderItemViewSet, self).get_queryset()
+        if self.request.user.is_authenticated:
+            queryset.filter(order__company=Company.objects.get(contact__user=self.request.user))
+        else:
+            queryset.filter(order__session=self.request.session.session_key)
+        return queryset
+
+
 class CheckboxOrderItemViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = CheckBoxOrderItem.objects.all()
     serializer_class = CheckboxOrderItemSerializer
+
+    def get_queryset(self):
+        queryset = super(CheckboxOrderItemViewSet, self).get_queryset()
+        if self.request.user.is_authenticated:
+            queryset.filter(order__company=Company.objects.get(contact__user=self.request.user))
+        else:
+            queryset.filter(order__session=self.request.session.session_key)
+        return queryset
