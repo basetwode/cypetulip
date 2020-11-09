@@ -122,8 +122,7 @@
                                         <a type="button"
                                            class="btn btn-dark" href="{% url 'shop:individual_offer' product.name %}">{% trans 'Request offer' %}</a>
                                         {% elif product.stock > 0 or product.stock == -1 %}
-                                        <button class="btn btn-dark" onclick="addToCart('{{ product.name }}')">Add to
-                                            cart
+                                        <button class="btn btn-dark" onclick="addToCart('{{ product.name }}')">{% trans 'Add to cart' %}
                                         </button>
                                         {% else %}
                                             <button disabled class="btn btn-outline-dark">{% trans 'Not in stock' %}</button>
