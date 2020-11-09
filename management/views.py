@@ -14,7 +14,7 @@ from billing.utils import calculate_sum
 from billing.views import GeneratePDFFile
 from cms.models import Page, Section
 from management.filters import OrderDetailFilter
-from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm
+from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm, ProductForm
 from management.models import LdapSetting, MailSetting, LegalSetting, ShopSetting, Header, Footer
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME, PaymentProvider
 from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
@@ -264,8 +264,8 @@ class ProductCreationView(LoginRequiredMixin, CreateView):
 class ProductEditView(LoginRequiredMixin, UpdateView):
     template_name = 'vue/product-create-vue.html'
     context_object_name = 'products'
+    form_class = ProductForm
     model = Product
-    fields = '__all__'
 
     product_id = None
     slug_field = 'id'

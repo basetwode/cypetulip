@@ -1,9 +1,18 @@
 from django.forms import ModelForm, CharField, Form, BooleanField, Textarea
 from django.utils.translation import ugettext_lazy as _
 
-from shop.models import OrderDetail, Address, Order, OrderItem
+from shop.models import OrderDetail, Address, Order, OrderItem, Product, ProductSubItem
 from utils.forms import SearchField, SearchableSelect
 
+class ProductForm(ModelForm):
+
+    class Meta:
+        model = Product
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(ProductForm, self).__init__(*args, **kwargs)
+        self.fields['assigned_sub_products'].queryset = ProductSubItem.objects.filter(product=None)
 
 
 class OrderForm(ModelForm):
