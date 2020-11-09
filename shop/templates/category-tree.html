@@ -1,0 +1,15 @@
+{% for category in categories %}
+<li class="list-group-item" id="v_hm">
+    <div class="heading">
+        <div class="arrowImage"></div>
+        <a class="link"
+           href="/shop/products/{{ category.name }}?">{{ category.name }}</a>
+    </div>
+
+    {% if category.child_categories.all|length %}
+    <ul class="list-group sub">
+        {% include "category-tree.html" with categories=category.child_categories.all %}
+    </ul>
+    {% endif %}
+</li>
+{% endfor %}

@@ -40,22 +40,7 @@
                         </div>
                         <div id="collapseCategories" class="panel-collapse collapse show">
                             <ul class="list-group">
-                                {% recurse category.child_categories.all with categories as category %}
-                                    {% loop %}
-                                        <li class="list-group-item" id="v_hm">
-                                            <div class="heading">
-                                                <div class="arrowImage"></div>
-                                                <a class="link"
-                                                   href="/shop/products/{{ category.name }}?">{{ category.name }}</a>
-                                            </div>
-                                            <ul class="list-group sub">{% child %}</ul>
-
-                                        </li>
-
-                                    {% endloop %}
-                                {% endrecurse %}
-
-
+                               {% include 'category-tree.html' %}
                             </ul>
                         </div>
                     </div>
