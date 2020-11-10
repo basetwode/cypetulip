@@ -13,13 +13,15 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               SettingsView, ProductDeleteView, SectionDeleteView, PageDeleteView, CategoryDeleteView,
                               ContactEditView, CompanyEditView, LegalSettingsDetailView, EmployeeOverviewView,
                               EmployeeCreationView, OrderAssignEmployeeView, OrderPayView,
-                              OrderShipView, OrderChangeStateView, ShipmentOverviewView, SubItemCreationView,
-                              SubItemEditView, SubItemOverviewView, SubItemDeleteView,
+                              OrderShipView, OrderChangeStateView, ShipmentOverviewView,
+                              SubItemOverviewView, SubItemDeleteView,
                               OrderAcceptInvoiceView, DeleteIndividualOfferRequest, IndividualOfferRequestOverview,
                               IndividualOfferRequestView, CreateOrderView, CreateOrderDetailView, CreateOrderItem,
                               DeleteOrderItem, DeleteOrder, ShopSettingsDetailView, PaymentProviderSettings,
                               HeaderCreateView, HeaderEditView, HeadersOverviewView, HeaderDeleteView, FooterCreateView,
-                              FooterDeleteView, FooterEditView, FootersOverviewView)
+                              FooterDeleteView, FooterEditView, FootersOverviewView, NumberSubItemCreateUpdateView,
+                              FileSubItemCreationView, CheckboxSubItemCreateUpdateView, SelectSubItemCreationView,
+                              SelectItemCreationView, SelectItemDeleteView)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
@@ -60,8 +62,13 @@ urlpatterns = [
     url(r'^products/(?P<url_param>[a-zA-Z0-9_.-]+)/delete/$', ProductDeleteView.as_view(), name="product_delete"),
     url(r'^products/$', ProductsOverviewView.as_view(), name="products_overview"),
 
-    url(r'^subitems/create/$', SubItemCreationView.as_view(), name="subitem_create"),
-    url(r'^subitems/(?P<subitem_id>[a-zA-Z0-9_.-]+)/$', SubItemEditView.as_view(), name="subitem_edit"),
+    url(r'^filesubitem/(?P<subitem_id>[0-9]*)/$', FileSubItemCreationView.as_view(), name="filesubitem_create"),
+    url(r'^numbersubitem/(?P<subitem_id>[0-9]*)/$', NumberSubItemCreateUpdateView.as_view(), name="numbersubitem_create"),
+    url(r'^checkboxsubitem/(?P<subitem_id>[0-9]*)/$', CheckboxSubItemCreateUpdateView.as_view(), name="checkboxsubitem_create"),
+    url(r'^selectsubitem/(?P<subitem_id>[0-9]*)/$', SelectSubItemCreationView.as_view(), name="selectsubitem_create"),
+    url(r'^selectitem/(?P<parent_id>[0-9]*)/(?P<id>[0-9]*)$', SelectItemCreationView.as_view(), name="selectitem_create"),
+    url(r'^selectitem/(?P<parent_id>[0-9]*)/(?P<id>[0-9]*)/delete$', SelectItemDeleteView.as_view(), name="selectitem_delete"),
+
     url(r'^subitems/(?P<url_param>[a-zA-Z0-9_.-]+)/delete/$', SubItemDeleteView.as_view(),
         name="subitem_delete"),
     url(r'^subitems/$', SubItemOverviewView.as_view(), name="subitem_overview"),

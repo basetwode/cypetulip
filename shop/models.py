@@ -128,6 +128,7 @@ class ProductSubItem(models.Model):
 
 class FileSubItem(ProductSubItem):
     # name = models.CharField(max_length=20)
+    extensions = models.CharField(max_length=200, null=True, blank=True, default="")
     file = models.FileField(default=None, null=True, blank=True,
                             upload_to=order_files_upload_handler, storage=fs)
 

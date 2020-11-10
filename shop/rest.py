@@ -4,6 +4,8 @@ from rest_framework.fields import Field, SerializerMethodField
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from django.utils.translation import ugettext_lazy as _
+
 from shop.models import Address, Contact, Company, Order, OrderDetail, OrderItem, Product, ProductSubItem, FileSubItem, \
     SelectSubItem, CheckBoxSubItem, NumberSubItem, SelectItem, FileOrderItem, SelectOrderItem, NumberOrderItem, \
     CheckBoxOrderItem
@@ -65,12 +67,16 @@ class ProductSubItemSerializer(serializers.ModelSerializer):
     filesubitem = FileSubItemSerializer()
     selectsubitem = SelectSubItemSerializer()
     bprice_wt = serializers.FloatField(required=False)
+    valid = SerializerMethodField()
 
 
     class Meta:
         model = ProductSubItem
         fields = '__all__'
         depth = 4
+
+    def get_valid(self, object):
+        return True
 
 
 class OrderItemDeserializer(serializers.ModelSerializer):
@@ -85,6 +91,17 @@ class FileOrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = FileOrderItem
         fields = '__all__'
+
+    def validate_file(self, value):
+        extensions = self.instance.product.filesubitem.extensions.split(",")
+
+        if len(extensions)<=1:
+            return value
+        elif value.name.split(".")[-1] in extensions:
+            return value
+        else:
+            raise serializers.ValidationError(_("Unsupported filetype, supported files are "+ self.instance.product.
+                                                filesubitem.extensions))
 
 
 class SelectOrderItemSerializer(serializers.ModelSerializer):
@@ -107,15 +124,23 @@ class CheckboxOrderItemSerializer(serializers.ModelSerializer):
         model = CheckBoxOrderItem
         fields = '__all__'
 
+    def validate_is_checked(self, value):
+
+        if self.instance.product.checkboxsubitem.is_required and not value:
+            raise serializers.ValidationError(_('This field is required'))
+        else:
+            return value
+
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product = ProductSubItemSerializer()
     randID = SerializerMethodField(source='get_rand_id')
     errors = SerializerMethodField()
+    valid = SerializerMethodField()
 
     class Meta:
         model = OrderItem
-        fields = ['product', 'price', 'price_wt', 'count', 'id', 'fileorderitem',
+        fields = ['product', 'price', 'price_wt', 'count', 'id', 'fileorderitem', 'valid',
                   'numberorderitem', 'selectorderitem', 'checkboxorderitem', 'randID', 'errors']
         depth = 4
 
@@ -130,6 +155,10 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     def get_errors(self, object):
         return []
+
+    def get_valid(self, object):
+        return True
+
 
 class OrderSerializer(serializers.ModelSerializer):
     order_items = serializers.SerializerMethodField('get_order_items')

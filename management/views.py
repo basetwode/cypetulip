@@ -23,7 +23,7 @@ from shop.filters import ProductFilter, ContactFilter, ProductCategoryFilter, Se
     PageFilter, ShipmentPackageFilter, FileSubItemFilter, FooterFilter, HeaderFilter, ProductSubItemFilter
 from shop.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
-    FileSubItem, IndividualOffer, ProductSubItem
+    FileSubItem, IndividualOffer, ProductSubItem, NumberSubItem, CheckBoxSubItem, SelectSubItem, SelectItem
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
 from utils.mixins import EmailMixin, PaginatedFilterViews
@@ -285,34 +285,106 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
         return reverse_lazy('products_overview')
 
 
-class SubItemCreationView(LoginRequiredMixin, CreateView):
+
+class CheckboxSubItemCreateUpdateView(LoginRequiredMixin, CreateUpdateView):
     template_name = 'generic-create.html'
     context_object_name = 'subitem'
-    model = FileSubItem
+    slug_field = 'id'
+    slug_url_kwarg = 'subitem_id'
+    model = CheckBoxSubItem
     fields = ['price','tax','name','description', 'details',
-              'requires_file_upload', 'is_required', 'is_multiple_per_item', 'is_once_per_order']
+              'is_required','is_once_per_order'
+              ]
 
     def get_success_url(self):
         return reverse_lazy('subitem_overview')
 
 
-class SubItemEditView(LoginRequiredMixin, UpdateView):
-    template_name = 'generic-edit.html'
+class NumberSubItemCreateUpdateView(LoginRequiredMixin, CreateUpdateView):
+    template_name = 'generic-create.html'
     context_object_name = 'subitem'
-    model = FileSubItem
-    fields = ['price', 'tax', 'name', 'description', 'details',
-              'requires_file_upload', 'is_required', 'is_multiple_per_item', 'is_once_per_order']
-
-    product_id = None
     slug_field = 'id'
     slug_url_kwarg = 'subitem_id'
+    model = NumberSubItem
+    fields = ['price','tax','name','description', 'details',
+              'is_required', 'is_once_per_order'
+              ]
 
     def get_success_url(self):
-        return reverse_lazy('filesubitem_overview')
+        return reverse_lazy('subitem_overview')
+
+
+class FileSubItemCreationView(LoginRequiredMixin, CreateUpdateView):
+    template_name = 'generic-create.html'
+    context_object_name = 'subitem'
+    slug_field = 'id'
+    slug_url_kwarg = 'subitem_id'
+    model = FileSubItem
+    fields = ['price','tax','name','description', 'details',
+              'is_required', 'is_multiple_per_item', 'is_once_per_order',
+              'extensions']
+
+    def get_success_url(self):
+        return reverse_lazy('subitem_overview')
+
+
+class SelectSubItemCreationView(LoginRequiredMixin, WizardView):
+    page_title = _('Create Selectsubitem')
+    context_object_name = 'subitem'
+    slug_field = 'id'
+    slug_url_kwarg = 'subitem_id'
+    model = SelectSubItem
+    fields = ['price','tax','name','description', 'details',
+              'is_required', 'is_once_per_order',
+              ]
+
+    def get_back_url(self):
+        return reverse_lazy('subitem_overview')
+
+    def get_success_url(self):
+        return reverse_lazy('selectitem_create', kwargs={'id': '', 'parent_id': self.get_object().id})
+
+
+class SelectItemCreationView(LoginRequiredMixin, RepeatableWizardView):
+    page_title = _('Create new select item')
+    context_object_name = 'subitem'
+    slug_field = 'id'
+    slug_url_kwarg = 'subitem_id'
+    model = SelectItem
+    fields = ['name',]
+    pk_url_kwarg = 'id'
+    parent_key = 'select'
+    self_url = 'selectitem_create'
+    delete_url = 'selectitem_delete'
+
+
+    def get_back_url(self):
+        return reverse_lazy('selectsubitem_create', kwargs={'subitem_id': self.get_parent_id()})
+
+    def get_next_url(self):
+        return reverse_lazy('subitem_overview')
+
+    def get_success_url(self):
+        return reverse_lazy('selectitem_create', kwargs={'id': '', 'parent_id': self.get_parent_id()})
+
+    def form_valid(self, form):
+        selectitem = form.save(commit=False)
+        selectitem.select = SelectSubItem.objects.get(id=self.get_parent_id())
+        return super(SelectItemCreationView, self).form_valid(form)
+
+
+class SelectItemDeleteView(LoginRequiredMixin, DeleteView):
+    model = SelectItem
+    slug_field = 'id'
+    pk_url_kwarg = 'id'
+    template = ''
+
+    def get_success_url(self):
+        return reverse_lazy('subitem_overview')
 
 
 class SubItemDeleteView(LoginRequiredMixin, DeleteView):
-    model = FileSubItem
+    model = ProductSubItem
     slug_field = 'id'
     slug_url_kwarg = "url_param"
     template = ''

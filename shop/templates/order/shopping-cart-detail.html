@@ -93,41 +93,43 @@
                                           :class="{'was-validated': (was_validated &&  order_items_subproduct.dirty)}"
                                           method="post" :ref="'form-'+order_items_subproduct.randID">
                                         <div v-if="order_items_subproduct.product.filesubitem"
-                                             :class="{'input-group':true, 'is-invalid': order_items_subproduct.errors>0}">
+                                             :class="{'input-group':true, 'is-invalid': order_items_subproduct.errors.file}">
                                                 <input :required="subproduct.is_required"
                                                        :onchange="fileSelected(order_items_subproduct)"
+                                                       :valid="isValid(order_items_subproduct)"
                                                        type="file"
-                                                       :class="{'custom-file-input':true, 'is-invalid': order_items_subproduct.errors>0}"
+                                                       :class="{'custom-file-input':true, 'form-control':true, 'is-invalid': order_items_subproduct.errors.file}"
                                                        :id="'inputGroupFile-'+order_items_subproduct.randID"
                                                        :ref="'file-'+order_items_subproduct.randID"
                                                        v-model="order_items_subproduct.file_name"
                                                        aria-describedby="inputGroupFileAddon01">
-                                                <label :class="{'custom-file-label':true, 'is-invalid': order_items_subproduct.errors>0}"
+                                                <label :class="{'custom-file-label':true, 'is-invalid': order_items_subproduct.errors.file}"
+                                                       :valid="isValid(order_items_subproduct)"
                                                        :for="'inputGroupFile-'+order_items_subproduct.randID">[[order_items_subproduct.file_name]]</label>
-                                                <div class="valid-feedback">
-                                                    {% trans 'Looks good!' %}
-                                                </div>
+
+                                            <div v-if="isValid(order_items_subproduct)" class="valid-feedback">
+                                                {% trans 'Looks good!' %}
+                                            </div>
                                             <div class="invalid-feedback">
                                                 <p v-for="error in order_items_subproduct.errors.file ">
                                                     [[error]]
                                                 </p>
                                             </div>
-
-                                            <div class="pt-1 pl-2">
+                                            <div class="w-100 pt-1 pl-2">
                                                 <span>{% trans 'Current File: ' %} [[order_items_subproduct.fileorderitem.file_name]]</span>
                                             </div>
                                         </div>
                                         <div v-if="order_items_subproduct.product.checkboxsubitem"
-                                             :class="{'input-group':true, 'has-error': order_items_subproduct.errors > 0}">
+                                             :class="{'input-group':true, 'is-invalid': order_items_subproduct.is_chechked}">
                                             <div class="form-check">
                                                 <label  class="form-check-label">
-                                                <input class="form-check-input" type="checkbox" :required="order_items_subproduct.product.is_required"
+                                                <input class=" form-check-input" type="checkbox" :required="order_items_subproduct.product.is_required"
                                                               v-model="order_items_subproduct.checkboxorderitem.is_checked"
                                                               >[[order_items_subproduct.product.checkboxsubitem.name]]</label>
                                                 <div class="valid-feedback">
                                                     {% trans 'Looks good!' %}
                                                 </div>
-                                                <div class="invalid-feedback">
+                                                <div v-if="!isValid(order_items_subproduct)" style="display: block" class="invalid-feedback">
                                                     <p v-for="error in order_items_subproduct.errors.is_checked ">
                                                         [[error]]
                                                     </p>
@@ -287,12 +289,15 @@
                             getOrderItemsForSubproduct: function(orderItem, subproductId) {
                                 return orderItem.order_items.filter(oi => oi.product.id === subproductId)
                             },
+                            isValid: function(orderItem){
+                                return orderItem.valid;
+                            },
                             isOnlyItem: function(orderItem, subproductId) {
                                 return orderItem.order_items.filter(oi => oi.product.id === subproductId).length===1
                             },
                             addSubProductOrderItem: function(orderItem, subProduct) {
                                 var id = Math.random().toString(36).substring(7);
-                                orderItem.order_items.push({'product': subProduct,'randID': id, 'value': '', 'dirty':true, 'errors':[],
+                                orderItem.order_items.push({'product': subProduct,'randID': id, 'value': '', 'dirty':true, 'errors':[],'valid':true,
                                     'fileorderitem':{}, 'numberorderitem':{}, 'selectorderitem':{'selected_item':{}}, 'checkboxorderitem':{'is_checked':false} })
                             },
                             removeOrderItem: function(orderItem){
@@ -313,40 +318,51 @@
                                 let instance = this;
                                 const requests = [];
                                 this.order.order_items.forEach(function(orderItem) {
-                                    orderItem.order_items.forEach(function(subItem){
+                                    orderItem.order_items.forEach(function(subItem) {
                                         this.order_items_submitted_count++;
-                                        let form = instance.$refs['form-'+subItem.randID];
+                                        let form = instance.$refs['form-' + subItem.randID];
                                         var formData = new FormData(form[0]);
                                         formData.append('product', subItem.product.id);
                                         formData.append('order', instance.order.order.id);
                                         formData.append('order_detail', instance.order.id);
                                         formData.append('order_item', orderItem.id);
                                         formData.append('id', subItem.id);
+                                        var skip = false;
 
-                                        if(subItem.product.filesubitem && subItem.dirty) {
-                                            formData.append('file', subItem.file);
-                                            uri = 'fileorderitem/';
-                                            subItem.dirty = true;
+                                        if (subItem.product.filesubitem && subItem.dirty) {
+                                            if (subItem.product.is_required || subItem.file) {
+                                                formData.append('file', subItem.file);
+                                                uri = 'fileorderitem/';
+                                                subItem.dirty = true;
+                                            } else {
+                                                skip = true;
+                                            }
                                         }
-                                        if(subItem.product.numbersubitem){
+                                        if (subItem.product.numbersubitem) {
                                             formData.append('number', subItem.numberorderitem.number);
                                             uri = 'numberorderitem/';
                                             subItem.dirty = true;
                                         }
-                                        if(subItem.product.checkboxsubitem){
+                                        if (subItem.product.checkboxsubitem) {
                                             formData.append('is_checked', subItem.checkboxorderitem.is_checked);
                                             uri = 'checkboxorderitem/';
                                             subItem.dirty = true;
                                         }
-                                        if(subItem.product.selectsubitem){
-                                            formData.append('selected_item', subItem.selectorderitem.selected_item.id);
-                                            uri = 'selectorderitem/';
-                                            subItem.dirty = true;
+                                        if (subItem.product.selectsubitem) {
+                                            if (subItem.product.is_required || subItem.selectorderitem.selected_item.id) {
+                                                formData.append('selected_item', subItem.selectorderitem.selected_item.id);
+                                                uri = 'selectorderitem/';
+                                                subItem.dirty = true;
+                                            } else {
+                                                skip = true;
+                                            }
                                         }
-                                        if(subItem.id && subItem.dirty){
-                                            requests.push(instance.putItem(formData, uri, subItem.id,subItem))
-                                        } else if(!subItem.id) {
-                                            requests.push(instance.postItem(formData, uri, subItem))
+                                        if (!skip) {
+                                            if (subItem.id && subItem.dirty) {
+                                                requests.push(instance.putItem(formData, uri, subItem.id, subItem))
+                                            } else if (!subItem.id) {
+                                                requests.push(instance.postItem(formData, uri, subItem))
+                                            }
                                         }
                                     })
                                 })
@@ -393,6 +409,7 @@
                                 })
                                 .catch(error => {
                                     subItem.errors = error.response.data;
+                                    subItem.valid = false;
                                     instance.form_contains_errors = true;
                                 })
                             },
@@ -412,6 +429,7 @@
                                     })
                                     .catch(error => {
                                         subItem.errors = error.response.data;
+                                        subItem.valid = false;
                                         instance.form_contains_errors = true;
                                     })
                             }

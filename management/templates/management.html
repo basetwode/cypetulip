@@ -111,8 +111,15 @@
                 <h5 class="card-title">{% trans 'Subitems' %}</h5>
                 <a href="{% url 'subitem_overview' %}"
                    class="btn btn-primary">{% trans 'Show' %}</a>
-                <a href="{% url 'subitem_create' %}"
-                   class="btn btn-primary">{% trans 'Create new SubItem' %}</a>
+
+                <a href="{% url 'filesubitem_create' '' %}"
+                   class="btn btn-primary">{% trans 'Add Filesubitem' %}</a>
+                <a href="{% url 'checkboxsubitem_create' '' %}"
+                   class="btn btn-primary">{% trans 'Add Checkboxsubitem' %}</a>
+                <a href="{% url 'numbersubitem_create' '' %}"
+                   class="btn btn-primary">{% trans 'Add NumbersubItem' %}</a>
+                <a href="{% url 'selectsubitem_create' '' %}"
+                   class="btn btn-primary">{% trans 'Add SelectsubItem' %}</a>
                 <hr>
                 <h5 class="card-title">{% trans 'Categories' %}</h5>
                 <a href="{% url 'categories_overview' %}"
