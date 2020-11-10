@@ -52,7 +52,16 @@
                 {% for subitem in filter.qs %}
                     <tr>
                         <td>{{ subitem.id }}</td>
-                        <td>{{ subitem.category }}</td>
+                        <td>{% if subitem.filesubitem %}
+                                {% trans 'Filesubitem' %}
+                            {% elif subitem.checkboxsubitem %}
+                            {% trans 'Checkboxsubitem' %}
+                            {% elif subitem.numbersubitem %}
+                            {% trans 'Numbersubitem' %}
+                            {% elif subitem.selectsubitem %}
+                            {% trans 'Selectsubitem' %}
+                            {% endif %}
+                        </td>
                         <td class="thumbnail">
                             <div>
                                 {% if subitem.product_picture %}

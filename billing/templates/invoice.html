@@ -222,10 +222,10 @@
         </tr>
         </tfoot>
     </table>
-    <div id="thanks">{% trans 'Thank you for your order!' %}</div>
+    <div id="thanks">{% trans 'Thank you for your order' %}!</div>
     <div id="notices">
         {% if payment_detail.method.name == 'Bill' %}
-            <div>NOTICE:<br>{% trans 'Please send the aforementioned invoice total to the following account' %}</div>
+            <div>{% trans 'Notice' %}:<br>{% trans 'Please send the aforementioned invoice total to the following account' %}</div>
             <div class="notice">
                 {{ invoice_settings.account_holder }}<br>
                 IBAN: {{ invoice_settings.iban }}<br>

@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from cms.models import Section, Page
 from management.models import Header, Footer
 from shipping.models import Package
-from shop.models import OrderDetail, Product, Contact, ProductCategory, FileSubItem
+from shop.models import OrderDetail, Product, Contact, ProductCategory, FileSubItem, ProductSubItem
 
 
 class OrderDetailFilter(django_filters.FilterSet):
@@ -31,6 +31,12 @@ class ProductFilter(django_filters.FilterSet):
     class Meta:
         model = Product
         fields = ['category', 'attributes']
+
+
+class ProductSubItemFilter(django_filters.FilterSet):
+    class Meta:
+        model = ProductSubItem
+        fields = []
 
 
 class FileSubItemFilter(django_filters.FilterSet):

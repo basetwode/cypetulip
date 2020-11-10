@@ -20,10 +20,10 @@ from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_
 from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
 from shipping.models import Shipment
 from shop.filters import ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
-    PageFilter, ShipmentPackageFilter, FileSubItemFilter, FooterFilter, HeaderFilter
+    PageFilter, ShipmentPackageFilter, FileSubItemFilter, FooterFilter, HeaderFilter, ProductSubItemFilter
 from shop.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
-    FileSubItem, IndividualOffer
+    FileSubItem, IndividualOffer, ProductSubItem
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
 from utils.mixins import EmailMixin, PaginatedFilterViews
@@ -183,10 +183,10 @@ class ProductsOverviewView(LoginRequiredMixin, ListView):
 class SubItemOverviewView(LoginRequiredMixin, ListView):
     template_name = 'subitems-overview.html'
     context_object_name = 'filesubitem'
-    model = FileSubItem
+    model = ProductSubItem
 
     def get(self, request, *args, **kwargs):
-        filter = FileSubItemFilter(request.GET, queryset=FileSubItem.objects.all())
+        filter = ProductSubItemFilter(request.GET, queryset=ProductSubItem.objects.filter(product=None))
         return render(request, self.template_name,
                       {'filter': filter})
 
@@ -289,7 +289,8 @@ class SubItemCreationView(LoginRequiredMixin, CreateView):
     template_name = 'generic-create.html'
     context_object_name = 'subitem'
     model = FileSubItem
-    fields = '__all__'
+    fields = ['price','tax','name','description', 'details',
+              'requires_file_upload', 'is_required', 'is_multiple_per_item', 'is_once_per_order']
 
     def get_success_url(self):
         return reverse_lazy('subitem_overview')
@@ -299,7 +300,8 @@ class SubItemEditView(LoginRequiredMixin, UpdateView):
     template_name = 'generic-edit.html'
     context_object_name = 'subitem'
     model = FileSubItem
-    fields = '__all__'
+    fields = ['price', 'tax', 'name', 'description', 'details',
+              'requires_file_upload', 'is_required', 'is_multiple_per_item', 'is_once_per_order']
 
     product_id = None
     slug_field = 'id'

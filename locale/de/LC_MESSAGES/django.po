@@ -273,7 +273,7 @@ msgid "Assign Employee"
 msgstr "Mitarbeiter zuweisen"
 
 msgid "Please choose your Employee"
-msgstr "Bitte Bezahlmethode auswählen"
+msgstr "Bitte wählen Sie den Mitarbeiter aus"
 
 msgid "Assign"
 msgstr "Zuweisen"
@@ -823,10 +823,10 @@ msgid ""
 msgstr "Ich habe die <a target='_blank' href='/cms/gbt'>Allgemeinen Geschäftsbedingungen</a> gelesen"
 
 msgid "Something went wrong while processing your payment:\n"
-msgstr "Etwas bei der Bearbeitung Ihrer Bezahlugn ist schiefgelaufen:\n"
+msgstr "Etwas bei der Bearbeitung Ihrer Bezahlung ist schiefgelaufen:\n"
 
 msgid "Something went wrong while processing your payment"
-msgstr "Etwas bei der Bearbeitung Ihrer Bezahlugn ist schiefgelaufen"
+msgstr "Etwas bei der Bearbeitung Ihrer Bezahlung ist schiefgelaufen"
 
 msgid "Shoppingcart"
 msgstr "Einkaufswagen"
@@ -915,7 +915,7 @@ msgid "Create Shipment"
 msgstr "Lieferung anlegen"
 
 msgid "Please choose what kind of shipment this is"
-msgstr "Bitte Bezahlmethode auswählen"
+msgstr "Bitte Lieferungsart auswählen"
 
 msgid "Ship order (Digital)"
 msgstr "Bestellung versenden (Digital)"
@@ -951,10 +951,9 @@ msgstr "(Digitale) Lieferung bearbeiten"
 msgid "Shipment"
 msgstr "Lieferungen"
 
-#, fuzzy
-#| msgid "Open Shipments"
+
 msgid "Update shipment"
-msgstr "Offene Lieferungen"
+msgstr "Lieferung aktuallisieren"
 
 msgid ""
 "I hereby consent to the processing of my personal data. The information is "
@@ -1270,7 +1269,7 @@ msgid "Please enter the e-mail address associated with your account"
 msgstr "Bitte geben Sie die E-Mailadresse Ihres Kontos ein"
 
 msgid "Thank you for your request, we'll contact you soon"
-msgstr ""
+msgstr "Vielen Dank für Ihre Anfrage, wir werden Sie bald kontaktieren"
 
 #~ msgid "Ship Methods"
 #~ msgstr "Lieferung"

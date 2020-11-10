@@ -18,7 +18,7 @@ class OnlineShipmentForm(ModelForm):
 
     def __init__(self, order_detail, *args, **kwargs):
         super(OnlineShipmentForm, self).__init__(*args, **kwargs)
-        self.fields['order_items_shipped'].queryset = OrderItem.objects.filter(order_detail=order_detail, shipment__isnull=True)
+        self.fields['order_items_shipped'].queryset = OrderItem.objects.filter(order_detail=order_detail, shipment__isnull=True, order_item__isnull=True)
 
 
 class PackageForm(ModelForm):
@@ -36,4 +36,4 @@ class PackageForm(ModelForm):
 
     def __init__(self, order_detail, *args, **kwargs):
         super(PackageForm, self).__init__(*args, **kwargs)
-        self.fields['order_items_shipped'].queryset = OrderItem.objects.filter(order_detail=order_detail, shipment__isnull=True)
+        self.fields['order_items_shipped'].queryset = OrderItem.objects.filter(order_detail=order_detail, shipment__isnull=True, order_item__isnull=True)

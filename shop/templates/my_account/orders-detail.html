@@ -296,12 +296,14 @@
                             <button type="submit" {% if not order_details.state.initial %}disabled{% endif %}
                                     class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
                         </form>
-                        {% if order_details.bill_sent %}
-                        <a target="_blank" href="{% url 'invoice_pdf' order.order_hash %}"
-                           class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
-                        {% endif %}
                         <a href="{% url 'shop:detail_order_write_review' order.order_hash %}"
                            class="btn btn-fw btn-secondary">{% trans 'Write review' %}</a>
+                        {% if order_details.bill_sent %}
+                            <a class="btn btn-fw btn-secondary"
+                               target="_blank" href="{% url 'invoice_pdf' order.order_hash %}"
+                            >{% trans 'Bill' %}</a>
+                        {% else %}<button class="btn btn-fw btn-secondary" disabled
+                        >{% trans 'Bill' %}</button> {% endif %}
                     </div>
                 </div>
                 <div class="card-footer">
@@ -315,7 +317,8 @@
                                 <th style="width:7%">{% trans 'Type' %}</th>
 
                                 <th style="width:22%"
-                                    class="text-center">{% trans 'Date shipped' %}</th>
+                                    class="text-center">{% trans 'Date shipped' %}
+                                </th>
                                 <th style="width:40%">{% trans 'Details' %}</th>
                             </tr>
                             </thead>
@@ -326,7 +329,13 @@
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{% if shipment.packageshipment %} {% trans 'Package' %}{% else %}{% trans 'Online' %}{% endif %}</td>
-                                        <td>{{ shipment.date_shipped }}</td>
+                                        <td>{{ shipment.date_shipped }}
+                                            <small><b>{% trans 'Shipped products: ' %}</b></small><br>
+                                            {% for shipped_product in shipment.order_items_shipped.all %}
+                                                <p class="pl-3 pt-2">{{ shipped_product.product.name }}</p>
+                                            {% empty %}
+                                                <p  class="pl-3 pt-2"><small>{% trans 'No products associated with this shipment' %}</small></p>
+                                            {% endfor %}</td>
                                         <td>
                                             {% if shipment.packageshipment %}
                                                 <p>{% trans 'Shipper: ' %}{{ shipment.packageshipment.package.shipper.name  }}</p>
