@@ -437,6 +437,9 @@ class PagesOverviewView(LoginRequiredMixin, ListView):
         return render(request, self.template_name,
                       {'filter': filter})
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(PagesOverviewView, self).get_context_data(**kwargs)
+
 
 class PageCreateView(LoginRequiredMixin, CreateView):
     template_name = 'generic-create.html'
@@ -451,6 +454,22 @@ class PageCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('pages')
+
+
+class PredefinedPageCreateView(LoginRequiredMixin, CreateUpdateView):
+    template_name = 'predefined_page_create.html'
+    context_object_name = 'page'
+    model = Page
+    fields = '__all__'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context['available_pages'] = list(map(lambda c: {'page_name': c[0], 'link': c[1]}, PredefinedPages))
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('pages')
+
 
 
 class PageEditView(LoginRequiredMixin, UpdateView):

@@ -390,10 +390,10 @@ class OrderItem(models.Model):
         return f"{self.count}x {self.product.name if self.product else ''} {self.price}"
 
     def total_wt(self):
-        return calculate_sum(self.orderitem_set, True) if self.orderitem_set.count()>0 else 0 + self.price_wt
+        return calculate_sum(self.orderitem_set, True) + self.price_wt if self.orderitem_set.count()>0 else 0 + self.price_wt
 
     def total(self):
-        return calculate_sum(self.orderitem_set, False) if self.orderitem_set.count()>0 else 0 + self.price
+        return calculate_sum(self.orderitem_set, False) + self.price_wt if self.orderitem_set.count()>0 else 0 + self.price
 
 # Corresponding OrderItems for the subproducts
 class FileOrderItem(OrderItem):

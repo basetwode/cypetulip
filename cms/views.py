@@ -7,7 +7,7 @@ from django.views.generic import View, TemplateView, FormView
 
 from cms.forms import ContactForm
 from cms.models import CSSSetting, Page, Section
-from management.models import MailSetting
+from management.models import MailSetting, LegalSetting
 from permissions.error_handler import raise_404
 # Create your views here.
 from shop.models import Contact
@@ -27,7 +27,7 @@ class AdminView(View):
 # This is for added sites #
 class GenericView(View):
     def get(self, request, site):
-        page = Page.objects.filter(page_name=site)
+        page = Page.objects.filter(page_id=site)
         all_pages = Page.objects.all()
         if page.count() == 1:
             page = page[0]
@@ -93,3 +93,47 @@ class ContactView(FormView, EmailMixin):
                         })
         messages.success(self.request, _('Thank you for your request, we will contact you as soon as possible!'))
         return HttpResponseRedirect(reverse('contact'))
+
+
+class GBTView(TemplateView):
+    template_name = "predefined_page.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(GBTView, self).get_context_data(**kwargs)
+        legal = LegalSetting.objects.first()
+        context['page_content'] = legal.general_business_term
+        context['page_name'] = _("General Business Terms")
+        return context
+
+
+class LegalView(TemplateView):
+    template_name = "legal.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(LegalView, self).get_context_data(**kwargs)
+        legal = LegalSetting.objects.first()
+        context['legal'] = legal
+        context['page_name'] = _("Legal")
+        return context
+
+
+class CancellationPolicyView(TemplateView):
+    template_name = "predefined_page.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(CancellationPolicyView, self).get_context_data(**kwargs)
+        legal = LegalSetting.objects.first()
+        context['page_content'] = legal.cancellation_policy
+        context['page_name'] = _("Cancellation Policy")
+        return context
+
+
+class PrivacyPolicyView(TemplateView):
+    template_name = "predefined_page.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(PrivacyPolicyView, self).get_context_data(**kwargs)
+        legal = LegalSetting.objects.first()
+        context['page_content'] = legal.privacy_policy
+        context['page_name'] = _("Privacy Policy")
+        return context

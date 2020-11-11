@@ -11,8 +11,15 @@ def get_version(request):
     }
 
 
+def get_nav_sites(request):
+    pages = Page.objects.filter(is_enabled=True, show_in_navigation=True).order_by('position')
+    return {
+        'sites_nav': pages
+    }
+
+
 def get_sites(request):
-    pages = Page.objects.filter(is_enabled=True)
+    pages = Page.objects.filter(is_enabled=True).order_by('position')
     return {
         'sites': pages
     }

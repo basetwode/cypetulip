@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load bootstrap4 %}
+
+{% block head %}
+    <title>{{ page_name }}</title>
+{% endblock %}
+
+
+{% block body %}
+    {% bootstrap_messages %}
+
+    <div class="container" role="main" id="main">
+        <h1>{{ page_name }}</h1>
+        <h3>{{ legal.company_name }}</h3>
+        <p>{{ legal.street }} {{ legal.number }}<br>
+        {{ legal.zipcode }} {{ legal.city }}</p>
+        <p>{% trans 'Phone' %}:{{ legal.phone }}<br>
+        {% trans 'E-Mail' %}:{{ legal.mail }}<br>
+        {% trans 'Tax-ID' %}: {{ legal.tax_number }}<br>
+        {% trans 'Commercial Register' %}: {{ legal.register_number }}</p>
+    </div>
+
+{% endblock %}

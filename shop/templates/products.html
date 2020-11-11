@@ -91,12 +91,13 @@
                                                 &euro;</strong>
                                         {% else %}
                                             <span>{{ product.price_wt | floatformat:2 }} &euro;</span>
-                                        {% endif %}</div>
+                                        {% endif %} </div>
                                     {% if product.special_price %}
                                         <span class="badge badge-pill badge-danger badge-primary">{% trans 'Sale' %}
                                                         </span>
                                     {% endif %}
-
+                                    {% if not product.price_on_request %}
+                                    <small class="float-right">({% trans 'incl. Tax' %})</small>{% endif %}
                                 </div>
                                 <div class="card-body product-attributes">
                                     {% regroup product.attributes.all by type as attributes_grouped %}

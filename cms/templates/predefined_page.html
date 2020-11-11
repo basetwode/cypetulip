@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load bootstrap4 %}
+
+{% block head %}
+    <title>{{ page_name }}</title>
+{% endblock %}
+
+
+{% block body %}
+    {% bootstrap_messages %}
+
+    <div class="container" role="main" id="main">
+        <h1>{{ page_name }}</h1>
+
+        {{ page_content|safe }}
+    </div>
+
+{% endblock %}

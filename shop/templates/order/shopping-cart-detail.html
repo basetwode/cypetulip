@@ -5,6 +5,10 @@
 {% block head %}
     <script src="{% static 'utils.js' %}"></script>
     <title>{{ product.name }}</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
+    </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -68,10 +72,10 @@
                                 </div>
                             </td>
                             <td>
-                                [[order_item.price_wt]] €
+                                [[order_item.price_wt.toFixed(2)]] €
                             </td>
                             <td class="text-center">
-                                [[getOrderItemTotal(order_item)]] €
+                                [[getOrderItemTotal(order_item).toFixed(2)]] €
                             </td>
                             <td>
                                 <button class="btn btn-danger btn-sm"
@@ -120,7 +124,7 @@
                                             </div>
                                         </div>
                                         <div v-if="order_items_subproduct.product.checkboxsubitem"
-                                             :class="{'input-group':true, 'is-invalid': order_items_subproduct.is_chechked}">
+                                             :class="{'input-group':true, 'is-invalid': order_items_subproduct.is_checked}">
                                             <div class="form-check">
                                                 <label  class="form-check-label">
                                                 <input class=" form-check-input" type="checkbox" :required="order_items_subproduct.product.is_required"
@@ -205,7 +209,8 @@
                         <td style="width:50%"></td>
                         <td style="width:10%"></td>
                         <td style="width:22%" class="text-center"><strong>{% trans 'Total: ' %}<span
-                                id="total">[[getOrderTotal()]]</span> &euro;</strong></td>
+                                id="total">[[getOrderTotal().toFixed(2)]]</span> &euro;</strong>
+                        <p>({% trans 'incl. Tax' %})</p></td>
                         <td style="width:10%"></td>
                     </tr>
 
@@ -223,236 +228,219 @@
                                 class="fa fa-angle-right"></i></a>
                     </div>
                     <form id="next-step-form" action="/shop/delivery/{{ order_details.order_hash }}" method="get">
-
+                    </form>
                 </div>
-                <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
-                </script>
-                <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-                <script type='text/javascript'>
-                    var csrfmiddlewaretoken = '{{ csrf_token }}';
-                    var order = '{{ order_details.order_hash }}';
-                    var next_url = '{% url "shop:delivery_order" order_details.order_hash %}';
-                </script>
-                <script>
-                    var app = new Vue({
-                        delimiters: ['[[', ']]'],
-                        el: '#vue-cart',
-                        data: {
-                            csrfmiddlewaretoken: csrfmiddlewaretoken,
-                            addresses: [],
-                            shipment: "",
-                            order_hash: order,
-                            nextUrl: next_url,
-                            order: {},
-                            was_validated: false,
-                            form_contains_errors: false,
-                            order_items_submitted_count: 0,
-                            errors: {shipment: [], address: []},
-                        },
-                        mounted() {
-                            this.reloadData()
-                        },
-                        methods: {
-                            reloadData: function () {
-                                let instance = this
-                                axios.get('/api/v1/order/'+this.order_hash)
-                                    .then(response => {
-                                        this.order = response.data;
-                                        this.order.order_items.forEach(function(orderItem) {
-                                            orderItem.product.product.assigned_sub_products.forEach(function(sub_prod) {
-                                                if(!orderItem.order_items.some(o => o.product.id === sub_prod.id)){
-                                                    instance.addSubProductOrderItem(orderItem, sub_prod)
-                                                }
-                                            })
-                                        })
-
-                                    });
-                            },
-                            fileSelected: function(subItem) {
-                                if (this.$refs['file-' + subItem.randID] &&  this.$refs['file-' + subItem.randID][0].files[0]) {
-                                    subItem.file = this.$refs['file-' + subItem.randID][0].files[0];
-                                    subItem.dirty = true;
-                                }
-                            },
-                            getOrderItemTotal: function(orderItem) {
-                                return orderItem.price_wt + orderItem.order_items.reduce(function(price, order_item_b) {
-                                    return price + order_item_b.product.bprice_wt
-                                },0)
-                            },
-                            getOrderTotal: function() {
-                                let instance = this
-                                if(this.order.order_items)
-                                    return this.order.order_items.reduce(function(price, order_item_b) {
-                                        return price + instance.getOrderItemTotal(order_item_b)
-                                    },0).toFixed(2)
-                            },
-                            getOrderItemsForSubproduct: function(orderItem, subproductId) {
-                                return orderItem.order_items.filter(oi => oi.product.id === subproductId)
-                            },
-                            isValid: function(orderItem){
-                                return orderItem.valid;
-                            },
-                            isOnlyItem: function(orderItem, subproductId) {
-                                return orderItem.order_items.filter(oi => oi.product.id === subproductId).length===1
-                            },
-                            addSubProductOrderItem: function(orderItem, subProduct) {
-                                var id = Math.random().toString(36).substring(7);
-                                orderItem.order_items.push({'product': subProduct,'randID': id, 'value': '', 'dirty':true, 'errors':[],'valid':true,
-                                    'fileorderitem':{}, 'numberorderitem':{}, 'selectorderitem':{'selected_item':{}}, 'checkboxorderitem':{'is_checked':false} })
-                            },
-                            removeOrderItem: function(orderItem){
-                                orderItem.order_items.forEach(item =>{  if(item.id) this.deleteItem('orderitem/', item.id) })
-                                this.deleteItem('orderitem/', orderItem.id);
-                                this.order.order_items = this.order.order_items.filter(item => !(item.id === orderItem.id))
-                            },
-                            removeSubProductOrderItem: function(orderItem, randID) {
-                                itemToRemove =  orderItem.order_items.filter(item => (item.randID === randID))[0]
-                                orderItem.order_items = orderItem.order_items.filter(item => !(item.randID === randID))
-                                if(itemToRemove.id){
-                                    this.deleteItem('orderitem/', itemToRemove.id)
-                                }
-                            },
-                            submitCart: function (nextURL){
-                                loadingSpinner = $('#loading-spinner');
-                                loadingSpinner.removeClass('overlay-hidden');
-                                let instance = this;
-                                const requests = [];
-                                this.order.order_items.forEach(function(orderItem) {
-                                    orderItem.order_items.forEach(function(subItem) {
-                                        this.order_items_submitted_count++;
-                                        let form = instance.$refs['form-' + subItem.randID];
-                                        var formData = new FormData(form[0]);
-                                        formData.append('product', subItem.product.id);
-                                        formData.append('order', instance.order.order.id);
-                                        formData.append('order_detail', instance.order.id);
-                                        formData.append('order_item', orderItem.id);
-                                        formData.append('id', subItem.id);
-                                        var skip = false;
-
-                                        if (subItem.product.filesubitem && subItem.dirty) {
-                                            if (subItem.product.is_required || subItem.file) {
-                                                formData.append('file', subItem.file);
-                                                uri = 'fileorderitem/';
-                                                subItem.dirty = true;
-                                            } else {
-                                                skip = true;
-                                            }
-                                        }
-                                        if (subItem.product.numbersubitem) {
-                                            formData.append('number', subItem.numberorderitem.number);
-                                            uri = 'numberorderitem/';
-                                            subItem.dirty = true;
-                                        }
-                                        if (subItem.product.checkboxsubitem) {
-                                            formData.append('is_checked', subItem.checkboxorderitem.is_checked);
-                                            uri = 'checkboxorderitem/';
-                                            subItem.dirty = true;
-                                        }
-                                        if (subItem.product.selectsubitem) {
-                                            if (subItem.product.is_required || subItem.selectorderitem.selected_item.id) {
-                                                formData.append('selected_item', subItem.selectorderitem.selected_item.id);
-                                                uri = 'selectorderitem/';
-                                                subItem.dirty = true;
-                                            } else {
-                                                skip = true;
-                                            }
-                                        }
-                                        if (!skip) {
-                                            if (subItem.id && subItem.dirty) {
-                                                requests.push(instance.putItem(formData, uri, subItem.id, subItem))
-                                            } else if (!subItem.id) {
-                                                requests.push(instance.postItem(formData, uri, subItem))
-                                            }
-                                        }
-                                    })
-                                })
-                                axios.all(requests)
-                                    .finally(()=>{
-                                    loadingSpinner.addClass('overlay-hidden');
-                                    if(instance.form_contains_errors){
-                                        instance.form_contains_errors = false
-                                    } else {
-                                        var nextForm = $('#next-step-form');
-                                        nextForm.submit();
-                                    }
-                                });
-                                this.was_validated = true;
-
-                            },
-                            deleteItem: function(uri, id){
-                                loadingSpinner = $('#loading-spinner');
-                                axios.delete('/api/v1/'+uri+id+"/", {
-                                    headers: {
-                                        'X-CSRFToken': this.csrfmiddlewaretoken
-                                    }
-                                })
-                                    .then(response => {
-                                        loadingSpinner.addClass('overlay-hidden');
-                                    })
-                                    .catch(error => {
-                                        loadingSpinner.addClass('overlay-hidden');
-                                    }).finally(() => loadingSpinner.addClass('overlay-hidden'))
-                            },
-                            postItem: function (formData, uri, subItem) {
-                                let instance = this;
-                                loadingSpinner = $('#loading-spinner');
-                                return axios.post('/api/v1/' + uri, formData, {
-                                    headers: {
-                                        'X-CSRFToken': this.csrfmiddlewaretoken
-                                    }
-                                })
-                                .then(response => {
-                                    subItem.id = response.data.id;
-                                    if (subItem.fileorderitem) {
-                                        subItem.fileorderitem.file_name = response.data.file_name
-                                    }
-                                })
-                                .catch(error => {
-                                    subItem.errors = error.response.data;
-                                    subItem.valid = false;
-                                    instance.form_contains_errors = true;
-                                })
-                            },
-                            putItem: function (formData, uri, id, subItem) {
-                                let instance = this;
-                                loadingSpinner = $('#loading-spinner');
-                                return axios.put('/api/v1/' + uri + id + "/", formData, {
-                                    headers: {
-                                        'X-CSRFToken': this.csrfmiddlewaretoken
-                                    }
-                                })
-                                    .then(response => {
-
-                                        if (subItem.fileorderitem) {
-                                            subItem.fileorderitem.file_name = response.data.file_name
-                                        }
-                                    })
-                                    .catch(error => {
-                                        subItem.errors = error.response.data;
-                                        subItem.valid = false;
-                                        instance.form_contains_errors = true;
-                                    })
-                            }
-
-                        }
-                    })
-                </script>
-                <div class="row">
-                    <div class="col">
-                        <a href="/shop/products/" class="btn btn-warning"><i
-                                class="fa fa-angle-left"></i> {% trans 'Continue Shopping' %}</a>
-                    </div>
-                    <div class="col">
-                        <a type="submit" onclick="submitForm('{% url 'shop:shopping_cart' %}','order-form')"
-                           class="btn btn-success float-right">{% trans 'Shipment' %} <i
-                                class="fa fa-angle-right"></i></a>
-                    </div>
-
-                </div>
-                <form id="next-step-form" action="/shop/delivery/{{ order_details.order_hash }}" method="get">
-                </form>
-
             </div>
         </div>
     </div>
+    <script type='text/javascript'>
+        var csrfmiddlewaretoken = '{{ csrf_token }}';
+        var order = '{{ order_details.order_hash }}';
+        var next_url = '{% url "shop:delivery_order" order_details.order_hash %}';
+    </script>
+
+    <script>
+        var app = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#vue-cart',
+            data: {
+                csrfmiddlewaretoken: csrfmiddlewaretoken,
+                addresses: [],
+                shipment: "",
+                order_hash: order,
+                nextUrl: next_url,
+                order: {},
+                was_validated: false,
+                form_contains_errors: false,
+                order_items_submitted_count: 0,
+                errors: {shipment: [], address: []},
+            },
+            mounted() {
+                this.reloadData()
+            },
+            methods: {
+                reloadData: function () {
+                    let instance = this
+                    axios.get('/api/v1/order/'+this.order_hash)
+                        .then(response => {
+                            this.order = response.data;
+                            this.order.order_items.forEach(function(orderItem) {
+                                orderItem.product.product.assigned_sub_products.forEach(function(sub_prod) {
+                                    if(!orderItem.order_items.some(o => o.product.id === sub_prod.id)){
+                                        instance.addSubProductOrderItem(orderItem, sub_prod)
+                                    }
+                                })
+                            })
+
+                        });
+                },
+                fileSelected: function(subItem) {
+                    if (this.$refs['file-' + subItem.randID] &&  this.$refs['file-' + subItem.randID][0].files[0]) {
+                        subItem.file = this.$refs['file-' + subItem.randID][0].files[0];
+                        subItem.dirty = true;
+                    }
+                },
+                getOrderItemTotal: function(orderItem) {
+                    return (orderItem.price_wt*100 + orderItem.order_items.reduce(function(price, order_item_b) {
+                        return price + order_item_b.product.bprice_wt *100
+                    },0)) / 100
+                },
+                getOrderTotal: function() {
+                    let instance = this
+                    if(this.order.order_items)
+                        return this.order.order_items.reduce(function(price, order_item_b) {
+                            return price + instance.getOrderItemTotal(order_item_b) * 100
+                        },0) / 100
+                },
+                getOrderItemsForSubproduct: function(orderItem, subproductId) {
+                    return orderItem.order_items.filter(oi => oi.product.id === subproductId)
+                },
+                isValid: function(orderItem){
+                    return orderItem.valid;
+                },
+                isOnlyItem: function(orderItem, subproductId) {
+                    return orderItem.order_items.filter(oi => oi.product.id === subproductId).length===1
+                },
+                addSubProductOrderItem: function(orderItem, subProduct) {
+                    var id = Math.random().toString(36).substring(7);
+                    orderItem.order_items.push({'product': subProduct,'randID': id, 'value': '', 'dirty':true, 'errors':[],'valid':true,
+                        'fileorderitem':{}, 'numberorderitem':{}, 'selectorderitem':{'selected_item':{}}, 'checkboxorderitem':{'is_checked':false} })
+                },
+                removeOrderItem: function(orderItem){
+                    orderItem.order_items.forEach(item =>{  if(item.id) this.deleteItem('orderitem/', item.id) })
+                    this.deleteItem('orderitem/', orderItem.id);
+                    this.order.order_items = this.order.order_items.filter(item => !(item.id === orderItem.id))
+                },
+                removeSubProductOrderItem: function(orderItem, randID) {
+                    itemToRemove =  orderItem.order_items.filter(item => (item.randID === randID))[0]
+                    orderItem.order_items = orderItem.order_items.filter(item => !(item.randID === randID))
+                    if(itemToRemove.id){
+                        this.deleteItem('orderitem/', itemToRemove.id)
+                    }
+                },
+                submitCart: function (nextURL){
+                    loadingSpinner = $('#loading-spinner');
+                    loadingSpinner.removeClass('overlay-hidden');
+                    let instance = this;
+                    const requests = [];
+                    this.order.order_items.forEach(function(orderItem) {
+                        orderItem.order_items.forEach(function(subItem) {
+                            this.order_items_submitted_count++;
+                            let form = instance.$refs['form-' + subItem.randID];
+                            var formData = new FormData(form[0]);
+                            formData.append('product', subItem.product.id);
+                            formData.append('order', instance.order.order.id);
+                            formData.append('order_detail', instance.order.id);
+                            formData.append('order_item', orderItem.id);
+                            formData.append('id', subItem.id);
+                            var skip = false;
+
+                            if (subItem.product.filesubitem && subItem.dirty) {
+                                if (subItem.product.is_required || subItem.file) {
+                                    formData.append('file', subItem.file);
+                                    uri = 'fileorderitem/';
+                                    subItem.dirty = true;
+                                } else {
+                                    skip = true;
+                                }
+                            }
+                            if (subItem.product.numbersubitem) {
+                                formData.append('number', subItem.numberorderitem.number);
+                                uri = 'numberorderitem/';
+                                subItem.dirty = true;
+                            }
+                            if (subItem.product.checkboxsubitem) {
+                                formData.append('is_checked', subItem.checkboxorderitem.is_checked);
+                                uri = 'checkboxorderitem/';
+                                subItem.dirty = true;
+                            }
+                            if (subItem.product.selectsubitem) {
+                                if (subItem.product.is_required || subItem.selectorderitem.selected_item.id) {
+                                    formData.append('selected_item', subItem.selectorderitem.selected_item.id);
+                                    uri = 'selectorderitem/';
+                                    subItem.dirty = true;
+                                } else {
+                                    skip = true;
+                                }
+                            }
+                            if (!skip) {
+                                if (subItem.id && subItem.dirty) {
+                                    requests.push(instance.putItem(formData, uri, subItem.id, subItem))
+                                } else if (!subItem.id) {
+                                    requests.push(instance.postItem(formData, uri, subItem))
+                                }
+                            }
+                        })
+                    })
+                    axios.all(requests)
+                        .finally(()=>{
+                            loadingSpinner.addClass('overlay-hidden');
+                            if(instance.form_contains_errors){
+                                instance.form_contains_errors = false
+                            } else {
+                                var nextForm = $('#next-step-form');
+                                nextForm.submit();
+                            }
+                        });
+                    this.was_validated = true;
+
+                },
+                deleteItem: function(uri, id){
+                    loadingSpinner = $('#loading-spinner');
+                    axios.delete('/api/v1/'+uri+id+"/", {
+                        headers: {
+                            'X-CSRFToken': this.csrfmiddlewaretoken
+                        }
+                    })
+                        .then(response => {
+                            loadingSpinner.addClass('overlay-hidden');
+                        })
+                        .catch(error => {
+                            loadingSpinner.addClass('overlay-hidden');
+                        }).finally(() => loadingSpinner.addClass('overlay-hidden'))
+                },
+                postItem: function (formData, uri, subItem) {
+                    let instance = this;
+                    loadingSpinner = $('#loading-spinner');
+                    return axios.post('/api/v1/' + uri, formData, {
+                        headers: {
+                            'X-CSRFToken': this.csrfmiddlewaretoken
+                        }
+                    })
+                        .then(response => {
+                            subItem.id = response.data.id;
+                            if (subItem.fileorderitem) {
+                                subItem.fileorderitem.file_name = response.data.file_name
+                            }
+                        })
+                        .catch(error => {
+                            subItem.errors = error.response.data;
+                            subItem.valid = false;
+                            instance.form_contains_errors = true;
+                        })
+                },
+                putItem: function (formData, uri, id, subItem) {
+                    let instance = this;
+                    loadingSpinner = $('#loading-spinner');
+                    return axios.put('/api/v1/' + uri + id + "/", formData, {
+                        headers: {
+                            'X-CSRFToken': this.csrfmiddlewaretoken
+                        }
+                    })
+                        .then(response => {
+
+                            if (subItem.fileorderitem) {
+                                subItem.fileorderitem.file_name = response.data.file_name
+                            }
+                        })
+                        .catch(error => {
+                            subItem.errors = error.response.data;
+                            subItem.valid = false;
+                            instance.form_contains_errors = true;
+                        })
+                }
+
+            }
+        })
+    </script>
 {% endblock %}

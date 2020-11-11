@@ -47,6 +47,7 @@ class LegalSetting(models.Model):
     account_holder = models.CharField(max_length=20, null=True, blank=True, default=None)
     cancellation_policy = HTMLField(null=True, blank=True, default=None)
     general_business_term = HTMLField(null=True, blank=True, default=None)
+    privacy_policy = HTMLField(null=True, blank=True, default=None)
 
 
 class Layout(models.IntegerChoices):

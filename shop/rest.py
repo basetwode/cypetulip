@@ -93,14 +93,15 @@ class FileOrderItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate_file(self, value):
-        extensions = self.instance.product.filesubitem.extensions.split(",")
+        product = ProductSubItem.objects.get(id=self.initial_data['product'])
+        extensions = product.filesubitem.extensions.split(",")
 
         if len(extensions)<=1:
             return value
         elif value.name.split(".")[-1] in extensions:
             return value
         else:
-            raise serializers.ValidationError(_("Unsupported filetype, supported files are "+ self.instance.product.
+            raise serializers.ValidationError(_("Unsupported filetype, supported files are "+ product.
                                                 filesubitem.extensions))
 
 

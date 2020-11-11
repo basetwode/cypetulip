@@ -75,6 +75,9 @@
                                         {% else %}
                                             <span>{{ product.price_wt | floatformat:2 }} &euro;</span>
                                         {% endif %}
+                                        {% if not product.price_on_request %}
+                                            <br><p></p><small>({% trans 'incl. Tax' %})</small>{% endif %}
+
                                     </p>
                                     {% if product.stock <= 4 and product.stock > 0 %}
                                         <p class="stock-alarm">{% trans 'We only have a few items left!' %}</p>

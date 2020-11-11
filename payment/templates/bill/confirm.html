@@ -128,7 +128,11 @@
                                 <td style="width:50%">{{ payment_details.method.name }}</td>
                                 <td style="width:10%"></td>
 
-                                <td style="width:22%" class="text-center">{{ order_items.first.order_detail.total_wt }}</td>
+                                <td style="width:22%" class="text-center">
+
+                                    <small>{{ order_items.first.order_detail.total }} € ({% trans 'excl. Tax' %})</small><br>
+                                    {{ order_items.first.order_detail.total_wt }} € ({% trans 'incl. Tax' %})
+                                </td>
                                 <td style="width:10%"></td>
 
                             </tr>

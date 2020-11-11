@@ -8,22 +8,40 @@ from tinymce import HTMLField
 from mediaserver.upload import fs, public_files_upload_handler
 
 
-class PredefinedPages(Enum):
-    PRIVACY_POLICY = _('Privacy Policy')
-    GENERAL_BUSINESS_TERMS = _('General business terms')
-    CANCELLATION_POLICY = _('Cancellation policy')
-    LEGAL = _('Legal')
-    CONTACT = _('Contact')
-
+PREDEFINED_PAGES = [
+    ('privacy-policy', '/cms/privacy-policy'),
+    ('general-business-terms', '/cms/general-business-terms'),
+    ('cancellation-policy', '/cms/cancellation-policy'),
+    ('legal', '/cms/legal'),
+    ('contact', '/cms/contact'),
+    ('products', '/shop/products'),
+]
 
 class Page(models.Model):
+    page_id = models.CharField(max_length=100, default="", editable=False)
     page_name = models.CharField(max_length=30)
-    position = models.IntegerField()
+    position = models.IntegerField(default=0, blank=True, null=True)
     is_enabled = models.BooleanField(default=True)
-    link = models.CharField(max_length=20, null=True, blank=True)
+    link = models.CharField(max_length=20, null=True, blank=True, editable=False)
+    show_in_navigation = models.BooleanField(default=False)
+    is_predefined = models.BooleanField(default=False, editable=False)
 
     def __str__(self):
         return self.page_name
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if not self.is_predefined:
+            self.page_id = self.page_name.lower().replace(" ", "-")
+        # Only for initial creation
+        if self.is_predefined and not self.page_name:
+            self.page_name = self.page_id.replace("-", " ").capitalize()
+        if not self.link or not self.page_id in self.link:
+            self.link = '/cms/'+self.page_id
+
+        models.Model.save(self, force_insert, force_update,
+                          using, update_fields)
+
 
 
 class Section(models.Model):
