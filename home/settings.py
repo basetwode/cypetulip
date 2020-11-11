@@ -60,6 +60,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'tinymce',
     'django_filters',
+    'captcha',
 )
 
 MIDDLEWARE = (
@@ -89,6 +90,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'cms.context_processors.get_sites',
+                'cms.context_processors.get_nav_sites',
                 'cms.context_processors.get_version',
                 'cms.context_processors.get_page_title',
                 'django.template.context_processors.i18n',
@@ -256,10 +258,10 @@ BOOTSTRAP4 = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # Host for sending e-mail.
-EMAIL_HOST = ''
+EMAIL_HOST = 'mail.bwk-technik.de'
 # Port for sending e-mail.
 EMAIL_PORT = 587
-DEFAULT_FROM_EMAIL = ''
+DEFAULT_FROM_EMAIL = 'shop@bwk-technik.de'
 # Optional SMTP authentication information for EMAIL_HOST.
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''  # remove last letter
@@ -295,6 +297,9 @@ REST_FRAMEWORK = {
     )
 
 }
+
+RECAPTCHA_PUBLIC_KEY = 'MyRecaptchaKey123'
+RECAPTCHA_PRIVATE_KEY = 'MyRecaptchaPrivateKey456'
 
 import sys
 
