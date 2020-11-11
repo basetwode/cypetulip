@@ -8,9 +8,8 @@ from django.db.models import Count, Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import View, ListView, FormView
 from django.utils.translation import ugettext_lazy as _
-
+from django.views.generic import View, ListView, FormView
 
 from cms.models import Section
 from permissions.error_handler import raise_404
@@ -51,12 +50,14 @@ class ProductView(TaxView, ListView):
         return url_list
 
     def get_queryset(self):
-        selected_category = ProductCategory.objects.filter(name=self.kwargs['category'])
-        if selected_category.count() > 0 and selected_category[0].child_categories.all():
-            products = Product.objects.filter(is_public=True, category__in=selected_category[0].
-                                              child_categories.all())
-        else:
-            products = Product.objects.filter(is_public=True, category__in=selected_category)
+        selected_category = None
+        if 'category' in self.kwargs:
+            selected_category = ProductCategory.objects.filter(name=self.kwargs['category'])
+            if selected_category and selected_category.count() > 0 and selected_category[0].child_categories.all():
+                products = Product.objects.filter(is_public=True, category__in=selected_category[0].
+                                                  child_categories.all())
+            else:
+                products = Product.objects.filter(is_public=True, category__in=selected_category)
         if not selected_category:
             products = Product.objects.filter(is_public=True)
 
@@ -94,12 +95,16 @@ class ProductView(TaxView, ListView):
 
         products = self._get_url_page(products, self.request.GET.get('page'))
 
+        selected_category = ''
+        if 'category' in self.kwargs:
+            selected_category = self.kwargs['category']
+
         return {**context, **{'sections': sections, 'products': products,
-                          'categories': categories,
-                          'types': product_attribute_categories,
-                          'type_instances': product_attribute_types,
-                          'attribute_form': attribute_form,
-                          'selected_category': self.kwargs['category']}}
+                              'categories': categories,
+                              'types': product_attribute_categories,
+                              'type_instances': product_attribute_types,
+                              'attribute_form': attribute_form,
+                              'selected_category': selected_category}}
 
 
 class ProductDetailView(View):
@@ -181,7 +186,7 @@ class OrderCancelView(View):
 class IndividualOfferView(EmailNotifyStaffView, FormView):
     form_class = IndividualOfferForm
     template_name = 'order/offer.html'
-    success_url = reverse_lazy('shop:products',kwargs={'category': ''})
+    success_url = reverse_lazy('shop:products', kwargs={'category': ''})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -205,4 +210,3 @@ class IndividualOfferView(EmailNotifyStaffView, FormView):
         self.notify()
         messages.success(self.request, _("Thank you for your request, we'll contact you soon"))
         return HttpResponseRedirect(self.get_success_url())
-

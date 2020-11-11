@@ -940,7 +940,6 @@ footer .box {
 .products .card {
     border: none;
     font-size: 13px;
-    padding-bottom: 20px
 }
 
 .products .card-hover:hover{
@@ -1001,11 +1000,6 @@ footer .box {
 
 .product .card-body {
     font-size: 16px;
-}
-
-.btn {
-    margin-left: 5px;
-    margin-top: 5px;
 }
 
 .list-group-item-light {

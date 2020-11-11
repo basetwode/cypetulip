@@ -9,7 +9,7 @@
 {% block head %}
     <title>Products</title>
     <script src="{% static 'autocomplete.js' %}"></script>
-    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'jquery/js/jquery-ui.min.js' %}"></script>
     {{ form.media }}
 {% endblock %}
 
@@ -22,7 +22,7 @@
                 </div>
                 <div class="card-body">
                     <hr>
-                    <a href="{% url 'shop:products' '' %}"
+                    <a href="{% url 'shop:products' %}"
                        class="btn btn-fw btn-primary">{% trans 'Back to products' %}</a>
                 </div>
 

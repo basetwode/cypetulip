@@ -11,37 +11,8 @@
 
 {% block body %}
     <div class="row">
-        <div class=" col-3 hidden-sm">
-            <div class="card">
-                {% for order_detail in order.orderdetail_set.all %}
-                    <h4 class="card-header">
-                        <div style="overflow: auto">
-                            <div class="col-md-12"><span>{{ order.company }}</span></div>
-                            <div class="col-md-12"><span style="font-size: small; font-weight: bold">
-                                    {{ order_detail.contact.first_name }} {{ order_detail.contact.last_name }}
-                                </span>
-                            </div>
-                        </div>
-                    </h4>
-                    <div class="card-body">
+        <div class="col-12 col-md-3">
 
-
-                    <div class="col-sm-12">
-                        {{ order.company.street }} {{ order.company.number }}
-                    </div>
-                    <div class="col-sm-12">
-                        {{ order.company.zipcode }} {{ order.company.city }}
-                    </div>
-                    <div class="col-sm-12" style="margin-top: 5px">
-                        {{ order_detail.contact.telephone }}
-                    </div>
-                    <div class="col-sm-12">
-                        {{ order_detail.contact.email }}
-                    </div>
-                {% endfor %}
-                </div>
-            </div>
-            <br>
             <div class="card">
                 <div class="card-header">
                     <h4><strong>{% trans "Menu" %}</strong></h4>
@@ -58,7 +29,7 @@
         </div>
 
 
-        <div class="col-md-9">
+        <div class="col-md-9 mb-2">
             <div class="card">
                 <div class="card-header">
                     <div class="row">
@@ -115,7 +86,8 @@
                                 {% for order_detail in order.orderdetail_set.all %}
                                     {% for shipment in order_detail.shipment_set.all %}
                                         {% if shipment.packageshipment %}
-                                            <div>#{{ forloop.counter }} {% trans 'Package: ' %}{{ shipment.packageshipment.package.tracking_code  }}</div>
+                                            <div>#{{ forloop.counter }}
+                                                {% trans 'Package: ' %}{{ shipment.packageshipment.package.tracking_code }}</div>
                                         {% else %}
                                             <div>#{{ forloop.counter }} {% trans 'Online' %}</div>
                                         {% endif %}
@@ -153,42 +125,38 @@
                                 <input type="submit" hidden id="#submit">
                                 {% for order in order_items %}
                                     <tr>
-                                        <td data-th="Product">
+                                        <td style="width:70%" data-th="Product">
                                             <input type="hidden"
                                                    name="[{{ order.id }}][prod]{{ order.product.id }}">
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-5 col-md-2">
                                                     {% if order.product.product.product_picture %}
-                                                        <img style="max-width: 150px"
-                                                             src="{{ order.product.product.product_picture.url }}"
-                                                             alt="..."
-                                                             class="img img-thumbnail img-fluid"/>
+                                                        <img
+                                                                src="{{ order.product.product.product_picture.url }}"
+                                                                alt="..."
+                                                                class="img img-thumbnail img-fluid"/>
                                                     {% else %}
                                                         <i class="fa fa-4x fa-image img-thumbnail"></i>
                                                     {% endif %}
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-7">
                                                     <h5 class="nomargin">{{ order.product.name }}</h5>
                                                 </div>
-
-
                                             </div>
                                         </td>
-                                        <td data-th="Price">
-
-                                                {{ order.total | floatformat:2 }} &euro;
+                                        <td style="width:15%" data-th="Price">
+                                            {{ order.total | floatformat:2 }}&euro;
                                         </td>
-
-                                        <td id="subtotal-{{ order.id }}" data-th="Subtotal"
+                                        <td style="width:15%" id="subtotal-{{ order.id }}" data-th="Subtotal"
                                             class="text-center">
-                                                {{ order.total_wt | floatformat:2 }} &euro;
+                                            {{ order.total_wt | floatformat:2 }}&euro;
                                         </td>
                                     </tr>
 
                                     {% for sub_item in order.orderitem_set.all %}
                                         <tr id="{{ order.id }}-{{ sub_item.id }}"
                                             style="border-top: none">
-                                            <td colspan="1">
+                                            <td style="width:70%" colspan="1">
                                                 <div class="col-sm-12 ">
                                                     <div class="col-md-offset-1 col-md-12 sub-product required">
                                                         <div class="col-md-offset-1 col-md-12">
@@ -228,6 +196,8 @@
                                             <td colspan="2"
                                                 data-th="Price">{{ sub_item.product.price }} &euro;
                                             </td>
+                                            <td colspan="3">
+                                            </td>
 
                                         </tr>
                                     {% endfor %}
@@ -235,7 +205,7 @@
 
                                 {% for sub_item in order_items_once_only %}
                                     <tr style="border-top: none">
-                                        <td colspan="2">
+                                        <td style="width:70%" colspan="1">
                                             <div class="col-sm-12 ">
                                                 <div class="col-md-12 required">
                                                     <div class="col-md-offset-1 col-md-9">
@@ -268,10 +238,10 @@
 
                                             </div>
                                         </td>
-                                        <td data-th="Subtotal"
+                                        <td style="width:15%" data-th="Subtotal" colspan="2"
                                             class="text-center">{{ sub_item.product.price }} &euro;
                                         </td>
-                                        <td>
+                                        <td style="width:15%" colspan="3">
                                             <script>
                                                 $(document).ready(function () {
                                                     addToSubTotal(0, {{ sub_item.product.price }})
@@ -302,13 +272,14 @@
                             <a class="btn btn-fw btn-secondary"
                                target="_blank" href="{% url 'invoice_pdf' order.order_hash %}"
                             >{% trans 'Bill' %}</a>
-                        {% else %}<button class="btn btn-fw btn-secondary" disabled
-                        >{% trans 'Bill' %}</button> {% endif %}
+                        {% else %}
+                            <button class="btn btn-fw btn-secondary" disabled
+                            >{% trans 'Bill' %}</button> {% endif %}
                     </div>
                 </div>
                 <div class="card-footer">
                     <b>{% trans 'Shipments' %}</b>
-                    <div class="col-12 pt-2">
+                    <div class="pt-2">
 
                         <table id="cart" class="table table-hover table-striped table-responsive-sm">
                             <thead>
@@ -328,35 +299,41 @@
                                 {% for shipment in order_detail.shipment_set.all %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{% if shipment.packageshipment %} {% trans 'Package' %}{% else %}{% trans 'Online' %}{% endif %}</td>
+                                        <td>{% if shipment.packageshipment %} {% trans 'Package' %}{% else %}
+                                            {% trans 'Online' %}{% endif %}</td>
                                         <td>{{ shipment.date_shipped }}
                                             <small><b>{% trans 'Shipped products: ' %}</b></small><br>
                                             {% for shipped_product in shipment.order_items_shipped.all %}
                                                 <p class="pl-3 pt-2">{{ shipped_product.product.name }}</p>
                                             {% empty %}
-                                                <p  class="pl-3 pt-2"><small>{% trans 'No products associated with this shipment' %}</small></p>
+                                                <p class="pl-3 pt-2">
+                                                    <small>{% trans 'No products associated with this shipment' %}</small>
+                                                </p>
                                             {% endfor %}</td>
                                         <td>
                                             {% if shipment.packageshipment %}
-                                                <p>{% trans 'Shipper: ' %}{{ shipment.packageshipment.package.shipper.name  }}</p>
-                                                <p>{% trans 'Tracking Code: ' %}{{ shipment.packageshipment.package.tracking_code  }}</p>
+                                                <p>
+                                                    {% trans 'Shipper: ' %}{{ shipment.packageshipment.package.shipper.name }}</p>
+                                                <p>
+                                                    {% trans 'Tracking Code: ' %}{{ shipment.packageshipment.package.tracking_code }}</p>
                                             {% else %}
-                                                {% trans 'File: ' %}<a href="{{ shipment.onlineshipment.file.url }}">{{ shipment.onlineshipment.file_name }}</a>
+                                                {% trans 'File: ' %}
+                                                <a href="{{ shipment.onlineshipment.file.url }}">{{ shipment.onlineshipment.file_name }}</a>
                                             {% endif %}
 
                                         </td>
                                     </tr>
                                 {% empty %}
-                                    <tr><td></td><td></td><td></td><td>{% trans 'No shipments' %}</td></tr>
+                                    <tr>
+                                        <td>{% trans 'No shipments' %}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
                                 {% endfor %}
                             {% endfor %}
                             </tbody>
-
                         </table>
-
-
-
-
                     </div>
                 </div>
             </div>

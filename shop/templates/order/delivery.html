@@ -8,10 +8,10 @@
 {% load i18n %}
 {% bootstrap_messages %}
 {% block head %}
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'jquery/js/jquery.min.js' %}"></script>
+    <script src="{% static 'jquery/js/jquery-ui.min.js' %}"></script>
     <script src="{% static 'utils.js' %}"></script>
-    <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'jquery/js/jquery.validate.min.js' %}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
     </script>
@@ -71,7 +71,7 @@
                                 <input type="hidden" name="[{{ order.id }}][prod]{{ order.product.id }}">
 
                                 <div class="row">
-                                    <div class="col-2 hidden-xs">
+                                    <div class="col-5 col-md-2">
                                         {% if order.product.product.product_picture %}
                                             <img
                                                     src="{{ order.product.product.product_picture.url }}"
@@ -81,17 +81,17 @@
                                             <i class="fa fa-4x fa-image img-thumbnail"></i>
                                         {% endif %}
                                     </div>
-                                    <div class="col-sm-10">
+                                    <div class="col-7">
                                         <h4 class="nomargin">{{ order.product.name }}</h4>
 
                                     </div>
 
                                 </div>
                             </td>
-                            <td data-th="Price">{{ order.price_wt }}</td>
+                            <td data-th="Price">{{ order.price_wt }}&euro;</td>
 
                             <td id="subtotal-{{ order.id }}" data-th="Subtotal"
-                                class="text-center">{{ order.total_wt }} &euro;
+                                class="text-center">{{ order.total_wt }}&euro;
                             </td>
                             <td class="actions" data-th="">
 
@@ -137,7 +137,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td colspan="2" data-th="Price">{{ sub_item.price_wt }} &euro;</td>
+                                <td colspan="2" data-th="Price">{{ sub_item.price_wt }}&euro;</td>
                                 <td>
 
                                     {% if sub_product.is_multiple_per_item %}
@@ -187,7 +187,7 @@
 
                                 </div>
                             </td>
-                            <td data-th="Subtotal" class="text-center">{{ sub_item.product.price }} &euro;
+                            <td data-th="Subtotal" class="text-center">{{ sub_item.product.price }}&euro;
                             </td>
                             <td>
                                 <script>
@@ -211,7 +211,7 @@
                         <td style="width:50%"></td>
                         <td style="width:10%"></td>
                         <td style="width:22%" class="text-center"><strong>{% trans 'Total: ' %}<span
-                                id="total">{{ open_orders.first.order_detail.total_wt }}</span> &euro;</strong></td>
+                                id="total">{{ open_orders.first.order_detail.total_wt }}</span>&euro;</strong></td>
                         <td style="width:10%"></td>
                     </tr>
                 </table>
@@ -397,10 +397,10 @@
                         </div>
                     </div>
 
-                    <div class="row mt-1">
+                    <div class="row mt-1 mb-2">
                         <div class="col">
                             <a href="{% url 'shop:shopping_cart' %}" class="btn btn-warning ml-0"><i
-                                    class="fa fa-angle-left"></i> {% trans 'Back to shoppingcart' %}</a>
+                                    class="fa fa-angle-left"></i> {% trans 'Shoppingcart' %}</a>
                         </div>
                         <div class="col">
                             <a v-on:click="submitDelivery"

@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^delivery/(?P<order>[\S0-9_.-\\s\- ]*)$', DeliveryView.as_view(), name="delivery_order"),
     url(r'^confirmed/(?P<order>[a-zA-Z0-9\\s\-_ ]+)$', OrderConfirmedView.as_view(), name="confirmed_order"),
 
+    url(r'^products/$', ProductView.as_view(), name="products"),
     url(r'^products/(?P<category>[\S0-9_.-\\s\- ]*)$', ProductView.as_view(), name="products"),
     url(r"^product/(?P<product>[\S0-9_.-\\s\- ]+)$", ProductDetailView.as_view()),
     url(r"^product/(?P<product>[\S0-9_.-\\s\- ]+)/order/(?P<order_step>[0-9]+)$", OrderView.as_view()),

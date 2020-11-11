@@ -13,7 +13,7 @@
 
 {% block body %}
     <div id="vue-cart">
-        <div class="order-step row">
+        <div class="order-step row mt-2">
             <div class="stepwizard">
                 <div class="stepwizard-row">
                     <div class="stepwizard-step">
@@ -58,29 +58,28 @@
                         <tr>
                             <td>
                                 <div class="row">
-                                    <div class="col-2 hidden-xs">
+                                    <div class="col-5 col-md-2">
 
                                         <img v-if="order_item.product.product.product_picture"
                                              :src="order_item.product.product.product_picture"
                                              class="img-fluid img-thumbnail"/>
                                         <i v-else class="fa fa-4x fa-image img-thumbnail"></i>
                                     </div>
-                                    <div class="col-sm-10">
-                                        <h4 class="nomargin">
-                                            [[order_item.product.name]]</h4>
+                                    <div class="col-7">
+                                        [[order_item.product.name]]
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                [[order_item.price_wt.toFixed(2)]] €
+                                [[order_item.price_wt.toFixed(2)]]€
                             </td>
                             <td class="text-center">
-                                [[getOrderItemTotal(order_item).toFixed(2)]] €
+                                [[getOrderItemTotal(order_item).toFixed(2)]]€
                             </td>
                             <td>
                                 <button class="btn btn-danger btn-sm"
                                         @click="removeOrderItem(order_item)"
-                                        ><i
+                                ><i
                                         class="fas fa-trash"></i></button>
                             </td>
                         </tr>
@@ -209,7 +208,7 @@
                         <td style="width:50%"></td>
                         <td style="width:10%"></td>
                         <td style="width:22%" class="text-center"><strong>{% trans 'Total: ' %}<span
-                                id="total">[[getOrderTotal().toFixed(2)]]</span> &euro;</strong>
+                                id="total">[[getOrderTotal().toFixed(2)]]</span>&euro;</strong>
                         <p>({% trans 'incl. Tax' %})</p></td>
                         <td style="width:10%"></td>
                     </tr>
@@ -219,8 +218,8 @@
                 </table>
                 <div class="row">
                     <div class="col">
-                        <a href="/shop/products/" class="btn btn-warning"><i
-                                class="fa fa-angle-left"></i> {% trans 'Continue Shopping' %}</a>
+                        <a href="{% url 'shop:products' %}" class="btn btn-warning"><i
+                                class="fa fa-angle-left"></i> {% trans 'Shopping' %}</a>
                     </div>
                     <div class="col">
                         <a type="submit" @click="submitCart()"

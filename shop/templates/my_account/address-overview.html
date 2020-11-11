@@ -8,7 +8,7 @@
 {% block head %}
     <title>{% trans 'Address Settings' %}</title>
     <script src="{% static 'autocomplete.js' %}"></script>
-    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'jquery/js/jquery-ui.min.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -27,15 +27,15 @@
                        class="btn btn-fw btn-warning">{% trans 'All orders' %}</a>
                     <a href="{% url 'shop:my_account' %}"
                        class="btn btn-fw btn-warning">{% trans 'Go to your account' %}</a>
-
+                    <div class="mb-3">
+                        <a href="{% url 'shop:address_create' %}"
+                           class="btn btn-fw  btn-outline-dark">{% trans 'Add Address' %}</a>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-9">
-            <div class="mb-3">
-                <a href="{% url 'shop:address_create' %}"
-                   class="btn btn-outline-dark">{% trans 'Add' %}</a>
-            </div>
+        <div class="col-md-9 mt-2 mt-md-0">
+
             <table class="table table-hover table-striped table-responsive-sm">
                 <thead class="thead-dark">
                 <tr>

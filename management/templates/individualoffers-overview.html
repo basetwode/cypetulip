@@ -9,10 +9,10 @@
     <title>Admin - All orders</title>
     <link href="{% static 'management.css' %}" rel="stylesheet">
     <script src="{% static 'onchange.js' %}"></script>
-    <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet">
-    <link href="{% static 'css/jquery-ui.structure.min.css' %}" rel="stylesheet">
-    <link href="{% static 'css/jquery-ui.theme.min.css' %}" rel="stylesheet">
-    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <link href="{% static 'jquery/css/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'jquery/css/jquery-ui.structure.min.css' %}" rel="stylesheet">
+    <link href="{% static 'jquery/css/jquery-ui.theme.min.css' %}" rel="stylesheet">
+    <script src="{% static 'jquery/js/jquery-ui.min.js' %}"></script>
     <script src="{% static 'autocomplete.js' %}"></script>
     <link rel="stylesheet" href="{% static 'bootstrap-select/css/bootstrap-select.min.css' %}">
     <script src="{% static 'bootstrap-select/js/bootstrap-select.min.js' %}"></script>
@@ -36,11 +36,11 @@
 
             </div>
         </div>
-        <div class="col-sm-12 col-md-9">
+        <div class="col-sm-12 col-md-9 mt-2 mt-md-0">
 
 
             {% if not object_list %}
-                <div class="card mt-2">
+                <div class="card">
                     <div style="overflow: auto" class="card-header orders-overview">
                         <div style="overflow: auto" class="row">
                             {% trans 'Nothing found' %}

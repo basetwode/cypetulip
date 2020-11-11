@@ -216,21 +216,21 @@ BOOTSTRAP4 = {
     "theme_url": None,
     # The URL to the jQuery JavaScript file (full)
     "jquery_url": {
-        "url": "/static/js/jquery.min.js",
+        "url": "/static/jquery/js/jquery.min.js",
     },
     # The URL to the jQuery JavaScript file (slim)
     "jquery_slim_url": {
-        "url": "/static/js/jquery-3.5.1.slim.min.js",
+        "url": "/static/jquery/js/jquery-3.5.1.slim.min.js",
     },
     # The URL to the Popper.js JavaScript file (slim)
     "popper_url": {
-        "url": "/static/js/popper.min.js",
+        "url": "/static/jquery/js/popper.min.js",
     },
     # Put JavaScript in the HEAD section of the HTML document (only relevant if you use bootstrap4.html)
     'javascript_in_head': False,
     # Include jQuery with Bootstrap JavaScript False|falsy|slim|full (default=False)
     # False - means tag bootstrap_javascript use default value - `falsy` and does not include jQuery)
-    'include_jquery': "slim",
+    'include_jquery': "full",
     # Label class to use in horizontal forms
     'horizontal_label_class': 'col-md-3',
     # Field class to use in horizontal forms

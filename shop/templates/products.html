@@ -4,7 +4,7 @@
 {% load i18n %}
 {% load bootstrap4 %}
 {% load fb_versions %}
-{% load i18n %}
+
 {% block head %}
     <title>Products</title>
 {% endblock %}
@@ -14,23 +14,29 @@
     {% include 'modals/price_on_request.html' %}
     {% bootstrap_messages %}
     <div class="row products">
+
         <div class="col-md-12 path">
-            <a href="/cms/home">
-                Home
-            </a>
-            >
-            <a href="/shop/products/?">
-                Products
-            </a>
-            {% if selected_category %}
-                >
-            {% endif %}
-            <a href="/shop/products/{{ selected_category }}">
-                {{ selected_category }}
-            </a>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb rounded-0">
+                    <li class="breadcrumb-item {% if not selected_category %} active{% endif %}"
+                        aria-current="{% if not selected_category %} page{% endif %}"><a
+                            href="{% url 'shop:products' %}">
+                        {% trans 'Products' %}
+                    </a></li>
+                    {% if selected_category %}
+                        <li class="breadcrumb-item {% if selected_category %} active{% endif %} " aria-current="page"><a
+                                href="{% url 'shop:products' %} {{ selected_category }}">
+                            {{ selected_category }}
+                        </a>
+                        </li>
+                    {% endif %}
+
+                </ol>
+            </nav>
+
         </div>
         <div class="col-md-3 categories">
-            <div class="position-sticky" style="top:60px">
+            <div class="position-sticky">
                 <div class="categories-list" id="accordionCategories">
                     <div class="card border-0">
                         <div class="">
@@ -40,7 +46,7 @@
                         </div>
                         <div id="collapseCategories" class="panel-collapse collapse show">
                             <ul class="list-group">
-                               {% include 'category-tree.html' %}
+                                {% include 'category-tree.html' %}
                             </ul>
                         </div>
                     </div>
@@ -56,23 +62,26 @@
                         {{ section.content|safe }}
                     </div>
                 {% endfor %}
-        {% endif %}
-            <div class="products-list card-deck">
+            {% endif %}
+            <div class="products-list card-deck mt-3 mt-md-0">
                 <div class="row col-12">
                     <h3>{% trans 'Products' %}</h3>
                 </div>
                 <div class="row g-3 col-12">
+                    {% if not products %}
+                        {% trans 'Sorry, we are out of stock in this category!' %}
+                    {% endif %}
                     {% for product in products %}
                         <div class="product-card col-xl-4 col-md-6">
                             <div class="card card-hover">
                                 <a href="/shop/product/{{ product.name }}">
-                                {% if product.product_picture %}
-                                    <img class="card-img-top"
-                                         src="{% version product.product_picture 'medium' %}" alt=""/>
-                                {% else %}
-                                    <i style="max-width: 150px; height: 150px"
-                                       class="fa fa-5x fa-image card-img-top"></i>
-                                {% endif %}
+                                    {% if product.product_picture %}
+                                        <img class="card-img-top"
+                                             src="{% version product.product_picture 'medium' %}" alt=""/>
+                                    {% else %}
+                                        <i style="max-width: 150px; height: 150px"
+                                           class="fa fa-5x fa-image card-img-top"></i>
+                                    {% endif %}
                                 </a>
 
 
@@ -120,13 +129,16 @@
                                     <div class="text-right buttons"><a href="/shop/product/{{ product.name }}"
                                                                        class="btn btn-outline-dark">{% trans 'Details' %}</a>
                                         {% if product.price_on_request %}
-                                        <a type="button"
-                                           class="btn btn-dark" href="{% url 'shop:individual_offer' product.name %}">{% trans 'Request offer' %}</a>
+                                            <a type="button"
+                                               class="btn btn-dark"
+                                               href="{% url 'shop:individual_offer' product.name %}">{% trans 'Request offer' %}</a>
                                         {% elif product.stock > 0 or product.stock == -1 %}
-                                        <button class="btn btn-dark" onclick="addToCart('{{ product.name }}')">{% trans 'Add to cart' %}
-                                        </button>
+                                            <button class="btn btn-dark"
+                                                    onclick="addToCart('{{ product.name }}')">{% trans 'Add to cart' %}
+                                            </button>
                                         {% else %}
-                                            <button disabled class="btn btn-outline-dark">{% trans 'Not in stock' %}</button>
+                                            <button disabled
+                                                    class="btn btn-outline-dark">{% trans 'Not in stock' %}</button>
                                         {% endif %}
                                     </div>
                                 </div>

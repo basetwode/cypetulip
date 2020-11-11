@@ -7,7 +7,7 @@
 {% block head %}
     <script src="{% static 'payment_utils.js' %}"></script>
     <script src="{% static 'utils.js' %}"></script>
-    <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'jquery/js/jquery.validate.min.js' %}"></script>
 
     <title>{{ product.name }}</title>
 {% endblock %}
@@ -81,7 +81,7 @@
                                          data-parent="#paymentFormInput">
                                         <div class="card-body">
                                             {{ payment_method.details }}<p></p>
-                                            {% bootstrap_form payment_method.form %}
+                                            {#                                            {% bootstrap_form payment_method.form %}#}
 
                                         </div>
                                     </div>
@@ -98,10 +98,12 @@
                 </div>
             </div>
         </div>
-        <div class="col pb-3">
-            <a onclick="submitForm('create/','payment-form')"
-               class="btn btn-success float-right">{% trans 'Send' %} <i
-                    class="fa fa-angle-right"></i></a>
+        <div class="row mb-2 justify-content-end">
+            <div class="col">
+                <a onclick="submitForm('create/','payment-form')"
+                   class="btn btn-success float-right">{% trans 'Send' %} <i
+                        class="fa fa-angle-right"></i></a>
+            </div>
         </div>
 
 
