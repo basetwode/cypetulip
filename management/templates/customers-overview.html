@@ -53,9 +53,9 @@
                         <td>{{ contact.company }}</td>
                         <td>
                             <div>
-                                <a class="btn btn-outline-dark"
+                                <a class="btn btn-outline-dark mr-1"
                                    href="{% url 'contact_create' contact.company.id contact.id %}">{% trans 'Edit Contact' %}</a>
-                                <a class="btn btn-outline-dark"
+                                <a class="btn btn-outline-dark mr-1"
                                    href="{% url 'company_create' contact.company.id %}">{% trans 'Edit Company' %}</a>
                             </div>
 

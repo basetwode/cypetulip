@@ -64,16 +64,18 @@
                 {% endfor %}
             {% endif %}
             <div class="products-list card-deck mt-3 mt-md-0">
-                <div class="row col-12">
+            <div class="row">
+                <div class="col-12">
                     <h3>{% trans 'Products' %}</h3>
                 </div>
-                <div class="row g-3 col-12">
+            </div>
+                <div class="row">
                     {% if not products %}
                         {% trans 'Sorry, we are out of stock in this category!' %}
                     {% endif %}
                     {% for product in products %}
-                        <div class="product-card col-xl-4 col-md-6">
-                            <div class="card card-hover">
+                        <div class="product-card col-xl-4 col-6 p-0">
+                            <div class="card card-hover ">
                                 <a href="/shop/product/{{ product.name }}">
                                     {% if product.product_picture %}
                                         <img class="card-img-top"
