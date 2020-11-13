@@ -2,12 +2,15 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.models import User, Group
+from django.utils.translation import gettext_lazy as _
+from django.forms import ModelForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.views.generic import View
+from django.urls import reverse_lazy
+from django.views.generic import View, CreateView
 
 from shop.authentification.forms import CompleteCompanyForm, SignUpForm
-from shop.models import Contact, Order, OrderItem, Address
+from shop.models import Contact, Order, OrderItem, Address, Company
 
 __author__ = ''
 
@@ -36,7 +39,7 @@ class LoginView(View):
                 # If the account is valid and active, we can log the user in.
                 # We'll send the user back to the homepage.
                 auth_login(request, user)
-                contact = Contact.objects.get(user=request.user)
+                contact = Contact.objects.get(user_ptr=request.user)
                 if contact:
                     order_from_contact = Order.objects.filter(company=contact.company, is_send=False)
                     for item in order_items_from_order_session:
@@ -83,27 +86,29 @@ class LogoutView(View):
         return HttpResponseRedirect('/shop/login')
 
 
-class RegisterView(SignUpForm):
+class RegisterView(CreateView):
+    model = Contact
+    form_class = SignUpForm
+    template_name = 'authentification/register.html'
+    success_url = reverse_lazy('shop:my_account')
 
-    def signup(request):
-        if request.method == 'POST':
-            form = SignUpForm(request.POST)
-            if form.is_valid():
-                user = User.objects.create_user(form.cleaned_data.get('email'), form.cleaned_data.get('email'),
-                                                form.cleaned_data.get('password1'),
-                                                first_name=form.cleaned_data.get('first_name'),
-                                                last_name=form.cleaned_data.get('last_name'))
-                user.groups.add(Group.objects.get(name="client supervisor"))
-                user.save()
-                email = form.cleaned_data.get('email')
-                raw_password = form.cleaned_data.get('password1')
-                user = authenticate(username=email, password=raw_password)
-                if not request.user.is_authenticated:
-                    login(request, user)
-                return redirect('/shop/companies/create')
-        else:
-            form = SignUpForm()
-        return render(request, 'authentification/register.html', {'form': form, 'buttonText': 'Sign Up'})
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        company = Company(name=user.email, term_of_payment=10, street="",number="",zipcode="",city="")
+        company.save()
+        user.company = company
+        user.email = user.username
+        user.save()
+        user.groups.add(Group.objects.get(name="client supervisor"))
+        email = form.cleaned_data.get('username')
+        raw_password = form.cleaned_data.get('password1')
+        user_ = authenticate(username=email, password=raw_password)
+        if not self.request.user.is_authenticated:
+            login(self.request, user_)
+        return super(RegisterView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        return {**{'buttonText': _('Sign up')}, **super(RegisterView, self).get_context_data(**kwargs)}
 
 
 class CompanyView(CompleteCompanyForm):

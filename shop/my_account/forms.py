@@ -6,8 +6,11 @@ from shop.models import Company, Contact
 class ContactForm(ModelForm):
     class Meta:
         model = Contact
-        fields = '__all__'
-        exclude = ['company', 'user']
+        fields = ('username', 'gender', 'title', 'first_name', 'last_name')
+        labels = {
+            'username': 'E-Mail'
+        }
+
 
 
 class CompanyForm(ModelForm):

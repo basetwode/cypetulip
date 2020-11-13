@@ -1,6 +1,9 @@
+import secrets
 from datetime import datetime
 
 from django.contrib import messages
+from django.contrib.auth.models import User, Group
+from django.db.transaction import commit
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -14,7 +17,8 @@ from billing.utils import calculate_sum
 from billing.views import GeneratePDFFile
 from cms.models import Page, Section
 from management.filters import OrderDetailFilter
-from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm, ProductForm
+from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm, ProductForm, \
+    ContactUserForm
 from management.models import LdapSetting, MailSetting, LegalSetting, ShopSetting, Header, Footer
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME, PaymentProvider
 from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
@@ -23,7 +27,7 @@ from shop.filters import ProductFilter, ContactFilter, ProductCategoryFilter, Se
     PageFilter, ShipmentPackageFilter, FileSubItemFilter, FooterFilter, HeaderFilter, ProductSubItemFilter
 from shop.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
-    FileSubItem, IndividualOffer, ProductSubItem, NumberSubItem, CheckBoxSubItem, SelectSubItem, SelectItem
+    FileSubItem, IndividualOffer, ProductSubItem, NumberSubItem, CheckBoxSubItem, SelectSubItem, SelectItem, Address
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
 from utils.mixins import EmailMixin, PaginatedFilterViews
@@ -35,7 +39,7 @@ class ManagementView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
     template_name = 'management.html'
 
     def get(self, request):
-        contact = Contact.objects.filter(user=request.user)
+        contact = Contact.objects.filter(user_ptr=request.user)
         mail_settings = MailSetting.objects.all()
         try:
             company = contact[0].company
@@ -71,7 +75,7 @@ class ManagementOrderDetailView(LoginRequiredMixin, DetailView):
     def get(self, request, order):
         employees = Employee.objects.all()
         if not request.user.is_staff:
-            contact = Contact.objects.get(user=request.user)
+            contact = Contact.objects.get(user_ptr=request.user)
             company = contact.company
         else:
             contact = {}
@@ -218,34 +222,6 @@ class EmployeeCreationView(LoginRequiredMixin, CreateView):
         return reverse_lazy('employee_overview')
 
 
-class ContactEditView(LoginRequiredMixin, UpdateView):
-    template_name = 'generic-edit.html'
-    context_object_name = 'contact'
-    model = Contact
-    fields = '__all__'
-
-    customer_id = None
-    slug_field = 'id'
-    slug_url_kwarg = 'contact_id'
-
-    def get_success_url(self):
-        return reverse_lazy('customers_overview')
-
-
-class CompanyEditView(LoginRequiredMixin, UpdateView):
-    template_name = 'generic-edit.html'
-    context_object_name = 'company'
-    model = Company
-    fields = '__all__'
-
-    customer_id = None
-    slug_field = 'id'
-    slug_url_kwarg = 'company_id'
-
-    def get_success_url(self):
-        return reverse_lazy('customers_overview')
-
-
 class ProductCreationView(LoginRequiredMixin, CreateView):
     template_name = 'vue/product-create-vue.html'
     context_object_name = 'products'
@@ -342,7 +318,7 @@ class SelectSubItemCreationView(LoginRequiredMixin, WizardView):
         return reverse_lazy('subitem_overview')
 
     def get_success_url(self):
-        return reverse_lazy('selectitem_create', kwargs={'id': '', 'parent_id': self.get_object().id})
+        return reverse_lazy('selectitem_create', kwargs={'id': '', 'parent_id': self.object.id })
 
 
 class SelectItemCreationView(LoginRequiredMixin, RepeatableWizardView):
@@ -454,22 +430,6 @@ class PageCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('pages')
-
-
-class PredefinedPageCreateView(LoginRequiredMixin, CreateUpdateView):
-    template_name = 'predefined_page_create.html'
-    context_object_name = 'page'
-    model = Page
-    fields = '__all__'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data()
-        context['available_pages'] = list(map(lambda c: {'page_name': c[0], 'link': c[1]}, PredefinedPages))
-        return context
-
-    def get_success_url(self):
-        return reverse_lazy('pages')
-
 
 
 class PageEditView(LoginRequiredMixin, UpdateView):
@@ -942,3 +902,123 @@ class FooterDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('footers_overview')
+
+
+class CompanyCreationView(LoginRequiredMixin, WizardView):
+    page_title = _('Create Company')
+    context_object_name = 'subitem'
+    slug_field = 'id'
+    slug_url_kwarg = 'id'
+    model = Company
+    fields = '__all__'
+
+    def get_back_url(self):
+        return reverse_lazy('management_index')
+
+    def get_success_url(self):
+        return reverse_lazy('contact_create', kwargs={'id': '', 'parent_id': self.object.id})
+
+
+class ContactCreationView(LoginRequiredMixin, RepeatableWizardView):
+    page_title = _('Create new contact')
+    context_object_name = 'subitem'
+    slug_field = 'id'
+    slug_url_kwarg = 'id'
+    form_class = ContactUserForm
+    model = Contact
+    pk_url_kwarg = 'id'
+    parent_key = 'company'
+    self_url = 'contact_create'
+    delete_url = 'contact_delete'
+    requires_selection_on_next = True
+    text_add_item = _("Add contact")
+    text_select_item = _("Select a contact to edit")
+
+    def get_back_url(self):
+        return reverse_lazy('company_create', kwargs={'id': self.get_parent_id()})
+
+    def get_next_url(self):
+        return reverse_lazy('address_create', kwargs={'id': '',
+                                                      'parent_id': self.get_object().id if self.get_object() else '0'})
+
+    def get_success_url(self):
+        return reverse_lazy('contact_create', kwargs={'id': '', 'parent_id': self.get_parent_id()})
+
+    def form_valid(self, form):
+        contact = form.save(commit=False)
+        contact.company = Company.objects.get(id=self.get_parent_id())
+        contact.username = contact.email
+        contact.save()
+
+        group = Group.objects.get(name="client")
+        group.user_set.add(contact)
+        if form.cleaned_data['is_client_supervisor']:
+            sgroup = Group.objects.get(name='client supervisor')
+            sgroup.user_set.add(contact)
+        else:
+            sgroup = Group.objects.get(name='client supervisor')
+            sgroup.user_set.remove(contact)
+
+        return super(ContactCreationView, self).form_valid(form)
+
+
+    def get_initial(self):
+        initial = super(ContactCreationView, self).get_initial()
+        initial['is_client_supervisor'] = self.object.groups.filter(name='client supervisor').exists() \
+            if self.object else False
+        gen_password = secrets.token_urlsafe(10)
+        initial['new_password1'] = gen_password
+        initial['new_password2'] = gen_password
+        return initial
+
+
+class ContactDeleteView(LoginRequiredMixin, DeleteView):
+    model = Contact
+    slug_field = 'id'
+    pk_url_kwarg = 'id'
+    template = ''
+
+    def get_success_url(self):
+        return reverse_lazy('contact_create')
+
+
+class AddressCreationView(LoginRequiredMixin, RepeatableWizardView):
+    page_title = _('Create new address')
+    context_object_name = 'subitem'
+    slug_field = 'id'
+    slug_url_kwarg = 'id'
+    model = Address
+    fields = ['name','street','number','zipcode','city']
+    pk_url_kwarg = 'id'
+    parent_key = 'contact'
+    self_url = 'address_create'
+    delete_url = 'address_delete'
+    text_add_item = _("Add address")
+    text_select_item = _("Select an address to edit")
+
+
+    def get_back_url(self):
+        return reverse_lazy('contact_create', kwargs={'id': Contact.objects.get(id=self.get_parent_id()).id,
+                                                    'parent_id': Contact.objects.get(id=self.get_parent_id()).company.id})
+
+    def get_next_url(self):
+        return reverse_lazy('management_index' )
+
+    def get_success_url(self):
+        return reverse_lazy('address_create', kwargs={'id': '', 'parent_id': self.get_parent_id()})
+
+    def form_valid(self, form):
+        address = form.save(commit=False)
+        address.contact = Contact.objects.get(id=self.get_parent_id())
+        address.save()
+        return super(AddressCreationView, self).form_valid(form)
+
+
+class AddressDeleteView(LoginRequiredMixin, DeleteView):
+    model = Address
+    slug_field = 'id'
+    pk_url_kwarg = 'id'
+    template = ''
+
+    def get_success_url(self):
+        return reverse_lazy('address_create')

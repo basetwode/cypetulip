@@ -26,7 +26,7 @@ class ShoppingCartView(View):
             error_list = JsonResponse(errors=[Error(419, 'Error')], success=False)
             return json_response(code=418, x=error_list.dump(), )
         if request.user.is_authenticated:
-            contact = Contact.objects.filter(user=request.user)
+            contact = Contact.objects.filter(user_ptr=request.user)
             if contact:
                 if product_obj.count() > 0 and contact.count() > 0:
                     company = contact[0].company
@@ -92,7 +92,7 @@ class ShoppingCartDetailView(View):
 
     def get(self, request):
         if request.user.is_authenticated:
-            contact = Contact.objects.filter(user=request.user)
+            contact = Contact.objects.filter(user_ptr=request.user)
             if contact:
                 company = contact[0].company
                 order = Order.objects.filter(orderdetail__state__isnull=True, company=company)

@@ -1,8 +1,10 @@
+from django.contrib.auth.models import User
 from django.forms import ModelForm, CharField, Form, BooleanField, Textarea
 from django.utils.translation import ugettext_lazy as _
 
-from shop.models import OrderDetail, Address, Order, OrderItem, Product, ProductSubItem
-from utils.forms import SearchField, SearchableSelect
+from shop.models import OrderDetail, Address, Order, OrderItem, Product, ProductSubItem, Contact
+from utils.forms import SearchField, SearchableSelect, SetPasswordForm
+
 
 class ProductForm(ModelForm):
 
@@ -13,6 +15,20 @@ class ProductForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
         self.fields['assigned_sub_products'].queryset = ProductSubItem.objects.filter(product=None)
+
+
+class ContactUserForm(SetPasswordForm):
+
+    is_client_supervisor = BooleanField(required=False)
+
+    class Meta:
+        model = Contact
+        fields = ['email','first_name','last_name','title','gender','telephone','language',
+                  'is_client_supervisor',
+                  'new_password1',
+                  'new_password2'
+                  ]
+
 
 
 class OrderForm(ModelForm):

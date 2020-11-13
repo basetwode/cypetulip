@@ -19,7 +19,7 @@ urlpatterns = [
     url(r'^index/$', IndexView.as_view()),
     url(r'^$', RedirectView.as_view(url='/cms/home/'), name='home'),
     url(r'^login/$', LoginView.as_view(), name='login'),
-    url(r'^register/$', RegisterView.signup, name='register'),
+    url(r'^register/$', RegisterView.as_view(), name='register'),
     url(r'^companies/create', CompanyView.create, name='create-company'),
     url(r'^logout/', LogoutView.as_view()),
 

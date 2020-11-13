@@ -43,7 +43,7 @@ class PaymentConfirmationView(View):
         return redirect('/shop/overview/' + order)
 
     def post(self, request, order):
-        contact = Contact.objects.filter(user=request.user)
+        contact = Contact.objects.filter(user_ptr=request.user)
         company = contact[0].company
         _order = Order.objects.get(order_hash=order, is_send=False, company=company)
         payment_details = PaymentDetail.objects.get(order=_order, user=contact)
@@ -73,7 +73,7 @@ class PaymentCreationView(CreateView):
     def post(self, request, order):
         _order = Order.objects.get(order_hash=order)
         order_details = OrderDetail.objects.get(order=_order)
-        order_details.contact = Contact.objects.get(user=self.request.user)
+        order_details.contact = Contact.objects.get(user_ptr=self.request.user)
         order_details.save()
 
         payment_details = PaymentDetail.objects.filter(order=_order)

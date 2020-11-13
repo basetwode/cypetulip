@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db.models import When, FloatField, Case, Count, F
 from django.db.models.functions import Cast
 from django.utils import translation
@@ -111,7 +112,9 @@ class RepeatableWizardView(WizardView):
     parent_key = ''
     self_url = ''
     delete_url = ''
-
+    requires_selection_on_next = False
+    text_add_item = _("Add another item")
+    text_select_item = _("Select an item to edit")
 
     def get_next_url(self):
         return self.get_success_url()
@@ -122,4 +125,8 @@ class RepeatableWizardView(WizardView):
                    'self_url': self.self_url,
                    'delete_url': self.delete_url,
                    'parent_id': self.get_parent_id(),
+                   'text_add_item': self.text_add_item,
+                   'text_select_item': self.text_select_item,
+                   'model_name': self.model._meta.model_name,
+                   'requires_selection_on_next': self.requires_selection_on_next and self.object is None,
                    'object_list': self.model.objects.filter(**{self.parent_key: self.get_parent_id()})}}

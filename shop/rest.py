@@ -230,7 +230,7 @@ class GuestViewSet(viewsets.ViewSet):
                 address_serializer = AddressSerializer(data=request.data['address'])
                 if address_serializer.is_valid():
                     address = address_serializer.save()
-                    address.contact = Contact.objects.get(user=self.request.user)
+                    address.contact = Contact.objects.get(user_ptr=self.request.user)
                     address.save()
                     return Response(address_serializer.data)
                 else:
@@ -263,7 +263,7 @@ class AddressViewSet(viewsets.ModelViewSet):
         """
         if self.request.user.is_authenticated:
             user = self.request.user
-            contact = Contact.objects.get(user=user)
+            contact = Contact.objects.get(user_ptr=user)
             return Address.objects.filter(contact=contact)
         else:
             raise NotFound()
@@ -281,7 +281,7 @@ class ContactViewSet(viewsets.ModelViewSet):
         """
         if self.request.user.is_authenticated:
             user = self.request.user
-            return Contact.objects.filter(user=user)
+            return Contact.objects.filter(user_ptr=user)
         else:
             raise NotFound()
 
@@ -325,7 +325,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         request = self.request
 
         if request.user.is_authenticated:
-            contact = Contact.objects.filter(user=request.user)
+            contact = Contact.objects.filter(user_ptr=request.user)
             if contact:
                 company = contact[0].company
                 return OrderDetail.objects.filter(state__isnull=True, order__company=company)
@@ -341,7 +341,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super(OrderItemViewSet, self).get_queryset()
         if self.request.user.is_authenticated:
-            queryset.filter(order__company=Company.objects.get(contact__user=self.request.user))
+            queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
             queryset.filter(order__session=self.request.session.session_key)
         return queryset
@@ -355,7 +355,7 @@ class FileOrderItemViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super(FileOrderItemViewSet, self).get_queryset()
         if self.request.user.is_authenticated:
-            queryset.filter(order__company=Company.objects.get(contact__user=self.request.user))
+            queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
             queryset.filter(order__session=self.request.session.session_key)
         return queryset
@@ -369,7 +369,7 @@ class SelectOrderItemViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super(SelectOrderItemViewSet, self).get_queryset()
         if self.request.user.is_authenticated:
-            queryset.filter(order__company=Company.objects.get(contact__user=self.request.user))
+            queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
             queryset.filter(order__session=self.request.session.session_key)
         return queryset
@@ -383,7 +383,7 @@ class NumberOrderItemViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super(NumberOrderItemViewSet, self).get_queryset()
         if self.request.user.is_authenticated:
-            queryset.filter(order__company=Company.objects.get(contact__user=self.request.user))
+            queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
             queryset.filter(order__session=self.request.session.session_key)
         return queryset
@@ -397,7 +397,7 @@ class CheckboxOrderItemViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super(CheckboxOrderItemViewSet, self).get_queryset()
         if self.request.user.is_authenticated:
-            queryset.filter(order__company=Company.objects.get(contact__user=self.request.user))
+            queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
             queryset.filter(order__session=self.request.session.session_key)
         return queryset

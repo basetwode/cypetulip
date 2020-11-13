@@ -36,7 +36,7 @@ class PrepaymentSubmitView(EmailConfirmView, View):
         return redirect(reverse("shop:confirmed_order", args=[order]))
 
     def post(self, request, order):
-        contact = Contact.objects.filter(user=request.user)
+        contact = Contact.objects.filter(user_ptr=request.user)
         _order = Order.objects.filter(order_hash=order)
         order_items = OrderItem.objects.filter(order=_order[0], order_item__isnull=True,
                                                product__in=Product.objects.all())

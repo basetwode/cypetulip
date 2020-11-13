@@ -197,14 +197,14 @@ class IndividualOfferView(EmailNotifyStaffView, FormView):
 
         initial = super().get_initial()
         if self.request.user.is_authenticated:
-            contact = Contact.objects.get(user=self.request.user)
+            contact = Contact.objects.get(user_ptr=self.request.user)
             initial['mail'] = contact.email
         return initial
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
         if self.request.user.is_authenticated:
-            self.object.contact = Contact.objects.get(user=self.request.user)
+            self.object.contact = Contact.objects.get(user_ptr=self.request.user)
         self.object.product = Product.objects.get(name=self.kwargs['product'])
         self.object.save()
         self.notify()

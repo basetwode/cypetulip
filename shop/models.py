@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User as DjangoUser
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
@@ -37,20 +37,16 @@ class Company(models.Model):
         return self.name
 
 
-class Contact(models.Model):
+class Contact(DjangoUser):
     GENDER_CHOICES = (
         ('M', _('Male')),
         ('F', _('Female')),
         ('D', _('Others')),
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, blank=True, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
     title = models.CharField(max_length=20, blank=True, null=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     telephone = models.CharField(max_length=40)
-    email = models.EmailField()
     language = models.CharField(max_length=2, default='en')
 
     def __str__(self):
@@ -86,12 +82,10 @@ class ProductCategory(models.Model):
 
 
 class Employee(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
+    user = models.OneToOneField(DjangoUser, on_delete=models.CASCADE, default=None)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
 
-    def __str__(self):
-        return self.first_name + " " + self.last_name
 
 # This is an orderable item which shows up when ordering a product that is public.
 # like squaremeter notes on a plan

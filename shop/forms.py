@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from management.models import ShopSetting
-from shop.models import ProductAttributeType, IndividualOffer
+from shop.models import ProductAttributeType, IndividualOffer, Contact
 
 
 class ProductAttributeForm(ModelForm):
@@ -67,3 +67,5 @@ class IndividualOfferForm(ModelForm):
         self.fields['captcha'] = ReCaptchaField(widget=ReCaptchaV2Checkbox,
                                                 public_key=settings.google_recaptcha_publickey,
                                                 private_key=settings.google_recaptcha_privatekey)
+
+

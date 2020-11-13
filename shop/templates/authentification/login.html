@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 {% block head %}
     <title>Login</title>
 {% endblock %}
@@ -28,5 +29,11 @@
         <a href="{% url 'shop:password_reset' %}" class="forgot-password">
             Forgot the password?
         </a>
+        <p class="pt-3">
+            {% trans 'New?' %}
+            <a href="{% url 'shop:register' %}" class="forgot-password">
+                {% trans 'Register here' %}
+            </a>
+        </p>
     </div><!-- /card-container -->
 {% endblock %}

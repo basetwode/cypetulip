@@ -54,9 +54,9 @@
                         <td>
                             <div>
                                 <a class="btn btn-outline-dark"
-                                   href="{% url 'contact_edit' contact.company_id %}">{% trans 'Edit Contact' %}</a>
+                                   href="{% url 'contact_create' contact.company.id contact.id %}">{% trans 'Edit Contact' %}</a>
                                 <a class="btn btn-outline-dark"
-                                   href="{% url 'company_edit' contact.id %}">{% trans 'Edit Company' %}</a>
+                                   href="{% url 'company_create' contact.company.id %}">{% trans 'Edit Company' %}</a>
                             </div>
 
                         </td>

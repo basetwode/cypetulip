@@ -92,86 +92,87 @@
             </div>
         </div>
 
-        <script>
-            var app = new Vue({
-                delimiters: ['[[', ']]'],
-                el: '#app',
-                data: {
-                    message: 'Hello Vue!',
-                    selectedProductId: "",
-                    selectedProduct: {},
-                    productAttributeTypes: [],
-                    productAttributeTypeInstances: [],
-                    csrfmiddlewaretoken: csrfmiddlewaretoken,
-                    selectedAttributes: [],
-                    selectedType: "",
-                    newTypeName:'',
-                    newTypeInstanceName:''
-                },
-                mounted() {
-                    this.selectedProductId = selProductId
-                    this.reloadData()
-                },
-                methods: {
-                    reloadData: function(){
-                        var instance = this;
-                        axios.get('/api/v1/productattributetypes')
-                            .then(response => {
+
+        <div class="col-md-1">
+{#            {% include 'modals/product-attribute-create.html' %}#}
+        </div>
+    </div>
+
+    <script>
+        var app = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app',
+            data: {
+                message: 'Hello Vue!',
+                selectedProductId: "",
+                selectedProduct: {},
+                productAttributeTypes: [],
+                productAttributeTypeInstances: [],
+                csrfmiddlewaretoken: csrfmiddlewaretoken,
+                selectedAttributes: [],
+                selectedType: "",
+                newTypeName:'',
+                newTypeInstanceName:''
+            },
+            mounted() {
+                this.selectedProductId = selProductId
+                this.reloadData()
+            },
+            methods: {
+                reloadData: function(){
+                    var instance = this;
+                    axios.get('/api/v1/productattributetypes')
+                        .then(response => {
                             console.log(response)
                             this.productAttributeTypes = response.data
                         });
-                        axios.get('/api/v1/productattributetypeinstances')
-                            .then(response => {
+                    axios.get('/api/v1/productattributetypeinstances')
+                        .then(response => {
                             console.log(response)
                             this.productAttributeTypeInstances = response.data
                             if(this.selectedProductId){
                                 axios.get('/api/v1/products/'+this.selectedProductId).then(
                                     response => {
-                                    this.selectedProduct = response.data
-                                    this.selectedAttributes = this.productAttributeTypeInstances.filter(function(attributeInstance){
-                                        return instance.selectedProduct.attributes.includes(attributeInstance.url)
-                                    }).map(attribute => attribute.id)
-                                })
+                                        this.selectedProduct = response.data
+                                        this.selectedAttributes = this.productAttributeTypeInstances.filter(function(attributeInstance){
+                                            return instance.selectedProduct.attributes.includes(attributeInstance.url)
+                                        }).map(attribute => attribute.id)
+                                    })
                             }
                         })
 
-                    },
-                    updateProductAttributyType: function(type) {
-                        console.log('Hello from ' + type + '!')
-                    },
-                    addProductAttributeType: function () {
-                        axios.post('/api/v1/productattributetypes/', {'name': this.newTypeName, 'csrfmiddlewaretoken':
+                },
+                updateProductAttributyType: function(type) {
+                    console.log('Hello from ' + type + '!')
+                },
+                addProductAttributeType: function () {
+                    axios.post('/api/v1/productattributetypes/', {'name': this.newTypeName, 'csrfmiddlewaretoken':
                         this.csrfmiddlewaretoken})
-                            .then(response => {
-                                this.productAttributeTypes.push(response.data)
-                                this.newTypeName="";
-                                this.selectedType = response.data.name;
-                            })
-                    },
-                    getTypeName: function(name){
-                        return this.productAttributeTypes.filter(function(type) {
-                            return type.url === name;
-                        })[0].name;
+                        .then(response => {
+                            this.productAttributeTypes.push(response.data)
+                            this.newTypeName="";
+                            this.selectedType = response.data.name;
+                        })
+                },
+                getTypeName: function(name){
+                    return this.productAttributeTypes.filter(function(type) {
+                        return type.url === name;
+                    })[0].name;
 
-                    },
-                    addProductAttributeTypeInstance: function () {
-                        axios.post('/api/v1/productattributetypeinstances/', {'value': this.newTypeInstanceName, 'type': this.selectedType.url})
-                            .then(response => {
+                },
+                addProductAttributeTypeInstance: function () {
+                    axios.post('/api/v1/productattributetypeinstances/', {'value': this.newTypeInstanceName, 'type': this.selectedType.url})
+                        .then(response => {
                             this.productAttributeTypeInstances.push(response.data)
                         })
-                    },
-                    filterByType: function() {
-                        var instance = this;
-                        return this.productAttributeTypeInstances.filter(function(typeInstance) {
-                            return typeInstance.type === instance.selectedType.url;
-                        })
-                    }
+                },
+                filterByType: function() {
+                    var instance = this;
+                    return this.productAttributeTypeInstances.filter(function(typeInstance) {
+                        return typeInstance.type === instance.selectedType.url;
+                    })
                 }
-            });
-        </script>
-
-
-        <div class="col-md-1">
-{#            {% include 'modals/product-attribute-create.html' %}#}
-        </div>
+            }
+        });
+    </script>
 {% endblock %}

@@ -11,7 +11,7 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               ProductsOverviewView, SectionCreateView,
                               SectionEditView, SectionsOverviewView,
                               SettingsView, ProductDeleteView, SectionDeleteView, PageDeleteView, CategoryDeleteView,
-                              ContactEditView, CompanyEditView, LegalSettingsDetailView, EmployeeOverviewView,
+                              LegalSettingsDetailView, EmployeeOverviewView,
                               EmployeeCreationView, OrderAssignEmployeeView, OrderPayView,
                               OrderShipView, OrderChangeStateView, ShipmentOverviewView,
                               SubItemOverviewView, SubItemDeleteView,
@@ -21,7 +21,8 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               HeaderCreateView, HeaderEditView, HeadersOverviewView, HeaderDeleteView, FooterCreateView,
                               FooterDeleteView, FooterEditView, FootersOverviewView, NumberSubItemCreateUpdateView,
                               FileSubItemCreationView, CheckboxSubItemCreateUpdateView, SelectSubItemCreationView,
-                              SelectItemCreationView, SelectItemDeleteView)
+                              SelectItemCreationView, SelectItemDeleteView, CompanyCreationView, ContactCreationView,
+                              ContactDeleteView, AddressCreationView, AddressDeleteView)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
@@ -75,8 +76,6 @@ urlpatterns = [
 
     url(r'^customers/$', CustomersOverviewView.as_view(), name="customers_overview"),
     url(r'^customers/search/$', SearchCustomers.as_view(), name="search_customers"),
-    url(r'^contacts/(?P<contact_id>[a-zA-Z0-9_.-]+)/$', ContactEditView.as_view(), name="contact_edit"),
-    url(r'^companies/(?P<company_id>[a-zA-Z0-9_.-]+)/$', CompanyEditView.as_view(), name="company_edit"),
 
     url(r'^pages/create/$', PageCreateView.as_view(), name="create_page"),
     url(r'^pages/(?P<url_param>[a-zA-Z0-9_.-]+)/delete/$', PageDeleteView.as_view(), name="page_delete"),
@@ -129,5 +128,17 @@ urlpatterns = [
         DeleteIndividualOfferRequest.as_view(), name="individualoffer_delete"),
 
     url(r'^employees/create/$', EmployeeCreationView.as_view(), name="create_employee"),
+
+    url(r'^company/create/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+        CompanyCreationView.as_view(), name="company_create"),
+    url(r'^address/create/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+        AddressCreationView.as_view(), name="address_create"),
+    url(r'^address/delete(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+        AddressDeleteView.as_view(), name="address_delete"),
+    url(r'^contact/create/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+        ContactCreationView.as_view(), name="contact_create"),
+    url(r'^contact/delete(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+        ContactDeleteView.as_view(), name="contact_delete"),
+
 
 ]

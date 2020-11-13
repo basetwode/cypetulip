@@ -59,7 +59,7 @@ class EmailThread(threading.Thread):
                 finally:
                     logo_file.close()
 
-                if 'files' in self.context:
+                if 'files' in self.context and self.context['files']:
                     for file_name, file in self.context['files'].items():
                         email.attach(file_name, file, )
 

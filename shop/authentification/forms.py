@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from shop.models import Company
+from shop.models import Company, Contact
 
 
 class SignUpForm(UserCreationForm):
@@ -17,9 +17,11 @@ class SignUpForm(UserCreationForm):
                                 "manually deletes the account. For more information, see our <a href='/cms/privacy-policy'>privacy policy</a>")))
 
     class Meta:
-        model = User
-        fields = ('email', 'first_name', 'last_name', 'password1', 'password2')
-
+        model = Contact
+        fields = ('username', 'gender','title', 'first_name', 'last_name', 'password1', 'password2', )
+        labels = {
+            'username': 'E-Mail'
+        }
 
 class CompleteCompanyForm(ModelForm):
     class Meta:

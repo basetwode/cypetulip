@@ -12,11 +12,12 @@ from billing.utils import calculate_sum
 from permissions.error_handler import raise_401
 from permissions.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin
 from shop.filters import OrderDetailFilter
-from shop.models import Contact, Order, OrderItem, Product, OrderDetail, Address
+from shop.models import Contact, Order, OrderItem, Product, OrderDetail, Address, Company
 from shop.my_account.forms import CompanyForm, ContactForm
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
 from utils.mixins import PaginatedFilterViews
+from utils.views import CreateUpdateView
 
 
 class OrderDetailView(View):
@@ -51,12 +52,12 @@ class OrdersView(LoginRequiredMixin, PermissionPostGetRequiredMixin,  PaginatedF
     filterset_class = OrderDetailFilter
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        contact = Contact.objects.get(user=self.request.user)
+        contact = Contact.objects.get(user_ptr=self.request.user)
         context = super(OrdersView, self).get_context_data(**kwargs)
         return {**context, **{'contact': contact}}
 
     def get_queryset(self):
-        contact = Contact.objects.get(user=self.request.user)
+        contact = Contact.objects.get(user_ptr=self.request.user)
         return super(OrdersView, self).get_queryset().filter(state__isnull=False, order__company=contact.company) \
             .order_by('-date_added')
 
@@ -67,7 +68,7 @@ class OrdersViewOld(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
     template_name = 'my_account/orders.html'
 
     def get(self, request, page=1, **kwargs):
-        contact = Contact.objects.filter(user=request.user)
+        contact = Contact.objects.filter(user_ptr=request.user)
         if contact:
             _orders, search = SearchOrders.filter_orders(request, False)
             number_of_orders = '5'
@@ -100,7 +101,7 @@ class MyAccountView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
 
     def get(self, request):
 
-        contact = Contact.objects.filter(user=request.user)
+        contact = Contact.objects.filter(user_ptr=request.user)
         if contact:
             return render(request, self.template_name, {'contact': contact})
         else:
@@ -110,54 +111,45 @@ class MyAccountView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
         pass
 
 
-class AccountSettingsView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
+class AccountSettingsView(LoginRequiredMixin, PermissionPostGetRequiredMixin, UpdateView):
     permission_get_required = ['shop.view_contact']
     permission_post_required = ['shop.change_contact']
     template_name = 'my_account/settings.html'
+    model = Contact
+    form_class = ContactForm
+    context_object_name = 'contact'
+    success_url = reverse_lazy('shop:account_settings')
 
-    def get(self, request):
-        contact = Contact.objects.get(user=request.user)
-        if contact:
-            form = ContactForm(instance=contact)
-            return render(request, self.template_name, {'contact': contact, 'form': form, 'title': 'Account Settings',
-                                                        'next_url': 'shop:account_settings'})
-        else:
-            return redirect('/shop/register')
+    def form_valid(self, form):
+        contact = form.save(commit=False)
+        contact.email = contact.username
+        return super(AccountSettingsView, self).form_valid(form)
 
-    def post(self, request):
-        contact = Contact.objects.filter(user=request.user).first()
-        form = ContactForm(request.POST, instance=contact)
-        form.save()
-        return render(request, self.template_name, {'contact': contact, 'form': form, 'title': 'Account Settings',
-                                                    'next_url': 'shop:account_settings'})
+    def get_context_data(self, **kwargs):
+        return {**{'next_url': 'shop:account_settings', 'title': 'Account Settings'},
+                **super(AccountSettingsView, self).get_context_data(**kwargs)}
+
+    def get_object(self, queryset=None):
+        return Contact.objects.get(user_ptr=self.request.user)
 
 
-class CompanySettingsView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
+class CompanySettingsView(LoginRequiredMixin, PermissionPostGetRequiredMixin, UpdateView):
     permission_get_required = ['shop.view_company']
     permission_post_required = ['shop.change_company']
     template_name = 'my_account/settings.html'
+    model = Company
+    form_class = CompanyForm
+    context_object_name = 'company'
+    success_url = reverse_lazy('shop:company_settings')
 
-    def get(self, request):
-        contact = Contact.objects.get(user=request.user)
-        if contact:
-            company = contact.company
-            if company:
-                form = CompanyForm(instance=company)
-                return render(request, self.template_name, {'contact': contact, 'form': form,
-                                                            'title': 'Company Settings',
-                                                            'next_url': 'shop:company_settings'})
-            else:
-                return redirect('/shop/companies/create')
-        else:
-            return redirect('/shop/register')
 
-    def post(self, request):
-        contact = Contact.objects.filter(user=request.user).first()
-        company = contact.company
-        form = CompanyForm(request.POST, files=request.FILES, instance=company)
-        form.save()
-        return render(request, self.template_name, {'contact': contact, 'form': form, 'title': 'Company Settings',
-                                                    'next_url': 'shop:company_settings'})
+    def get_context_data(self, **kwargs):
+        return {**{'title': 'Company Settings', 'contact': self.request.user.contact,
+                   'next_url': 'shop:company_settings'},
+                **super(CompanySettingsView, self).get_context_data(**kwargs)}
+
+    def get_object(self, queryset=None):
+        return Company.objects.get(contact=self.request.user)
 
 
 class SearchCustomers(View):
@@ -190,7 +182,7 @@ class SearchOrders(View):
         if request.user.is_staff or admin:
             _orders = Order.objects.filter(orderdetail__state__isnull=False)
         else:
-            contact = Contact.objects.get(user=request.user)
+            contact = Contact.objects.get(user_ptr=request.user)
             if contact:
                 company = contact.company
                 if company:
@@ -221,7 +213,7 @@ class AddressOverviewView(PermissionPostGetRequiredMixin, ListView):
     model = Address
 
     def get(self, request, *args, **kwargs):
-        contact = Contact.objects.get(user=request.user)
+        contact = Contact.objects.get(user_ptr=self.request.user)
         addresses = Address.objects.filter(contact=contact)
         _json = json.loads(
             serializers.serialize('json', addresses.all(), use_natural_foreign_keys=True,
@@ -270,3 +262,4 @@ class AddressDeleteView(PermissionPostGetRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('shop:address_overview')
+

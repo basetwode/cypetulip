@@ -19,7 +19,7 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="navbar-nav navbar-left">
                 {% for page in sites_nav %}
-                    {% if page.page_name == 'products' %}
+                    {% if page.page_id == 'products' %}
                         <li class="nav-item nav-link dropdown">
                             <a role="button" style="color: rgba(0,0,0,.5);"
                                href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}
