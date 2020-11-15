@@ -73,6 +73,22 @@
             </div>
 
             <div class="card-body">
+                <div>
+
+                    <h5 class="card-title">{% trans 'Analytics' %}</h5>
+
+                    <button type="button" class="btn btn-outline-primary">
+                        Active Sessions: <span style="font-size: 90%;" class="badge badge-success">{{ active_sessions.count }}</span>
+                        <span class="sr-only">unread messages</span>
+                    </button>
+                     <br>
+                    {% include 'analytics-modal.html'  with objects=users%}
+                    <button type="button" class="btn btn-outline-primary mt-1 mb-1" data-toggle="modal" data-target="#analytics">
+                        Active Users: <span style="font-size: 90%;"  class="badge badge-success">{{users.count}}</span>
+                        <span class="sr-only">unread messages</span>
+                    </button>
+                </div>
+                <hr>
                 <div class="btn-group">
                     <a href="{% url 'customers_overview' %}"
                        class="btn btn-primary mr-1">{% trans 'Customers' %}</a>

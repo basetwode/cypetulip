@@ -3,10 +3,12 @@ from datetime import datetime
 
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
+from django.contrib.sessions.models import Session
 from django.db.transaction import commit
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 # Create your views here.
 from django.views.generic import DetailView, ListView, View, DeleteView
@@ -42,13 +44,18 @@ class ManagementView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
 
     def get(self, request):
         contact = Contact.objects.filter(user_ptr=request.user)
+        active_sessions = Session.objects.filter(expire_date__gte=timezone.now())
+        user_id_list = [data.get_decoded().get('_auth_user_id',None) for data in active_sessions]
+        users = User.objects.filter(id__in=user_id_list)
+
         mail_settings = MailSetting.objects.all()
         try:
             company = contact[0].company
             mail_settings = mail_settings[0]
         except IndexError:
             pass
-        return render(request, self.template_name, {'contact': contact})
+        return render(request, self.template_name, {'contact': contact, 'users': users,
+                                                    'active_sessions':Session.objects.filter(expire_date__gte=timezone.now())})
 
     def post(self, request):
         pass

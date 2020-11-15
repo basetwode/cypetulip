@@ -13,6 +13,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf.urls import include, url
+from django.contrib.auth import views as auth_views
 from django.contrib import admin
 from django.views.generic import RedirectView
 
@@ -28,6 +29,7 @@ from shipping import urls as shipping_urls
 
 # from Accounting import urls as accounting_urls
 # from home import settings
+from shop.authentification.views import PasswordResetViewSmtp
 
 admin.autodiscover()
 
@@ -54,6 +56,14 @@ urlpatterns = [
     url(r'^payment/', include(payment_urls, namespace='payment')),
     url(r'^accounting/', include(accounting_urls, namespace='accounting')),
     url(r'^shipping/', include(shipping_urls, namespace='shipping')),
+
+    url(r'^password_reset/$', PasswordResetViewSmtp.as_view(), name='password_reset'),
+    url(r'^password_reset/done/$', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    url(r'^reset/(?P<uidb64>[\S0-9_.-\\s\- ]*)/(?P<token>[\S0-9_.-\\s\- ]*)/$',
+        auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    url(r'^reset/done/$', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    url(r'^password_change/$', auth_views.PasswordChangeView.as_view(), name='password_change'),
+    url(r'^password_change/done/$', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
 ]
 
 # if settings.DEBUG:

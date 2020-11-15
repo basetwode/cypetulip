@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.models import User, Group
+from django.contrib.auth.views import PasswordResetView
 from django.utils.translation import gettext_lazy as _
 from django.forms import ModelForm
 from django.http import HttpResponse, HttpResponseRedirect
@@ -9,7 +10,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import View, CreateView
 
-from shop.authentification.forms import CompleteCompanyForm, SignUpForm
+from shop.authentification.forms import CompleteCompanyForm, SignUpForm, PasswordResetFormSMTP
 from shop.models import Contact, Order, OrderItem, Address, Company
 
 __author__ = ''
@@ -133,3 +134,7 @@ class CompanyView(CompleteCompanyForm):
         else:
             return HttpResponseRedirect('/shop/login')
         return render(request, 'authentification/register.html', {'form': form, 'buttonText': 'Complete Account'})
+
+
+class PasswordResetViewSmtp(PasswordResetView):
+    form_class = PasswordResetFormSMTP

@@ -27,7 +27,10 @@
                         <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
 
                     </form>
+                    <a href="{% url 'company_create' '' %}"
+                       class="btn btn-primary btn-fw">{% trans 'Add customer' %}</a>
                     <hr>
+
                     <a href="{% url 'management_index' %}"
                        class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
                 </div>

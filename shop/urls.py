@@ -1,5 +1,4 @@
 from django.conf.urls import include, url
-from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
 
 from shop.authentification.views import (CompanyView, LoginView, LogoutView,
@@ -58,15 +57,6 @@ urlpatterns = [
         name="detail_order_show_bill"),
     url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/review/create$', OrderDetailView.as_view(),
         name="detail_order_write_review"),
-
-    url(r'^password_change/$', auth_views.PasswordChangeView.as_view(), name='password_change'),
-    url(r'^password_change/done/$', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
-
-    url(r'^password_reset/$', auth_views.PasswordResetView.as_view(), name='password_reset'),
-    url(r'^password_reset/done/$', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    url(r'^reset/(?P<uidb64>[\S0-9_.-\\s\- ]*)/(?P<token>[\S0-9_.-\\s\- ]*)/$',
-        auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    url(r'^reset/done/$', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
     url(r'offer/(?P<product>[\S0-9_.-\\s\- ]+)$', IndividualOfferView.as_view(), name="individual_offer"),
 
