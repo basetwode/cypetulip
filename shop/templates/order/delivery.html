@@ -91,7 +91,7 @@
                             <td data-th="Price">{{ order.price_wt }}&euro;</td>
 
                             <td id="subtotal-{{ order.id }}" data-th="Subtotal"
-                                class="text-center">{{ order.total_wt }}&euro;
+                                class="text-center">{{ order.total_wt|floatformat:"2"}}&euro;
                                 {% if order.applied_discount %}<br>
                                     <small class="mt-1">- {{ order.total_discount_wt }}&euro; ({{ order.order_detail.discount.voucher_id }}
                                         {{ order.order_detail.discount.discount_percentage_in_percent }}%)</small>

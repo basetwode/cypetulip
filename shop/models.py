@@ -274,8 +274,8 @@ class Discount(models.Model):
         return int(self.discount_percentage * 100)
 
     def is_invalid(self):
-        is_expired = datetime.now() > self.valid_until_date
-        is_utilized = self.count >= self.valid_until_count
+        is_expired = datetime.now() > self.valid_until_date if self.valid_until_date else False
+        is_utilized = self.count >= self.valid_until_count if self.valid_until_count>0 else False
         return is_expired or is_utilized or not self.enabled
 
     def save(self, force_insert=False, force_update=False, using=None,
@@ -446,9 +446,15 @@ class OrderItem(models.Model):
         if not self.price_wt and self.product and not self.product.price_on_request:
             self.price = self.product.special_price if self.product.special_price else self.product.price
             self.price_wt = self.product.bprice_wt()
+            self.applied_discount = 0
+            self.price_discounted = self.price
+            self.price_discounted_wt = self.price_wt
         if self.product.price_on_request and not self.price_wt:
             self.price_wt = round(self.price * (1 + self.product.tax), 2)
-        if self.order_detail.state and not self.order_detail.state.is_sent_state:
+            self.applied_discount = 0
+            self.price_discounted = self.price
+            self.price_discounted_wt = self.price_wt
+        if not self.order_detail.state or not self.order_detail.state.is_sent_state:
             self.apply_discount_if_eligible()
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)

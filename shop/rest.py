@@ -230,9 +230,11 @@ class VoucherSerializer(serializers.Serializer):
 
 
         voucher = Discount.objects.filter(voucher_id=value)
-        if not voucher.exists() or voucher.is_invalid():
+        if not voucher.exists() :
             raise serializers.ValidationError(_('Voucher code invalid'))
         voucher = voucher.first()
+        if voucher.is_invalid():
+            raise serializers.ValidationError(_('Voucher code invalid'))
         order_detail.discount = voucher
         order_detail.save()
 
