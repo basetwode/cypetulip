@@ -47,7 +47,7 @@ class GeneratePDFFile():
         order_detail = OrderDetail.objects.get(order=_order)
         contact = order_detail.contact
         company = _order.company
-        order_items = OrderItem.objects.filter(order=_order).annotate(
+        order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True).annotate(
             price_t=Round(F('price') * Cast(F('count'), FloatField()),2),
         )
         if not order_detail.date_bill:
@@ -63,7 +63,7 @@ class GeneratePDFFile():
         context = {
             'total': total_with_tax,
             'total_without_tax': total_without_tax,
-            'tax': round(total_with_tax - total_without_tax, 2),
+            'tax': round(order_detail.total_discounted_wt() - order_detail.total_discounted(), 2),
             'tax_rate': tax_rate,
             'order': _order,
             'order_detail': order_detail,

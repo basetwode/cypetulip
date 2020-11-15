@@ -1,0 +1,70 @@
+{% extends 'base-mgmt.html' %}
+{% load recurse %}
+{% load static %}
+{% load bootstrap4 %}
+{% load i18n %}
+
+{% bootstrap_messages %}
+{% block head %}
+    <title>Products</title>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="card-title h4">{% trans 'Filter' %}</div>
+                    <form action="" method="get">
+
+                        {% bootstrap_form filter.form %}
+                        <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
+
+                    </form>
+                    <a href="{% url 'discount_edit' '' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Add Voucher' %}</a>
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9 mt-2 mt-md-0">
+
+            <table class="table table-hover table-striped table-responsive-sm">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">{% trans 'Code' %}</th>
+                    <th scope="col">{% trans 'Enabled' %}</th>
+                    <th scope="col">{% trans 'Discount' %}</th>
+                    <th scope="col">{% trans 'Configuration' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for object in filter.qs %}
+                    <tr>
+                        <td>{{ object.id }}</td>
+                        <td>{{ object.enabled }}</td>
+                        <td>{{ object.voucher_id }}</td>
+                        <td>{{ object.discount_percentage_in_percent }}</td>
+                        <td>
+                            <div>
+                                <a class="btn btn-outline-dark"
+                                   href="{% url 'discount_edit' object.id %}">{% trans 'Edit' %}</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+{% endblock %}

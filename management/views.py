@@ -19,7 +19,7 @@ from billing.utils import calculate_sum
 from billing.views import GeneratePDFFile
 from cms.models import Page, Section
 from home import settings
-from management.filters import OrderDetailFilter
+from management.filters import OrderDetailFilter, DiscountFilter
 from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm, ProductForm, \
     ContactUserForm, ContactUserIncludingPasswordForm, ContactUserUpdatePasswordForm
 from management.mixins import NotifyNewCustomerAccountView
@@ -31,7 +31,8 @@ from shop.filters import ProductFilter, ContactFilter, ProductCategoryFilter, Se
     PageFilter, ShipmentPackageFilter, FileSubItemFilter, FooterFilter, HeaderFilter, ProductSubItemFilter
 from shop.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
-    FileSubItem, IndividualOffer, ProductSubItem, NumberSubItem, CheckBoxSubItem, SelectSubItem, SelectItem, Address
+    FileSubItem, IndividualOffer, ProductSubItem, NumberSubItem, CheckBoxSubItem, SelectSubItem, SelectItem, Address, \
+    Discount
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
 from utils.mixins import EmailMixin, PaginatedFilterViews
@@ -594,6 +595,7 @@ class OrderAcceptInvoiceView(View, EmailMixin):
                                                                                      'contact': _order.contact,
                                                                                      'total': total,
                                                                                      'order': _order.order,
+                                                                                     'order_detail':_order,
                                                                                      'files': {_(
                                                                                          'Invoice') + "_" + _order.unique_nr() +
                                                                                                ".pdf": pdf.getvalue()},
@@ -1073,3 +1075,24 @@ class AddressDeleteView(LoginRequiredMixin, DeleteView):
         return reverse_lazy('address_create')
 
 
+class DiscountEditView(LoginRequiredMixin, CreateUpdateView):
+    template_name = 'generic-edit.html'
+    model = Discount
+    fields = '__all__'
+    slug_field = 'id'
+    slug_url_kwarg = 'id'
+
+    def get_success_url(self):
+        return reverse_lazy('discount_overview')
+
+
+class DiscountOverview(LoginRequiredMixin, ListView):
+    template_name = 'discount-overview.html'
+    model = Discount
+    paginate_by = 50
+    ordering = ['-date_added']
+
+    def get(self, request, *args, **kwargs):
+        filter = DiscountFilter(request.GET, queryset=Discount.objects.all())
+        return render(request, self.template_name,
+                      {'filter': filter})

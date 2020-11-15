@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from shop.models import Address, Contact, Company, Order, OrderDetail, OrderItem, Product, ProductSubItem, FileSubItem, \
     SelectSubItem, CheckBoxSubItem, NumberSubItem, SelectItem, FileOrderItem, SelectOrderItem, NumberOrderItem, \
-    CheckBoxOrderItem
+    CheckBoxOrderItem, Discount
 from shop.utils import create_hash
 
 
@@ -141,7 +141,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItem
-        fields = ['product', 'price', 'price_wt', 'count', 'id', 'fileorderitem', 'valid',
+        fields = ['product', 'price', 'price_wt', 'count', 'id', 'fileorderitem', 'valid', 'applied_discount',
+                  'price_discounted', 'price_discounted_wt',
                   'numberorderitem', 'selectorderitem', 'checkboxorderitem', 'randID', 'errors']
         depth = 4
 
@@ -163,16 +164,20 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     order_items = serializers.SerializerMethodField('get_order_items')
+    voucher = SerializerMethodField()
 
     class Meta:
         model = OrderDetail
-        fields = ['order_number', 'order', 'order_items', 'id']
+        fields = ['order_number', 'order', 'order_items', 'id', 'voucher']
         depth = 4
 
     def get_order_items(self, order):
         qs = OrderItem.objects.filter(order_detail=order, order_item__isnull=True)
         serializer = OrderItemSerializer(instance=qs, many=True)
         return serializer.data
+
+    def get_voucher(self, object):
+        return object.discount.voucher_id if object.discount else ""
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -215,7 +220,37 @@ class OrderShipmentSerializer(serializers.Serializer):
     billing = serializers.CharField()
 
 
+class VoucherSerializer(serializers.Serializer):
+    voucher = serializers.CharField(max_length=20, required=False)
+    order_hash = serializers.CharField(max_length=40, required=False)
+
+    def validate_voucher(self, value):
+
+        order_detail = OrderDetail.objects.get(order__order_hash=self.initial_data['order_hash'])
+
+
+        voucher = Discount.objects.filter(voucher_id=value)
+        if not voucher.exists() or voucher.is_invalid():
+            raise serializers.ValidationError(_('Voucher code invalid'))
+        voucher = voucher.first()
+        order_detail.discount = voucher
+        order_detail.save()
+
+        voucher_applied = [order_item.apply_discount_if_eligible() for order_item in order_detail.orderitem_set.all()]
+        if True not in voucher_applied:
+            order_detail.discount = None
+            order_detail.save()
+            raise serializers.ValidationError(_('Voucher code not eligible'))
+        else:
+            voucher.count -= 1
+            voucher.save()
+            order_detail.save()
+
+
+
 ###############################################################
+
+
 
 
 class GuestViewSet(viewsets.ViewSet):
@@ -409,3 +444,17 @@ class CheckboxOrderItemViewSet(viewsets.ModelViewSet):
         else:
             queryset.filter(order__session=self.request.session.session_key)
         return queryset
+
+
+class ApplyVoucherViewSet(viewsets.ViewSet):
+    queryset = Discount.objects.all()
+    permission_classes = [AllowAny]
+    serializer_class = VoucherSerializer
+
+    def create(self, request):
+        voucher_serializer = VoucherSerializer(data=request.data)
+
+        if voucher_serializer.is_valid():
+            return Response(voucher_serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(voucher_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

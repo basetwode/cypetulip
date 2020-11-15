@@ -2,7 +2,7 @@ from rest_framework import routers, viewsets, serializers
 
 from shop.models import Product, ProductCategory, ProductAttributeType, ProductAttributeTypeInstance, ProductSubItem
 from shop.rest import AddressViewSet, GuestViewSet, ContactViewSet, DeliveryViewSet, OrderViewSet, OrderItemViewSet, \
-    CheckboxOrderItemViewSet, NumberOrderItemViewSet, SelectOrderItemViewSet, FileOrderItemViewSet
+    CheckboxOrderItemViewSet, NumberOrderItemViewSet, SelectOrderItemViewSet, FileOrderItemViewSet, ApplyVoucherViewSet
 
 
 class ProductAttributeTypeSerializer(serializers.HyperlinkedModelSerializer):
@@ -84,6 +84,7 @@ router.register(r'addresses', AddressViewSet)
 router.register(r'contacts', ContactViewSet)
 router.register(r'deliveries', DeliveryViewSet)
 router.register(r'order', OrderViewSet)
+router.register(r'voucher', ApplyVoucherViewSet)
 router.register(r'orderitem',OrderItemViewSet)
 router.register(r'fileorderitem',FileOrderItemViewSet)
 router.register(r'selectorderitem',SelectOrderItemViewSet)

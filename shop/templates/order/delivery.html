@@ -92,6 +92,11 @@
 
                             <td id="subtotal-{{ order.id }}" data-th="Subtotal"
                                 class="text-center">{{ order.total_wt }}&euro;
+                                {% if order.applied_discount %}<br>
+                                    <small class="mt-1">- {{ order.total_discount_wt }}&euro; ({{ order.order_detail.discount.voucher_id }}
+                                        {{ order.order_detail.discount.discount_percentage_in_percent }}%)</small>
+                                    <br> <b>{{ order.total_discounted_wt }}&euro;</b>
+                                {% endif %}
                             </td>
                             <td class="actions" data-th="">
 
@@ -210,14 +215,51 @@
                     <tr>
                         <td style="width:50%"></td>
                         <td style="width:10%"></td>
-                        <td style="width:22%" class="text-center"><strong>{% trans 'Total: ' %}<span
-                                id="total">{{ open_orders.first.order_detail.total_wt }}</span>&euro;</strong></td>
+                        <td style="width:22%" class="text-center">
+                            {% if open_orders.first.order_detail.discount %}<br>
+                                <span
+                                    id="total">{{ open_orders.first.order_detail.total_wt }}</span>&euro;<br>
+                                <small class="mt-1">- {{ open_orders.first.order_detail.total_discount_wt }}&euro; ({{ open_orders.first.order_detail.discount.voucher_id }}
+                                    {{ open_orders.first.order_detail.discount.discount_percentage_in_percent }}%)</small>
+                                <br> <b>{% trans 'Total' %}: {{ open_orders.first.order_detail.total_discounted_wt }}&euro;</b>
+                            {% else %}
+                                <strong>{% trans 'Total' %}: <span
+                                        id="total">{{ open_orders.first.order_detail.total_wt }}</span>&euro;</strong>
+                            {% endif %}
+
+                            </td>
                         <td style="width:10%"></td>
                     </tr>
                 </table>
 
                 <div id="addressFormInput">
+                    <div class="row mt-2 mb-2">
+                        <div class="col">
+                            <div :class="{'input-group':true, 'mb-3':true, 'was-validated': validateVoucher, 'has-error': voucherError.length>0,
+                            'is-invalid':voucherError}">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-default">{% trans 'Voucher' %}</span>
+                                </div>
+                                <input type="text" class="form-control" aria-label="Sizing example input" v-model="voucher"
+                                       :class="{'has-error': voucherError.length>0, 'is-invalid':voucherError.length > 0}"  :valid="voucherError.length==0"
+                                       aria-describedby="inputGroup-sizing-default">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" @click="applyVoucher()"
+                                            type="button" id="button-addon2">{% trans 'Redeem' %}</button>
+                                </div>
+                                <div v-if="voucherError.length==0" class="valid-feedback">
+                                    {% trans 'Voucher applied' %}!
+                                </div>
+                                <div class="invalid-feedback">
+                                    <p v-if="voucherError">
+                                        <span v-for="error in voucherError">[[error]]</span>
+                                    </p>
+                                </div>
+                            </div>
 
+
+                        </div>
+                    </div>
                     <div class="modal fade" id="add-modal" tabindex="-1" role="dialog"
                          aria-labelledby="add-account-modal-title"
                          aria-hidden="true">
@@ -427,6 +469,7 @@
                         </div>
                     </div>
 
+
                     <div class="row mt-1 mb-2">
                         <div class="col">
                             <a href="{% url 'shop:shopping_cart' %}" class="btn btn-warning ml-0"><i
@@ -446,6 +489,7 @@
             <script type='text/javascript'>
                 var csrfmiddlewaretoken = '{{ csrf_token }}';
                 var order = '{{ order_details.order_hash }}';
+                var discount = '{{ order_details.orderdetail_set.first.discount.voucher_id }}';
             </script>
             <script>
                 var app = new Vue({
@@ -469,6 +513,9 @@
                         addresses: [],
                         shipment: "",
                         billing: "",
+                        voucher: discount,
+                        voucherError: [],
+                        validateVoucher: false,
                         order: order,
                         errors: {shipment: [], address: []},
                     },
@@ -485,6 +532,23 @@
                                 .then(response => {
                                     this.contact = response.data
                                 });
+                        },
+                        applyVoucher: function() {
+                            let instance = this;
+                            axios.post('/api/v1/voucher/', {'order_hash':this.order,'voucher':this.voucher},  {
+                                headers: {
+                                    'X-CSRFToken': this.csrfmiddlewaretoken
+                                }})
+                                .then(response => {
+                                        instance.reloadData()
+                                        instance.voucherError = [];
+                                        location.reload();
+                                    }
+                                ).catch(error => {
+                                    instance.voucherError = error.response.data.voucher;
+                            }).finally(resp => {
+                                instance.validateVoucher = true;
+                            })
                         },
                         addAccount: function () {
                             let company = {

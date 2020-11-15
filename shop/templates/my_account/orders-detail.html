@@ -57,7 +57,7 @@
                         </div>
                         <div class="col-md-2 col-sm-2">
                             <strong>{% trans 'Total' %}</strong>
-                            <div>{{ order.orderdetail_set.first.total_wt|floatformat:2 }} €</div>
+                            <div>{{ order.orderdetail_set.first.total_discounted_wt|floatformat:2 }} €</div>
                         </div>
                         <div class="col-md-5 col-sm-5">
                             <strong>Ordernr.:</strong>
@@ -112,9 +112,9 @@
                             <thead>
                             <tr>
                                 <th style="width:50%">{% trans 'Product' %}</th>
-                                <th style="width:20%">{% trans 'Price' %}</th>
+                                <th style="width:15%">{% trans 'Price' %}</th>
 
-                                <th style="width:22%"
+                                <th style="width:27%"
                                     class="text-center">{% trans 'Subtotal' %}</th>
                             </tr>
                             </thead>
@@ -125,7 +125,7 @@
                                 <input type="submit" hidden id="#submit">
                                 {% for order in order_items %}
                                     <tr>
-                                        <td style="width:70%" data-th="Product">
+                                        <td style="width:50%" data-th="Product">
                                             <input type="hidden"
                                                    name="[{{ order.id }}][prod]{{ order.product.id }}">
                                             <div class="row">
@@ -147,9 +147,14 @@
                                         <td style="width:15%" data-th="Price">
                                             {{ order.total | floatformat:2 }}&euro;
                                         </td>
-                                        <td style="width:15%" id="subtotal-{{ order.id }}" data-th="Subtotal"
+                                        <td style="width:27%" id="subtotal-{{ order.id }}" data-th="Subtotal"
                                             class="text-center">
                                             {{ order.total_wt | floatformat:2 }}&euro;
+                                            {% if order.applied_discount %}<br>
+                                                <small class="mt-1">- {{ order.total_discount_wt }}&euro; ({{ order.order_detail.discount.voucher_id }}
+                                                    {{ order.order_detail.discount.discount_percentage_in_percent }}%)</small>
+                                                <br> <b>{{ order.total_discounted_wt }}&euro;</b>
+                                            {% endif %}
                                         </td>
                                     </tr>
 

@@ -23,7 +23,7 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               FileSubItemCreationView, CheckboxSubItemCreateUpdateView, SelectSubItemCreationView,
                               SelectItemCreationView, SelectItemDeleteView, CompanyCreationView, ContactCreationView,
                               ContactDeleteView, AddressCreationView, AddressDeleteView, ContactResetPwdView,
-                              CompanyDeleteView)
+                              CompanyDeleteView, DiscountEditView, DiscountOverview)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
@@ -150,4 +150,6 @@ urlpatterns = [
     url(r'^contact/pwd/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
         ContactResetPwdView.as_view(), name="contact_pwd_reset"),
 
+    url(r'^discount/create/(?P<id>[a-zA-Z0-9_.-]*)/$', DiscountEditView.as_view(), name="discount_edit"),
+    url(r'^discount/$', DiscountOverview.as_view(), name="discount_overview"),
 ]

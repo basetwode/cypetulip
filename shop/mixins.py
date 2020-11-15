@@ -59,6 +59,7 @@ class EmailConfirmView(EmailMixin, View):
         self.send_mail(contact, self.subject, self.text, {'contact': contact,
                                                           'order': self.object,
                                                           'object': self.object,
+                                                          'order_detail': order_detail,
                                                           'total': total,
                                                           'host': self.request.META[
                                                               'HTTP_HOST']})

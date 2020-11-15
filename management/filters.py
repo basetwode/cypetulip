@@ -2,7 +2,7 @@ import django_filters
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
-from shop.models import OrderDetail
+from shop.models import OrderDetail, Discount
 
 
 class OrderDetailFilter(django_filters.FilterSet):
@@ -26,3 +26,10 @@ class OrderDetailFilter(django_filters.FilterSet):
                 Q(contact__company__name__icontains=value) |
                 Q(contact__email__icontains=value)
             )
+
+
+class DiscountFilter(django_filters.FilterSet):
+
+    class Meta:
+        model = Discount
+        fields = ['enabled']

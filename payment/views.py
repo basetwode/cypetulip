@@ -31,7 +31,7 @@ class PaymentView(View):
         payment_forms = get_all_payment_forms_as_dict()
         for method in payment_methods:
             method.form = PaymentFormFactory(method.provider.api)
-        order_object = get_order_for_hash_and_contact(Contact.objects.filter(user=request.user), order)
+        order_object = get_order_for_hash_and_contact(Contact.objects.filter(user_ptr=request.user), order)
         return render(request, self.template_name,
                       {'order_details': order_object, 'payment_methods': payment_methods, 'forms': payment_forms, 'legal_form': LegalForm()})
 

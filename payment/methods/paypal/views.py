@@ -105,7 +105,7 @@ class PaypalSubmitView(EmailConfirmView, View):
         order_object = Order.objects.get(order_hash=order)
         order_detail = OrderDetail.objects.get(order=order_object)
         order_items = OrderItem.objects.filter(order=order_object)
-        total_with_tax = calculate_sum(order_items, True)
+        total_with_tax = order_detail.total_discounted_wt()
 
         paypal_request.prefer('return=representation')
         paypal_request.request_body(

@@ -71,10 +71,11 @@
                                 </div>
                             </td>
                             <td>
-                                [[order_item.price_wt.toFixed(2)]]€
+                                [[order_item.price_wt.toFixed(2)]]€<br>
                             </td>
                             <td class="text-center">
-                                [[getOrderItemTotal(order_item).toFixed(2)]]€
+                                [[getOrderItemTotal(order_item).toFixed(2)]]€ <br>
+
                             </td>
                             <td>
                                 <button class="btn btn-danger btn-sm"
@@ -182,7 +183,7 @@
                                     </form>
                                 </td>
                                 <td>
-                                    [[order_items_subproduct.product.bprice_wt]] €
+                                    [[order_items_subproduct.product.bprice_wt]] €<br>
                                 </td><td></td>
                                 <td>
                                     <div v-if="subproduct.is_multiple_per_item">
@@ -216,6 +217,7 @@
 
                     </tfoot>
                 </table>
+
                 <div class="row">
                     <div class="col">
                         <a href="{% url 'shop:products' %}" class="btn btn-warning"><i

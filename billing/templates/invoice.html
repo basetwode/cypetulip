@@ -184,31 +184,55 @@
     </div>
     <table id="overview" border="0" cellspacing="0" cellpadding="0">
         <thead>
-        <tr>
-            <th style="text-align: left" class="no">#</th>
-            <th style="text-align: left" class="desc">{% trans 'Description' %}</th>
-            <th style="text-align: left" class="unit">{% trans 'Unit price' %}</th>
-            <th style="text-align: left" class="qty">{% trans 'Quantity' %}</th>
-            <th style="text-align: left" class="total">{% trans 'Total' %}</th>
+        <tr style="border-bottom: 1px solid #004f72; padding-top: 5px">
+            <th style="width:5%; text-align: left" class="no">#</th>
+            <th style="width:35%; text-align: left" class="desc">{% trans 'Description' %}</th>
+            <th style="width:20%; text-align: left" class="unit">{% trans 'Unit price' %}</th>
+            <th style="width:10%; text-align: left" class="qty">{% trans 'Quantity' %}</th>
+            <th style="width:30%; text-align: left" class="total">{% trans 'Total' %}</th>
         </tr>
         </thead>
         <tbody >
         {% for item in order_items %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ item.product.name }}</td>
-                <td>
+            <tr style="border-top: 1px solid #004f72; padding-top: 5px">
+                <td valign="top">{{ forloop.counter }}</td>
+                <td valign="top">{{ item.product.name }}</td>
+                <td valign="top">
                     {{ item.price|floatformat:2 }} €</td>
-                <td>{{ item.count }}</td>
-                <td>{{ item.price_t }} €</td>
+                <td valign="top">{{ item.count }}</td>
+                <td>{{ item.total|floatformat:2 }} €
+                    {% if item.applied_discount %}<br>
+                        <small class="mt-1">- {{ item.total_discount|floatformat:2 }} &euro; ({{ item.order_detail.discount.voucher_id }}
+                            {{ item.order_detail.discount.discount_percentage_in_percent }}%)</small>
+                        <br> <b>{{ item.total_discounted|floatformat:2 }} &euro;</b>
+                    {% endif %}
+                </td>
             </tr>
+            {% for sub_item in item.orderitem_set.all %}
+                <tr style="padding-bottom: 5px">
+                    <td valign="top"></td>
+                    <td style="padding-left: 10px" valign="top">{{ sub_item.product.name }}</td>
+                    <td valign="top">
+                        {{ sub_item.price|floatformat:2 }} €</td>
+                    <td valign="top">{{ sub_item.count }}</td>
+                    <td>
+                    </td>
+                </tr>
+            {% endfor %}
         {% endfor %}
         </tbody>
         <tfoot >
-        <tr style="padding-top: 10px">
+        <tr style="padding-top: 10px; border-top: 3px dashed #004f72;">
             <td colspan="2"></td>
-            <td colspan="2">{% trans 'Subtotal' %}</td>
-            <td>{{ total_without_tax|floatformat:2 }} €</td>
+            <td valign="bottom" colspan="2">{% trans 'Subtotal' %}</td>
+            <td>{{ order_detail.total|floatformat:2 }} €<br>
+                {% if order_detail.discount %}
+                <small>- {{ order_detail.total_discount|floatformat:2 }} &euro; ({{ order_detail.discount.voucher_id }}
+                    {{ order_detail.discount.discount_percentage_in_percent }}%)</small>
+                <br> <b>{{ order_detail.total_discounted|floatformat:2 }} &euro;</b>
+                {% endif %}
+
+            </td>
         </tr>
         <tr>
             <td colspan="2"></td>
@@ -218,7 +242,10 @@
         <tr>
             <td colspan="2"></td>
             <td colspan="2">{%  trans 'Grand Total' %}</td>
-            <td>{{ total|floatformat:2 }} €</td>
+            <td><b>{{ order_detail.total_discounted_wt|floatformat:2 }} €</b><br>
+
+
+            </td>
         </tr>
         </tfoot>
     </table>

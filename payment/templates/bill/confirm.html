@@ -97,6 +97,11 @@
 
                                     <td id="subtotal-{{ order.id }}" data-th="Subtotal"
                                         class="text-center">{{ order.total_wt }}&euro;
+                                        {% if order.applied_discount %}<br>
+                                            <small class="mt-1">- {{ order.total_discount_wt }}&euro; ({{ order.order_detail.discount.voucher_id }}
+                                                {{ order.order_detail.discount.discount_percentage_in_percent }}%)</small>
+                                            <br> <b>{{ order.total_discounted_wt }}&euro;</b>
+                                        {% endif %}
                                     </td>
                                     <td class="actions" data-th="">
                                     </td>
@@ -130,7 +135,14 @@
                                 <td style="width:22%" class="text-center">
 
                                     <small>{{ order_items.first.order_detail.total }} € ({% trans 'excl. Tax' %})</small><br>
-                                    {{ order_items.first.order_detail.total_wt }} € ({% trans 'incl. Tax' %})
+                                    {{ order_items.first.order_detail.total_wt }} € ({% trans 'incl. Tax' %})<br>
+                                    {% if order_items.first.order_detail.discount %}<br>
+
+                                    <small class="mt-1">- {{ order_items.first.order_detail.total_discount_wt }}&euro; ({{ order_items.first.order_detail.discount.voucher_id }}
+                                        {{ order_items.first.order_detail.discount.discount_percentage_in_percent }}%)</small>
+                                    <br> <b>{% trans 'Total' %}: {{ order_items.first.order_detail.total_discounted_wt }}&euro;</b>
+                                    {% else %}
+                                    {% endif %}
                                 </td>
                                 <td style="width:10%"></td>
 
@@ -200,7 +212,13 @@
                     <td colspan="1" class="hidden-xs"></td>
                     <td class="hidden-xs text-center"><strong>
                         <span style="font-size: larger;font-family: Arial"
-                              id="total">{{ order_items.first.order_detail.total_wt }}&euro;</span>
+                              id="total">
+
+                            {% if open_orders.first.order_detail.discount  %}
+                                {{ open_orders.first.order_detail.total_discounted_wt }}&euro;
+                            {% else %}{{ order_items.first.order_detail.total_wt }}&euro;
+                            {% endif %}
+                            </span>
                     </strong></td>
                     <td>
                     </td>

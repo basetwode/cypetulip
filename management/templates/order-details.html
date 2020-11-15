@@ -82,8 +82,8 @@
                         </div>
                         <div class="col-md-2">
                             <strong>{% trans 'Total' %}</strong>
-                            <div>{{ order.orderdetail_set.first.total }} €</div>
-                            <div>{{ order.orderdetail_set.first.total_wt }} € {% trans 'incl. Tax' %}</div>
+                            <div>{{ order.orderdetail_set.first.total_discounted }} €</div>
+                            <div>{{ order.orderdetail_set.first.total_discounted_wt }} € {% trans 'incl. Tax' %}</div>
                         </div>
                         <div class="col-md-2">
                             <strong>{% trans 'Paid via' %}</strong>
@@ -222,6 +222,11 @@
 
                                 <td id="subtotal-{{ order.id }}" data-th="Subtotal"
                                     class="text-center">{{ order.total }} &euro;
+                                    {% if order.applied_discount %}<br>
+                                        <small class="mt-1">- ({{ order.order_detail.discount.discount_percentage_in_percent }}%
+                                            {{ order.order_detail.discount.voucher_id }})</small>
+                                        <br> <b>{{ order.total_discounted|floatformat:"2" }} &euro;</b>
+                                    {% endif %}
                                 </td>
                                 <td class="actions" data-th="">
                                 </td>

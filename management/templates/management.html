@@ -47,6 +47,14 @@
                     <a href="{% url 'individualoffers_overview' %}"
                        class="btn btn-primary mr-1">{% trans 'All offer-requests' %}</a></div>
                 <hr>
+                <h5 class="card-title">{% trans 'Voucher' %}</h5>
+                <div class="btn-group">
+                    <a href="{% url 'discount_overview' %}"
+                       class="btn btn-primary mr-1">{% trans 'All vouchers' %}</a>
+                    <a href="{% url 'discount_edit' '' %}"
+                       class="btn btn-primary mr-1">{% trans 'Create new voucher' %}</a>
+                </div>
+                <hr>
                 <p>{% trans 'Search orders' %}</p>
                 <form action="{% url 'search_orders' %}">
                     <div class="input-group">
