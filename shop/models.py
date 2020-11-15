@@ -448,7 +448,7 @@ class OrderItem(models.Model):
             self.price_wt = self.product.bprice_wt()
         if self.product.price_on_request and not self.price_wt:
             self.price_wt = round(self.price * (1 + self.product.tax), 2)
-        if not self.order_detail.state.is_sent_state:
+        if self.order_detail.state and not self.order_detail.state.is_sent_state:
             self.apply_discount_if_eligible()
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
