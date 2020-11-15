@@ -54,11 +54,11 @@
                                         {{ object }}
                                     </td>
                                     <td>
-                                        <a class="btn-secondary btn"
+                                        <a class="btn-secondary btn btn-fw"
                                            href="{% url self_url parent_id object.id %}">{% trans 'Edit' %}</a><br>
                                         <form method="post" action="{% url delete_url parent_id object.id %}">
                                             {% csrf_token %}
-                                            <input type="submit" class="btn-danger btn"
+                                            <input type="submit" class="btn-danger btn btn-fw pt-1"
                                                    value="{% trans 'Delete' %}"><br>
                                         </form>
                                     </td>
@@ -79,11 +79,11 @@
                     </div>
                     <div class="card-footer">
                         <a href="{{ return_url }}"
-                           class="btn btn-primary">{% trans 'Back' %}</a>
+                           class="btn btn-primary pr-2">{% trans 'Back' %}</a>
                         {% if next_url %}
                             <input class="float-right btn btn-warning" type="submit" value="{% trans 'Save' %}">
                             <a href="{{ next_url }}"
-                               class="btn float-right btn-primary
+                               class="btn float-right btn-primary mr-1
                             {% if object_list.count == 0 or requires_selection_on_next %}
                             disabled
                             {% endif %}">{% trans 'Continue' %}</a>
@@ -93,7 +93,7 @@
                         {% endif %}
 
                         {% if requires_selection_on_next %}
-                            <p class="float-right">
+                            <p class="float-right pr-2">
                                 {% trans 'You need to select an item to continue' %}</p>
                         {% endif %}
                     </div>

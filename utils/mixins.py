@@ -2,12 +2,14 @@ import threading
 import time
 from email.mime.image import MIMEImage
 
+from django.core import mail
 from django.core.checks import translation
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template.loader import render_to_string
 from django.views import View
 
-from management.models import LegalSetting
+from home import settings
+from management.models import LegalSetting, MailSetting
 from shipping.models import OnlineShipment
 from shop.models import Order
 
@@ -29,7 +31,30 @@ class EmailThread(threading.Thread):
         self.content = content
         self.email_template = email_template
         self.receiver_user = receiver_user
+
+
         threading.Thread.__init__(self)
+
+    def connection(self):
+        if MailSetting.objects.exists():
+            mail_setting = MailSetting.objects.first()
+            # Host for sending e-mail.
+            settings.EMAIL_HOST = mail_setting.smtp_server
+            # Port for sending e-mail.
+            settings.EMAIL_PORT =  mail_setting.smtp_port
+            settings.DEFAULT_FROM_EMAIL = mail_setting.smtp_default_from
+            # Optional SMTP authentication information for EMAIL_HOST.
+            settings.EMAIL_HOST_USER = mail_setting.smtp_user
+            settings.EMAIL_HOST_PASSWORD = mail_setting.smtp_password
+            settings.EMAIL_USE_TLS = mail_setting.stmp_use_tls
+        return get_connection(
+            host=settings.EMAIL_HOST,
+            port= settings.EMAIL_PORT,
+            username= settings.EMAIL_HOST_USER,
+            password=settings.EMAIL_HOST_PASSWORD,
+            use_tls=settings.EMAIL_USE_TLS
+        )
+
 
     def run(self):
 
@@ -37,6 +62,7 @@ class EmailThread(threading.Thread):
         tries = 0
         while (result is None or result is not 1) and tries < 5:
             try:
+
                 print("Sending new email to " + self.receiver_user.email)
                 legal = LegalSetting.objects.first()
                 self.context['content'] = self.content
@@ -44,7 +70,7 @@ class EmailThread(threading.Thread):
                 html_content = render_to_string(self.email_template, context=self.context)
                 print(self.content)
 
-                email = EmailMultiAlternatives('Subject', self.subject)
+                email = EmailMultiAlternatives('Subject', self.subject, connection=self.connection())
                 email.subject = self.subject
                 email.mixed_subtype = 'related'
                 email.content_subtype = 'html'

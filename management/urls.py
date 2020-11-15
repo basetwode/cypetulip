@@ -22,7 +22,8 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               FooterDeleteView, FooterEditView, FootersOverviewView, NumberSubItemCreateUpdateView,
                               FileSubItemCreationView, CheckboxSubItemCreateUpdateView, SelectSubItemCreationView,
                               SelectItemCreationView, SelectItemDeleteView, CompanyCreationView, ContactCreationView,
-                              ContactDeleteView, AddressCreationView, AddressDeleteView)
+                              ContactDeleteView, AddressCreationView, AddressDeleteView, ContactResetPwdView,
+                              CompanyDeleteView)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
@@ -64,11 +65,15 @@ urlpatterns = [
     url(r'^products/$', ProductsOverviewView.as_view(), name="products_overview"),
 
     url(r'^filesubitem/(?P<subitem_id>[0-9]*)/$', FileSubItemCreationView.as_view(), name="filesubitem_create"),
-    url(r'^numbersubitem/(?P<subitem_id>[0-9]*)/$', NumberSubItemCreateUpdateView.as_view(), name="numbersubitem_create"),
-    url(r'^checkboxsubitem/(?P<subitem_id>[0-9]*)/$', CheckboxSubItemCreateUpdateView.as_view(), name="checkboxsubitem_create"),
+    url(r'^numbersubitem/(?P<subitem_id>[0-9]*)/$', NumberSubItemCreateUpdateView.as_view(),
+        name="numbersubitem_create"),
+    url(r'^checkboxsubitem/(?P<subitem_id>[0-9]*)/$', CheckboxSubItemCreateUpdateView.as_view(),
+        name="checkboxsubitem_create"),
     url(r'^selectsubitem/(?P<subitem_id>[0-9]*)/$', SelectSubItemCreationView.as_view(), name="selectsubitem_create"),
-    url(r'^selectitem/(?P<parent_id>[0-9]*)/(?P<id>[0-9]*)$', SelectItemCreationView.as_view(), name="selectitem_create"),
-    url(r'^selectitem/(?P<parent_id>[0-9]*)/(?P<id>[0-9]*)/delete$', SelectItemDeleteView.as_view(), name="selectitem_delete"),
+    url(r'^selectitem/(?P<parent_id>[0-9]*)/(?P<id>[0-9]*)$', SelectItemCreationView.as_view(),
+        name="selectitem_create"),
+    url(r'^selectitem/(?P<parent_id>[0-9]*)/(?P<id>[0-9]*)/delete$', SelectItemDeleteView.as_view(),
+        name="selectitem_delete"),
 
     url(r'^subitems/(?P<url_param>[a-zA-Z0-9_.-]+)/delete/$', SubItemDeleteView.as_view(),
         name="subitem_delete"),
@@ -123,7 +128,8 @@ urlpatterns = [
         OrderAcceptInvoiceView.as_view(), name="accept_order"),
 
     url(r'^offers/$', IndividualOfferRequestOverview.as_view(), name="individualoffers_overview"),
-    url(r'^offers/(?P<offer_id>[a-zA-Z0-9\\s\-_ ]+)/$', IndividualOfferRequestView.as_view(), name="individualoffer_view"),
+    url(r'^offers/(?P<offer_id>[a-zA-Z0-9\\s\-_ ]+)/$', IndividualOfferRequestView.as_view(),
+        name="individualoffer_view"),
     url(r'^offers/(?P<offer_id>[a-zA-Z0-9\\s\-_ ]+)/delete$',
         DeleteIndividualOfferRequest.as_view(), name="individualoffer_delete"),
 
@@ -131,6 +137,8 @@ urlpatterns = [
 
     url(r'^company/create/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
         CompanyCreationView.as_view(), name="company_create"),
+    url(r'^company/(?P<url_param>[a-zA-Z0-9\\s\-_ ]*)/delete/$',
+        CompanyDeleteView.as_view(), name="company_delete"),
     url(r'^address/create/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
         AddressCreationView.as_view(), name="address_create"),
     url(r'^address/delete(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
@@ -139,6 +147,7 @@ urlpatterns = [
         ContactCreationView.as_view(), name="contact_create"),
     url(r'^contact/delete(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
         ContactDeleteView.as_view(), name="contact_delete"),
-
+    url(r'^contact/pwd/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+        ContactResetPwdView.as_view(), name="contact_pwd_reset"),
 
 ]

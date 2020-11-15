@@ -1,5 +1,6 @@
 import json
 
+from django.contrib import messages
 from django.core import serializers
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
@@ -7,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 from django_filters.views import FilterView
+from django.utils.translation import ugettext_lazy as _
 
 from billing.utils import calculate_sum
 from permissions.error_handler import raise_401
@@ -263,3 +265,16 @@ class AddressDeleteView(PermissionPostGetRequiredMixin, DeleteView):
     def get_success_url(self):
         return reverse_lazy('shop:address_overview')
 
+
+class PasswordResetView(PermissionPostGetRequiredMixin, UpdateView):
+    permission_get_required = ['shop.change_contact']
+    permission_post_required = ['shop.change_contact']
+    template_name = 'my_account/generic-edit.html'
+    model = Contact
+
+    def get_success_url(self):
+        return reverse_lazy('shop:my_account')
+
+    def form_valid(self, form):
+        messages.success(self.request, _("New password saved!"))
+        return super(PasswordResetView, self).form_valid(form)

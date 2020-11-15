@@ -38,3 +38,18 @@ class NotifyCustomerCreateView(CreateView, EmailMixin):
                                                                                                  'HTTP_HOST'],
                                                                                              'order': self.order_object}})
         return response
+
+
+class NotifyNewCustomerAccountView(EmailMixin, View):
+    email_template = "mail/new_client.html"
+    subject = _("Your account")
+    text = ""
+    object = None
+
+    def notify_client(self, subject, contact, password):
+        translation.activate(contact.language)
+
+        self.send_mail(contact, subject, self.text, {'contact': contact,
+                                                          'password': password,
+                                                          'host': self.request.META[
+                                                              'HTTP_HOST']})

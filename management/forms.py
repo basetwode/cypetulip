@@ -17,18 +17,40 @@ class ProductForm(ModelForm):
         self.fields['assigned_sub_products'].queryset = ProductSubItem.objects.filter(product=None)
 
 
-class ContactUserForm(SetPasswordForm):
+class ContactUserForm(ModelForm):
 
     is_client_supervisor = BooleanField(required=False)
 
     class Meta:
         model = Contact
         fields = ['email','first_name','last_name','title','gender','telephone','language',
-                  'is_client_supervisor',
+                  'is_client_supervisor']
+
+
+class ContactUserIncludingPasswordForm(SetPasswordForm):
+
+    is_client_supervisor = BooleanField(required=False)
+    notify_customer = BooleanField(required=False)
+
+    class Meta:
+        model = Contact
+        fields = ['email','first_name','last_name','title','gender','telephone','language',
+                  'is_client_supervisor', 'notify_customer',
                   'new_password1',
                   'new_password2'
                   ]
 
+
+class ContactUserUpdatePasswordForm(SetPasswordForm):
+
+    notify_customer = BooleanField(required=False)
+
+    class Meta:
+        model = Contact
+        fields = [
+                  'new_password1',
+                  'new_password2'
+                  ]
 
 
 class OrderForm(ModelForm):

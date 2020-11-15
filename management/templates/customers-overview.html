@@ -52,11 +52,34 @@
                         <td>{{ contact.first_name }} {{ contact.last_name }}</td>
                         <td>{{ contact.company }}</td>
                         <td>
+                            {% include 'delete-modal.html' with id=contact.company.id url='company_delete' url_param='id' %}
+                            <div class="dropdown show">
+                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {% trans 'Actions' %}
+                                </a>
+
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item"
+                                       href="{% url 'contact_create' contact.company.id contact.id %}">{% trans 'Edit Contact' %}</a>
+                                    <a class="dropdown-item"
+                                       href="{% url 'company_create' contact.company.id %}">{% trans 'Edit Company' %}</a>
+                                    <a class="dropdown-item"
+                                       href="{% url 'contact_pwd_reset' contact.id %}">{% trans 'Reset Password' %}</a>
+
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item"
+                                       href="{% url 'contact_create' contact.company.id contact.id %}">{% trans 'Delete Contact' %}</a>
+
+                                    <button class="dropdown-item"  data-toggle="modal"
+                                            data-target="#delete-modal-{{ contact.company.id}}"
+                                       >{% trans 'Delete Company' %}</button>
+
+
+                                </div>
+                            </div>
+
                             <div>
-                                <a class="btn btn-outline-dark mr-1"
-                                   href="{% url 'contact_create' contact.company.id contact.id %}">{% trans 'Edit Contact' %}</a>
-                                <a class="btn btn-outline-dark mr-1"
-                                   href="{% url 'company_create' contact.company.id %}">{% trans 'Edit Company' %}</a>
+
                             </div>
 
                         </td>

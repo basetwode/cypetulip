@@ -16,9 +16,11 @@ from django_filters.views import FilterView
 from billing.utils import calculate_sum
 from billing.views import GeneratePDFFile
 from cms.models import Page, Section
+from home import settings
 from management.filters import OrderDetailFilter
 from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm, ProductForm, \
-    ContactUserForm
+    ContactUserForm, ContactUserIncludingPasswordForm, ContactUserUpdatePasswordForm
+from management.mixins import NotifyNewCustomerAccountView
 from management.models import LdapSetting, MailSetting, LegalSetting, ShopSetting, Header, Footer
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME, PaymentProvider
 from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
@@ -919,12 +921,21 @@ class CompanyCreationView(LoginRequiredMixin, WizardView):
         return reverse_lazy('contact_create', kwargs={'id': '', 'parent_id': self.object.id})
 
 
-class ContactCreationView(LoginRequiredMixin, RepeatableWizardView):
+class CompanyDeleteView(LoginRequiredMixin, DeleteView):
+    model = Company
+    slug_field = 'id'
+    slug_url_kwarg = "url_param"
+    template = ''
+
+    def get_success_url(self):
+        return reverse_lazy('customers_overview')
+
+
+class ContactCreationView(LoginRequiredMixin, RepeatableWizardView, NotifyNewCustomerAccountView):
     page_title = _('Create new contact')
     context_object_name = 'subitem'
     slug_field = 'id'
     slug_url_kwarg = 'id'
-    form_class = ContactUserForm
     model = Contact
     pk_url_kwarg = 'id'
     parent_key = 'company'
@@ -944,11 +955,20 @@ class ContactCreationView(LoginRequiredMixin, RepeatableWizardView):
     def get_success_url(self):
         return reverse_lazy('contact_create', kwargs={'id': '', 'parent_id': self.get_parent_id()})
 
+    def get_form_class(self):
+        if self.get_object():
+            return ContactUserForm
+        else:
+            return ContactUserIncludingPasswordForm
+
     def form_valid(self, form):
         contact = form.save(commit=False)
         contact.company = Company.objects.get(id=self.get_parent_id())
         contact.username = contact.email
         contact.save()
+        if 'notify_customer' in form.cleaned_data and form.cleaned_data['notify_customer']:
+            self.notify_client(_("Your account at ")+LegalSetting.objects.first().company_name , contact,
+                               form.cleaned_data['new_password1'])
 
         group = Group.objects.get(name="client")
         group.user_set.add(contact)
@@ -966,10 +986,35 @@ class ContactCreationView(LoginRequiredMixin, RepeatableWizardView):
         initial = super(ContactCreationView, self).get_initial()
         initial['is_client_supervisor'] = self.object.groups.filter(name='client supervisor').exists() \
             if self.object else False
+        initial['notify_customer'] = False if self.object else True
         gen_password = secrets.token_urlsafe(10)
         initial['new_password1'] = gen_password
         initial['new_password2'] = gen_password
         return initial
+
+
+class ContactResetPwdView(LoginRequiredMixin, UpdateView, NotifyNewCustomerAccountView):
+    template_name = 'generic-edit.html'
+    model = Contact
+    form_class = ContactUserUpdatePasswordForm
+    pk_url_kwarg = 'id'
+
+    def get_success_url(self):
+        return reverse_lazy('customers_overview')
+
+    def get_initial(self):
+        initial = super(ContactResetPwdView, self).get_initial()
+        initial['notify_customer'] = True
+        gen_password = secrets.token_urlsafe(10)
+        initial['new_password1'] = gen_password
+        initial['new_password2'] = gen_password
+        return initial
+
+    def form_valid(self, form):
+        if 'notify_customer' in form.cleaned_data and form.cleaned_data['notify_customer']:
+            self.notify_client(_("Your account at ")+LegalSetting.objects.first().company_name , self.object,
+                               form.cleaned_data['new_password1'])
+        return super(ContactResetPwdView, self).form_valid(form)
 
 
 class ContactDeleteView(LoginRequiredMixin, DeleteView):
@@ -1022,3 +1067,5 @@ class AddressDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('address_create')
+
+

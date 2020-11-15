@@ -18,3 +18,10 @@ class CompanyForm(ModelForm):
         model = Company
         fields = '__all__'
         exclude = ['company_id', 'term_of_payment', ]
+
+
+class PasswordResetView:
+    class Meta:
+        model = Contact
+        fields = ['old_password', 'new_password1',
+                  'new_password2']

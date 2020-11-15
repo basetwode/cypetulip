@@ -46,9 +46,19 @@ class FileSubItemFilter(django_filters.FilterSet):
 
 
 class ContactFilter(django_filters.FilterSet):
+    free_field_filter = django_filters.CharFilter(field_name="free_field_filter", label=_('Search contacts'),
+                                                  method='custom_field_filter')
+
     class Meta:
         model = Contact
-        fields = ['company']
+        fields = ['company', ]
+
+    def custom_field_filter(self, queryset, name, value):
+        return queryset.filter(
+            Q(username__icontains=value) |
+            Q(first_name__icontains=value)|
+            Q(last_name__icontains=value)
+        )
 
 
 class ProductCategoryFilter(django_filters.FilterSet):
