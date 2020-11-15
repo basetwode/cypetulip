@@ -235,15 +235,12 @@ class ProductCreationView(LoginRequiredMixin, CreateView):
     template_name = 'vue/product-create-vue.html'
     context_object_name = 'products'
     model = Product
-    fields = '__all__'
+    fields = ['name','category', 'is_public','price', 'special_price', 'price_on_request', 'tax','stock', 'description', 'details',
+              'product_picture',   'assigned_sub_products', 'attributes']
 
     def get_success_url(self):
         return reverse_lazy('products_overview')
 
-    # def get_context_data(self, **kwargs):
-    #     context_data = super(ProductCreationView, self).get_context_data()
-    #     context_data['product_attribute_types'] = json.dumps(ProductAttributeType.objects.all().values())
-    #     return context_data
 
 
 class ProductEditView(LoginRequiredMixin, UpdateView):

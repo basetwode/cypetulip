@@ -212,6 +212,7 @@ class AddressSerializer(serializers.ModelSerializer):
 class OrderShipmentSerializer(serializers.Serializer):
     order = serializers.CharField(max_length=200, required=False)
     shipment = serializers.CharField()
+    billing = serializers.CharField()
 
 
 ###############################################################
@@ -299,7 +300,9 @@ class DeliveryViewSet(viewsets.ViewSet):
             if _order.count() > 0:
                 token = create_hash()
                 shipment_address = Address.objects.get(id=request.data['shipment'])
+                billing_address = Address.objects.get(id=request.data['billing'])
                 order_details.shipment_address = shipment_address
+                order_details.billing_address = billing_address
                 order_details.save()
                 ord = _order[0]
                 ord.token = token
@@ -323,14 +326,19 @@ class OrderViewSet(viewsets.ModelViewSet):
         for the currently authenticated user.
         """
         request = self.request
-
+        result = None
         if request.user.is_authenticated:
             contact = Contact.objects.filter(user_ptr=request.user)
             if contact:
                 company = contact[0].company
-                return OrderDetail.objects.filter(state__isnull=True, order__company=company)
+                result = OrderDetail.objects.filter(state__isnull=True, order__company=company)
         else:
-            return OrderDetail.objects.filter(state__isnull=True, order__session=request.session.session_key)
+            result = OrderDetail.objects.filter(state__isnull=True, order__session=request.session.session_key)
+        if result:
+            return result
+        else:
+            order, order_detail = Order.create_new_order(request)
+            return OrderDetail.objects.filter(id=order_detail.id)
 
 
 class OrderItemViewSet(viewsets.ModelViewSet):

@@ -80,5 +80,9 @@ class Payment(models.Model):
             for order_item in self.details.order.orderitem_set.all():
                 if hasattr(order_item.product, 'product'):
                     order_item.product.product.decrease_stock()
+            for order_detail in self.details.order.orderdetail_set.all():
+                # update order create date
+                order_detail.send_order()
+
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)

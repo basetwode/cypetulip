@@ -284,11 +284,29 @@ class Order(models.Model):
                           using, update_fields)
 
     def delete(self, using=None, keep_parents=False):
-        self.orderdetail_set.first().increase_stocks()
+        if self.orderdetail_set.count()>0:
+            self.orderdetail_set.first().increase_stocks()
         super(Order, self).delete(using, keep_parents)
 
     def __str__(self):
         return str(self.order_id)
+
+    @staticmethod
+    def create_new_order(request):
+        if request.user.is_authenticated:
+            company = request.user.contact.company
+            order = Order(is_send=False, company=company)
+            order.save()
+            order_detail = OrderDetail(order=order, order_number=order.order_hash,
+                                       contact= request.user.contact)
+            order_detail.save()
+            return order, order_detail
+        else:
+            order = Order(is_send=False, session=request.session.session_key)
+            order.save()
+            order_detail = OrderDetail(order=order, order_number=order.order_hash)
+            order_detail.save()
+            return order, order_detail
 
 
 class OrderDetail(models.Model):
@@ -310,6 +328,10 @@ class OrderDetail(models.Model):
 
     def unique_nr(self):
         return "CTNR" + str(self.id).rjust(10, "0")
+
+    def send_order(self):
+        self.date_added = datetime.now()
+        self.save()
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):

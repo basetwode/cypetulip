@@ -94,14 +94,15 @@ class EmailThread(threading.Thread):
 
                 if 'object' in self.context and isinstance(self.context['object'], Order):
                     for order_item in self.context['object'].orderitem_set.all():
-                        product_file = order_item.product.product.product_picture.open("rb")
-                        try:
-                            product_img = MIMEImage(product_file.read())
-                            product_img.add_header('Content-ID', '<{}>'
-                                                   .format(order_item.product.product.product_picture.name))
-                            email.attach(product_img)
-                        finally:
-                            product_file.close()
+                        if hasattr(order_item.product,'product') and order_item.product.product.product_picture:
+                            product_file = order_item.product.product.product_picture.open("rb")
+                            try:
+                                product_img = MIMEImage(product_file.read())
+                                product_img.add_header('Content-ID', '<{}>'
+                                                       .format(order_item.product.product.product_picture.name))
+                                email.attach(product_img)
+                            finally:
+                                product_file.close()
 
                 print("from " + email.from_email)
                 print("Sending mail")

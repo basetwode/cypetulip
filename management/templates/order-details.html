@@ -381,6 +381,32 @@
 
         </div>
         <div class="card-footer">
+
+                <h5>{% trans 'Addresses' %}</h5>
+                <hr>
+                <div class="row">
+                <div class="col-md-6" style="text-align: left; ">
+                    <strong> {% trans 'Billing Address' %}</strong><br>
+                    {% for order_detail in order.orderdetail_set.all %}
+                        {{ order_detail.billing_address.contact.first_name }} {{ order_detail.billing_address.contact.last_name }}<br>
+                        {{ order_detail.billing_address.street }}
+                        {{ order_detail.billing_address.number }}<br>
+                        {{ order_detail.billing_address.zipcode }}
+                        {{ order_detail.billing_address.city }}
+                    {% endfor %}
+                </div>
+                <div class="col-md-6">
+                    <strong> {% trans 'Shipping Address' %}</strong><br>
+                    {% for order_detail in order.orderdetail_set.all %}
+                        {{ order_detail.shipment_address.contact.first_name }} {{ order_detail.shipment_address.contact.last_name }}<br>
+                        {{ order_detail.shipment_address.street }}
+                        {{ order_detail.shipment_address.number }}<br>
+                        {{ order_detail.shipment_address.zipcode }}
+                        {{ order_detail.shipment_address.city }}
+                    {% endfor %}
+                </div></div>
+        </div>
+        <div class="card-footer">
             <h5>{% trans 'Shipments' %}</h5>
             <div class="col-12">
 

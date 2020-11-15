@@ -10,7 +10,8 @@ class ProductForm(ModelForm):
 
     class Meta:
         model = Product
-        fields = "__all__"
+        fields = ['name','category', 'is_public','price', 'special_price', 'price_on_request', 'tax','stock', 'description', 'details',
+                  'product_picture',   'assigned_sub_products', 'attributes']
 
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)

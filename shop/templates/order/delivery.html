@@ -367,6 +367,7 @@
 
                         <div class="btn btn-outline-dark mb-1 ml-0" data-toggle="modal" type="button"
                              data-target="#add-modal">{% trans 'Add Address' %}</div>
+                        <h3>Select shipment address</h3>
                         <div v-for="entry in addresses">
                             <div class="card">
                                 <div class="card-header" :id="`heading${entry.name}`">
@@ -386,6 +387,35 @@
 
                                 <div :id="`body${entry.id}`" class="collapsed collapse"
                                      :aria-labelledby="`heading${entry.name}`"
+                                     data-parent="#addressFormInput">
+                                    <div class="card-body">
+                                        [[ entry.street ]] [[ entry.number ]]
+                                        <p>[[ entry.zipcode ]] [[ entry.city ]]</p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h3>Select billing address</h3>
+                        <div v-for="entry in addresses">
+                            <div class="card">
+                                <div class="card-header" :id="`heading-bill${entry.name}`">
+                                    <h2 class="mb-0">
+                                        <input :id="`input-bill${entry.id}`" type="radio"
+                                               name="bill-address" data-toggle="collapse"
+                                               :data-target="`#body-bill${entry.id}`"
+                                               aria-expanded="false" :aria-controls="`#body-bill${entry.name}`"
+                                               v-model="billing"
+                                               v-bind:value="entry.id">
+                                        <label :for="`input-bill${entry.id}`"
+                                               data-toggle="collapse" :data-target="`#body-bill${entry.id}`">
+                                            <i class="fas fa-truck"></i>
+                                            [[ entry.name ]]</label>
+                                    </h2>
+                                </div>
+
+                                <div :id="`body-bill${entry.id}`" class="collapsed collapse"
+                                     :aria-labelledby="`heading-bill${entry.name}`"
                                      data-parent="#addressFormInput">
                                     <div class="card-body">
                                         [[ entry.street ]] [[ entry.number ]]
@@ -438,6 +468,7 @@
                         },
                         addresses: [],
                         shipment: "",
+                        billing: "",
                         order: order,
                         errors: {shipment: [], address: []},
                     },
@@ -509,10 +540,12 @@
                         submitDelivery: function () {
                             loadingSpinner = $('#loading-spinner');
                             loadingSpinner.removeClass('overlay-hidden');
-                            shipment = this.shipment
+                            shipment = this.shipment;
+                            billing = this.billing;
                             axios.post('/api/v1/deliveries/', {
                                 order,
-                                shipment
+                                shipment,
+                                billing
 
                             }, {
                                 headers: {

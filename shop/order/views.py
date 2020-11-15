@@ -32,11 +32,7 @@ class ShoppingCartView(View):
                     company = contact[0].company
                     order = Order.objects.filter(orderdetail__state__isnull=True, company=company)
                     if order.count() == 0:
-                        order = Order(is_send=False, company=company)
-                        order.save()
-                        order_detail = OrderDetail(order=order, order_number=order.order_hash,
-                                                   contact=contact[0])
-                        order_detail.save()
+                        order, order_detail = Order.create_new_order(request)
                     else:
                         order = order[0]
                     order_detail = OrderDetail.objects.get(order=order)
@@ -60,10 +56,7 @@ class ShoppingCartView(View):
 
                 order = Order.objects.filter(is_send=False, session=request.session.session_key)
                 if order.count() == 0:
-                    order = Order(is_send=False, session=request.session.session_key)
-                    order.save()
-                    order_detail = OrderDetail(order=order, order_number=order.order_hash)
-                    order_detail.save()
+                    order, order_detail = Order.create_new_order(request)
                 else:
                     order = order[0]
                     order_detail = OrderDetail.objects.get(order=order)

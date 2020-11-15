@@ -71,12 +71,29 @@
                                 <br>
                                 {{ order_detail.date_added }}
                             </div>
-                            <div class="col-md-2" style="text-align: left; ">
+                            <div class="col-md-3" style="text-align: left; ">
                                 <strong> {% trans 'State' %}</strong>
                                 <br>
-                                {{ order_detail.state.name }}
+                                <div class="progress">
+                                        <div class="progress-bar
+                                {% if order_detail.state.initial %}
+                                        bg-danger" aria-valuenow="20" style="width:20%"
+                                        {% endif %}{% if order_detail.state.is_paid_state %}
+                                             bg-warning" aria-valuenow="50" style="width:50%"
+                                        {% endif %}{% if order_detail.state.is_sent_state %}
+                                            bg-success" aria-valuenow="100" style="width:100%"
+                                        {% elif order_detail.state.next_state %}
+                                            bg-warning" aria-valuenow="50" style="width:50%"
+                                        {% else %}
+                                            bg-warning" aria-valuenow="100" style="width:100%"
+                                            role="progressbar"
+                                            aria-valuemin="0" aria-valuemax="100"
+                                        {% endif %}>
+                                        {{ order_detail.state.name }}
+                                        </div>
                             </div>
-                            <div class="col-md-4" style="text-align: left; ">
+                            </div>
+                            <div class="col-md-3" style="text-align: left; ">
                                 <strong> Ordernr.:
                                     <small>{{ order_detail.unique_nr }}</small></strong>
                             </div>

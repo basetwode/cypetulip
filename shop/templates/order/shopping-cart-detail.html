@@ -262,7 +262,12 @@
                     let instance = this
                     axios.get('/api/v1/order/'+this.order_hash)
                         .then(response => {
-                            this.order = response.data;
+                            if(Array.isArray(response.data)){
+
+                                this.order = response.data[0];
+                            } else {
+                                this.order = response.data;
+                            }
                             this.order.order_items.forEach(function(orderItem) {
                                 orderItem.product.product.assigned_sub_products.forEach(function(sub_prod) {
                                     if(!orderItem.order_items.some(o => o.product.id === sub_prod.id)){
