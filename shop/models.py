@@ -15,16 +15,17 @@ from mediaserver.upload import (company_files_upload_handler, fs, order_files_up
 class Company(models.Model):
     name = models.CharField(max_length=100)
     company_id = models.CharField(max_length=100, blank=True, null=True)
-    term_of_payment = models.IntegerField(default=10)
-    street = models.CharField(max_length=40, default=None)
-    number = models.CharField(max_length=5, default=None)
-    zipcode = models.CharField(max_length=5, default=None)
-    city = models.CharField(max_length=30, default=None)
+    term_of_payment = models.IntegerField(default=10, verbose_name=_('Term of payment'))
+    street = models.CharField(max_length=40, default=None, verbose_name=_('Street'))
+    number = models.CharField(max_length=5, default=None, verbose_name=_('Number'))
+    zipcode = models.CharField(max_length=5, default=None, verbose_name=_('Zipcode'))
+    city = models.CharField(max_length=30, default=None, verbose_name=_('City'))
     logo = models.FileField(default=None, null=True, blank=True,
                             upload_to=company_files_upload_handler, storage=fs)
 
     class Meta:
         verbose_name_plural = "Companies"
+        verbose_name = "Company"
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -43,48 +44,59 @@ class Contact(DjangoUser):
         ('F', _('Female')),
         ('D', _('Others')),
     )
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    title = models.CharField(max_length=20, blank=True, null=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
-    telephone = models.CharField(max_length=40)
-    language = models.CharField(max_length=2, default='en')
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, verbose_name=_('Company'))
+    title = models.CharField(max_length=20, blank=True, null=True, verbose_name=_('Title'))
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, verbose_name=_('Gender'))
+    telephone = models.CharField(max_length=40, verbose_name=_('Telephone'))
+    language = models.CharField(max_length=2, default='en', verbose_name=_('Language'))
 
     def __str__(self):
         return str(self.company) + ' - ' + self.last_name
 
+    class Meta:
+        verbose_name = _('Contact')
+
 
 class Address(models.Model):
     name = models.CharField(max_length=100)
-    street = models.CharField(max_length=40, default=None)
-    number = models.CharField(max_length=5, default=None)
-    zipcode = models.CharField(max_length=5, default=None)
-    city = models.CharField(max_length=100, default=None)
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, default=None, blank=True, null=True)
+    street = models.CharField(max_length=40, default=None, verbose_name=_('Street'))
+    number = models.CharField(max_length=5, default=None, verbose_name=_('Number'))
+    zipcode = models.CharField(max_length=5, default=None, verbose_name=_('Zipcode'))
+    city = models.CharField(max_length=100, default=None, verbose_name=_('City'))
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, default=None, blank=True, null=True,
+                                verbose_name=_('Contact'))
 
     class Meta:
         verbose_name_plural = "Addresses"
+        verbose_name = _('Address')
 
     def __str__(self):
         return self.contact.__str__() + " | " + self.name
 
 
 class ProductCategory(models.Model):
-    description = models.CharField(max_length=300)
-    name = models.CharField(max_length=50)
+    description = models.CharField(max_length=300, verbose_name=_('Description'))
+    name = models.CharField(max_length=50, verbose_name=_('Name'))
     mother_category = models.ForeignKey(
-        'self', on_delete=models.CASCADE, default=None, blank=True, null=True)
+        'self', on_delete=models.CASCADE, default=None, blank=True, null=True, verbose_name=_('Parent Category'))
     child_categories = models.ManyToManyField('self', default=None, blank=True, symmetrical=False,
-                                              related_name='ChildCategories')
-    is_main_category = models.BooleanField(default=False)
+                                              related_name='ChildCategories', verbose_name=_('Child Category'))
+    is_main_category = models.BooleanField(default=False, verbose_name=_('Is main category'))
 
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = _('Category')
+
 
 class Employee(models.Model):
     user = models.OneToOneField(DjangoUser, on_delete=models.CASCADE, default=None)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100, verbose_name=_('Firstname'))
+    last_name = models.CharField(max_length=100, verbose_name=_('Lastname'))
+
+    class Meta:
+        verbose_name = _('Employee')
 
 
 # This is an orderable item which shows up when ordering a product that is public.
@@ -92,17 +104,17 @@ class Employee(models.Model):
 
 
 class ProductSubItem(models.Model):
-    price = models.FloatField()
-    special_price = models.FloatField(default=False, blank=True, null=True)
-    price_on_request = models.BooleanField(default=False, blank=True, null=True)
-    tax = models.FloatField(default=0.19, blank=False, null=False)
+    price = models.FloatField(verbose_name=_('Price'))
+    special_price = models.FloatField(default=False, blank=True, null=True, verbose_name=_('Special price'))
+    price_on_request = models.BooleanField(default=False, blank=True, null=True, verbose_name=_('Price on request'))
+    tax = models.FloatField(default=0.19, blank=False, null=False, verbose_name=_('Tax'))
     name = models.CharField(max_length=30)
-    description = HTMLField('Description')
-    details = HTMLField('Details')
-    requires_file_upload = models.BooleanField(default=False)
-    is_required = models.BooleanField(default=False)
-    is_multiple_per_item = models.BooleanField(default=False)
-    is_once_per_order = models.BooleanField(default=False)
+    description = HTMLField(_('Description'))
+    details = HTMLField(_('Details'))
+    requires_file_upload = models.BooleanField(default=False, verbose_name=_('Requires file upload'))
+    is_required = models.BooleanField(default=False, verbose_name=_('Is required'))
+    is_multiple_per_item = models.BooleanField(default=False, verbose_name=_('Is multiple per item'))
+    is_once_per_order = models.BooleanField(default=False, verbose_name=_('Is once per order'))
 
     def __str__(self):
         if hasattr(self, 'product'):
@@ -167,7 +179,8 @@ class CheckBoxSubItem(ProductSubItem):
 class OrderItemState(models.Model):
     name = models.CharField(max_length=20)
     next_state = models.ForeignKey(
-        'self', on_delete=models.CASCADE, null=True, blank=True, related_name='previous_state', )
+        'self', on_delete=models.CASCADE, null=True, blank=True, related_name='previous_state',
+        verbose_name=_('Next state'))
 
 
 '''
@@ -184,6 +197,9 @@ class OrderState(models.Model):
         'self', on_delete=models.CASCADE, null=True, blank=True, related_name='previous_state', )
     is_paid_state = models.BooleanField(default=False)
     is_sent_state = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = _('Order State')
 
     # todo states have corresponding actions that also need to be linked!
 
@@ -222,16 +238,19 @@ class ProductAttributeTypeInstance(models.Model):
 
 
 class Product(ProductSubItem):
-    stock = models.IntegerField(default=0, blank=True, null=True)
+    stock = models.IntegerField(default=0, blank=True, null=True, verbose_name=_('Stock'))
     product_picture = models.ImageField(default=None, null=True, blank=True,
                                         upload_to=public_files_upload_handler,
-                                        storage=fs)
+                                        storage=fs, verbose_name=_('Product picture'))
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
     is_public = models.BooleanField()
     assigned_sub_products = models.ManyToManyField(ProductSubItem, default=None, blank=True,
                                                    symmetrical=False,
-                                                   related_name='sub_products')
-    attributes = models.ManyToManyField(ProductAttributeTypeInstance, blank=True)
+                                                   related_name='sub_products', verbose_name=_('Assigned sub products'))
+    attributes = models.ManyToManyField(ProductAttributeTypeInstance, blank=True, verbose_name=_('Attributes'))
+
+    class Meta:
+        verbose_name = _('Product')
 
     def __str__(self):
         return self.name + ' - public ' + str(self.is_public)
@@ -252,18 +271,24 @@ class IndividualOffer(models.Model):
     date_added = models.DateTimeField(auto_now=True, blank=True)
     mail = models.EmailField()
     message = models.CharField(max_length=1000)
-    contact = models.ForeignKey(Contact, null=True, blank=True, default=None, editable=False, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, editable=False, null=True, on_delete=models.SET_NULL)
+    contact = models.ForeignKey(Contact, null=True, blank=True, default=None, editable=False, on_delete=models.CASCADE,
+                                verbose_name=_('Contact'))
+    product = models.ForeignKey(Product, editable=False, null=True, on_delete=models.SET_NULL,
+                                verbose_name=_('Product'))
 
     def is_new(self):
         return (datetime.now().date() - self.date_added.date()).days < 3
+
+    class Meta:
+        verbose_name = _('Individual offer')
 
 
 class Discount(models.Model):
     voucher_id = models.CharField(unique=True, max_length=20, default="VOUCHER")
     discount_percentage = models.FloatField(default=0)
-    eligible_products = models.ManyToManyField(Product, blank=True, null=True)
-    eligible_categories = models.ManyToManyField(ProductCategory, blank=True, null=True)
+    eligible_products = models.ManyToManyField(Product, blank=True, null=True, verbose_name=_('Eligible products'))
+    eligible_categories = models.ManyToManyField(ProductCategory, blank=True, null=True,
+                                                 verbose_name=_('Eligible categories'))
     valid_until_date = models.DateTimeField(blank=True, null=True)
     count = models.IntegerField(default=0)
     valid_until_count = models.IntegerField(default=-1)
@@ -275,19 +300,22 @@ class Discount(models.Model):
 
     def is_invalid(self):
         is_expired = datetime.now() > self.valid_until_date if self.valid_until_date else False
-        is_utilized = self.count >= self.valid_until_count if self.valid_until_count>0 else False
+        is_utilized = self.count >= self.valid_until_count if self.valid_until_count > 0 else False
         return is_expired or is_utilized or not self.enabled
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         super(Discount, self).save(force_insert, force_update, using, update_fields)
 
+    class Meta:
+        verbose_name = _('Discount')
+
 
 class Order(models.Model):
     order_id = models.IntegerField(null=True, blank=True)
     order_hash = models.CharField(max_length=30, null=True, blank=True)
     is_send = models.BooleanField(default=False)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, )
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Company'))
     token = models.CharField(max_length=25, blank=True, null=True)
     session = models.CharField(max_length=40, blank=True, null=True)
     individual_offer_request = models.ForeignKey(IndividualOffer, on_delete=models.SET_NULL, blank=True, null=True,
@@ -339,18 +367,20 @@ class OrderDetail(models.Model):
     order_number = models.CharField(max_length=30)
     date_added = models.DateTimeField(auto_now_add=True)
     assigned_employee = models.ForeignKey(
-        Employee, on_delete=models.CASCADE, null=True, blank=True, )
+        Employee, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Assigend employee'))
     state = models.ForeignKey(OrderState, on_delete=models.CASCADE, null=True,
-                              blank=True, )
+                              blank=True, verbose_name=_('State'))
     date_bill = models.DateTimeField(null=True, blank=True)
     bill_sent = models.BooleanField(default=False, blank=True)
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True, )
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Contact'))
     shipment_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True,
-                                         related_name='shipment_address')
+                                         related_name='shipment_address', verbose_name=_('Shipment address'))
     billing_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True,
-                                        related_name='billing_address')
-    is_cancelled = models.BooleanField(default=False, blank=True, null=True, editable=False)
-    discount = models.ForeignKey(Discount, default=None, blank=True, null=True, on_delete=models.SET_NULL)
+                                        related_name='billing_address', verbose_name=_('Billing address'))
+    is_cancelled = models.BooleanField(default=False, blank=True, null=True, editable=False,
+                                       verbose_name=_('Is cancelled'))
+    discount = models.ForeignKey(Discount, default=None, blank=True, null=True, on_delete=models.SET_NULL,
+                                 verbose_name=_('Discount'))
 
     def unique_nr(self):
         return "CTNR" + str(self.id).rjust(10, "0")

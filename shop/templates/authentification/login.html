@@ -21,13 +21,13 @@
             {% csrf_token %}
             <div id="remember" class="checkbox">
                 <label>
-                    <input type="checkbox" value="remember-me"> Remember me
+                    <input type="checkbox" value="remember-me"> {% trans ' Remember me' %}
                 </label>
             </div>
             <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>
         </form><!-- /form -->
         <a href="{% url 'password_reset' %}" class="forgot-password">
-            Forgot the password?
+            {% trans 'Forgot the password?' %}
         </a>
         <p class="pt-3">
             {% trans 'New?' %}

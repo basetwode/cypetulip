@@ -1,10 +1,9 @@
 {% load i18n %}
 <div class="row">
     <div class="col-12">
-
         <div id="alert-danger" class="alert alert-danger alert-dismissable page-alert hidden">
             <button type="button" class="close" onclick="$(this).parent().hide()"><span aria-hidden="true">×</span><span
-                    class="sr-only">Close</span>
+                    class="sr-only">{% trans 'Close' %}</span>
             </button>
             <div id="danger-text">
                 {% trans 'Ups, something went wrong. Please try again later or contact an administrator.' %}
@@ -15,7 +14,7 @@
                 <span class="sr-only">{% trans 'Close' %}</span>
             </button>
             <div id="success-text">
-                {% trans 'Sent' %} {% trans 'successfully' %}</div>
+                {% trans 'Sent successfully' %}</div>
         </div>
         <div id="alert-warning" class="alert alert-warning alert-dismissable page-alert hidden">
             <button type="button" class="close" onclick="$(this).parent().hide()"><span aria-hidden="true">×</span>

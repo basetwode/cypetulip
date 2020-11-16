@@ -57,13 +57,13 @@ class Layout(models.IntegerChoices):
 
 
 class Header(models.Model):
-    name = models.CharField(max_length=40, default='Standard')
-    language = models.CharField(max_length=2, default='en')
-    is_enabled = models.BooleanField()
-    layout = models.IntegerField(choices=Layout.choices, default=Layout.THREE_COLUMN)
-    content_column_one = HTMLField('Content Column One', null=True, blank=True)
-    content_column_two = HTMLField('Content Column Two', null=True, blank=True)
-    content_column_three = HTMLField('Content Column Three', null=True, blank=True)
+    name = models.CharField(max_length=40, default='Standard', verbose_name=_('Name'))
+    is_enabled = models.BooleanField(verbose_name=_('Is enabled'))
+    language = models.CharField(max_length=2, default='en', verbose_name=_('Language'))
+    layout = models.IntegerField(choices=Layout.choices, default=Layout.THREE_COLUMN, verbose_name=_('Layout'))
+    content_column_one = HTMLField(_('Content Column One'), null=True, blank=True)
+    content_column_two = HTMLField(_('Content Column Two'), null=True, blank=True)
+    content_column_three = HTMLField(_('Content Column Three'), null=True, blank=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -80,15 +80,15 @@ class Header(models.Model):
 
 
 class Footer(models.Model):
-    name = models.CharField(max_length=40, default='Standard')
-    is_enabled = models.BooleanField()
-    language = models.CharField(max_length=2, default='en')
-    sitemap = models.BooleanField()
-    payment_methods = models.BooleanField()
-    layout = models.IntegerField(choices=Layout.choices, default=Layout.THREE_COLUMN)
-    content_column_one = HTMLField('Content Column One', null=True, blank=True)
-    content_column_two = HTMLField('Content Column Two', null=True, blank=True)
-    content_column_three = HTMLField('Content Column Three', null=True, blank=True)
+    name = models.CharField(max_length=40, default='Standard', verbose_name=_('Name'))
+    is_enabled = models.BooleanField(verbose_name=_('Is enabled'))
+    language = models.CharField(max_length=2, default='en', verbose_name=_('Language'))
+    sitemap = models.BooleanField(verbose_name=_('Sitemap'))
+    payment_methods = models.BooleanField(verbose_name=_('Payment methods'))
+    layout = models.IntegerField(choices=Layout.choices, default=Layout.THREE_COLUMN, verbose_name=_('Layout'))
+    content_column_one = HTMLField(_('Content Column One'), null=True, blank=True)
+    content_column_two = HTMLField(_('Content Column Two'), null=True, blank=True)
+    content_column_three = HTMLField(_('Content Column Three'), null=True, blank=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
