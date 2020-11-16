@@ -367,7 +367,7 @@ class OrderDetail(models.Model):
     order_number = models.CharField(max_length=30)
     date_added = models.DateTimeField(auto_now_add=True)
     assigned_employee = models.ForeignKey(
-        Employee, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Assigend employee'))
+        Employee, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Assigned employee'))
     state = models.ForeignKey(OrderState, on_delete=models.CASCADE, null=True,
                               blank=True, verbose_name=_('State'))
     date_bill = models.DateTimeField(null=True, blank=True)
