@@ -20,7 +20,7 @@ class Page(models.Model):
     page_name = models.CharField(verbose_name=_('Page name'), max_length=30)
     position = models.IntegerField(default=0, blank=True, null=True)
     is_enabled = models.BooleanField(verbose_name=_('Is enabled'), default=True)
-    link = models.CharField(verbose_name=_('URL Path'), max_length=20, null=True, blank=True, editable=False)
+    link = models.CharField(verbose_name=_('URL Path'), max_length=200, null=True, blank=True, editable=False)
     show_in_navigation = models.BooleanField(verbose_name=_('Show in navigation'), default=False)
     is_predefined = models.BooleanField(verbose_name=_('Is predefined page'), default=False, editable=False)
 
