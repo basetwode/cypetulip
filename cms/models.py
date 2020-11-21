@@ -1,12 +1,9 @@
-from enum import Enum
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 # Create your models here.
 from tinymce import HTMLField
 
 from mediaserver.upload import fs, public_files_upload_handler
-
 
 PREDEFINED_PAGES = [
     ('privacy-policy', '/cms/privacy-policy'),
@@ -17,14 +14,18 @@ PREDEFINED_PAGES = [
     ('products', '/shop/products'),
 ]
 
+
 class Page(models.Model):
     page_id = models.CharField(max_length=100, default="", editable=False)
-    page_name = models.CharField(max_length=30)
+    page_name = models.CharField(verbose_name=_('Page name'), max_length=30)
     position = models.IntegerField(default=0, blank=True, null=True)
-    is_enabled = models.BooleanField(default=True)
-    link = models.CharField(max_length=20, null=True, blank=True, editable=False)
-    show_in_navigation = models.BooleanField(default=False)
-    is_predefined = models.BooleanField(default=False, editable=False)
+    is_enabled = models.BooleanField(verbose_name=_('Is enabled'), default=True)
+    link = models.CharField(verbose_name=_('URL Path'), max_length=20, null=True, blank=True, editable=False)
+    show_in_navigation = models.BooleanField(verbose_name=_('Show in navigation'), default=False)
+    is_predefined = models.BooleanField(verbose_name=_('Is predefined page'), default=False, editable=False)
+
+    class Meta:
+        verbose_name = _('Page')
 
     def __str__(self):
         return self.page_name
@@ -37,19 +38,21 @@ class Page(models.Model):
         if self.is_predefined and not self.page_name:
             self.page_name = self.page_id.replace("-", " ").capitalize()
         if not self.link or not self.page_id in self.link:
-            self.link = '/cms/'+self.page_id
+            self.link = '/cms/' + self.page_id
 
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
 
 
-
 class Section(models.Model):
     page = models.ForeignKey(Page, on_delete=models.CASCADE)
-    content = HTMLField('Content')
-    picture = models.FileField(default=None, null=True, blank=True,
+    content = HTMLField(_('Content'))
+    picture = models.FileField(verbose_name=_('Picture'), default=None, null=True, blank=True,
                                upload_to=public_files_upload_handler,
                                storage=fs)
+
+    class Meta:
+        verbose_name = _('Section')
 
 
 class CSSSetting(models.Model):
