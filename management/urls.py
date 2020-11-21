@@ -64,12 +64,12 @@ urlpatterns = [
     url(r'^products/(?P<url_param>[a-zA-Z0-9_.-]+)/delete/$', ProductDeleteView.as_view(), name="product_delete"),
     url(r'^products/$', ProductsOverviewView.as_view(), name="products_overview"),
 
-    url(r'^filesubitem/(?P<subitem_id>[0-9]*)/$', FileSubItemCreationView.as_view(), name="filesubitem_create"),
-    url(r'^numbersubitem/(?P<subitem_id>[0-9]*)/$', NumberSubItemCreateUpdateView.as_view(),
+    url(r'^filesubitem/(?P<subitem_id>[0-9]*)$', FileSubItemCreationView.as_view(), name="filesubitem_create"),
+    url(r'^numbersubitem/(?P<subitem_id>[0-9]*)$', NumberSubItemCreateUpdateView.as_view(),
         name="numbersubitem_create"),
-    url(r'^checkboxsubitem/(?P<subitem_id>[0-9]*)/$', CheckboxSubItemCreateUpdateView.as_view(),
+    url(r'^checkboxsubitem/(?P<subitem_id>[0-9]*)$', CheckboxSubItemCreateUpdateView.as_view(),
         name="checkboxsubitem_create"),
-    url(r'^selectsubitem/(?P<subitem_id>[0-9]*)/$', SelectSubItemCreationView.as_view(), name="selectsubitem_create"),
+    url(r'^selectsubitem/(?P<subitem_id>[0-9]*)$', SelectSubItemCreationView.as_view(), name="selectsubitem_create"),
     url(r'^selectitem/(?P<parent_id>[0-9]*)/(?P<id>[0-9]*)$', SelectItemCreationView.as_view(),
         name="selectitem_create"),
     url(r'^selectitem/(?P<parent_id>[0-9]*)/(?P<id>[0-9]*)/delete$', SelectItemDeleteView.as_view(),
@@ -150,7 +150,9 @@ urlpatterns = [
     url(r'^contact/pwd/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
         ContactResetPwdView.as_view(), name="contact_pwd_reset"),
 
-    url(r'^percentagediscount/create/(?P<id>[a-zA-Z0-9_.-]*)/$', PercentageDiscountEditView.as_view(), name="percentage_discount_edit"),
-    url(r'^fixeddiscount/create/(?P<id>[a-zA-Z0-9_.-]*)/$', FixedAmountDiscountEditView.as_view(), name="fixed_discount_edit"),
+    url(r'^percentagediscount/create/(?P<id>[a-zA-Z0-9_.-]*)$', PercentageDiscountEditView.as_view(),
+        name="percentage_discount_edit"),
+    url(r'^fixeddiscount/create/(?P<id>[a-zA-Z0-9_.-]*)$', FixedAmountDiscountEditView.as_view(),
+        name="fixed_discount_edit"),
     url(r'^discount/$', DiscountOverview.as_view(), name="discount_overview"),
 ]
