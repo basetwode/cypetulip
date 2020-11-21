@@ -68,4 +68,4 @@ def footer(request):
 
 def categories(request):
     categories_list = ProductCategory.objects.all()
-    return {'categories': categories_list}
+    return {'cms_categories': categories_list}

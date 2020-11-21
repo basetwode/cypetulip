@@ -31,7 +31,7 @@
                                 <span class="caret"></span>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="productCategories">
-                                {% for category in categories %}
+                                {% for category in cms_categories %}
                                     <a class="dropdown-item"
                                        href="{% url 'shop:products' category.name %}">{{ category.name }}</a>
                                 {% endfor %}
