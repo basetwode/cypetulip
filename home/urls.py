@@ -29,7 +29,7 @@ from shipping import urls as shipping_urls
 
 # from Accounting import urls as accounting_urls
 # from home import settings
-from shop.authentification.views import PasswordResetViewSmtp
+from shop.authentification.views import PasswordResetViewSmtp, LoginView
 
 admin.autodiscover()
 
@@ -64,6 +64,7 @@ urlpatterns = [
     url(r'^reset/done/$', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     url(r'^password_change/$', auth_views.PasswordChangeView.as_view(), name='password_change'),
     url(r'^password_change/done/$', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
+    url(r'^login/$', LoginView.as_view(), name='login'),
 ]
 
 # if settings.DEBUG:

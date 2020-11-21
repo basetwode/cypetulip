@@ -1,6 +1,7 @@
 import json
 
 from django.contrib import messages
+from django.contrib.auth.views import PasswordChangeView
 from django.core import serializers
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
@@ -12,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from billing.utils import calculate_sum
 from permissions.error_handler import raise_401
-from permissions.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin
+from permissions.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin, PermissionOwnsObjectMixin
 from shop.filters import OrderDetailFilter
 from shop.models import Contact, Order, OrderItem, Product, OrderDetail, Address, Company
 from shop.my_account.forms import CompanyForm, ContactForm
@@ -22,7 +23,11 @@ from utils.mixins import PaginatedFilterViews
 from utils.views import CreateUpdateView
 
 
-class OrderDetailView(View):
+class OrderDetailView(PermissionOwnsObjectMixin, View):
+    model = OrderDetail
+    slug_field = "order__order_hash"
+    slug_url_kwarg = "order"
+    field_name = "contact"
     template_name = 'my_account/orders-detail.html'
 
     def get(self, request, order):
@@ -236,10 +241,8 @@ class AddressCreationView(PermissionPostGetRequiredMixin, CreateView):
         return reverse_lazy('shop:address_overview')
 
 
-class AddressEditView(PermissionPostGetRequiredMixin, UpdateView):
-    permission_get_required = ['shop.change_address']
-    permission_post_required = ['shop.change_address']
-
+class AddressEditView(PermissionPostGetRequiredMixin, PermissionOwnsObjectMixin, UpdateView):
+    field_name = "contact"
     template_name = 'my_account/generic-edit.html'
     context_object_name = 'address'
     model = Address
@@ -253,11 +256,9 @@ class AddressEditView(PermissionPostGetRequiredMixin, UpdateView):
         return reverse_lazy('shop:address_overview')
 
 
-class AddressDeleteView(PermissionPostGetRequiredMixin, DeleteView):
-    permission_get_required = ['shop.delete_address']
-    permission_post_required = ['shop.delete_address']
-
+class AddressDeleteView(PermissionPostGetRequiredMixin, PermissionOwnsObjectMixin, DeleteView):
     model = Address
+    field_name = "contact"
     slug_field = 'id'
     slug_url_kwarg = "url_param"
     template = ''
@@ -266,15 +267,7 @@ class AddressDeleteView(PermissionPostGetRequiredMixin, DeleteView):
         return reverse_lazy('shop:address_overview')
 
 
-class PasswordResetView(PermissionPostGetRequiredMixin, UpdateView):
-    permission_get_required = ['shop.change_contact']
-    permission_post_required = ['shop.change_contact']
-    template_name = 'my_account/generic-edit.html'
-    model = Contact
-
+class PasswordChangeViewCustomer(PasswordChangeView):
     def get_success_url(self):
+        messages.success(self.request, _("Password changed!"))
         return reverse_lazy('shop:my_account')
-
-    def form_valid(self, form):
-        messages.success(self.request, _("New password saved!"))
-        return super(PasswordResetView, self).form_valid(form)

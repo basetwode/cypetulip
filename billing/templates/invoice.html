@@ -200,11 +200,10 @@
                 <td valign="top">
                     {{ item.price|floatformat:2 }} €</td>
                 <td valign="top">{{ item.count }}</td>
-                <td>{{ item.total|floatformat:2 }} €
+                <td>{{ item.total_wt|floatformat:2 }} € <small>({% trans 'incl. VAT' %} {{ item.tax_rate }} %)</small>
                     {% if item.applied_discount %}<br>
-                        <small class="mt-1">- {{ item.total_discount|floatformat:2 }} &euro; ({{ item.order_detail.discount.voucher_id }}
-                            {{ item.order_detail.discount.discount_percentage_in_percent }}%)</small>
-                        <br> <b>{{ item.total_discounted|floatformat:2 }} &euro;</b>
+                        <small class="mt-1">- {{ item.total_discount_wt|floatformat:2 }} &euro; ({{ item.order_detail.discount_code }})</small>
+                        <br> <b>{{ item.total_discounted_wt|floatformat:2 }} &euro;</b>
                     {% endif %}
                 </td>
             </tr>
@@ -221,37 +220,38 @@
             {% endfor %}
         {% endfor %}
         </tbody>
-        <tfoot >
+        <tfoot>
         <tr style="padding-top: 10px; border-top: 3px dashed #004f72;">
             <td colspan="2"></td>
-            <td valign="bottom" colspan="2">{% trans 'Subtotal' %}</td>
-            <td>{{ order_detail.total|floatformat:2 }} €<br>
-                {% if order_detail.discount %}
-                <small>- {{ order_detail.total_discount|floatformat:2 }} &euro; ({{ order_detail.discount.voucher_id }}
-                    {{ order_detail.discount.discount_percentage_in_percent }}%)</small>
-                <br> <b>{{ order_detail.total_discounted|floatformat:2 }} &euro;</b>
+            <td valign="bottom" colspan="2">
+                {% if order_detail.discount_code %}
+
+                {% trans 'Subtotal' %}<br>
+                <small>{% trans 'Discount' %}</small><br>
+                {% endif %}
+                {% trans 'Grand Total' %}
+            </td>
+            <td>{{ order_detail.total_wt|floatformat:2 }} €<br>
+                {% if order_detail.discount_code %}
+                <small>- {{ order_detail.total_discount_wt|floatformat:2 }} &euro; ({{ order_detail.discount_code }}
+
+                    {{ order_detail.discount_str }})</small>
+                <br> <b>{{ order_detail.total_discounted_wt|floatformat:2 }} &euro;</b>
                 {% endif %}
 
             </td>
         </tr>
         <tr>
             <td colspan="2"></td>
-            <td colspan="2">{% trans 'Tax' %} ({{ tax_rate }}%)</td>
+            <td colspan="2">{% trans 'Included VAT' %} </td>
             <td>{{tax|floatformat:2}} €</td>
         </tr>
-        <tr>
-            <td colspan="2"></td>
-            <td colspan="2">{%  trans 'Grand Total' %}</td>
-            <td><b>{{ order_detail.total_discounted_wt|floatformat:2 }} €</b><br>
 
-
-            </td>
-        </tr>
         </tfoot>
     </table>
     <div id="thanks">{% trans 'Thank you for your order' %}!</div>
     <div id="notices">
-        {% if payment_detail.method.name == 'Bill' %}
+        {% if payment_detail.method.name == 'Bill' or  payment_detail.method.name == 'Prepayment' %}
             <div>{% trans 'Notice' %}:<br>{% trans 'Please send the aforementioned invoice total to the following account' %}</div>
             <div class="notice">
                 {{ invoice_settings.account_holder }}<br>

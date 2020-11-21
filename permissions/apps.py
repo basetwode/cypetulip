@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.apps import AppConfig
 
 
@@ -9,9 +10,9 @@ class WebappConfig(AppConfig):
         try:
             from django.contrib.auth.models import Permission, Group
             from django.contrib.contenttypes.models import ContentType
-            Permission.objects.filter(codename='view_orders').delete()
 
             content_type = ContentType.objects.get(app_label='shop', model='order')
+            content_type_mgmt = ContentType.objects.get(app_label='management', model='shopsetting')
             print(content_type)
             permission = Permission.objects.get_or_create(
                 codename='view_orders',
@@ -23,28 +24,59 @@ class WebappConfig(AppConfig):
                 name='Can View My Account',
                 content_type=content_type,
             )
+            permission_mgmt = Permission.objects.get_or_create(
+                codename='view_management',
+                name='Can View Management',
+                content_type=content_type_mgmt,
+            )
+            permission_mgmt = Permission.objects.get_or_create(
+                codename='view_generic',
+                name='Can View Management',
+                content_type=content_type_mgmt,
+            )
+            permission_mgmt = Permission.objects.get_or_create(
+                codename='change_generic',
+                name='Can View Management',
+                content_type=content_type_mgmt,
+            )
+
+            app_names = ['management','shop','billing','payment','cms','mediaserver','permissions',
+                    'shipping','accounting','utils']
+            permissions_list_mgmt = ['view','change']
+
+            ctmgmt, created =  ContentType.objects.get_or_create(app_label='management', model='generic')
+            for app_name in app_names:
+                models = apps.all_models[app_name]
+                for model in models:
+                    for permission_name in permissions_list_mgmt:
+                        permission_mgmt = Permission.objects.get_or_create(
+                            codename=permission_name+'_'+model,
+                            name=f"Can {permission_name.capitalize()} {model}",
+                            content_type=ctmgmt,
+                        )
+
             client_group, created = Group.objects.get_or_create(name='client')
             client_supervisor_group, created = Group.objects.get_or_create(name='client supervisor')
             staff_group, created = Group.objects.get_or_create(name='staff')
 
             # View perms
-            perm_view_orders = Permission.objects.get(codename='view_orders')
-            perms_view_my_account = Permission.objects.get(codename='view_my_account')
+            perm_view_orders = Permission.objects.get(codename='view_orders',content_type__app_label='shop')
+            perms_view_my_account = Permission.objects.get(codename='view_my_account',content_type__app_label='shop')
 
             # Address perms
-            perm_add_address = Permission.objects.get(codename='add_address')
-            perm_change_address = Permission.objects.get(codename='change_address')
-            perm_delete_address = Permission.objects.get(codename='delete_address')
-            perm_view_address = Permission.objects.get(codename='view_address')
+            perm_add_address = Permission.objects.get(codename='add_address',content_type__app_label='shop')
+            perm_change_address = Permission.objects.get(codename='change_address',content_type__app_label='shop')
+            perm_delete_address = Permission.objects.get(codename='delete_address',content_type__app_label='shop')
+            perm_view_address = Permission.objects.get(codename='view_address',content_type__app_label='shop')
 
             # Company perms
-            perm_add_company = Permission.objects.get(codename='add_company')
-            perm_change_company = Permission.objects.get(codename='change_company')
-            perm_view_company = Permission.objects.get(codename='view_company')
+            perm_add_company = Permission.objects.get(codename='add_company',content_type__app_label='shop')
+            perm_change_company = Permission.objects.get(codename='change_company',content_type__app_label='shop')
+            perm_view_company = Permission.objects.get(codename='view_company',content_type__app_label='shop')
 
             # Contact perms
-            perm_change_contact = Permission.objects.get(codename='change_contact')
-            perm_view_contact = Permission.objects.get(codename='view_contact')
+            perm_change_contact = Permission.objects.get(codename='change_contact',content_type__app_label='shop')
+            perm_view_contact = Permission.objects.get(codename='view_contact',content_type__app_label='shop')
 
             print(client_group)
 
@@ -67,5 +99,5 @@ class WebappConfig(AppConfig):
             permissions_list = Permission.objects.all()
             staff_group.permissions.set(permissions_list)
             staff_group.save()
-        except:
+        except Exception as error:
             print("DB not migrated")

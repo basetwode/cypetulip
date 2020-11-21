@@ -227,27 +227,16 @@ class VoucherSerializer(serializers.Serializer):
     def validate_voucher(self, value):
 
         order_detail = OrderDetail.objects.get(order__order_hash=self.initial_data['order_hash'])
-
-
         voucher = Discount.objects.filter(voucher_id=value)
         if not voucher.exists() :
             raise serializers.ValidationError(_('Voucher code invalid'))
         voucher = voucher.first()
         if voucher.is_invalid():
             raise serializers.ValidationError(_('Voucher code invalid'))
-        order_detail.discount = voucher
-        order_detail.save()
 
-        voucher_applied = [order_item.apply_discount_if_eligible() for order_item in order_detail.orderitem_set.all()]
-        if True not in voucher_applied:
-            order_detail.discount = None
-            order_detail.save()
+        voucher_applied = order_detail.apply_voucher(voucher)
+        if not voucher_applied:
             raise serializers.ValidationError(_('Voucher code not eligible'))
-        else:
-            voucher.count -= 1
-            voucher.save()
-            order_detail.save()
-
 
 
 ###############################################################

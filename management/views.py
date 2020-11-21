@@ -32,15 +32,15 @@ from shop.filters import ProductFilter, ContactFilter, ProductCategoryFilter, Se
 from shop.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
     FileSubItem, IndividualOffer, ProductSubItem, NumberSubItem, CheckBoxSubItem, SelectSubItem, SelectItem, Address, \
-    Discount
+    Discount, PercentageDiscount, FixedAmountDiscount
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
 from utils.mixins import EmailMixin, PaginatedFilterViews
 from utils.views import CreateUpdateView
 
 
-class ManagementView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
-    permission_get_required = ['management.get_company']
+class ManagementView(LoginRequiredMixin, View):
+    permission_get_required = ['management.view_management']
     template_name = 'management.html'
 
     def get(self, request):
@@ -111,17 +111,6 @@ class ManagementOrderDetailView(LoginRequiredMixin, DetailView):
 
     def post(self, request):
         pass
-
-
-class SettingsView(LoginRequiredMixin, View):
-
-    def get(self, request):
-        # <view logic>
-        return HttpResponse('SettingsView')
-
-    def post(self, request):
-        # <view logic>
-        return HttpResponse('result')
 
 
 class MailSettingsDetailView(LoginRequiredMixin, CreateUpdateView):
@@ -639,7 +628,7 @@ class DeleteIndividualOfferRequest(LoginRequiredMixin, DeleteView):
         return super().get_success_url()
 
 
-class DeleteOrder(DeleteView):
+class DeleteOrder(LoginRequiredMixin, DeleteView):
     model = Order
     template_name = 'generic-create-form.html'
     slug_url_kwarg = 'order_hash'
@@ -654,7 +643,7 @@ class DeleteOrder(DeleteView):
         return super(DeleteOrder, self).delete(request, *args, **kwargs)
 
 
-class CreateOrderView(WizardView):
+class CreateOrderView(LoginRequiredMixin, WizardView):
     page_title = _('Select customer')
     template_name = 'generic-create-form.html'
     order_id = None
@@ -691,7 +680,7 @@ class CreateOrderView(WizardView):
         return reverse_lazy('create_order_detail', kwargs={'parent_id': self.object.id, 'id': order_detail.id})
 
 
-class CreateOrderDetailView(WizardView):
+class CreateOrderDetailView(LoginRequiredMixin, WizardView):
     page_title = _('Define order details')
     model = OrderDetail
     pk_url_kwarg = 'id'
@@ -723,7 +712,7 @@ class CreateOrderDetailView(WizardView):
         return {**form_kwargs, **{'contacts': Contact.objects.filter(company=self.object.order.company)}}
 
 
-class CreateOrderItem(RepeatableWizardView):
+class CreateOrderItem(LoginRequiredMixin, RepeatableWizardView):
     page_title = _('Select products')
     form_class = OrderItemForm
     model = OrderItem
@@ -753,7 +742,7 @@ class CreateOrderItem(RepeatableWizardView):
         return reverse_lazy('create_order_item', kwargs={'id': '', 'parent_id': self.get_parent_id()})
 
 
-class DeleteOrderItem(DeleteView):
+class DeleteOrderItem(LoginRequiredMixin, DeleteView):
     model = OrderItem
     template_name = 'generic-create-form.html'
     pk_url_kwarg = 'id'
@@ -764,7 +753,7 @@ class DeleteOrderItem(DeleteView):
                                                              id=self.kwargs['parent_id']).id})
 
 
-class PaymentProviderSettings(FormView):
+class PaymentProviderSettings(LoginRequiredMixin, FormView):
     template_name = 'payment-settings.html'
     form_class = PaymentProviderForm
     success_url = reverse_lazy('payment_settings_details')
@@ -1075,9 +1064,20 @@ class AddressDeleteView(LoginRequiredMixin, DeleteView):
         return reverse_lazy('address_create')
 
 
-class DiscountEditView(LoginRequiredMixin, CreateUpdateView):
+class PercentageDiscountEditView(LoginRequiredMixin, CreateUpdateView):
     template_name = 'generic-edit.html'
-    model = Discount
+    model = PercentageDiscount
+    fields = '__all__'
+    slug_field = 'id'
+    slug_url_kwarg = 'id'
+
+    def get_success_url(self):
+        return reverse_lazy('discount_overview')
+
+
+class FixedAmountDiscountEditView(LoginRequiredMixin, CreateUpdateView):
+    template_name = 'generic-edit.html'
+    model = FixedAmountDiscount
     fields = '__all__'
     slug_field = 'id'
     slug_url_kwarg = 'id'

@@ -10,7 +10,7 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               ProductCreationView, ProductEditView,
                               ProductsOverviewView, SectionCreateView,
                               SectionEditView, SectionsOverviewView,
-                              SettingsView, ProductDeleteView, SectionDeleteView, PageDeleteView, CategoryDeleteView,
+                              ProductDeleteView, SectionDeleteView, PageDeleteView, CategoryDeleteView,
                               LegalSettingsDetailView, EmployeeOverviewView,
                               EmployeeCreationView, OrderAssignEmployeeView, OrderPayView,
                               OrderShipView, OrderChangeStateView, ShipmentOverviewView,
@@ -23,7 +23,8 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               FileSubItemCreationView, CheckboxSubItemCreateUpdateView, SelectSubItemCreationView,
                               SelectItemCreationView, SelectItemDeleteView, CompanyCreationView, ContactCreationView,
                               ContactDeleteView, AddressCreationView, AddressDeleteView, ContactResetPwdView,
-                              CompanyDeleteView, DiscountEditView, DiscountOverview)
+                              CompanyDeleteView, PercentageDiscountEditView, DiscountOverview,
+                              FixedAmountDiscountEditView)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
@@ -33,7 +34,6 @@ from shop.views import OrderCancelView
 urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^$', ManagementView.as_view(), name="management_index"),
-    url(r'^settings/$', SettingsView.as_view()),
     url(r'^shipments/$', ShipmentOverviewView.as_view(), name="all_shipments"),
 
     url(r'^orders(/(?P<number_of_orders>[0-9]*)/(?P<page>[0-9]*))?/$', ManagementOrderOverviewView.as_view(),
@@ -150,6 +150,7 @@ urlpatterns = [
     url(r'^contact/pwd/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
         ContactResetPwdView.as_view(), name="contact_pwd_reset"),
 
-    url(r'^discount/create/(?P<id>[a-zA-Z0-9_.-]*)/$', DiscountEditView.as_view(), name="discount_edit"),
+    url(r'^percentagediscount/create/(?P<id>[a-zA-Z0-9_.-]*)/$', PercentageDiscountEditView.as_view(), name="percentage_discount_edit"),
+    url(r'^fixeddiscount/create/(?P<id>[a-zA-Z0-9_.-]*)/$', FixedAmountDiscountEditView.as_view(), name="fixed_discount_edit"),
     url(r'^discount/$', DiscountOverview.as_view(), name="discount_overview"),
 ]

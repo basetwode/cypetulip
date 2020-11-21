@@ -259,9 +259,12 @@ class IndividualOffer(models.Model):
         return (datetime.now().date() - self.date_added.date()).days < 3
 
 
+
+
+
+
 class Discount(models.Model):
     voucher_id = models.CharField(unique=True, max_length=20, default="VOUCHER")
-    discount_percentage = models.FloatField(default=0)
     eligible_products = models.ManyToManyField(Product, blank=True, null=True)
     eligible_categories = models.ManyToManyField(ProductCategory, blank=True, null=True)
     valid_until_date = models.DateTimeField(blank=True, null=True)
@@ -269,9 +272,6 @@ class Discount(models.Model):
     valid_until_count = models.IntegerField(default=-1)
     enabled = models.BooleanField(default=True)
     date_added = models.DateTimeField(auto_now=True, blank=True)
-
-    def discount_percentage_in_percent(self):
-        return int(self.discount_percentage * 100)
 
     def is_invalid(self):
         is_expired = datetime.now() > self.valid_until_date if self.valid_until_date else False
@@ -281,6 +281,17 @@ class Discount(models.Model):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         super(Discount, self).save(force_insert, force_update, using, update_fields)
+
+
+class FixedAmountDiscount(Discount):
+    amount = models.FloatField(default=0)
+
+
+class PercentageDiscount(Discount):
+    discount_percentage = models.FloatField(default=0)
+
+    def discount_percentage_in_percent(self):
+        return int(self.discount_percentage * 100)
 
 
 class Order(models.Model):
@@ -351,6 +362,9 @@ class OrderDetail(models.Model):
                                         related_name='billing_address')
     is_cancelled = models.BooleanField(default=False, blank=True, null=True, editable=False)
     discount = models.ForeignKey(Discount, default=None, blank=True, null=True, on_delete=models.SET_NULL)
+    discount_code = models.CharField(default="",  max_length=20, blank=True, null=True, editable=False)
+    discount_amount = models.FloatField(default=0, blank=True, null=True, editable=False)
+    discount_percentage = models.FloatField(default=0, blank=True, null=True, editable=False)
 
     def unique_nr(self):
         return "CTNR" + str(self.id).rjust(10, "0")
@@ -358,6 +372,27 @@ class OrderDetail(models.Model):
     def send_order(self):
         self.date_added = datetime.now()
         self.save()
+
+    def apply_voucher(self, voucher):
+        if self.discount:
+            return False
+        voucher_applied = [order_item.apply_discount_if_eligible(voucher) for order_item in self.orderitem_set.all()]
+        if True not in voucher_applied:
+            return False
+        self.discount = voucher
+        self.discount_code = voucher.voucher_id
+        if hasattr(voucher, 'percentagediscount'):
+            self.discount_percentage = voucher.percentagediscount.discount_percentage
+            self.save()
+            self.apply_discount()
+        elif hasattr(voucher, 'fixedamountdiscount'):
+            self.discount_amount = voucher.fixedamountdiscount.amount
+            self.orderitem_set.order_by('-price').first()\
+                .apply_discount_if_eligible(voucher, apply_fixed_discount=True)
+            self.save()
+        voucher.count += 1
+        voucher.save()
+        return True
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -369,10 +404,6 @@ class OrderDetail(models.Model):
             self.is_cancelled = False
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
-        if self.discount:
-            self.apply_discount()
-        else:
-            self.remove_discount()
 
     def increase_stocks(self):
         for order_item in self.order.orderitem_set.all():
@@ -401,16 +432,16 @@ class OrderDetail(models.Model):
                self.is_cancelled
 
     def total_wt(self, include_discount=False):
-        return calculate_sum(self.orderitem_set, True, include_discount)
+        return calculate_sum(self.orderitem_set, True, include_discount) or 0
 
     def total(self, include_discount=False):
-        return calculate_sum(self.orderitem_set, False, include_discount)
+        return calculate_sum(self.orderitem_set, False, include_discount) or 0
 
     def total_discounted(self):
-        return self.total(True)
+        return self.total(True) #- (self.discount_amount or 0)
 
     def total_discounted_wt(self):
-        return self.total_wt(True)
+        return self.total_wt(True) #- (self.discount_amount or 0)
 
     def total_discount(self):
         return round(self.total() - self.total_discounted(), 2)
@@ -418,6 +449,8 @@ class OrderDetail(models.Model):
     def total_discount_wt(self):
         return round(self.total_wt() - self.total_discounted_wt(), 2)
 
+    def discount_str(self):
+        return f"{int(self.discount_percentage*100)} %" if self.discount_percentage else f"{self.discount_amount} €"
 
 # Like a surcharge or discount or product or whatever.
 
@@ -434,6 +467,7 @@ class OrderItem(models.Model):
     state = models.ForeignKey(
         OrderItemState, on_delete=models.CASCADE, null=True, blank=True, )
     count = models.IntegerField(default=1)
+    tax_rate = models.IntegerField(default=None, blank=True, null=True)
     price = models.FloatField(default=None, blank=True, null=True)
     price_wt = models.FloatField(default=None, blank=True, null=True)
     price_discounted = models.FloatField(default=None, blank=True, null=True)
@@ -454,41 +488,56 @@ class OrderItem(models.Model):
             self.applied_discount = 0
             self.price_discounted = self.price
             self.price_discounted_wt = self.price_wt
-        if not self.order_detail.state or not self.order_detail.state.is_sent_state:
-            self.apply_discount_if_eligible()
+        if not self.pk:
+            self.apply_discount_if_eligible(self.order_detail.discount, save=False) if self.order_detail.discount else None
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
         for order_item in OrderItem.objects.filter(order_item=self):
             order_item.save()
+        if not self.tax_rate:
+            self.tax_rate = int(self.product.tax * 100)
+            self.save()
 
     def delete(self, using=None, keep_parents=False):
         if hasattr(self.product, 'product'):
             self.product.product.increase_stock()
         super(OrderItem, self).delete(using, keep_parents)
 
-    def is_discount_eligible(self):
-        if not self.order_detail.discount:  # or self.applied_discount:
-            return False
-        product_id_in_discount = self.order_detail.discount.eligible_products.filter(id=self.product.id).exists()
+    def is_discount_eligible(self, voucher):
+
+        product_id_in_discount = voucher.eligible_products.filter(id=self.product.id).exists()
         parent_product_in_discount = self.product.product.assigned_sub_products.filter(id=self.product.id).exists() if \
             hasattr(self.product, 'product') else False
-        product_category_in_discount = self.order_detail.discount.eligible_categories.filter(
+        product_category_in_discount = voucher.eligible_categories.filter(
             id=self.product.product.category.id).exists() \
             if hasattr(self.product, 'product') else False
-        is_parent_item_eligible = self.order_item.is_discount_eligible() if self.order_item else False
+        is_parent_item_eligible = self.order_item.is_discount_eligible(voucher) if self.order_item else False
         return product_id_in_discount or parent_product_in_discount or product_category_in_discount or is_parent_item_eligible
 
-    def apply_discount_if_eligible(self):
-        if self.is_discount_eligible():
-            self.applied_discount = round(self.price * self.order_detail.discount.discount_percentage, 2)
+    def apply_discount_if_eligible(self, voucher, apply_fixed_discount=False, save=True):
+        is_eligible = self.is_discount_eligible(voucher)
+        result = False
+        if is_eligible and hasattr(voucher, 'percentagediscount'):
+            self.applied_discount = round(self.price * voucher.percentagediscount.discount_percentage, 2)
             self.price_discounted = round(self.price - self.applied_discount, 2)
             self.price_discounted_wt = round(self.price_discounted * (1 + self.product.tax), 2)
-
-            return True
-        self.applied_discount = 0
-        self.price_discounted = self.price
-        self.price_discounted_wt = self.price_wt
-        return False
+            result = True
+        elif apply_fixed_discount:
+            amount = voucher.fixedamountdiscount.amount if voucher.fixedamountdiscount.amount < self.price else self.price
+            self.price_discounted_wt = round(self.price_wt-amount, 2)
+            self.price_discounted = round(self.price_discounted_wt / (1+self.product.tax),2)
+            self.applied_discount = self.price_discounted_wt - self.price_discounted
+            result = True
+        else:
+            self.applied_discount = 0
+            self.price_discounted = self.price
+            self.price_discounted_wt = self.price_wt
+        # Fixed amount vouchers apply on the order not an individual item
+        if is_eligible:
+            result = True
+        if save:
+            self.save()
+        return result
 
     def __str__(self):
         return f"{self.count}x {self.product.name if self.product else ''} {self.price}"
@@ -504,6 +553,7 @@ class OrderItem(models.Model):
         return calculate_sum(sub_items, False, include_discount) + (
             self.price if not include_discount else self.price_discounted) \
             if sub_items.count() > 0 else 0 + self.price if not include_discount else self.price_discounted
+
 
     def total_discounted(self):
         return self.total(True)

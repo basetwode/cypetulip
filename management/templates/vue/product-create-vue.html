@@ -43,7 +43,7 @@
 
                             <div class="form-group row"><label class="col-md-3 col-form-label"
                                                                for="id_attributes">{% trans 'Attribute Type' %}</label>
-                                <div class="col-md-9"><select  v-model="selectedType" name="attributes" class="form-control" title=""
+                                <div class="col-md-9"><select  v-model="selectedType" name="attributesModal" class="form-control" title=""
                                                               id="id_attributetypes"
                                                               >
                                     <option v-for="option in productAttributeTypes" v-bind:value="option">
@@ -151,7 +151,7 @@
                         .then(response => {
                             this.productAttributeTypes.push(response.data)
                             this.newTypeName="";
-                            this.selectedType = response.data.name;
+                            this.selectedType = response.data;
                         })
                 },
                 getTypeName: function(name){

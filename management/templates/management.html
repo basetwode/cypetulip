@@ -36,9 +36,10 @@
                 <h5 class="card-title">{% trans 'Orders' %}</h5>
                 <div class="btn-group">
                     <a href="{% url 'management_all_orders' %}"
-                       class="btn btn-primary mr-1">{% trans 'All orders' %}</a>
+                       class="btn btn-primary mr-1">{% trans 'All orders' %}</a> </div>
+                    <div class="btn-group">
                     <a href="{% url 'create_order' '' %}"
-                       class="btn btn-primary mr-1">{% trans 'Create new order' %}</a>
+                       class="btn btn-primary mr-1 mt-1">{% trans 'Create new order' %}</a>
                 </div>
                 <hr>
                 <div class="btn-group">
@@ -51,8 +52,14 @@
                 <div class="btn-group">
                     <a href="{% url 'discount_overview' %}"
                        class="btn btn-primary mr-1">{% trans 'All vouchers' %}</a>
-                    <a href="{% url 'discount_edit' '' %}"
-                       class="btn btn-primary mr-1">{% trans 'Create new voucher' %}</a>
+                </div>
+                <div class="btn-group ">
+                    <a href="{% url 'percentage_discount_edit' '' %}"
+                       class="btn btn-primary mr-1">{% trans 'Add Percentage Voucher' %}</a>
+                </div>
+                <div class="btn-group mt-1">
+                    <a href="{% url 'fixed_discount_edit' '' %}"
+                       class="btn btn-primary mr-1">{% trans 'Add Fixed Amount Voucher' %}</a>
                 </div>
                 <hr>
                 <p>{% trans 'Search orders' %}</p>

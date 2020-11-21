@@ -25,8 +25,10 @@
                         <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
 
                     </form>
-                    <a href="{% url 'discount_edit' '' %}"
-                       class="btn btn-fw btn-primary">{% trans 'Add Voucher' %}</a>
+                    <a href="{% url 'percentage_discount_edit' '' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Add Percentage Voucher' %}</a>
+                    <a href="{% url 'fixed_discount_edit' '' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Add Fixed Amount Voucher' %}</a>
                     <hr>
                     <a href="{% url 'management_index' %}"
                        class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
@@ -55,8 +57,13 @@
                         <td>{{ object.discount_percentage_in_percent }}</td>
                         <td>
                             <div>
+                                {% if object.fixedamountdiscount %}
                                 <a class="btn btn-outline-dark"
-                                   href="{% url 'discount_edit' object.id %}">{% trans 'Edit' %}</a>
+                                   href="{% url 'fixed_discount_edit' object.id %}">{% trans 'Edit' %}</a>
+                                {% elif object.percentagediscount %}
+                                    <a class="btn btn-outline-dark"
+                                     href="{% url 'percentage_discount_edit' object.id %}">{% trans 'Edit' %}</a>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>
