@@ -389,7 +389,7 @@ class OrderDetail(models.Model):
     billing_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True,
                                         related_name='billing_address', verbose_name=_('Billing address'))
     is_cancelled = models.BooleanField(default=False, blank=True, null=True, editable=False)
-    discount = models.ForeignKey(Discount, default=None, blank=True, null=True, on_delete=models.SET_NULL
+    discount = models.ForeignKey(Discount, default=None, blank=True, null=True, on_delete=models.SET_NULL,
                                  verbose_name=_('Discount'))
     discount_code = models.CharField(default="",  max_length=20, blank=True, null=True, editable=False)
     discount_amount = models.FloatField(default=0, blank=True, null=True, editable=False)
