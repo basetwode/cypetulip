@@ -287,9 +287,22 @@
                     }
                 },
                 getOrderItemTotal: function(orderItem) {
-                    return (orderItem.price_wt*100 + orderItem.order_items.reduce(function(price, order_item_b) {
-                        return price + order_item_b.product.bprice_wt *100
-                    },0)) / 100
+                    let instance = this
+                    let total = (orderItem.price_wt*100 + orderItem.order_items.reduce(function(price, order_item_b) {
+                        return price + instance.getOrderItemPrice(order_item_b) *100
+                    },0))
+                    return total / 100
+                },
+                getOrderItemPrice: function(orderItem) {
+                    if (orderItem.product.checkboxsubitem){
+                        return orderItem.checkboxorderitem.is_checked ? orderItem.product.bprice_wt : 0;
+                    } else if(orderItem.product.selectsubitem) {
+                        return orderItem.selectorderitem.selected_item.id ? orderItem.product.bprice_wt : 0;
+                    }else if(orderItem.product.filesubitem) {
+                        return orderItem.file || orderItem.fileorderitem.file_name ? orderItem.product.bprice_wt : 0;
+                    }else {
+                        return orderItem.product.bprice_wt;
+                    }
                 },
                 getOrderTotal: function() {
                     let instance = this

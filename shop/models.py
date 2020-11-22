@@ -168,7 +168,6 @@ class NumberSubItem(ProductSubItem):
 # can be used for "as a present" or "moebliert" for example
 class CheckBoxSubItem(ProductSubItem):
     pass
-    # name = models.CharField(max_length=100)
 
 
 '''
@@ -283,10 +282,6 @@ class IndividualOffer(models.Model):
         verbose_name = _('Individual offer')
 
 
-
-
-
-
 class Discount(models.Model):
     voucher_id = models.CharField(unique=True, max_length=20, default="VOUCHER")
     eligible_products = models.ManyToManyField(Product, blank=True, null=True, verbose_name=_('Eligible products'))
@@ -391,10 +386,9 @@ class OrderDetail(models.Model):
     is_cancelled = models.BooleanField(default=False, blank=True, null=True, editable=False)
     discount = models.ForeignKey(Discount, default=None, blank=True, null=True, on_delete=models.SET_NULL,
                                  verbose_name=_('Discount'))
-    discount_code = models.CharField(default="",  max_length=20, blank=True, null=True, editable=False)
+    discount_code = models.CharField(default="", max_length=20, blank=True, null=True, editable=False)
     discount_amount = models.FloatField(default=0, blank=True, null=True, editable=False)
     discount_percentage = models.FloatField(default=0, blank=True, null=True, editable=False)
-
 
     def unique_nr(self):
         return "CTNR" + str(self.id).rjust(10, "0")
@@ -417,12 +411,21 @@ class OrderDetail(models.Model):
             self.apply_discount()
         elif hasattr(voucher, 'fixedamountdiscount'):
             self.discount_amount = voucher.fixedamountdiscount.amount
-            self.orderitem_set.order_by('-price').first()\
+            self.orderitem_set.order_by('-price').first() \
                 .apply_discount_if_eligible(voucher, apply_fixed_discount=True)
             self.save()
         voucher.count += 1
         voucher.save()
         return True
+
+    def remove_voucher(self):
+        if self.discount:
+            self.discount_amount = 0
+            self.discount_percentage = 0
+            self.discount_code = ""
+            self.discount.count -= 1
+            self.discount.save()
+            self.discount = None
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -432,6 +435,8 @@ class OrderDetail(models.Model):
         elif self.__was_uncancelled():
             self.decrease_stocks()
             self.is_cancelled = False
+        if not self.state and self.orderitem_set.count() == 0:
+            self.remove_voucher()
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
 
@@ -468,10 +473,10 @@ class OrderDetail(models.Model):
         return calculate_sum(self.orderitem_set, False, include_discount) or 0
 
     def total_discounted(self):
-        return self.total(True) #- (self.discount_amount or 0)
+        return self.total(True)  # - (self.discount_amount or 0)
 
     def total_discounted_wt(self):
-        return self.total_wt(True) #- (self.discount_amount or 0)
+        return self.total_wt(True)  # - (self.discount_amount or 0)
 
     def total_discount(self):
         return round(self.total() - self.total_discounted(), 2)
@@ -480,7 +485,8 @@ class OrderDetail(models.Model):
         return round(self.total_wt() - self.total_discounted_wt(), 2)
 
     def discount_str(self):
-        return f"{int(self.discount_percentage*100)} %" if self.discount_percentage else f"{self.discount_amount} €"
+        return f"{int(self.discount_percentage * 100)} %" if self.discount_percentage else f"{self.discount_amount} €"
+
 
 # Like a surcharge or discount or product or whatever.
 
@@ -506,20 +512,21 @@ class OrderItem(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None, recalculate_tax=False):
-
-        if not self.price_wt and self.product and not self.product.price_on_request:
-            self.price = self.product.special_price if self.product.special_price else self.product.price
-            self.price_wt = self.product.bprice_wt()
+        price_changed = self.price_changed()
+        if price_changed and self.product and not self.product.price_on_request:
+            self.price = self.get_product_price() if self.get_product_special_price() else self.get_product_price()
+            self.price_wt = self.get_product_price_wt()
             self.applied_discount = 0
-            self.price_discounted = self.price
-            self.price_discounted_wt = self.price_wt
+            self.price_discounted = self.get_product_price()
+            self.price_discounted_wt = self.get_product_price_wt()
         if self.product.price_on_request and not self.price_wt:
             self.price_wt = round(self.price * (1 + self.product.tax), 2)
             self.applied_discount = 0
             self.price_discounted = self.price
             self.price_discounted_wt = self.price_wt
-        if not self.pk:
-            self.apply_discount_if_eligible(self.order_detail.discount, save=False) if self.order_detail.discount else None
+        if not self.pk or price_changed:
+            self.apply_discount_if_eligible(self.order_detail.discount,
+                                            save=False) if self.order_detail.discount else None
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
         for order_item in OrderItem.objects.filter(order_item=self):
@@ -532,6 +539,7 @@ class OrderItem(models.Model):
         if hasattr(self.product, 'product'):
             self.product.product.increase_stock()
         super(OrderItem, self).delete(using, keep_parents)
+        self.order_detail.save()
 
     def is_discount_eligible(self, voucher):
 
@@ -554,8 +562,8 @@ class OrderItem(models.Model):
             result = True
         elif apply_fixed_discount:
             amount = voucher.fixedamountdiscount.amount if voucher.fixedamountdiscount.amount < self.price else self.price
-            self.price_discounted_wt = round(self.price_wt-amount, 2)
-            self.price_discounted = round(self.price_discounted_wt / (1+self.product.tax),2)
+            self.price_discounted_wt = round(self.price_wt - amount, 2)
+            self.price_discounted = round(self.price_discounted_wt / (1 + self.product.tax), 2)
             self.applied_discount = self.price_discounted_wt - self.price_discounted
             result = True
         else:
@@ -584,7 +592,6 @@ class OrderItem(models.Model):
             self.price if not include_discount else self.price_discounted) \
             if sub_items.count() > 0 else 0 + self.price if not include_discount else self.price_discounted
 
-
     def total_discounted(self):
         return self.total(True)
 
@@ -597,6 +604,18 @@ class OrderItem(models.Model):
     def total_discount_wt(self):
         return round(self.total_wt() - self.total_discounted_wt(), 2)
 
+    def get_product_price(self):
+        return self.product.price
+
+    def get_product_special_price(self):
+        return self.product.special_price
+
+    def get_product_price_wt(self):
+        return round((self.get_product_special_price() if self.get_product_special_price() else
+                      self.get_product_price()) * (1 + self.product.tax), 2)
+
+    def price_changed(self):
+        return not self.price_wt
 
 # Corresponding OrderItems for the subproducts
 class FileOrderItem(OrderItem):
@@ -612,6 +631,15 @@ class SelectOrderItem(OrderItem):
 
 class CheckBoxOrderItem(OrderItem):
     is_checked = models.BooleanField()
+
+    def get_product_price(self):
+        return self.product.price if self.is_checked else 0
+
+    def get_product_special_price(self):
+        return self.product.special_price if self.is_checked else 0
+
+    def price_changed(self):
+        return (not self.price_wt and self.is_checked) or (self.price_wt and not self.is_checked)
 
 
 class NumberOrderItem(OrderItem):

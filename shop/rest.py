@@ -127,7 +127,8 @@ class CheckboxOrderItemSerializer(serializers.ModelSerializer):
 
     def validate_is_checked(self, value):
 
-        if self.instance.product.checkboxsubitem.is_required and not value:
+        product = ProductSubItem.objects.get(id=self.initial_data['product'])
+        if product.checkboxsubitem.is_required and not value:
             raise serializers.ValidationError(_('This field is required'))
         else:
             return value

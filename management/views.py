@@ -225,8 +225,8 @@ class ProductCreationView(LoginRequiredMixin, CreateView):
     template_name = 'vue/product-create-vue.html'
     context_object_name = 'products'
     model = Product
-    fields = ['name','category', 'is_public','price', 'special_price', 'price_on_request', 'tax','stock', 'description', 'details',
-              'product_picture',   'assigned_sub_products', 'attributes']
+    form_class = ProductForm
+
 
     def get_success_url(self):
         return reverse_lazy('products_overview')
