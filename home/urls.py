@@ -51,7 +51,7 @@ urlpatterns = [
     url(r'^media/', include(media_urls.urlpatterns)),
     url(r'^cms/', include(cms_urls.urlpatterns)),
     url(r'^shop/', include(shop_urls, namespace='shop')),
-    url(r'^permissions/', include(perm_urls.urlpatterns)),
+    url(r'^permissions/', include(perm_urls, namespace='permissions')),
     url(r'^billing/', include(billing_urls.urlpatterns)),
     url(r'^payment/', include(payment_urls, namespace='payment')),
     url(r'^accounting/', include(accounting_urls, namespace='accounting')),

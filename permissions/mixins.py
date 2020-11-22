@@ -66,6 +66,7 @@ class PermissionOwnsObjectMixin(AccessMixin):
     slug_field = ""
     slug_url_kwarg = ""
     permission_denied_url = 'permissions:permission_denied'
+    login_url = 'shop:login'
 
     def get_slug_id(self):
         return self.slug_field if self.slug_field else self.id
@@ -80,13 +81,17 @@ class PermissionOwnsObjectMixin(AccessMixin):
         return self.slug_url_kwarg
 
     def get_login_url(self):
-        return self.permission_denied_url or super().get_login_url()
+        return self.permission_denied_url
 
     def has_permission_object(self):
         kwargs = {'{0}'.format(self.get_slug_id()): self.kwargs[self.get_slug_kwarg()]}
 
-        if self.request.user.is_staff or not self.request.user.is_authenticated:
+        if self.request.user.is_staff:
             return True
+        if not self.request.user.is_authenticated:
+            object_instance = self.get_model().objects.filter(order__session=self.request.session.session_key, **kwargs)
+            return object_instance.count() == 1
+
         object_instance = self.get_model().objects.filter(**kwargs)
         return getattr(object_instance[0], self.field_name).id == self.request.user.id if object_instance else False
 

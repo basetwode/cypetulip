@@ -5,4 +5,4 @@ from django.views.generic import TemplateView
 
 
 class PermissionDeniedView(TemplateView):
-    template_name = 'errors/403.html'
+    template_name = '403.html'
