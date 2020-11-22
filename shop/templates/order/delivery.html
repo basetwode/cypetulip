@@ -64,7 +64,7 @@
                     <tbody>
                     <input type="submit" hidden id="#submit">
                     {% for order in open_orders %}
-                        <tr class="product-row">
+                        <tr class="product-row" style="background-color: rgba(0, 0, 0, .06);">
                             <td data-th="Product">
                                 <input type="hidden" name="[{{ order.id }}][prod]{{ order.product.id }}">
 
@@ -99,9 +99,9 @@
                         </tr>
 
                         {% for sub_item in order.orderitem_set.all %}
-                            <tr id="{{ order.id }}-{{ sub_item.id }}" style="border-top: none">
+                            <tr id="{{ order.id }}-{{ sub_item.id }}" style="border-top: none; background-color: white">
                                 <td colspan="3">
-                                    <div class="row pl-2">
+                                    <div class="row pl-3">
 
                                         <div class="col-6">
                                             <span>{{ sub_item.product.name }}</span>
