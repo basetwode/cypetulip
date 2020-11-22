@@ -55,11 +55,9 @@
                 <table id="cart" class="table table-hover table-striped table-responsive-md">
                     <thead>
                     <tr>
-                        <th style="width:50%">{% trans 'Product' %}</th>
-                        <th style="width:10%">{% trans 'Price' %}</th>
-
-                        <th style="width:22%" class="text-center">{% trans 'Subtotal' %}</th>
-                        <th style="width:10%"></th>
+                        <th style="width:30%">{% trans 'Product' %}</th>
+                        <th style="width:15%">{% trans 'Price' %}</th>
+                        <th style="width:50%" class="text-center">{% trans 'Total' %}</th>
                     </tr>
                     </thead>
 
@@ -71,7 +69,7 @@
                                 <input type="hidden" name="[{{ order.id }}][prod]{{ order.product.id }}">
 
                                 <div class="row">
-                                    <div class="col-5 col-md-2">
+                                    <div class="d-none d-sm-block col-md-2">
                                         {% if order.product.product.product_picture %}
                                             <img
                                                     src="{{ order.product.product.product_picture.url }}"
@@ -81,8 +79,8 @@
                                             <i class="fa fa-4x fa-image img-thumbnail"></i>
                                         {% endif %}
                                     </div>
-                                    <div class="col-7">
-                                        <h4 class="nomargin">{{ order.product.name }}</h4>
+                                    <div class="col-12 col-md-7">
+                                        {{ order.product.name }}
 
                                     </div>
 
@@ -93,110 +91,88 @@
                             <td id="subtotal-{{ order.id }}" data-th="Subtotal"
                                 class="text-center">{{ order.total_wt|floatformat:"2"}}&euro;
                                 {% if order.applied_discount %}<br>
-                                    <small class="mt-1">- {{ order.total_discount_wt }}&euro; ({{ order.order_detail.discount.voucher_id }}
-                                        {{ order.order_detail.discount.discount_percentage_in_percent }}%)</small>
+                                    <span style="font-size: x-small" class="mt-1">- {{ order.total_discount_wt }}&euro; ({{ order.order_detail.discount.voucher_id }}
+                                        {{ order.order_detail.discount.discount_percentage_in_percent }}%)</span>
                                     <br> <b>{{ order.total_discounted_wt|floatformat:"2" }}&euro;</b>
                                 {% endif %}
-                            </td>
-                            <td class="actions" data-th="">
-
                             </td>
                         </tr>
 
                         {% for sub_item in order.orderitem_set.all %}
                             <tr id="{{ order.id }}-{{ sub_item.id }}" style="border-top: none">
-                                <td colspan="1">
-                                    <div class="col-sm-12 ">
+                                <td colspan="3">
+                                    <div class="row pl-2">
 
+                                        <div class="col-6">
+                                            <span>{{ sub_item.product.name }}</span>
+                                        </div>
+                                        <div class="col-6">
+                                            {{ sub_item.price_wt }}&euro;
+                                        </div>
+                                        <div class="col-12 ">
+                                            {% if sub_item.fileorderitem %}
+                                                {% trans 'File' %}:
+                                                <a href="{{ sub_item.fileorderitem.file.url }}">
+                                                    {{ sub_item.fileorderitem.file_name }}
+                                                </a>
+                                                <div class="col-sm-2 d-none d-sm-block "><img
+                                                        src="{{ sub_item.fileorderitem.file.url }}"
+                                                        alt="..."
+                                                        class="img-fluid"/></div>
+                                            {% elif sub_item.selectorderitem %}
+                                                {{ sub_item.selectorderitem.selected_item }}
+                                            {% elif sub_item.checkboxorderitem %}
+                                                {% if sub_item.checkboxorderitem.is_checked %}{% trans 'Yes' %}
+                                                    {% else %}{% trans 'No' %} {% endif %}
+                                            {% elif sub_item.numberorderitem %}
+                                                {{ sub_item.numberorderitem.number }}
+                                            {% endif %}
 
-                                        <div class="col-md-offset-1 col-md-11 sub-product required">
-                                            <div class="col-md-offset-1 col-md-9">
-                                                <h5><i><b>{{ sub_item.product.name }}</b></i></h5>
-
-                                                <p>
-                                                </p>
-
-                                                <div class="col-md-12">
-                                                    {% if sub_item.fileorderitem %}
-                                                        {% trans 'File' %}:
-                                                        <a href="{{ sub_item.fileorderitem.file.url }}">
-                                                            {{ sub_item.fileorderitem.file_name }}
-                                                        </a>
-                                                        <div class="col-sm-2 hidden-xs"><img
-                                                                src="{{ sub_item.fileorderitem.file.url }}"
-                                                                alt="..."
-                                                                class="img-fluid"/></div>
-                                                    {% elif sub_item.selectorderitem %}
-                                                        {{ sub_item.selectorderitem.selected_item }}
-                                                    {% elif sub_item.checkboxorderitem %}
-                                                        {% if sub_item.checkboxorderitem.is_checked %}{% trans 'Yes' %} {% else %}{% trans 'No' %} {% endif %}
-                                                    {% elif sub_item.numberorderitem %}
-                                                        {{ sub_item.numberorderitem.number }}
-                                                    {% endif %}
-                                                    </p>
-                                                    <p class="error" style="color: #FF4136"></p>
-                                                </div>
-
-                                            </div>
 
                                         </div>
+
+
                                     </div>
                                 </td>
-                                <td colspan="2" data-th="Price">{{ sub_item.price_wt }}&euro;</td>
-                                <td>
 
-                                    {% if sub_product.is_multiple_per_item %}
-                                        <button onclick="duplicateProduct(this,{{ order.id }},{{ sub_product.price }})"
-                                                class="btn btn-secondary btn-sm"><i
-                                                class="fa fa-plus-circle"></i>
-                                        </button>
-                                        {#                                        <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>#}
-                                    {% endif %}
-
-                                </td>
                             </tr>
                         {% endfor %}
                     {% endfor %}
 
                     {% for sub_item in order_items_once_only %}
                         <tr class="product-row" style="border-top: none">
-                            <td colspan="2">
-                                <div class="col-sm-12 ">
-                                    <div class="col-md-12 required">
-                                        <div class="col-md-offset-1 col-md-9">
-                                            <h4>{{ sub_item.product.name }}</h4>
+                            <td colspan="3">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <h4>{{ sub_item.product.name }}</h4>
 
 
-                                            <div class="col-md-12">
-                                                {% if sub_item.fileorderitem %}
-                                                    {% trans 'File' %}:
-                                                    <a href="{{ sub_item.fileorderitem.file.url }}">
-                                                        {{ sub_item.fileorderitem.file_name }}
-                                                    </a>
-                                                    <div class="col-2 hidden-xs"><img
-                                                            src="{{ sub_item.fileorderitem.file.url }}"
-                                                            alt="..."
-                                                            class="img-fluid"/></div>
-                                                {% elif sub_item.selectorderitem %}
-                                                    {{ sub_item.selectorderitem.selected_item.name }}
-                                                {% elif sub_item.checkboxorderitem %}
-                                                    {% if sub_item.checkboxorderitem.is_checked %}{% trans 'Yes' %} {% else %}{% trans 'No' %} {% endif %}
-                                                {% elif sub_item.numberorderitem %}
-                                                    {{ sub_item.numberorderitem.number }}
-                                                {% endif %}
-                                            </div>
+                                        <div class="col-md-12">
+                                            {% if sub_item.fileorderitem %}
+                                                {% trans 'File' %}:
+                                                <a href="{{ sub_item.fileorderitem.file.url }}">
+                                                    {{ sub_item.fileorderitem.file_name }}
+                                                </a>
+                                                <div class="col-2 d-none d-sm-block "><img
+                                                        src="{{ sub_item.fileorderitem.file.url }}"
+                                                        alt="..."
+                                                        class="img-fluid"/></div>
+                                            {% elif sub_item.selectorderitem %}
+                                                {{ sub_item.selectorderitem.selected_item.name }}
+                                            {% elif sub_item.checkboxorderitem %}
+                                                {% if sub_item.checkboxorderitem.is_checked %}{% trans 'Yes' %}
+                                                    {% else %}{% trans 'No' %} {% endif %}
+                                            {% elif sub_item.numberorderitem %}
+                                                {{ sub_item.numberorderitem.number }}
+                                            {% endif %}
                                         </div>
-
+                                    </div>
+                                    <div class="col-8">
+                                        {{ sub_item.product.price }}&euro;
                                     </div>
 
 
                                 </div>
-                            </td>
-                            <td data-th="Subtotal" class="text-center">{{ sub_item.product.price }}&euro;
-                            </td>
-                            <td>
-                                <script>
-                                </script>
                             </td>
                         </tr>
                     {% endfor %}
@@ -213,9 +189,9 @@
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td style="width:50%"></td>
-                        <td style="width:10%"></td>
-                        <td style="width:22%" class="text-center">
+                        <td></td>
+                        <td></td>
+                        <td colspan="1" style="width:22%" class="text-center">
                             {% if open_orders.first.order_detail.discount %}<br>
                                 <span
                                     id="total">{{ open_orders.first.order_detail.total_wt }}</span>&euro;<br>
@@ -227,8 +203,7 @@
                                         id="total">{{ open_orders.first.order_detail.total_wt }}</span>&euro;</strong>
                             {% endif %}
 
-                            </td>
-                        <td style="width:10%"></td>
+                            </td>+
                     </tr>
                 </table>
 
@@ -409,11 +384,11 @@
 
                         <div class="btn btn-outline-dark mb-1 ml-0" data-toggle="modal" type="button"
                              data-target="#add-modal">{% trans 'Add Address' %}</div>
-                        <h3>Select shipment address</h3>
+                        <h4 class="pt-2">Select shipment address</h4>
                         <div v-for="entry in addresses">
                             <div class="card">
                                 <div class="card-header" :id="`heading${entry.name}`">
-                                    <h2 class="mb-0">
+                                    <h5 class="mb-0">
                                         <input :id="`input${entry.id}`" type="radio"
                                                name="shipment-address" data-toggle="collapse"
                                                :data-target="`#body${entry.id}`"
@@ -424,7 +399,7 @@
                                                data-toggle="collapse" :data-target="`#body${entry.id}`">
                                             <i class="fas fa-truck"></i>
                                             [[ entry.name ]]</label>
-                                    </h2>
+                                    </h5>
                                 </div>
 
                                 <div :id="`body${entry.id}`" class="collapsed collapse"
@@ -438,11 +413,11 @@
                                 </div>
                             </div>
                         </div>
-                        <h3>Select billing address</h3>
+                        <h4 class="pt-2">Select billing address</h4>
                         <div v-for="entry in addresses">
                             <div class="card">
                                 <div class="card-header" :id="`heading-bill${entry.name}`">
-                                    <h2 class="mb-0">
+                                    <h5 class="mb-0">
                                         <input :id="`input-bill${entry.id}`" type="radio"
                                                name="bill-address" data-toggle="collapse"
                                                :data-target="`#body-bill${entry.id}`"
@@ -453,7 +428,7 @@
                                                data-toggle="collapse" :data-target="`#body-bill${entry.id}`">
                                             <i class="fas fa-truck"></i>
                                             [[ entry.name ]]</label>
-                                    </h2>
+                                    </h5>
                                 </div>
 
                                 <div :id="`body-bill${entry.id}`" class="collapsed collapse"
@@ -470,7 +445,7 @@
                     </div>
 
 
-                    <div class="row mt-1 mb-2">
+                    <div class="row pt-3 pb-2">
                         <div class="col">
                             <a href="{% url 'shop:shopping_cart' %}" class="btn btn-warning ml-0"><i
                                     class="fa fa-angle-left"></i> {% trans 'Shoppingcart' %}</a>

@@ -47,9 +47,9 @@
                     <thead>
                     <tr>
                         <th style="width:50%">{% trans 'Product' %}</th>
-                        <th style="width:10%">{% trans 'Price' %}</th>
+                        <th style="width:25%">{% trans 'Price' %}</th>
 
-                        <th style="width:22%" class="text-center">{% trans 'Subtotal' %}</th>
+                        <th style="width:15%" class="text-center">{% trans 'Total' %}</th>
                         <th style="width:10%"></th>
                     </tr>
                     </thead>
@@ -58,14 +58,14 @@
                         <tr>
                             <td>
                                 <div class="row">
-                                    <div class="col-5 col-md-2">
+                                    <div class="d-none d-sm-block col-md-2">
 
                                         <img v-if="order_item.product.product.product_picture"
                                              :src="order_item.product.product.product_picture"
                                              class="img-fluid img-thumbnail"/>
                                         <i v-else class="fa fa-4x fa-image img-thumbnail"></i>
                                     </div>
-                                    <div class="col-7">
+                                    <div class="col-12 col-md-7">
                                         [[order_item.product.name]]
                                     </div>
                                 </div>
@@ -88,8 +88,21 @@
                             <tr style="background-color: white"
                                 v-for="(order_items_subproduct, index) in getOrderItemsForSubproduct(order_item, subproduct.id)">
 
-                                <td class="pl-5">
-                                    <h5>[[subproduct.name]]</h5>
+                                <td colspan="3" class="pl-3">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <span>[[subproduct.name]]</span>
+                                        </div>
+                                        <div class="col-6">
+                                            <div v-if="order_items_subproduct.product.selectsubitem">
+                                                [[getOrderItemPrice(order_items_subproduct)]] €
+                                            </div>
+                                            <div v-else>
+                                                [[order_items_subproduct.product.bprice_wt]] €<br>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <p><small v-html="subproduct.description">
                                     </small>
                                     </p>
@@ -183,14 +196,6 @@
                                         </div>
                                     </form>
                                 </td>
-                                <td>
-                                    <div v-if="order_items_subproduct.product.selectsubitem">
-                                        [[getOrderItemPrice(order_items_subproduct)]] €
-                                    </div>
-                                    <div v-else>
-                                        [[order_items_subproduct.product.bprice_wt]] €<br>
-                                    </div>
-                                </td><td></td>
                                 <td>
                                     <div v-if="subproduct.is_multiple_per_item">
                                         <button @click="addSubProductOrderItem(order_item,subproduct)"
