@@ -20,6 +20,8 @@ class FileSubItemSerializer(serializers.ModelSerializer):
 
 
 class SelectOptionSerializer(serializers.ModelSerializer):
+    price_wt = serializers.FloatField(required=False)
+
     class Meta:
         model = SelectItem
         fields = '__all__'

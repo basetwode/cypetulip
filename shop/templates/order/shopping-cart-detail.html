@@ -146,7 +146,8 @@
                                                 <select :required="order_items_subproduct.product.is_required"
                                                         v-model="order_items_subproduct.selectorderitem.selected_item.id"
                                                         class="form-control">
-                                                    <option v-for="option in order_items_subproduct.product.selectsubitem.options" :value="option.id">[[option.name]]</option>
+                                                    <option v-for="option in order_items_subproduct.product.selectsubitem.options" :value="option.id">
+                                                        [[option.name]] ([[option.price_wt]] €)</option>
                                                 </select>
                                                 <div class="valid-feedback">
                                                     {% trans 'Looks good!' %}
@@ -183,7 +184,12 @@
                                     </form>
                                 </td>
                                 <td>
-                                    [[order_items_subproduct.product.bprice_wt]] €<br>
+                                    <div v-if="order_items_subproduct.product.selectsubitem">
+                                        [[getOrderItemPrice(order_items_subproduct)]] €
+                                    </div>
+                                    <div v-else>
+                                        [[order_items_subproduct.product.bprice_wt]] €<br>
+                                    </div>
                                 </td><td></td>
                                 <td>
                                     <div v-if="subproduct.is_multiple_per_item">
@@ -297,7 +303,11 @@
                     if (orderItem.product.checkboxsubitem){
                         return orderItem.checkboxorderitem.is_checked ? orderItem.product.bprice_wt : 0;
                     } else if(orderItem.product.selectsubitem) {
-                        return orderItem.selectorderitem.selected_item.id ? orderItem.product.bprice_wt : 0;
+                        if(orderItem.selectorderitem.selected_item.id){
+                            return orderItem.product.selectsubitem.options.filter(option => option.id === orderItem.selectorderitem.selected_item.id)[0].price_wt
+                        }
+                        return 0;
+                        //return orderItem.selectorderitem.selected_item.id ? orderItem.selectorderitem.selected_item.price_wt : 0;
                     }else if(orderItem.product.filesubitem) {
                         return orderItem.file || orderItem.fileorderitem.file_name ? orderItem.product.bprice_wt : 0;
                     }else {

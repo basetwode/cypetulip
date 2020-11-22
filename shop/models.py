@@ -152,11 +152,16 @@ class SelectSubItem(ProductSubItem):
 
 # different options for sizes for example
 class SelectItem(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=40)
     select = models.ForeignKey(SelectSubItem, on_delete=models.CASCADE)
+    price = models.FloatField(verbose_name=_('Price'),default=0)
+    tax = models.FloatField(default=0.19, blank=False, null=False, verbose_name=_('Tax'))
 
     def __str__(self):
         return self.name
+
+    def price_wt(self):
+        return round(self.price * (1 + self.tax), 2)
 
 
 # can be used for number of this item like 4 trousers
@@ -627,6 +632,15 @@ class FileOrderItem(OrderItem):
 
 class SelectOrderItem(OrderItem):
     selected_item = models.ForeignKey(SelectItem, on_delete=models.CASCADE)
+
+    def get_product_price(self):
+        return self.selected_item.price if self.selected_item else 0
+
+    def get_product_special_price(self):
+        return self.selected_item.price if self.selected_item else 0
+
+    def price_changed(self):
+        return self.price_wt != self.selected_item.price_wt()
 
 
 class CheckBoxOrderItem(OrderItem):

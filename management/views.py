@@ -323,7 +323,7 @@ class SelectItemCreationView(LoginRequiredMixin, RepeatableWizardView):
     slug_field = 'id'
     slug_url_kwarg = 'subitem_id'
     model = SelectItem
-    fields = ['name',]
+    fields = ['name','price','tax']
     pk_url_kwarg = 'id'
     parent_key = 'select'
     self_url = 'selectitem_create'
