@@ -561,8 +561,8 @@ class OrderItem(models.Model):
         is_eligible = self.is_discount_eligible(voucher)
         result = False
         if is_eligible and hasattr(voucher, 'percentagediscount'):
-            self.applied_discount = round(self.price * voucher.percentagediscount.discount_percentage, 2)
-            self.price_discounted = round(self.price - self.applied_discount, 2)
+            self.applied_discount = round(self.get_product_price() * voucher.percentagediscount.discount_percentage, 2)
+            self.price_discounted = round(self.get_product_price() - self.applied_discount, 2)
             self.price_discounted_wt = round(self.price_discounted * (1 + self.product.tax), 2)
             result = True
         elif apply_fixed_discount:
@@ -610,17 +610,27 @@ class OrderItem(models.Model):
         return round(self.total_wt() - self.total_discounted_wt(), 2)
 
     def get_product_price(self):
-        return self.product.price
+        return self.fileorderitem.get_product_price() if hasattr(self, 'fileorderitem') else \
+            self.checkboxorderitem.get_product_price() if hasattr(self, 'checkboxorderitem') else \
+                self.selectorderitem.get_product_price() if hasattr(self, 'selectorderitem') else \
+                    self.product.price
 
     def get_product_special_price(self):
-        return self.product.special_price
+        return self.fileorderitem.get_product_special_price() if hasattr(self, 'fileorderitem') else \
+            self.checkboxorderitem.get_product_special_price() if hasattr(self, 'checkboxorderitem') else \
+                self.selectorderitem.get_product_special_price() if hasattr(self, 'selectorderitem') else \
+                    self.product.special_price
 
     def get_product_price_wt(self):
         return round((self.get_product_special_price() if self.get_product_special_price() else
                       self.get_product_price()) * (1 + self.product.tax), 2)
 
     def price_changed(self):
-        return not self.price_wt
+        return self.fileorderitem.price_changed() if hasattr(self, 'fileorderitem') else \
+            self.checkboxorderitem.price_changed() if hasattr(self, 'checkboxorderitem') else \
+                self.selectorderitem.price_changed() if hasattr(self, 'selectorderitem') else \
+                    not self.price_wt
+
 
 # Corresponding OrderItems for the subproducts
 class FileOrderItem(OrderItem):
