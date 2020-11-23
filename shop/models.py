@@ -653,7 +653,7 @@ class CheckBoxOrderItem(OrderItem):
         return self.product.special_price if self.is_checked else 0
 
     def price_changed(self):
-        return (not self.price_wt and self.is_checked) or (self.price_wt and not self.is_checked)
+        return (not self.price_wt and self.is_checked) or (not not self.price_wt and not self.is_checked) or not self.price_wt
 
 
 class NumberOrderItem(OrderItem):

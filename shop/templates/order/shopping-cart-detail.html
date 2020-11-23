@@ -300,9 +300,9 @@
                 getOrderItemTotal: function(orderItem) {
                     let instance = this
                     let total = (orderItem.price_wt*100 + orderItem.order_items.reduce(function(price, order_item_b) {
-                        return price + instance.getOrderItemPrice(order_item_b) *100
-                    },0))
-                    return total / 100
+                        return price + instance.getOrderItemPrice(order_item_b)*100
+                    },0)) / 100
+                    return total
                 },
                 getOrderItemPrice: function(orderItem) {
                     if (orderItem.product.checkboxsubitem){
@@ -314,7 +314,7 @@
                         return 0;
                         //return orderItem.selectorderitem.selected_item.id ? orderItem.selectorderitem.selected_item.price_wt : 0;
                     }else if(orderItem.product.filesubitem) {
-                        return orderItem.file || orderItem.fileorderitem.file_name ? orderItem.product.bprice_wt : 0;
+                        return orderItem.file || orderItem.file_name ? orderItem.product.bprice_wt : 0;
                     }else {
                         return orderItem.product.bprice_wt;
                     }

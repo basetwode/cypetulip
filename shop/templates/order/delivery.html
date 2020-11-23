@@ -118,7 +118,8 @@
                                                 <div class="col-sm-2 d-none d-sm-block "><img
                                                         src="{{ sub_item.fileorderitem.file.url }}"
                                                         alt="..."
-                                                        class="img-fluid"/></div>
+                                                        style="max-height: 100px"
+                                                        class="img-fluid img-thumbnail"/></div>
                                             {% elif sub_item.selectorderitem %}
                                                 {{ sub_item.selectorderitem.selected_item }}
                                             {% elif sub_item.checkboxorderitem %}
