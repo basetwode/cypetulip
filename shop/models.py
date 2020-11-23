@@ -610,13 +610,13 @@ class OrderItem(models.Model):
         return round(self.total_wt() - self.total_discounted_wt(), 2)
 
     def get_product_price(self):
-        return self.fileorderitem.get_product_price() if hasattr(self, 'fileorderitem') else \
+        return self.product.price if hasattr(self, 'fileorderitem') else \
             self.checkboxorderitem.get_product_price() if hasattr(self, 'checkboxorderitem') else \
                 self.selectorderitem.get_product_price() if hasattr(self, 'selectorderitem') else \
                     self.product.price
 
     def get_product_special_price(self):
-        return self.fileorderitem.get_product_special_price() if hasattr(self, 'fileorderitem') else \
+        return self.product.special_price if hasattr(self, 'fileorderitem') else \
             self.checkboxorderitem.get_product_special_price() if hasattr(self, 'checkboxorderitem') else \
                 self.selectorderitem.get_product_special_price() if hasattr(self, 'selectorderitem') else \
                     self.product.special_price
@@ -626,7 +626,8 @@ class OrderItem(models.Model):
                       self.get_product_price()) * (1 + self.product.tax), 2)
 
     def price_changed(self):
-        return self.fileorderitem.price_changed() if hasattr(self, 'fileorderitem') else \
+        return \
+            not self.price_wt if hasattr(self, 'fileorderitem') else \
             self.checkboxorderitem.price_changed() if hasattr(self, 'checkboxorderitem') else \
                 self.selectorderitem.price_changed() if hasattr(self, 'selectorderitem') else \
                     not self.price_wt
