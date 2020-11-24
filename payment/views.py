@@ -73,7 +73,7 @@ class PaymentCreationView(CreateView):
     def post(self, request, order):
         _order = Order.objects.get(order_hash=order)
         order_details = OrderDetail.objects.get(order=_order)
-        order_details.contact = Contact.objects.get(user_ptr=self.request.user)
+        order_details.contact = order_details.shipment_address.contact
         order_details.save()
 
         payment_details = PaymentDetail.objects.filter(order=_order)

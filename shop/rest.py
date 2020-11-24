@@ -1,3 +1,5 @@
+import secrets
+
 from rest_framework import viewsets, serializers, status
 from rest_framework.exceptions import NotFound
 from rest_framework.fields import Field, SerializerMethodField
@@ -267,7 +269,11 @@ class GuestViewSet(viewsets.ViewSet):
                     return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
                 address_serializer = AddressSerializer(data=request.data['address'])
-                contact_serializer = ContactSerializer(data=request.data['contact'])
+                contact_serializer = ContactSerializer(data={**request.data['contact'],**{
+                    'password': secrets.token_hex(32),
+                    'username': request.data['contact']['email']+"_"+secrets.token_hex(6),
+                    'email': request.data['contact']['email'],
+                }})
                 if address_serializer.is_valid():
                     address = address_serializer.save()
                 if contact_serializer.is_valid():

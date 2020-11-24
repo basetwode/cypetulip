@@ -519,7 +519,7 @@ class OrderItem(models.Model):
              update_fields=None, recalculate_tax=False):
         price_changed = self.price_changed()
         if price_changed and self.product and not self.product.price_on_request:
-            self.price = self.get_product_price() if self.get_product_special_price() else self.get_product_price()
+            self.price = self.get_product_special_price() if self.get_product_special_price() else self.get_product_price()
             self.price_wt = self.get_product_price_wt()
             self.applied_discount = 0
             self.price_discounted = self.get_product_price()
@@ -561,8 +561,8 @@ class OrderItem(models.Model):
         is_eligible = self.is_discount_eligible(voucher)
         result = False
         if is_eligible and hasattr(voucher, 'percentagediscount'):
-            self.applied_discount = round(self.get_product_price() * voucher.percentagediscount.discount_percentage, 2)
-            self.price_discounted = round(self.get_product_price() - self.applied_discount, 2)
+            self.applied_discount = round(self.price * voucher.percentagediscount.discount_percentage, 2)
+            self.price_discounted = round(self.price - self.applied_discount, 2)
             self.price_discounted_wt = round(self.price_discounted * (1 + self.product.tax), 2)
             result = True
         elif apply_fixed_discount:
