@@ -1,9 +1,13 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Mirror
+name: CI
 
 # Controls when the action will run. 
-on: [push]
+on:
+  push:
+    branches:
+    - '**'
+
 jobs:
   # This workflow contains a single job called "build"
   mirror:
@@ -12,7 +16,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v1
       - name: mirror-repository
   # You may pin to the exact commit or the version.
   # uses: spyoungtech/mirror-action@b313a53232e77d8f7d8fcdb00f90b94100767be1
