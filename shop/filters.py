@@ -49,6 +49,11 @@ class ContactFilter(django_filters.FilterSet):
     free_field_filter = django_filters.CharFilter(field_name="free_field_filter", label=_('Search contacts'),
                                                   method='custom_field_filter')
 
+    type = django_filters.ChoiceFilter(field_name="type", label=_('By type'),
+                                       choices=(('anonymous', 'Anonymous Only'),
+                                                ('registered', 'Registered Only')),
+                                       method='filter_by_type')
+
     class Meta:
         model = Contact
         fields = ['company', ]
@@ -59,6 +64,10 @@ class ContactFilter(django_filters.FilterSet):
             Q(first_name__icontains=value)|
             Q(last_name__icontains=value)
         )
+
+    def filter_by_type(self, queryset, name, value):
+        return queryset.filter(groups__name__in=['client','client supervisor']) if value == 'registered' else \
+            queryset.exclude(groups__name__in=['client','client supervisor','staff']).filter(is_superuser=False)
 
 
 class ProductCategoryFilter(django_filters.FilterSet):

@@ -194,15 +194,13 @@ class SubItemOverviewView(LoginRequiredMixin, ListView):
                       {'filter': filter})
 
 
-class CustomersOverviewView(LoginRequiredMixin, ListView):
+class CustomersOverviewView(LoginRequiredMixin,  PaginatedFilterViews, FilterView):
     template_name = 'customers-overview.html'
-    context_object_name = 'customers'
     model = Contact
+    paginate_by = 20
+    filterset_class = ContactFilter
 
-    def get(self, request, *args, **kwargs):
-        filter = ContactFilter(request.GET, queryset=Contact.objects.all())
-        return render(request, self.template_name,
-                      {'filter': filter})
+
 
 
 class EmployeeOverviewView(LoginRequiredMixin, ListView):
@@ -955,6 +953,7 @@ class ContactCreationView(LoginRequiredMixin, RepeatableWizardView, NotifyNewCus
             return ContactUserForm
         else:
             return ContactUserIncludingPasswordForm
+
 
     def form_valid(self, form):
         contact = form.save(commit=False)

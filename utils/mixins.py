@@ -110,6 +110,8 @@ class EmailThread(threading.Thread):
                 tries += 1
                 result = email.send()
                 print(result)
+                for conn in connections:
+                    conn.close()
             except Exception as e:
                 print(e)
                 print("Error when sending mail... retrying")

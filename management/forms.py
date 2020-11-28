@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.forms import ModelForm, CharField, Form, BooleanField, Textarea
+from django.forms import ModelForm, CharField, Form, BooleanField, Textarea, forms
 from django.utils.translation import ugettext_lazy as _
 
 from shop.models import OrderDetail, Address, Order, OrderItem, Product, ProductSubItem, Contact
@@ -26,6 +26,12 @@ class ContactUserForm(ModelForm):
         model = Contact
         fields = ['email','first_name','last_name','title','gender','telephone','language',
                   'is_client_supervisor']
+
+    def clean(self):
+        cleaned_data = super(ContactUserForm, self).clean()
+        if Contact.objects.filter(username=cleaned_data.get("email")).exists():
+            raise forms.ValidationError(_('An user with the given email already exists'))
+        return cleaned_data
 
 
 class ContactUserIncludingPasswordForm(SetPasswordForm):
