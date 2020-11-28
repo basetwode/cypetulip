@@ -21,21 +21,6 @@ class EmailMixin:
     def get_template(self):
         return self.email_template
 
-    def send_mail(self, receiver_user, subject, content, context):
-        EmailThread(receiver_user, content, subject, context, self.get_template()).start()
-
-
-class EmailThread(threading.Thread):
-    def __init__(self, receiver_user, content, subject, context, email_template):
-        self.subject = subject
-        self.context = context
-        self.content = content
-        self.email_template = email_template
-        self.receiver_user = receiver_user
-
-
-        threading.Thread.__init__(self)
-
     def connection(self):
         if MailSetting.objects.exists():
             mail_setting = MailSetting.objects.first()
@@ -56,6 +41,19 @@ class EmailThread(threading.Thread):
             use_tls=settings.EMAIL_USE_TLS
         )
 
+    def send_mail(self, receiver_user, subject, content, context):
+        EmailThread(receiver_user, content, subject, context, self.get_template(), self.connection()).start()
+
+
+class EmailThread(threading.Thread):
+    def __init__(self, receiver_user, content, subject, context, email_template, connection):
+        self.subject = subject
+        self.context = context
+        self.content = content
+        self.email_template = email_template
+        self.receiver_user = receiver_user
+        self.connection = connection
+        threading.Thread.__init__(self)
 
     def run(self):
 
@@ -71,7 +69,7 @@ class EmailThread(threading.Thread):
                 html_content = render_to_string(self.email_template, context=self.context)
                 print(self.content)
 
-                email = EmailMultiAlternatives('Subject', self.subject, connection=self.connection())
+                email = EmailMultiAlternatives('Subject', self.subject, connection=self.connection)
                 email.subject = self.subject
                 email.mixed_subtype = 'related'
                 email.content_subtype = 'html'
@@ -110,13 +108,9 @@ class EmailThread(threading.Thread):
                 tries += 1
                 result = email.send()
                 print(result)
-                for conn in connections:
-                    conn.close()
             except Exception as e:
                 print(e)
                 print("Error when sending mail... retrying")
-                for conn in connections:
-                    conn.close()
                 time.sleep(15)
 
         return result
