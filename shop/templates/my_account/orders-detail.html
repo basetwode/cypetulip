@@ -145,7 +145,7 @@
                                             </div>
                                         </td>
                                         <td style="width:15%" data-th="Price">
-                                            {{ order.total | floatformat:2 }}&euro;
+                                            {{ order.price_wt | floatformat:2 }}&euro;
                                         </td>
                                         <td style="width:27%" id="subtotal-{{ order.id }}" data-th="Subtotal"
                                             class="text-center">
@@ -199,7 +199,7 @@
                                                 </div>
                                             </td>
                                             <td colspan="2"
-                                                data-th="Price">{{ sub_item.product.price }} &euro;
+                                                data-th="Price">{{ sub_item.product.price_wt }} &euro;
                                             </td>
                                             <td colspan="3">
                                             </td>

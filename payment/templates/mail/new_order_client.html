@@ -26,8 +26,10 @@
            </td>
         </tr>
         {% endfor %}
-        <tr><td></td><td>{% trans 'Subtotal' %}</td><td>{{ order_detail.total_wt | floatformat:2 }} &euro;</td></tr>
-        <tr><td></td><td>{% trans 'Voucher' %}</td><td> -{{ order_detail.total_discount_wt | floatformat:2 }} &euro;</td></tr>
+        {% if order_detail.discount_code %}
+            <tr><td></td><td>{% trans 'Subtotal' %}</td><td>{{ order_detail.total_wt | floatformat:2 }} &euro;</td></tr>
+            <tr><td></td><td>{% trans 'Voucher' %}</td><td> -{{ order_detail.total_discount_wt | floatformat:2 }} &euro;</td></tr>
+        {% endif %}
         <tr><td></td><td>{% trans 'Total' %}</td><td> {{ order_detail.total_discounted_wt | floatformat:2 }} &euro;</td></tr>
 
         </tbody>

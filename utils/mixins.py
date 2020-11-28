@@ -7,6 +7,7 @@ from django.core.checks import translation
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template.loader import render_to_string
 from django.views import View
+from django.db import connections
 
 from home import settings
 from management.models import LegalSetting, MailSetting
@@ -112,7 +113,10 @@ class EmailThread(threading.Thread):
             except Exception as e:
                 print(e)
                 print("Error when sending mail... retrying")
+                for conn in connections:
+                    conn.close()
                 time.sleep(15)
+
         return result
 
 

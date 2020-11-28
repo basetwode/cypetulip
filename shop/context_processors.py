@@ -15,7 +15,7 @@ def get_open_orders(request):
             order = Order.objects.filter(company=contact[0].company, orderdetail__state__isnull=True)
             return collect_open_orders(order)
     elif request.session.session_key:
-        order = Order.objects.filter(is_send=False, session=request.session.session_key)
+        order = Order.objects.filter( orderdetail__state__isnull=True, session=request.session.session_key)
         return collect_open_orders(order)
     else:
         request.session.save()

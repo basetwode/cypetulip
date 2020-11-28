@@ -71,8 +71,14 @@
                                             <label class="pl-2" for="input{{ payment_method.name }}"
                                                    data-toggle="collapse" data-target="#body{{ payment_method.name }}"
                                             >
+                                                {% if payment_method.name == 'Bill' %}
+                                                <i class="fas fa-file-invoice"></i> {% trans 'Invoice' %}
+                                                {% elif payment_method.name == 'Prepayment' %}
+                                                <i class="fas fa-money-check-alt"></i> {% trans 'Prepayment' %}
+                                                {% else %}
                                                 <i class="fab fa-cc-{{ payment_method.name|lower }}"></i>
-                                                {{ payment_method.name }}</label>
+                                                    {{ payment_method.name }}
+                                                {% endif %}</label>
                                         </h2>
                                     </div>
 

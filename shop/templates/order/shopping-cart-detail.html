@@ -244,10 +244,33 @@
                 </div>
             </div>
         </div>
+        <button type="button" class="btn btn-primary" ref="showModal" style="display: none" data-toggle="modal" data-target="#loginModal">
+        </button>
+        <div class="modal show modal-active"  id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loginModalLabel">{% trans 'Login or continue as guest' %}</h5>
+                        <button type="button" ref="closeModal" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% url 'shop:delivery_order' order_details.order_hash as next_uri %}
+                        {% include 'authentification/login-form.html' with next_url=next_uri%}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" @click="continueToNextStep" class="btn btn-primary">{% trans 'Continue as guest' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
     <script type='text/javascript'>
         var csrfmiddlewaretoken = '{{ csrf_token }}';
         var order = '{{ order_details.order_hash }}';
+        var is_authenticated = '{{ user.is_authenticated }}';
         var next_url = '{% url "shop:delivery_order" order_details.order_hash %}';
     </script>
 
@@ -266,6 +289,7 @@
                 form_contains_errors: false,
                 order_items_submitted_count: 0,
                 errors: {shipment: [], address: []},
+                isAuthenticated: is_authenticated === 'True'
             },
             mounted() {
                 this.reloadData()
@@ -412,12 +436,19 @@
                             if(instance.form_contains_errors){
                                 instance.form_contains_errors = false
                             } else {
-                                var nextForm = $('#next-step-form');
-                                nextForm.submit();
+                                if(!this.isAuthenticated){
+                                    this.$refs.showModal.click()
+                                } else {
+                                    this.continueToNextStep()
+                                }
                             }
                         });
                     this.was_validated = true;
 
+                },
+                continueToNextStep: function(){
+                    var nextForm = $('#next-step-form');
+                    nextForm.submit();
                 },
                 deleteItem: function(uri, id){
                     loadingSpinner = $('#loading-spinner');

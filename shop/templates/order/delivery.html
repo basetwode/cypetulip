@@ -237,6 +237,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="add-modal" tabindex="-1" role="dialog"
+
                          aria-labelledby="add-account-modal-title"
                          aria-hidden="true">
                         <div class="modal-dialog">
@@ -244,7 +245,7 @@
                                 <div class="modal-header">
                                     <h5 class="modal-title"
                                         id="add-account-modal-title">{% trans 'Add address details' %}</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button type="button" ref="modalClose" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -264,16 +265,16 @@
                                     </div>
                                     {% if not user.is_authenticated %}
                                         <div class="row">
-                                            <div class="col-3"><label class="col-form-label">{% trans 'Title' %}<strong>:
-                                                *</strong>
+                                            <div class="col-6"><label class="col-form-label">{% trans 'Title' %}<strong>:
+                                                </strong>
                                             </label>
-                                                <select v-model="account.title" required
+                                                <select v-model="account.title"
                                                         class="form-control">
                                                     <option value="D">{% trans 'Dr.' %}</option>
                                                     <option value="P">{% trans 'Prof.' %}</option>
                                                     <option value="PD">{% trans 'Prof. Dr.' %}</option>
                                                 </select></div>
-                                            <div class="col-3">
+                                            <div class="col-6">
                                                 <label class="col-form-label">{% trans 'Gender' %}<strong>: *</strong>
                                                 </label>
                                                 <select v-model="account.gender" required
@@ -334,7 +335,7 @@
                                         </div>
                                         <div class="col-3"><label
                                                 class="col-form-label">{% trans 'number' %}<strong>: *</strong> </label>
-                                            <input v-model="account.number" required type="number"
+                                            <input v-model="account.number" required
                                                    class="form-control"
                                                    type="text">
                                         </div>
@@ -344,13 +345,12 @@
                                                 class="col-form-label">{% trans 'zipcode' %}<strong>: *</strong>
                                         </label>
                                             <input v-model="account.zipcode" max="99999" maxlength="5"
-                                                   required
-                                                   type="number" class="form-control"
+                                                   required class="form-control"
                                                    type="text">
                                         </div>
                                         <div class="col-9"><label
                                                 class="col-form-label">{% trans 'city' %}<strong>: *</strong> </label>
-                                            <input v-model="account.city " required type="text"
+                                            <input v-model="account.city " required
                                                    class="form-control"
                                                    type="text">
                                         </div>
@@ -494,6 +494,7 @@
                         validateVoucher: false,
                         order: order,
                         errors: {shipment: [], address: []},
+                        showModal: false,
                     },
                     mounted() {
                         this.reloadData()
@@ -558,7 +559,7 @@
                                     this.errors.address = [];
                                     this.addresses.push(response.data);
                                     loadingSpinner.addClass('overlay-hidden');
-                                    $('#add-modal').modal('hide');
+                                    this.$refs.modalClose.click()
                                     this.account = {
                                         firstname: "",
                                         lastname: "",

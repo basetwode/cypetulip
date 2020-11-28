@@ -343,7 +343,6 @@ class Order(models.Model):
                     "-order_id")[0].order_id + 1
             else:
                 self.order_id = 1
-
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
 
@@ -442,6 +441,10 @@ class OrderDetail(models.Model):
             self.is_cancelled = False
         if not self.state and self.orderitem_set.count() == 0:
             self.remove_voucher()
+
+        if not self.order.company and self.contact:
+            self.order.company = self.contact.company
+            self.order.save()
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
 

@@ -29,8 +29,6 @@ class LoginView(View):
         password = request.POST['password']
         order_from_session = Order.objects.filter(session=request.session.session_key)
         order_items_from_order_session = []
-        if order_from_session:
-            order_items_from_order_session = OrderItem.objects.filter(order=order_from_session[0])
         # Use Django's machinery to attempt to see if the username/password
         # combination is valid - a User object is returned if it is.
         user = authenticate(username=username, password=password)
@@ -42,9 +40,14 @@ class LoginView(View):
                 auth_login(request, user)
                 contact = Contact.objects.get(user_ptr=request.user)
                 if contact:
-                    order_from_contact = Order.objects.filter(company=contact.company, is_send=False)
-                    for item in order_items_from_order_session:
-                        item.order = order_from_contact[0]
+                    order_from_contact = Order.objects.filter(company=contact.company, orderdetail__state__isnull=True)
+                    if order_from_contact.count() == 0:
+                        order_from_contact, order_detail = Order.create_new_order(request)
+                    else:
+                        order_from_contact = order_from_contact.first()
+                    for item in order_from_session.first().orderitem_set.all():
+                        item.order = order_from_contact
+                        item.order_detail = order_from_contact.orderdetail_set.first()
                         item.save()
                     order_from_session.delete()
                 else:
@@ -54,6 +57,9 @@ class LoginView(View):
 
                 if 'next' in request.POST:
                     next_site = request.POST['next']
+                    return HttpResponseRedirect(next_site)
+                if 'next' in request.GET:
+                    next_site = request.GET['next']
                     return HttpResponseRedirect(next_site)
                 return HttpResponseRedirect('/cms/home')
             else:

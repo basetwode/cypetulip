@@ -141,6 +141,10 @@ class PaypalSubmitView(EmailConfirmView, View):
                     payment_detail = PaymentDetail.objects.get(order=order_object)
                     payment_detail.paypal.paypal_order_id = response.result.id
                     payment_detail.paypal.save()
+
+                    self.object = order_object
+                    self.notify_client(order_detail.contact)
+                    self.notify_staff()
                     return HttpResponseRedirect(payment_response.approve_link)
                 elif response.result.status == "PAYER_ACTION_REQUIRED":
                     return HttpResponseRedirect(payment_response.payer_action)
