@@ -36,7 +36,8 @@ class ShoppingCartView(View):
                     else:
                         order = order[0]
                     order_detail = OrderDetail.objects.get(order=order)
-                    if self.is_stock_sufficient(order, product_obj[0]):
+                    stock_sufficient, _ = product_obj[0].is_stock_sufficient(order)
+                    if stock_sufficient:
                         item = OrderItem(order=order, order_detail=order_detail, product=product_obj[0], count=1)
                         item.save()
                     else:
@@ -66,9 +67,6 @@ class ShoppingCartView(View):
 
             return render(request, self.template_name)
 
-    def is_stock_sufficient(self, order, product):
-        order_items_count_with_product = order.orderitem_set.filter(product=product).count()
-        return product.stock == -1 or (product.stock > order_items_count_with_product)
 
 
 class ShoppingCartDetailView(View):

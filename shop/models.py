@@ -2,12 +2,13 @@ from datetime import datetime
 
 from django.contrib.auth.models import User as DjangoUser
 from django.db import models
+from django.db.models import Sum
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
 from django.utils.translation import gettext_lazy as _
 from tinymce import HTMLField
 
-from billing.utils import calculate_sum
+from billing.utils import calculate_sum, calculate_sum_order
 from mediaserver.upload import (company_files_upload_handler, fs, order_files_upload_handler,
                                 public_files_upload_handler, rand_key)
 
@@ -243,6 +244,7 @@ class ProductAttributeTypeInstance(models.Model):
 
 class Product(ProductSubItem):
     stock = models.IntegerField(default=0, blank=True, null=True, verbose_name=_('Stock'))
+    max_items_per_order = models.IntegerField(default=10, verbose_name=_('Maximum number of items per order'))
     product_picture = models.ImageField(default=None, null=True, blank=True,
                                         upload_to=public_files_upload_handler,
                                         storage=fs, verbose_name=_('Product picture'))
@@ -259,16 +261,22 @@ class Product(ProductSubItem):
     def __str__(self):
         return self.name + ' - public ' + str(self.is_public)
 
-    def decrease_stock(self):
-        self.stock = self.stock - 1 if self.stock > 0 else self.stock
+    def decrease_stock(self, number_of_items=1):
+        self.stock = self.stock - number_of_items if self.stock > 0 else self.stock
         self.save()
 
-    def increase_stock(self):
-        self.stock = self.stock + 1 if self.stock > -1 else self.stock
+    def increase_stock(self, number_of_items=1):
+        self.stock = self.stock + number_of_items if self.stock > -1 else self.stock
         self.save()
 
     def get_stock(self):
         return f"{self.stock if self.stock > -1 else '~'}"
+
+    def is_stock_sufficient(self, order):
+        order_items_count_with_product = order.orderitem_set.filter(product=self)\
+            .aggregate(count=Sum('count'))['count'] or 0
+
+        return self.stock == -1 or (self.stock > order_items_count_with_product), self.stock - order_items_count_with_product
 
 
 class IndividualOffer(models.Model):
@@ -451,12 +459,12 @@ class OrderDetail(models.Model):
     def increase_stocks(self):
         for order_item in self.order.orderitem_set.all():
             if isinstance(order_item.product.product, Product):
-                order_item.product.product.increase_stock()
+                order_item.product.product.increase_stock(order_item.count)
 
     def decrease_stocks(self):
         for order_item in self.order.orderitem_set.all():
             if isinstance(order_item.product.product, Product):
-                order_item.product.product.decrease_stock()
+                order_item.product.product.decrease_stock(order_item.count)
 
     def apply_discount(self):
         for order_item in self.order.orderitem_set.all():
@@ -475,10 +483,10 @@ class OrderDetail(models.Model):
                self.is_cancelled
 
     def total_wt(self, include_discount=False):
-        return calculate_sum(self.orderitem_set, True, include_discount) or 0
+        return calculate_sum_order(self.orderitem_set, True, include_discount) or 0
 
     def total(self, include_discount=False):
-        return calculate_sum(self.orderitem_set, False, include_discount) or 0
+        return calculate_sum_order(self.orderitem_set, False, include_discount) or 0
 
     def total_discounted(self):
         return self.total(True)  # - (self.discount_amount or 0)
@@ -525,7 +533,7 @@ class OrderItem(models.Model):
             self.price = self.get_product_special_price() if self.get_product_special_price() else self.get_product_price()
             self.price_wt = self.get_product_price_wt()
             self.applied_discount = 0
-            self.price_discounted = self.get_product_price()
+            self.price_discounted = self.get_product_price_b()
             self.price_discounted_wt = self.get_product_price_wt()
         if self.product.price_on_request and not self.price_wt:
             self.price_wt = round(self.price * (1 + self.product.tax), 2)
@@ -576,7 +584,7 @@ class OrderItem(models.Model):
             result = True
         else:
             self.applied_discount = 0
-            self.price_discounted = self.price
+            self.price_discounted = self.get_product_price_b()
             self.price_discounted_wt = self.price_wt
         # Fixed amount vouchers apply on the order not an individual item
         if is_eligible:
@@ -590,21 +598,23 @@ class OrderItem(models.Model):
 
     def total_wt(self, include_discount=False):
         sub_items = OrderItem.objects.filter(order_item=self)
-        return calculate_sum(sub_items, True, include_discount) + (
-            self.price_wt if not include_discount else self.price_discounted_wt) \
-            if sub_items.count() > 0 else 0 + self.price_wt if not include_discount else self.price_discounted_wt
+        return (calculate_sum(sub_items, True, include_discount)  + (
+            (self.price_wt if not include_discount else self.price_discounted_wt) \
+            if sub_items.count() > 0 else 0 + self.price_wt if not include_discount else self.price_discounted_wt)) * \
+               self.count
 
     def total(self, include_discount=False):
         sub_items = OrderItem.objects.filter(order_item=self)
-        return calculate_sum(sub_items, False, include_discount) + (
+        return (calculate_sum(sub_items, False, include_discount) + (
             self.price if not include_discount else self.price_discounted) \
-            if sub_items.count() > 0 else 0 + self.price if not include_discount else self.price_discounted
+            if sub_items.count() > 0 else 0 + self.price if not include_discount else self.price_discounted)  * \
+               self.count
 
     def total_discounted(self):
-        return self.total(True)
+        return round(self.total(True), 2)
 
     def total_discounted_wt(self):
-        return self.total_wt(True)
+        return round(self.total_wt(True), 2)
 
     def total_discount(self):
         return round(self.total() - self.total_discounted(), 2)
@@ -627,6 +637,11 @@ class OrderItem(models.Model):
     def get_product_price_wt(self):
         return round((self.get_product_special_price() if self.get_product_special_price() else
                       self.get_product_price()) * (1 + self.product.tax), 2)
+
+    def get_product_price_b(self):
+        return (self.get_product_special_price() if self.get_product_special_price() else
+                      self.get_product_price())
+
 
     def price_changed(self):
         return \

@@ -10,7 +10,8 @@ class ProductForm(ModelForm):
 
     class Meta:
         model = Product
-        fields = ['name','category', 'is_public','price', 'special_price', 'price_on_request', 'tax','stock', 'description', 'details',
+        fields = ['name','category', 'is_public','price', 'special_price', 'price_on_request', 'tax','stock',
+                  'max_items_per_order', 'description', 'details',
                   'product_picture',   'assigned_sub_products', 'attributes']
 
     def __init__(self, *args, **kwargs):
@@ -105,16 +106,17 @@ class OrderItemForm(ModelForm):
 
     class Meta:
         model = OrderItem
-        fields = ['search', 'product', 'count', 'price', 'price_wt']
+        fields = ['search', 'product', 'count', 'price', 'price_wt','order_item']
         required = ['product', 'count']
         widgets = {
             'product': SearchableSelect(),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, order, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.Meta.required:
             self.fields[field].required = True
+        self.fields['order_item'].queryset = OrderItem.objects.filter(order=order).exclude(id=self.instance.id)
 
 
 class PaymentProviderForm(Form):

@@ -143,11 +143,6 @@ class OrderConfirmedView(View):
         order_detail = OrderDetail.objects.get(order=_order.id)
         order_detail.date_bill = datetime.now()
 
-        for order_item in OrderItem.objects.filter(order=_order):
-            order_item.price = order_item.product.special_price if \
-                order_item.product.special_price else order_item.product.price
-            order_item.save()
-
         if not order_detail.state:
             order_detail.state = OrderState.objects.get(initial=True)
         order_detail.save()

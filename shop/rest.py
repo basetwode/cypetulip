@@ -1,5 +1,6 @@
 import secrets
 
+from django.contrib import messages
 from rest_framework import viewsets, serializers, status
 from rest_framework.exceptions import NotFound
 from rest_framework.fields import Field, SerializerMethodField
@@ -55,7 +56,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['stock', 'assigned_sub_products', 'product_picture']
+        fields = ['stock', 'assigned_sub_products', 'product_picture', 'max_items_per_order']
         depth = 4
 
     def get_fields(self):
@@ -388,6 +389,29 @@ class OrderItemViewSet(viewsets.ModelViewSet):
         else:
             queryset.filter(order__session=self.request.session.session_key)
         return queryset
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        stock_sufficient, curr_stock = instance.product.product.is_stock_sufficient(instance.order)
+        new_items = request.data.get('count') - instance.count
+
+        if request.data.get('count') > instance.product.product.max_items_per_order:
+            return Response({'error': _('We\'re sorry, you can only add up to %(count) items to your order') % {
+                                          'article': instance.product.product.max_items_per_order},
+                             'count': instance.count
+                             }, status=status.HTTP_400_BAD_REQUEST)
+
+        if new_items <= curr_stock:
+            instance.count = request.data.get("count")
+            instance.save()
+            return Response({}, status=status.HTTP_200_OK)
+
+        return Response({'error': _('We\'re sorry, we can not add %(article)s to your shopping '
+                                    'cart because our stocks are insufficient') % {
+                                      'article': instance.product.product.name},
+                         'count': instance.count
+                         }, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class FileOrderItemViewSet(viewsets.ModelViewSet):

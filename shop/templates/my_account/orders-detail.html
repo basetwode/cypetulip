@@ -140,7 +140,7 @@
                                                     {% endif %}
                                                 </div>
                                                 <div class="col-7">
-                                                    <h5 class="nomargin">{{ order.product.name }}</h5>
+                                                    <h5 class="nomargin">{{ order.count }} x {{ order.product.name }}</h5>
                                                 </div>
                                             </div>
                                         </td>
@@ -199,7 +199,7 @@
                                                 </div>
                                             </td>
                                             <td colspan="2"
-                                                data-th="Price">{{ sub_item.product.price_wt }} &euro;
+                                                data-th="Price">{{ sub_item.price_wt }} &euro;
                                             </td>
                                             <td colspan="3">
                                             </td>

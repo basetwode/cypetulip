@@ -739,6 +739,11 @@ class CreateOrderItem(LoginRequiredMixin, RepeatableWizardView):
     def get_success_url(self):
         return reverse_lazy('create_order_item', kwargs={'id': '', 'parent_id': self.get_parent_id()})
 
+    def get_form_kwargs(self):
+        form_kwargs = super(CreateOrderItem, self).get_form_kwargs()
+        return {**form_kwargs, **{'order': OrderDetail.objects.get(
+            id=self.get_parent_id()).order}}
+
 
 class DeleteOrderItem(LoginRequiredMixin, DeleteView):
     model = OrderItem
@@ -1006,7 +1011,7 @@ class ContactResetPwdView(LoginRequiredMixin, UpdateView, NotifyNewCustomerAccou
 
     def form_valid(self, form):
         if 'notify_customer' in form.cleaned_data and form.cleaned_data['notify_customer']:
-            self.notify_client(_("Your account at ")+LegalSetting.objects.first().company_name , self.object,
+            self.notify_client(_("Your account at ")+LegalSetting.objects.first().company_name , self.get_object(),
                                form.cleaned_data['new_password1'])
         return super(ContactResetPwdView, self).form_valid(form)
 

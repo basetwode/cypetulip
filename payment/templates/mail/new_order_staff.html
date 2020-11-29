@@ -16,7 +16,7 @@
                 <td>
                     <img style="padding:10px; max-height: 50px" src="cid:{{ order_item.product.product.product_picture.name }}">
                 </td>
-                <td>{{ order_item.product.name }}</td>
+                <td>{{ order_item.count }} x {{ order_item.product.name }}</td>
                 <td>  {% if order_item.product.special_price_wt %}
                     {{ order_item.product.special_price_wt | floatformat:2 }} &euro;
                 {% else %}

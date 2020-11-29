@@ -1,3 +1,5 @@
+from functools import reduce
+
 from django.db.models import Case, When, FloatField, F, Sum, Func, Transform
 from django.db.models.functions import Cast
 
@@ -20,6 +22,15 @@ def calculate_sum(order_items, include_tax=False, include_discount=False):
     else:
         total = order_items.aggregate(
             total=Round(Sum(price_field, field=price_field), 2))['total']
-    return total
+    return total if total else 0
 
 
+def calculate_sum_order(order_items, include_tax=False, include_discount=False):
+    price_field = 'total'
+    price_field_wt = 'total_wt'
+    if include_discount:
+        price_field = 'total_discounted'
+        price_field_wt = 'total_discounted_wt'
+    return reduce(lambda total, order_item: total + order_item,
+                 [getattr(order_item, price_field_wt if include_tax else price_field)() for order_item in order_items \
+                  .filter(order_item__isnull=True)],0)

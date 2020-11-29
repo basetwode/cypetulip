@@ -45,10 +45,11 @@ class LoginView(View):
                         order_from_contact, order_detail = Order.create_new_order(request)
                     else:
                         order_from_contact = order_from_contact.first()
-                    for item in order_from_session.first().orderitem_set.all():
-                        item.order = order_from_contact
-                        item.order_detail = order_from_contact.orderdetail_set.first()
-                        item.save()
+                    if order_from_session.count() > 0:
+                        for item in order_from_session.first().orderitem_set.all():
+                            item.order = order_from_contact
+                            item.order_detail = order_from_contact.orderdetail_set.first()
+                            item.save()
                     order_from_session.delete()
                 else:
                     order_from_session.session = request.session.session_key
@@ -58,7 +59,7 @@ class LoginView(View):
                 if 'next' in request.POST:
                     next_site = request.POST['next']
                     return HttpResponseRedirect(next_site)
-                if 'next' in request.GET:
+                if 'next' in request.GET and len(request.GET['next']) > 0:
                     next_site = request.GET['next']
                     return HttpResponseRedirect(next_site)
                 return HttpResponseRedirect('/cms/home')

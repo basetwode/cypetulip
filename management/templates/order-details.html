@@ -211,7 +211,7 @@
                                             {% endif %}
                                         </div>
                                         <div class="col-md-9">
-                                            <h4 class="nomargin">{{ order.product.name }}</h4>
+                                            <h4 class="nomargin">{{ order.count }} x {{ order.product.name }}</h4>
 
                                         </div>
 
@@ -223,7 +223,7 @@
                                 <td id="subtotal-{{ order.id }}" data-th="Subtotal"
                                     class="text-center">{{ order.total }} &euro;
                                     {% if order.applied_discount %}<br>
-                                        <small class="mt-1">- ({{ order.order_detail.discount.discount_percentage_in_percent }}%
+                                        <small class="mt-1">-{{ order.order_detail.total_discount }} ({{ order.order_detail.discount.discount_percentage_in_percent }}%
                                             {{ order.order_detail.discount.voucher_id }})</small>
                                         <br> <b>{{ order.total_discounted|floatformat:"2" }} &euro;</b>
                                     {% endif %}

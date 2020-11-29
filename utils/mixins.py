@@ -45,7 +45,7 @@ class EmailMixin:
         EmailThread(receiver_user, content, subject, context, self.get_template(), self.connection()).start()
 
 
-class EmailThread(threading.Thread):
+class EmailThread():
     def __init__(self, receiver_user, content, subject, context, email_template, connection):
         self.subject = subject
         self.context = context
@@ -53,65 +53,64 @@ class EmailThread(threading.Thread):
         self.email_template = email_template
         self.receiver_user = receiver_user
         self.connection = connection
-        threading.Thread.__init__(self)
 
-    def run(self):
+    def start(self):
 
         result = None
         tries = 0
-        while (result is None or result is not 1) and tries < 5:
+        #while (result is None or result is not 1) and tries < 5:
+        try:
+
+            print("Sending new email to " + self.receiver_user.email)
+            legal = LegalSetting.objects.first()
+            self.context['content'] = self.content
+            self.context['legal'] = legal
+            html_content = render_to_string(self.email_template, context=self.context)
+            print(self.content)
+
+            email = EmailMultiAlternatives('Subject', self.subject, connection=self.connection)
+            email.subject = self.subject
+            email.mixed_subtype = 'related'
+            email.content_subtype = 'html'
+            email.attach_alternative(html_content, "text/html")
+            email.to = [self.receiver_user.email]
+
+            logo_file = legal.logo.open("rb")
             try:
+                logo = MIMEImage(logo_file.read())
+                logo.add_header('Content-ID', '<{}>'.format(legal.logo.name))
+                email.attach(logo)
+            finally:
+                logo_file.close()
 
-                print("Sending new email to " + self.receiver_user.email)
-                legal = LegalSetting.objects.first()
-                self.context['content'] = self.content
-                self.context['legal'] = legal
-                html_content = render_to_string(self.email_template, context=self.context)
-                print(self.content)
+            if 'files' in self.context and self.context['files']:
+                for file_name, file in self.context['files'].items():
+                    email.attach(file_name, file, )
 
-                email = EmailMultiAlternatives('Subject', self.subject, connection=self.connection)
-                email.subject = self.subject
-                email.mixed_subtype = 'related'
-                email.content_subtype = 'html'
-                email.attach_alternative(html_content, "text/html")
-                email.to = [self.receiver_user.email]
+            if 'object' in self.context and isinstance(self.context['object'], OnlineShipment):
+                email.attach_file(self.context['object'].file.path)
 
-                logo_file = legal.logo.open("rb")
-                try:
-                    logo = MIMEImage(logo_file.read())
-                    logo.add_header('Content-ID', '<{}>'.format(legal.logo.name))
-                    email.attach(logo)
-                finally:
-                    logo_file.close()
+            if 'object' in self.context and isinstance(self.context['object'], Order):
+                for order_item in self.context['object'].orderitem_set.all():
+                    if hasattr(order_item.product,'product') and order_item.product.product.product_picture:
+                        product_file = order_item.product.product.product_picture.open("rb")
+                        try:
+                            product_img = MIMEImage(product_file.read())
+                            product_img.add_header('Content-ID', '<{}>'
+                                                   .format(order_item.product.product.product_picture.name))
+                            email.attach(product_img)
+                        finally:
+                            product_file.close()
 
-                if 'files' in self.context and self.context['files']:
-                    for file_name, file in self.context['files'].items():
-                        email.attach(file_name, file, )
-
-                if 'object' in self.context and isinstance(self.context['object'], OnlineShipment):
-                    email.attach_file(self.context['object'].file.path)
-
-                if 'object' in self.context and isinstance(self.context['object'], Order):
-                    for order_item in self.context['object'].orderitem_set.all():
-                        if hasattr(order_item.product,'product') and order_item.product.product.product_picture:
-                            product_file = order_item.product.product.product_picture.open("rb")
-                            try:
-                                product_img = MIMEImage(product_file.read())
-                                product_img.add_header('Content-ID', '<{}>'
-                                                       .format(order_item.product.product.product_picture.name))
-                                email.attach(product_img)
-                            finally:
-                                product_file.close()
-
-                print("from " + email.from_email)
-                print("Sending mail")
-                tries += 1
-                result = email.send()
-                print(result)
-            except Exception as e:
-                print(e)
-                print("Error when sending mail... retrying")
-                time.sleep(15)
+            print("from " + email.from_email)
+            print("Sending mail")
+            tries += 1
+            result = email.send()
+            print(result)
+        except Exception as e:
+            print(e)
+            print("Error when sending mail... retrying")
+            #time.sleep(15)
 
         return result
 

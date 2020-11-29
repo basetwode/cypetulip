@@ -80,7 +80,7 @@
                                         {% endif %}
                                     </div>
                                     <div class="col-12 col-md-7">
-                                        {{ order.product.name }}
+                                        {{ order.count }} x {{ order.product.name }}
 
                                     </div>
 
@@ -204,7 +204,7 @@
                                         id="total">{{ open_orders.first.order_detail.total_wt }}</span>&euro;</strong>
                             {% endif %}
 
-                            </td>+
+                            </td>
                     </tr>
                 </table>
 

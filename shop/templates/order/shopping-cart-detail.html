@@ -2,6 +2,7 @@
 {% load static %}
 {% load i18n %}
 {% load recurse %}
+{% load bootstrap4 %}
 {% block head %}
     <script src="{% static 'utils.js' %}"></script>
     <title>{{ product.name }}</title>
@@ -40,13 +41,14 @@
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div  class="col-md-12 needs-validation">
                 {% csrf_token %}
                 <table id="cart" class="table table-hover table-striped table-responsive-md">
                     <thead>
                     <tr>
-                        <th style="width:50%">{% trans 'Product' %}</th>
+                        <th style="width:40%">{% trans 'Product' %}</th>
                         <th style="width:25%">{% trans 'Price' %}</th>
 
                         <th style="width:15%" class="text-center">{% trans 'Total' %}</th>
@@ -55,9 +57,17 @@
                     </thead>
                     <tbody>
                     <template v-for="order_item in order.order_items">
+
                         <tr class="font-weight-bold" style="background-color: rgba(0, 0, 0, .06);">
                             <td>
                                 <div class="row ">
+                                    <div class="col-2 col-md-2">
+                                        <select class="custom-select" style="max-width: 57px; min-width: 57px" required
+                                                v-model="order_item.count" @change="orderItemCountChanged(order_item)">
+                                            <option v-for="index in order_item.product.product.max_items_per_order"
+                                                    :value="index">[[index]]</option>
+                                        </select>
+                                    </div>
                                     <div class="d-none d-sm-block col-md-2">
 
                                         <img v-if="order_item.product.product.product_picture"
@@ -65,7 +75,7 @@
                                              class="img-fluid img-thumbnail"/>
                                         <i v-else class="fa fa-4x fa-image img-thumbnail"></i>
                                     </div>
-                                    <div class="col-12 col-md-7 ">
+                                    <div class="col-10 col-md-7 ">
                                         [[order_item.product.name]]
                                     </div>
                                 </div>
@@ -265,7 +275,26 @@
                 </div>
             </div>
         </div>
+        <button type="button" class="btn btn-primary" ref="showErrorModal" style="display: none" data-toggle="modal" data-target="#errorModal">
+        </button>
+        <div class="modal show modal-active"  id="errorModal" tabindex="-1" aria-labelledby="errorModallLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="errorModalLabel">{% trans 'We are sorry' %}</h5>
+                        <button type="button" ref="closeErrorModal" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        [[errorMessages]]
 
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <script type='text/javascript'>
         var csrfmiddlewaretoken = '{{ csrf_token }}';
@@ -289,7 +318,8 @@
                 form_contains_errors: false,
                 order_items_submitted_count: 0,
                 errors: {shipment: [], address: []},
-                isAuthenticated: is_authenticated === 'True'
+                isAuthenticated: is_authenticated === 'True',
+                errorMessages: undefined
             },
             mounted() {
                 this.reloadData()
@@ -315,6 +345,16 @@
 
                         });
                 },
+                orderItemCountChanged: function(orderItem){
+                    //var formData = new FormData();
+                    let item = {};
+                    this.putItem(orderItem, 'orderitem/',orderItem.id,item, (error => {
+                        this.errorMessages = error.response.data.error
+                        orderItem.count = error.response.data.count
+                        this.$refs.showErrorModal.click()
+                    }))
+                    //postItem: function (formData, uri, subItem) {
+                },
                 fileSelected: function(subItem) {
                     if (this.$refs['file-' + subItem.randID] &&  this.$refs['file-' + subItem.randID][0].files[0]) {
                         subItem.file = this.$refs['file-' + subItem.randID][0].files[0];
@@ -325,7 +365,7 @@
                     let instance = this
                     let total = (orderItem.price_wt*100 + orderItem.order_items.reduce(function(price, order_item_b) {
                         return price + instance.getOrderItemPrice(order_item_b)*100
-                    },0)) / 100
+                    },0))*orderItem.count / 100
                     return total
                 },
                 getOrderItemPrice: function(orderItem) {
@@ -484,7 +524,7 @@
                             instance.form_contains_errors = true;
                         })
                 },
-                putItem: function (formData, uri, id, subItem) {
+                putItem: function (formData, uri, id, subItem, callback) {
                     let instance = this;
                     loadingSpinner = $('#loading-spinner');
                     return axios.put('/api/v1/' + uri + id + "/", formData, {
@@ -502,6 +542,9 @@
                             subItem.errors = error.response.data;
                             subItem.valid = false;
                             instance.form_contains_errors = true;
+                            if(callback){
+                                callback(error)
+                            }
                         })
                 }
 

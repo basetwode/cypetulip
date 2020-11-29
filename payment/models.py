@@ -79,7 +79,7 @@ class Payment(models.Model):
         if self.pk is None:
             for order_item in self.details.order.orderitem_set.all():
                 if hasattr(order_item.product, 'product'):
-                    order_item.product.product.decrease_stock()
+                    order_item.product.product.decrease_stock(order_item.count)
             for order_detail in self.details.order.orderdetail_set.all():
                 # update order create date
                 order_detail.send_order()
