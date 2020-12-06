@@ -401,7 +401,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
                              'count': instance.count
                              }, status=status.HTTP_400_BAD_REQUEST)
 
-        if new_items <= curr_stock:
+        if new_items <= curr_stock or instance.product.product.stock < 0:
             instance.count = request.data.get("count")
             instance.save()
             return Response({}, status=status.HTTP_200_OK)
