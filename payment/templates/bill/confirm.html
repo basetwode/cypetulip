@@ -134,13 +134,13 @@
 
                                 <td style="width:22%" class="text-center">
 
-                                    <small>{{ order_items.first.order_detail.total }} € ({% trans 'excl. Tax' %})</small><br>
-                                    {{ order_items.first.order_detail.total_wt }} € ({% trans 'incl. Tax' %})<br>
+                                    <small>{{ order_items.first.order_detail.total|floatformat:"2"  }} € ({% trans 'excl. Tax' %})</small><br>
+                                    {{ order_items.first.order_detail.total_wt|floatformat:"2"  }} € ({% trans 'incl. Tax' %})<br>
                                     {% if order_items.first.order_detail.discount %}<br>
 
-                                    <small class="mt-1">- {{ order_items.first.order_detail.total_discount_wt }}&euro; ({{ order_items.first.order_detail.discount.voucher_id }}
+                                    <small class="mt-1">- {{ order_items.first.order_detail.total_discount_wt|floatformat:"2"  }}&euro; ({{ order_items.first.order_detail.discount.voucher_id }}
                                         {{ order_items.first.order_detail.discount.discount_percentage_in_percent }}%)</small>
-                                    <br> <b>{% trans 'Total' %}: {{ order_items.first.order_detail.total_discounted_wt }}&euro;</b>
+                                    <br> <b>{% trans 'Total' %}: {{ order_items.first.order_detail.total_discounted_wt|floatformat:"2"  }}&euro;</b>
                                     {% else %}
                                     {% endif %}
                                 </td>
@@ -215,8 +215,8 @@
                               id="total">
 
                             {% if open_orders.first.order_detail.discount  %}
-                                {{ open_orders.first.order_detail.total_discounted_wt }}&euro;
-                            {% else %}{{ order_items.first.order_detail.total_wt }}&euro;
+                                {{ open_orders.first.order_detail.total_discounted_wt|floatformat:"2"  }}&euro;
+                            {% else %}{{ order_items.first.order_detail.total_wt|floatformat:"2"  }}&euro;
                             {% endif %}
                             </span>
                     </strong></td>

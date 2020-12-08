@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from _decimal import ROUND_HALF_UP, Decimal
 from django.contrib.auth.models import User as DjangoUser
 from django.db import models
 from django.db.models import Sum
@@ -123,11 +124,15 @@ class ProductSubItem(models.Model):
         else:
             return f"{self.name} | {self.price}"
 
+    def calculate_tax(self, price):
+        return Decimal(f"{price * (1 + self.tax)}") \
+            .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
     def price_wt(self):
-        return round(self.price * (1 + self.tax), 2)
+        return self.calculate_tax(self.price)
 
     def special_price_wt(self):
-        return round(self.special_price * (1 + self.tax), 2) if self.special_price else None
+        return self.calculate_tax(self.special_price) if self.special_price else None
 
     def bprice_wt(self):
         return self.special_price_wt() if self.special_price else self.price_wt()
@@ -162,7 +167,8 @@ class SelectItem(models.Model):
         return self.name
 
     def price_wt(self):
-        return round(self.price * (1 + self.tax), 2)
+        return Decimal(f"{self.price * (1 + self.tax)}")\
+            .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
 # can be used for number of this item like 4 trousers
@@ -483,10 +489,12 @@ class OrderDetail(models.Model):
                self.is_cancelled
 
     def total_wt(self, include_discount=False):
-        return calculate_sum_order(self.orderitem_set, True, include_discount) or 0
+        return Decimal(f"{calculate_sum_order(self.orderitem_set, True, include_discount) or 0}") \
+            .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
     def total(self, include_discount=False):
-        return calculate_sum_order(self.orderitem_set, False, include_discount) or 0
+        return Decimal(f"{calculate_sum_order(self.orderitem_set, False, include_discount) or 0}") \
+            .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
     def total_discounted(self):
         return self.total(True)  # - (self.discount_amount or 0)
@@ -536,7 +544,7 @@ class OrderItem(models.Model):
             self.price_discounted = self.get_product_price_b()
             self.price_discounted_wt = self.get_product_price_wt()
         if self.product.price_on_request and not self.price_wt:
-            self.price_wt = round(self.price * (1 + self.product.tax), 2)
+            self.price_wt = self.calculate_tax(self.price)
             self.applied_discount = 0
             self.price_discounted = self.price
             self.price_discounted_wt = self.price_wt
@@ -574,7 +582,7 @@ class OrderItem(models.Model):
         if is_eligible and hasattr(voucher, 'percentagediscount'):
             self.applied_discount = round(self.price * voucher.percentagediscount.discount_percentage, 2)
             self.price_discounted = round(self.price - self.applied_discount, 2)
-            self.price_discounted_wt = round(self.price_discounted * (1 + self.product.tax), 2)
+            self.price_discounted_wt = self.calculate_tax(self.price_discounted)
             result = True
         elif apply_fixed_discount:
             amount = voucher.fixedamountdiscount.amount if voucher.fixedamountdiscount.amount < self.price else self.price
@@ -622,6 +630,10 @@ class OrderItem(models.Model):
     def total_discount_wt(self):
         return round(self.total_wt() - self.total_discounted_wt(), 2)
 
+    def calculate_tax(self, price):
+        return Decimal(f"{price * (1 + self.product.tax)}") \
+            .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
     def get_product_price(self):
         return self.product.price if hasattr(self, 'fileorderitem') else \
             self.checkboxorderitem.get_product_price() if hasattr(self, 'checkboxorderitem') else \
@@ -635,8 +647,8 @@ class OrderItem(models.Model):
                     self.product.special_price
 
     def get_product_price_wt(self):
-        return round((self.get_product_special_price() if self.get_product_special_price() else
-                      self.get_product_price()) * (1 + self.product.tax), 2)
+        return (self.calculate_tax(self.get_product_special_price()) if self.get_product_special_price() else
+                      self.calculate_tax(self.get_product_price()))
 
     def get_product_price_b(self):
         return (self.get_product_special_price() if self.get_product_special_price() else
