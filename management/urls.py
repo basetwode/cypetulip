@@ -24,7 +24,7 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               SelectItemCreationView, SelectItemDeleteView, CompanyCreationView, ContactCreationView,
                               ContactDeleteView, AddressCreationView, AddressDeleteView, ContactResetPwdView,
                               CompanyDeleteView, PercentageDiscountEditView, DiscountOverview,
-                              FixedAmountDiscountEditView)
+                              FixedAmountDiscountEditView, CreateOrderSubItem)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
@@ -113,6 +113,8 @@ urlpatterns = [
         CreateOrderItem.as_view(), name="create_order_item"),
     url(r'^orders/item/delete/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
         DeleteOrderItem.as_view(), name="delete_order_item"),
+    url(r'^orders/subitem/create/(?P<parent_id>[0-9]+)/$',
+        CreateOrderSubItem.as_view(), name="create_order_subitem"),
 
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/cancel/$',
         OrderCancelView.as_view(), name="cancel_order"),

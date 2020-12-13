@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load recurse %}
+{% load bootstrap4 %}
+{% block head %}
+    <script src="{% static 'utils.js' %}"></script>
+    <title>{{ product.name }}</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
+    </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{% endblock %}
+
+{% block body %}
+    <div id="vue-cart">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="h-bold">{% trans "Menu" %}</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <hr>
+                        <a href="{% url 'management_index' %}"
+                           class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-9 needs-validation">
+                {% csrf_token %}
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>{{ page_title }}</h2>
+                    </div>
+                    <div class="card-body">
+                        {% include 'order/shopping-cart-vue.html' %}
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ return_url }}" class="btn btn-primary"> {% trans 'Back' %}</a>
+                        <a type="submit" @click="submitCart()"
+                           class="btn btn-primary float-right">{% trans 'Continue' %}</a>
+                        <form id="next-step-form" action="{{ success_url }}" method="get">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary" ref="showErrorModal" style="display: none"
+                    data-toggle="modal" data-target="#errorModal">
+            </button>
+            <div class="modal show modal-active" id="errorModal" tabindex="-1" aria-labelledby="errorModallLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="errorModalLabel">{% trans 'We are sorry' %}</h5>
+                            <button type="button" ref="closeErrorModal" class="close" data-dismiss="modal"
+                                    aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            [[errorMessages]]
+
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'order/shopping-cart-vue-js.html' %}
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load recurse %}
+{% load bootstrap4 %}
+{% block head %}
+    <script src="{% static 'utils.js' %}"></script>
+    <title>{{ product.name }}</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
+    </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{% endblock %}
+
+{% block body %}
+    <div id="vue-cart">
+        <div class="order-step row mt-2">
+            <div class="stepwizard">
+                <div class="stepwizard-row">
+                    <div class="stepwizard-step">
+                        <a href="" type="button" class="btn btn-success btn-circle"><i
+                                class="fa fa-shopping-cart"></i></a>
+                        <p><small>{% trans 'Shoppingcart' %}</small></p>
+                    </div>
+                    <div class="stepwizard-step">
+                        <a @click="submitCart()" type="button"
+                           class="btn btn-outline-success btn-circle"><i
+                                class="fas fa-truck"></i></a>
+                        <p><small>{% trans "Delivery" %}</small></p>
+                    </div>
+                    <div class="stepwizard-step">
+                        <a type="button" class="btn btn-outline-success btn-circle"><i
+                                class="fas fa-credit-card"></i></a>
+                        <p><small>{% trans "Payment" %}</small></p>
+                    </div>
+                    <div class="stepwizard-step">
+                        <a type="button" class="btn btn-outline-success btn-circle"><i
+                                class="fas fa-check-square "></i></a>
+                        <p><small>{% trans "Overview" %}</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div  class="col-md-12 needs-validation">
+                {% csrf_token %}
+                {% include 'order/shopping-cart-vue.html' %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <a href="{% url 'shop:products' %}" class="btn btn-warning"><i
+                        class="fa fa-angle-left"></i> {% trans 'Shopping' %}</a>
+            </div>
+            <div class="col">
+                <a type="submit" @click="submitCart()"
+                   class="btn btn-success float-right">{% trans 'Delivery' %} <i
+                        class="fa fa-angle-right"></i></a>
+            </div>
+            <form id="next-step-form" action="/shop/delivery/{{ order_details.order_hash }}" method="get">
+            </form>
+        </div>
+        <button type="button" class="btn btn-primary" ref="showModal" style="display: none" data-toggle="modal" data-target="#loginModal">
+        </button>
+        <div class="modal show modal-active"  id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loginModalLabel">{% trans 'Login or continue as guest' %}</h5>
+                        <button type="button" ref="closeModal" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% url 'shop:delivery_order' order_details.order_hash as next_uri %}
+                        {% include 'authentification/login-form.html' with next_url=next_uri%}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" @click="continueToNextStep" class="btn btn-primary">{% trans 'Continue as guest' %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary" ref="showErrorModal" style="display: none" data-toggle="modal" data-target="#errorModal">
+        </button>
+        <div class="modal show modal-active"  id="errorModal" tabindex="-1" aria-labelledby="errorModallLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="errorModalLabel">{% trans 'We are sorry' %}</h5>
+                        <button type="button" ref="closeErrorModal" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        [[errorMessages]]
+
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {% include 'order/shopping-cart-vue-js.html' %}
+{% endblock %}

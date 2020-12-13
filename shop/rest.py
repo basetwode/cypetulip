@@ -363,6 +363,8 @@ class OrderViewSet(viewsets.ModelViewSet):
         """
         request = self.request
         result = None
+        if request.user.is_authenticated and request.user.is_staff:
+            return OrderDetail.objects.all()
         if request.user.is_authenticated:
             contact = Contact.objects.filter(user_ptr=request.user)
             if contact:

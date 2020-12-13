@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm, CharField, Form, BooleanField, Textarea, forms
 from django.utils.translation import ugettext_lazy as _
 
-from shop.models import OrderDetail, Address, Order, OrderItem, Product, ProductSubItem, Contact
+from shop.models import OrderDetail, Address, Order, OrderItem, Product, ProductSubItem, Contact, Company
 from utils.forms import SearchField, SearchableSelect, SetPasswordForm
 
 
@@ -76,6 +76,7 @@ class OrderForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['company'].queryset = Company.objects.filter(contact__groups__name__in=['client','client supervisor']).distinct()
         for field in self.Meta.required:
             self.fields[field].required = True
 
@@ -106,7 +107,7 @@ class OrderItemForm(ModelForm):
 
     class Meta:
         model = OrderItem
-        fields = ['search', 'product', 'count', 'price', 'price_wt','order_item']
+        fields = ['search', 'product', 'count', 'price', 'price_wt']
         required = ['product', 'count']
         widgets = {
             'product': SearchableSelect(),
@@ -116,7 +117,8 @@ class OrderItemForm(ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.Meta.required:
             self.fields[field].required = True
-        self.fields['order_item'].queryset = OrderItem.objects.filter(order=order).exclude(id=self.instance.id)
+        #self.fields['order_item'].queryset = OrderItem.objects.filter(order=order).exclude(id=self.instance.id)
+        self.fields['product'].queryset = Product.objects.all()
 
 
 class PaymentProviderForm(Form):

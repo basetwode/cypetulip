@@ -70,7 +70,7 @@ class ShoppingCartView(View):
 
 
 class ShoppingCartDetailView(View):
-    template_name = 'order/shopping-cart-detail.html'
+    template_name = 'order/shopping-cart.html'
 
     def delete(self, request, product_id):
         if request.user.is_authenticated:

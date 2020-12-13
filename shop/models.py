@@ -53,7 +53,7 @@ class Contact(DjangoUser):
     language = models.CharField(max_length=2, default='en', verbose_name=_('Language'))
 
     def __str__(self):
-        return str(self.company) + ' - ' + self.last_name
+        return str(self.company) + ' - ' + self.last_name + ' ' + self.first_name
 
     class Meta:
         verbose_name = _('Contact')
@@ -264,8 +264,6 @@ class Product(ProductSubItem):
     class Meta:
         verbose_name = _('Product')
 
-    def __str__(self):
-        return self.name + ' - public ' + str(self.is_public)
 
     def decrease_stock(self, number_of_items=1):
         self.stock = self.stock - number_of_items if self.stock > 0 else self.stock

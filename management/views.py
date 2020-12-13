@@ -710,6 +710,30 @@ class CreateOrderDetailView(LoginRequiredMixin, WizardView):
         return {**form_kwargs, **{'contacts': Contact.objects.filter(company=self.object.order.company)}}
 
 
+class CreateOrderSubItem(LoginRequiredMixin, WizardView):
+    page_title = _('Configure products')
+    template_name = 'order-item-create.html'
+    pk_url_kwarg = 'id'
+    parent_key = 'order_detail'
+    self_url = 'create_order_item'
+    model = OrderItem
+    fields = []
+
+    def get_back_url(self):
+        return reverse_lazy('create_order_item', kwargs={'id':'',
+                                                           'parent_id': OrderDetail.objects.get(
+                                                               id=self.get_parent_id()).id})
+
+    def get_success_url(self):
+        return reverse_lazy('management_detail_order',
+                            kwargs={'order': OrderDetail.objects.get(id=self.get_parent_id()).order.order_hash})
+
+    def get_context_data(self, **kwargs):
+        return {**super(CreateOrderSubItem, self).get_context_data(**kwargs),
+                **{'order_details': OrderDetail.objects.get(id=self.get_parent_id()).order,
+                   'success_url': self.get_success_url()}}
+
+
 class CreateOrderItem(LoginRequiredMixin, RepeatableWizardView):
     page_title = _('Select products')
     form_class = OrderItemForm
@@ -733,8 +757,8 @@ class CreateOrderItem(LoginRequiredMixin, RepeatableWizardView):
                                                                id=self.get_parent_id()).order.id})
 
     def get_next_url(self):
-        return reverse_lazy('management_detail_order',
-                            kwargs={'order': OrderDetail.objects.get(id=self.get_parent_id()).order.order_hash})
+        return reverse_lazy('create_order_subitem',
+                            kwargs={'parent_id':self.get_parent_id()})
 
     def get_success_url(self):
         return reverse_lazy('create_order_item', kwargs={'id': '', 'parent_id': self.get_parent_id()})

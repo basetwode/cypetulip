@@ -1,0 +1,207 @@
+{% load static %}
+{% load i18n %}
+{% load recurse %}
+{% load bootstrap4 %}
+
+<div>
+    {% csrf_token %}
+    <table id="cart" class="table table-hover table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th style="width:40%">{% trans 'Product' %}</th>
+            <th style="width:25%">{% trans 'Price' %}</th>
+
+            <th style="width:15%" class="text-center">{% trans 'Total' %}</th>
+            <th style="width:10%"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <template v-for="order_item in order.order_items">
+
+            <tr class="font-weight-bold" style="background-color: rgba(0, 0, 0, .06);">
+                <td>
+                    <div class="row ">
+                        <div class="col-2 col-md-2">
+                            <select class="custom-select" style="max-width: 57px; min-width: 57px" required
+                                    v-model="order_item.count" @change="orderItemCountChanged(order_item)">
+                                <option v-for="index in order_item.product.product.max_items_per_order"
+                                        :value="index">[[index]]
+                                </option>
+                            </select>
+                        </div>
+                        <div class="d-none d-sm-block col-md-2">
+
+                            <img v-if="order_item.product.product.product_picture"
+                                 :src="order_item.product.product.product_picture"
+                                 class="img-fluid img-thumbnail"/>
+                            <i v-else class="fa fa-4x fa-image img-thumbnail"></i>
+                        </div>
+                        <div class="col-10 col-md-7 ">
+                            [[order_item.product.name]]
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    [[order_item.price_wt.toFixed(2)]]€<br>
+                </td>
+                <td class="text-center">
+                    [[getOrderItemTotal(order_item).toFixed(2)]]€ <br>
+
+                </td>
+                <td>
+                    <button class="btn btn-danger btn-sm"
+                            @click="removeOrderItem(order_item)"
+                    ><i
+                            class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+            <template v-for="subproduct in order_item.product.product.assigned_sub_products">
+                <tr style="background-color: white"
+                    v-for="(order_items_subproduct, index) in getOrderItemsForSubproduct(order_item, subproduct.id)">
+
+                    <td colspan="3" class="pl-4">
+                        <div class="row">
+                            <div class="col-6">
+                                <span>[[subproduct.name]]</span>
+                            </div>
+                            <div class="col-6">
+                                <div v-if="order_items_subproduct.product.selectsubitem">
+                                    [[getOrderItemPrice(order_items_subproduct)]] €
+                                </div>
+                                <div v-else>
+                                    [[order_items_subproduct.product.bprice_wt]] €<br>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p><small v-html="subproduct.description">
+                        </small>
+                        </p>
+                        <form enctype="multipart/form-data" action="/api/v1/orderitem"
+                              :class="{'was-validated': (was_validated &&  order_items_subproduct.dirty)}"
+                              method="post" :ref="'form-'+order_items_subproduct.randID">
+                            <div v-if="order_items_subproduct.product.filesubitem"
+                                 :class="{'input-group':true, 'is-invalid': order_items_subproduct.errors.file}">
+                                <input :required="subproduct.is_required"
+                                       :onchange="fileSelected(order_items_subproduct)"
+                                       :valid="isValid(order_items_subproduct)"
+                                       type="file"
+                                       :class="{'custom-file-input':true, 'form-control':true, 'is-invalid': order_items_subproduct.errors.file}"
+                                       :id="'inputGroupFile-'+order_items_subproduct.randID"
+                                       :ref="'file-'+order_items_subproduct.randID"
+                                       v-model="order_items_subproduct.file_name"
+                                       aria-describedby="inputGroupFileAddon01">
+                                <label :class="{'custom-file-label':true, 'is-invalid': order_items_subproduct.errors.file}"
+                                       :valid="isValid(order_items_subproduct)"
+                                       :for="'inputGroupFile-'+order_items_subproduct.randID">[[order_items_subproduct.file_name]]</label>
+
+                                <div v-if="isValid(order_items_subproduct)" class="valid-feedback">
+                                    {% trans 'Looks good!' %}
+                                </div>
+                                <div class="invalid-feedback">
+                                    <p v-for="error in order_items_subproduct.errors.file ">
+                                        [[error]]
+                                    </p>
+                                </div>
+                                <div class="w-100 pt-1 pl-2">
+                                    <span>{% trans 'Current File: ' %} [[order_items_subproduct.fileorderitem.file_name]]</span>
+                                </div>
+                            </div>
+                            <div v-if="order_items_subproduct.product.checkboxsubitem"
+                                 :class="{'input-group':true, 'is-invalid': order_items_subproduct.is_checked}">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class=" form-check-input" type="checkbox"
+                                               :required="order_items_subproduct.product.is_required"
+                                               v-model="order_items_subproduct.checkboxorderitem.is_checked"
+                                        >[[order_items_subproduct.product.checkboxsubitem.name]]</label>
+                                    <div class="valid-feedback">
+                                        {% trans 'Looks good!' %}
+                                    </div>
+                                    <div v-if="!isValid(order_items_subproduct)" style="display: block"
+                                         class="invalid-feedback">
+                                        <p v-for="error in order_items_subproduct.errors.is_checked ">
+                                            [[error]]
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="order_items_subproduct.product.selectsubitem"
+                                 :class="{'input-group':true, 'has-error': order_items_subproduct.errors  > 0}">
+                                <div class="form-group w-100">
+                                    <select :required="order_items_subproduct.product.is_required"
+                                            v-model="order_items_subproduct.selectorderitem.selected_item.id"
+                                            class="form-control">
+                                        <option v-for="option in order_items_subproduct.product.selectsubitem.options"
+                                                :value="option.id">
+                                            [[option.name]] ([[option.price_wt]] €)
+                                        </option>
+                                    </select>
+                                    <div class="valid-feedback">
+                                        {% trans 'Looks good!' %}
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        <p v-for="error in order_items_subproduct.errors.selected_item ">
+                                            [[error]]
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="order_items_subproduct.product.numbersubitem"
+                                 :class="{'input-group':true, 'has-error': order_items_subproduct.errors  > 0}">
+                                <div class="form-group w-100">
+
+                                    <label>[[order_items_subproduct.product.numbersubitem.name]]</label>
+                                    <input :required="order_items_subproduct.product.is_required"
+                                           type="number"
+                                           class="form-control"
+                                           v-model="order_items_subproduct.numberorderitem.number">
+                                    <div class="valid-feedback">
+                                        {% trans 'Looks good!' %}
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        <p v-for="error in order_items_subproduct.errors.number ">
+                                            [[error]]
+                                        </p>
+                                    </div>
+                                </div>
+                                <div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </td>
+                    <td>
+                        <div v-if="subproduct.is_multiple_per_item">
+                            <button @click="addSubProductOrderItem(order_item,subproduct)"
+                                    class="button-add-subproduct btn btn-secondary btn-sm"><i
+                                    class="fa fa-plus-circle"></i>
+                            </button>
+
+                            <button v-if="!isOnlyItem(order_item, subproduct.id)"
+                                    @click="removeSubProductOrderItem(order_item, order_items_subproduct.randID)"
+                                    class="button-remove-subproduct btn btn-secondary btn-sm"><i
+                                    class="fa fa-minus-circle"></i>
+                            </button>
+                        </div>
+                    </td>
+
+                </tr>
+            </template>
+        </template>
+
+        </tbody>
+        <tfoot>
+        <tr>
+            <td style="width:50%"></td>
+            <td style="width:10%"></td>
+            <td style="width:22%" class="text-center"><strong>{% trans 'Total: ' %}<span
+                    id="total">[[getOrderTotal().toFixed(2)]]</span>&euro;</strong>
+                <p>({% trans 'incl. Tax' %})</p></td>
+            <td style="width:10%"></td>
+        </tr>
+
+
+        </tfoot>
+    </table>
+</div>
