@@ -24,7 +24,7 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               SelectItemCreationView, SelectItemDeleteView, CompanyCreationView, ContactCreationView,
                               ContactDeleteView, AddressCreationView, AddressDeleteView, ContactResetPwdView,
                               CompanyDeleteView, PercentageDiscountEditView, DiscountOverview,
-                              FixedAmountDiscountEditView, CreateOrderSubItem)
+                              FixedAmountDiscountEditView, CreateOrderSubItem, MergeAccounts)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
@@ -80,6 +80,7 @@ urlpatterns = [
     url(r'^subitems/$', SubItemOverviewView.as_view(), name="subitem_overview"),
 
     url(r'^customers/$', CustomersOverviewView.as_view(), name="customers_overview"),
+    url(r'^customers/merge/(?P<id>[0-9]*)/$', MergeAccounts.as_view(), name="customers_merge"),
     url(r'^customers/search/$', SearchCustomers.as_view(), name="search_customers"),
 
     url(r'^pages/create/$', PageCreateView.as_view(), name="create_page"),

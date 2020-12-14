@@ -21,7 +21,7 @@ from cms.models import Page, Section
 from home import settings
 from management.filters import OrderDetailFilter, DiscountFilter
 from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm, ProductForm, \
-    ContactUserForm, ContactUserIncludingPasswordForm, ContactUserUpdatePasswordForm
+    ContactUserForm, ContactUserIncludingPasswordForm, ContactUserUpdatePasswordForm, MergeAccountsForm
 from management.mixins import NotifyNewCustomerAccountView
 from management.models import LdapSetting, MailSetting, LegalSetting, ShopSetting, Header, Footer
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME, PaymentProvider
@@ -1127,6 +1127,51 @@ class DiscountOverview(LoginRequiredMixin, ListView):
         return render(request, self.template_name,
                       {'filter': filter})
 
-class MergeAccounts(LoginRequiredMixin, FormView):
-#    form_class = MergeAccountsForm
-    pass
+
+class MergeAccounts(LoginRequiredMixin, FormView, NotifyNewCustomerAccountView):
+    form_class = MergeAccountsForm
+    template_name = 'generic-edit.html'
+    success_url = reverse_lazy('customers_overview')
+
+    def form_valid(self, form):
+        contacts_to_merge = form.cleaned_data['contacts']
+        contact_to_merge_to = form.cleaned_data['leading_contact']
+
+        companies = Company.objects.filter(contact__in=contacts_to_merge)
+        orders = Order.objects.filter(company__in=companies)
+        order_details = OrderDetail.objects.filter(contact__in=contacts_to_merge)
+        addresses = Address.objects.filter(contact__in=contacts_to_merge)
+
+        orders.update(company=contact_to_merge_to.company, session="")
+        order_details.update(contact=contact_to_merge_to)
+        addresses.update(contact=contact_to_merge_to)
+        # todo: merge addresses to remove dups
+        contacts_to_merge.delete()
+        companies.delete()
+
+        messages.success(self.request, _("Merge done") + " | " +
+                         str(contacts_to_merge.count()) + "Accounts, " + str(order_details.count()) + "orders")
+
+        if not contact_to_merge_to.is_registered():
+            contact_to_merge_to.username = contact_to_merge_to.email
+            password = secrets.token_urlsafe(10)
+            contact_to_merge_to.set_password(password)
+            contact_to_merge_to.save()
+            self.notify_client(_("Your account at ")+LegalSetting.objects.first().company_name , contact_to_merge_to,
+                               password)
+
+            group = Group.objects.get(name="client")
+            group.user_set.add(contact_to_merge_to)
+            sgroup = Group.objects.get(name='client supervisor')
+            sgroup.user_set.add(contact_to_merge_to)
+
+        return super(MergeAccounts, self).form_valid(form)
+
+    def get_initial(self):
+        initial = super(MergeAccounts, self).get_initial()
+        initial['notify_customer'] = True
+        return initial
+
+    def get_form_kwargs(self):
+        form_kwargs = super(MergeAccounts, self).get_form_kwargs()
+        return {**form_kwargs, **{'contact': Contact.objects.get(id=self.kwargs['id'])}}

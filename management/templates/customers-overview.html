@@ -4,7 +4,6 @@
 {% load bootstrap4 %}
 
 {% load i18n %}
-{% bootstrap_messages %}
 {% block head %}
     <title>Products</title>
     <script src="{% static 'autocomplete.js' %}"></script>
@@ -13,6 +12,7 @@
 {% endblock %}
 
 {% block body %}
+    {% bootstrap_messages %}
     <div class="row">
         <div class="col-md-3">
             <div class="card">
@@ -52,7 +52,7 @@
                 {% for contact in object_list %}
                     <tr>
                         <td>{{ contact.id }}</td>
-                        <td>{{ contact.first_name }} {{ contact.last_name }}</td>
+                        <td>{{ contact.first_name }} {{ contact.last_name }}<br>{{ contact.username }}</td>
                         <td>{{ contact.company }}</td>
                         <td>
                             {% include 'delete-modal.html' with id=contact.company.id url='company_delete' url_param='id' %}
@@ -69,6 +69,8 @@
                                     <a class="dropdown-item"
                                        href="{% url 'contact_pwd_reset' contact.id %}">{% trans 'Reset Password' %}</a>
 
+                                    <a class="dropdown-item"
+                                       href="{% url 'customers_merge' contact.id %}">{% trans 'Merge accounts' %}</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item"
                                        href="{% url 'contact_create' contact.company.id contact.id %}">{% trans 'Delete Contact' %}</a>

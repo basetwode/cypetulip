@@ -27,7 +27,7 @@ class LoginView(View):
     def post(self, request):
         username = request.POST['username']
         password = request.POST['password']
-        order_from_session = Order.objects.filter(session=request.session.session_key)
+        order_from_session = Order.objects.filter(session=request.session.session_key, orderdetail__state__isnull=True)
         order_items_from_order_session = []
         # Use Django's machinery to attempt to see if the username/password
         # combination is valid - a User object is returned if it is.

@@ -1,9 +1,10 @@
 from django.contrib.auth.models import User
-from django.forms import ModelForm, CharField, Form, BooleanField, Textarea, forms
+from django.forms import ModelForm, CharField, Form, BooleanField, Textarea, forms, ModelMultipleChoiceField, \
+    ModelChoiceField
 from django.utils.translation import ugettext_lazy as _
 
 from shop.models import OrderDetail, Address, Order, OrderItem, Product, ProductSubItem, Contact, Company
-from utils.forms import SearchField, SearchableSelect, SetPasswordForm
+from utils.forms import SearchField, SearchableSelect, SetPasswordForm, SearchableMultiSelect
 
 
 class ProductForm(ModelForm):
@@ -131,3 +132,36 @@ class PaymentProviderForm(Form):
     paypal_description = CharField(label=_("Paypal description"), required=False, widget=Textarea)
     paypal_user = CharField(max_length=100, required=False,label=_('Paypal Client ID'))
     paypal_secret = CharField(max_length=100, required=False, label=_('Paypal Secret'))
+
+
+class MergeAccountsForm(Form):
+
+    search = CharField(max_length=20, help_text='Filter contacts', widget=SearchField(), required=False)
+    contacts = ModelMultipleChoiceField(queryset=Contact.objects.all(), widget=SearchableMultiSelect)
+    leading_contact = ModelChoiceField(queryset=Contact.objects.all())
+
+    class Meta:
+        fields = ['search', 'contacts']
+        required = ['contacts']
+        widgets = {
+            'contacts': SearchableSelect(),
+        }
+
+    def __init__(self, contact, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.Meta.required:
+            self.fields[field].required = True
+        self.initial['leading_contact'] = contact
+        self.fields['contacts'].queryset = Contact.objects.all() \
+            .exclude(id=contact.id) \
+            .exclude(groups__name__in=['staff'])
+
+    def clean(self):
+        cleaned_data = super(MergeAccountsForm, self).clean()
+        customer =  Contact.objects.filter(username=cleaned_data.get("leading_contact").email)
+
+        if customer.count()>0 and customer[0].id != cleaned_data.get("leading_contact").id and customer.exists():
+            raise forms.ValidationError(
+                _('Can not merge into anonymous user, because there already is a registered user with this email. '
+                  'Please select the existing user as the leading user.'))
+        return cleaned_data

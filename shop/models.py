@@ -53,7 +53,10 @@ class Contact(DjangoUser):
     language = models.CharField(max_length=2, default='en', verbose_name=_('Language'))
 
     def __str__(self):
-        return str(self.company) + ' - ' + self.last_name + ' ' + self.first_name
+        return str(self.company) + ' - ' + self.last_name + ' ' + self.first_name + f" ({self.username})"
+
+    def is_registered(self):
+        return self.groups.filter(name="client").exists()
 
     class Meta:
         verbose_name = _('Contact')

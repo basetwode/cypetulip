@@ -24,11 +24,16 @@ class SearchField(forms.TextInput):
 
 
 class SearchableSelect(forms.Select):
+    allow_multiple_selected = False
+
     def render(self, name, value, attrs=None, renderer=None):
-        attrs.pop('multiple', None)
         attrs.update({'class': 'searchable form-control'})
         attrs.update({'size': 10})
         return super(SearchableSelect, self).render(name, value, attrs, renderer)
+
+
+class SearchableMultiSelect(SearchableSelect):
+    allow_multiple_selected = True
 
 
 class SetPasswordForm(ModelForm):
