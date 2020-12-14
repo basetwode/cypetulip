@@ -801,6 +801,7 @@ class PaymentProviderSettings(LoginRequiredMixin, FormView):
         paypal_method.details = form.cleaned_data['paypal_description']
         paypal_provider.user_name = form.cleaned_data['paypal_user']
         paypal_provider.secret = form.cleaned_data['paypal_secret']
+        paypal_provider.use_sandbox = form.cleaned_data['paypal_use_sandbox']
 
         invoice_method.save()
         prepayment_method.save()
@@ -826,6 +827,7 @@ class PaymentProviderSettings(LoginRequiredMixin, FormView):
                         'paypal_description': paypal_method.details,
                         'paypal_user': paypal_provider.user_name,
                         'paypal_secret': paypal_provider.secret,
+                        'paypal_use_sandbox': paypal_provider.use_sandbox,
                         })
         return initial
 
@@ -1124,3 +1126,7 @@ class DiscountOverview(LoginRequiredMixin, ListView):
         filter = DiscountFilter(request.GET, queryset=Discount.objects.all())
         return render(request, self.template_name,
                       {'filter': filter})
+
+class MergeAccounts(LoginRequiredMixin, FormView):
+#    form_class = MergeAccountsForm
+    pass

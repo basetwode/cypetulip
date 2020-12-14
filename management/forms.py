@@ -127,6 +127,7 @@ class PaymentProviderForm(Form):
     invoice_enabled = BooleanField(label=_('Invoice enabled'), required=False)
     invoice_description = CharField(label=_("Invoice description"), required=False, widget=Textarea)
     paypal_enabled = BooleanField(label=_('Paypal enabled'), required=False)
+    paypal_use_sandbox = BooleanField(label=_('Paypal use sandbox'), required=False)
     paypal_description = CharField(label=_("Paypal description"), required=False, widget=Textarea)
     paypal_user = CharField(max_length=100, required=False,label=_('Paypal Client ID'))
     paypal_secret = CharField(max_length=100, required=False, label=_('Paypal Secret'))

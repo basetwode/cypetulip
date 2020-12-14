@@ -25,7 +25,7 @@ class PaymentConfig(AppConfig):
             bill_method, created = PaymentMethod.objects.get_or_create(name="Bill", provider=bill)
             paypal_method, created = PaymentMethod.objects.get_or_create(name="PayPal", provider=paypal)
 
-            provider = PaymentProvider.objects.filter(api__contains="paypal")
+            provider = PaymentProvider.objects.filter(api__contains="PayPal")
             if provider.count() > 0:
                 if provider[0].use_sandbox:
                     self.paypal_environment = SandboxEnvironment(client_id=provider[0].user_name, client_secret=provider[0].secret)

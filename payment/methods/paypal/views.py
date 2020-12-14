@@ -122,7 +122,7 @@ class PaypalSubmitView(EmailConfirmView, View):
                  {
                      "amount": {
                          "currency_code": "EUR",
-                         "value": total_with_tax,
+                         "value": f"{total_with_tax}",
                      },
                      "invoice_id": order_detail.unique_nr()
                  }
