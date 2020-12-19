@@ -387,9 +387,9 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super(OrderItemViewSet, self).get_queryset()
         if self.request.user.is_authenticated:
-            queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
+            queryset = queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
-            queryset.filter(order__session=self.request.session.session_key)
+            queryset = queryset.filter(order__session=self.request.session.session_key)
         return queryset
 
     def update(self, request, *args, **kwargs):
