@@ -385,7 +385,7 @@
 
                         <div class="btn btn-outline-dark mb-1 ml-0" data-toggle="modal" type="button"
                              data-target="#add-modal">{% trans 'Add Address' %}</div>
-                        <h4 class="pt-2">Select shipment address</h4>
+                        <h4 class="pt-2">{% trans 'Select shipment address' %}</h4>
                         <div v-for="entry in addresses">
                             <div class="card">
                                 <div class="card-header" :id="`heading${entry.name}`">
@@ -414,7 +414,7 @@
                                 </div>
                             </div>
                         </div>
-                        <h4 class="pt-2">Select billing address</h4>
+                        <h4 class="pt-2">{% trans 'Select billing address' %}</h4>
                         <div v-for="entry in addresses">
                             <div class="card">
                                 <div class="card-header" :id="`heading-bill${entry.name}`">

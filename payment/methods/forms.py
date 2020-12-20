@@ -1,24 +1,28 @@
+import six
 from django import forms
 from django.forms import BooleanField
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from payment.models import Bill, CreditCard, PayPal, Prepayment
-
+from django.utils.functional import lazy
+mark_safe_lazy = lazy(mark_safe, six.text_type)
 
 class LegalForm(forms.Form):
     gdpr = BooleanField(required=True,
-                        label=mark_safe(_(
+                        label=mark_safe_lazy(_(
                             "I hereby consent that my data entered will be stored and processed for the purpose of fulfilling the contract. "
                             "The basis is Art. 6 Para. 1 lit. b GDPR. The duration of storage is set at 10 years in accordance with Section 257 (4) HGB."
                             "For more information, see our <a target='_blank' href='/cms/privacy-policy'>privacy policy</a>")))
     cancellation = BooleanField(required=True,
-                                label=mark_safe(_(
+                                label=mark_safe_lazy(_(
                                     "I've read the <a target='_blank' href='/cms/cancellation-policy'>cancellation policy</a>")))
 
     general_business_terms = BooleanField(required=True,
-                                          label=mark_safe(_(
+                                          label=mark_safe_lazy(_(
                                               "I've read the <a target='_blank' href='/cms/gbt'>general business terms</a>")))
+
+
 
 
 class PaymentForm(forms.ModelForm):
