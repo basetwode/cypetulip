@@ -7,6 +7,10 @@ from django.db.models.functions import Cast
 class Round(Func):
     function = 'ROUND'
     arity = 2
+    arg_joiner = '::numeric, '
+
+    def as_sqlite(self, compiler, connection, **extra_context):
+        return super().as_sqlite(compiler, connection, arg_joiner=", ", **extra_context)
 
 
 def calculate_sum(order_items, include_tax=False, include_discount=False):
