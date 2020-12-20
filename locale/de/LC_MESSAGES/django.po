@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-09 19:55+0100\n"
+"POT-Creation-Date: 2020-11-18 18:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,84 +18,189 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-
-#| msgid "Accounting"
+#: .\accounting\templates\accounting-dashboard.html:8
 msgid "accounting"
 msgstr "Buchhaltung"
 
+#: .\accounting\templates\accounting-dashboard.html:13
 msgid "Dashboard"
 msgstr "Dashboard"
 
+#: .\accounting\templates\accounting-dashboard.html:20
+#: .\management\templates\categories-overview.html:20
+#: .\management\templates\customers-overview.html:20
+#: .\management\templates\discount-overview.html:18
+#: .\management\templates\employee-overview.html:20
+#: .\management\templates\generic-create.html:21
+#: .\management\templates\generic-edit.html:21
+#: .\management\templates\individualoffer.html:29
+#: .\management\templates\individualoffers-overview.html:30
+#: .\management\templates\order-details.html:51
+#: .\management\templates\orders-overview.html:31
+#: .\management\templates\pages\footers-overview.html:18
+#: .\management\templates\pages\headers-overview.html:18
+#: .\management\templates\pages\pages-overview.html:18
+#: .\management\templates\pages\sections-overview.html:18
+#: .\management\templates\payment-settings.html:22
+#: .\management\templates\products-overview.html:20
+#: .\management\templates\settings-details.html:22
+#: .\management\templates\shipment-overview.html:20
+#: .\management\templates\subitems-overview.html:20
+#: .\shop\templates\generic-create-form.html:21
+#: .\shop\templates\my_account\address-overview.html:19
+#: .\shop\templates\my_account\generic-create.html:20
+#: .\shop\templates\my_account\generic-edit.html:20
+#: .\shop\templates\my_account\orders-detail.html:18
+#: .\shop\templates\my_account\orders.html:22
+#: .\shop\templates\my_account\settings.html:18
+#: .\shop\templates\order\offer.html:21
+msgid "Menu"
+msgstr "Menü"
 
-#| msgid "Total: "
-msgid "Total:"
-msgstr "Gesamt: "
+#: .\accounting\templates\accounting-dashboard.html:24
+#: .\management\templates\categories-overview.html:34
+#: .\management\templates\customers-overview.html:35
+#: .\management\templates\discount-overview.html:32
+#: .\management\templates\employee-overview.html:27
+#: .\management\templates\generic-create.html:26
+#: .\management\templates\generic-edit.html:27
+#: .\management\templates\individualoffer.html:33
+#: .\management\templates\individualoffers-overview.html:34
+#: .\management\templates\order-details.html:59
+#: .\management\templates\orders-overview.html:43
+#: .\management\templates\pages\footers-overview.html:32
+#: .\management\templates\pages\headers-overview.html:32
+#: .\management\templates\pages\pages-overview.html:32
+#: .\management\templates\pages\sections-overview.html:32
+#: .\management\templates\payment-settings.html:27
+#: .\management\templates\products-overview.html:34
+#: .\management\templates\settings-details.html:27
+#: .\management\templates\shipment-overview.html:32
+#: .\management\templates\subitems-overview.html:40
+#: .\shop\templates\generic-create-form.html:27
+msgid "Go back to management"
+msgstr "Zurück zur Administration"
 
+#: .\accounting\templates\accounting-dashboard.html:35
+msgid "Total Amount"
+msgstr "Gesamtwert"
 
-#| msgid "Open order"
+#: .\accounting\templates\accounting-dashboard.html:52
 msgid "Open Orders"
 msgstr "Offene Bestellungen"
 
+#: .\accounting\templates\accounting-dashboard.html:69
 msgid "Open Shipments"
 msgstr "Offene Lieferungen"
 
+#: .\accounting\templates\accounting-dashboard.html:83
 msgid "Open Payments"
 msgstr "Bezahlung"
 
+#: .\accounting\templates\accounting-dashboard.html:99
 msgid "Last Orders"
 msgstr "Bestellungen"
 
+#: .\accounting\templates\accounting-dashboard.html:106
 msgid "Ordernr"
 msgstr "Bestellung"
 
+#: .\accounting\templates\accounting-dashboard.html:107
+#: .\management\templates\order-details.html:73
+#: .\management\templates\orders-overview.html:70
+#: .\shop\templates\my_account\orders-detail.html:38
+#: .\shop\templates\my_account\orders.html:53
 msgid "Orderdate"
 msgstr "Bestelldatum"
 
+#: .\accounting\templates\accounting-dashboard.html:108
 msgid "Billdate"
 msgstr "Rechnung"
 
+#: .\billing\templates\invoice.html:166
 msgid "Taxnumber"
 msgstr "Steuernummer"
 
+#: .\billing\templates\invoice.html:180 .\management\views.py:600
 msgid "Invoice"
 msgstr "Rechnung"
 
+#: .\billing\templates\invoice.html:181
 msgid "Invoice Date"
 msgstr "Rechnungsdatum"
 
+#: .\billing\templates\invoice.html:182
 msgid "Due Date"
 msgstr "Fälligskeitsdatum"
 
+#: .\billing\templates\invoice.html:189
+#: .\management\templates\categories-overview.html:47 .\shop\models.py:78
+#: .\shop\models.py:112
 msgid "Description"
 msgstr "Beschreibung"
 
+#: .\billing\templates\invoice.html:190
 msgid "Unit price"
 msgstr "Preis pro Einheit"
 
+#: .\billing\templates\invoice.html:191
 msgid "Quantity"
 msgstr "Anzahl"
 
+#: .\billing\templates\invoice.html:192
+#: .\management\templates\mail\order_accepted_invoice.html:31
+#: .\management\templates\order-details.html:84
+#: .\payment\templates\bill\confirm.html:124
+#: .\payment\templates\bill\confirm.html:143
+#: .\payment\templates\bill\confirm.html:198
+#: .\payment\templates\mail\new_order_client.html:31
+#: .\payment\templates\mail\new_order_staff.html:27
+#: .\shop\templates\my_account\orders-detail.html:59
+#: .\shop\templates\my_account\orders.html:63
+#: .\shop\templates\order\delivery.html:224
+#: .\shop\templates\order\delivery.html:226
 msgid "Total"
 msgstr "Gesamt"
 
+#: .\billing\templates\invoice.html:227
+#: .\management\templates\mail\order_accepted_invoice.html:29
+#: .\management\templates\order-details.html:188
+#: .\payment\templates\bill\confirm.html:68
+#: .\payment\templates\mail\new_order_client.html:29
+#: .\shop\templates\my_account\orders-detail.html:118
+#: .\shop\templates\order\delivery.html:61
+#: .\shop\templates\order\shopping-cart-detail.html:52
 msgid "Subtotal"
 msgstr "Zwischensumme"
 
+#: .\billing\templates\invoice.html:239 .\shop\models.py:110
 msgid "Tax"
 msgstr "Steuer"
 
-
+#: .\billing\templates\invoice.html:244
 msgid "Grand Total"
 msgstr "Gesamt"
 
+#: .\billing\templates\invoice.html:252
+msgid "Thank you for your order"
+msgstr "Vielen Dank für Ihre Bestellung"
+
+#: .\billing\templates\invoice.html:255
+msgid "Notice"
+msgstr "Hinweis"
+
+#: .\billing\templates\invoice.html:255
 msgid "Please send the aforementioned invoice total to the following account"
 msgstr "Bitte überweisen Sie den Rechnungsbetrag an das folgende Konto"
 
+#: .\billing\templates\invoice.html:268
 msgid ""
 "Invoice was created on a computer and is valid without the signature and "
 "seal."
-msgstr "Rechnung wurde maschinell generiert und ist ohne Signatur oder Stempel gültig"
+msgstr ""
+"Rechnung wurde maschinell generiert und ist ohne Signatur oder Stempel gültig"
 
+#: .\cms\forms.py:18 .\shop\forms.py:47
 msgid ""
 "I hereby consent to the processing of my personal data. The information is "
 "only collected and processed for processing the contact request and is only "
@@ -103,103 +208,178 @@ msgid ""
 "contract is concluded based on this request, legal retention periods apply. "
 "For more information, see our <a href='/cms/privacy-policy'>privacy policy</"
 "a>"
-msgstr "Hiermit stimme ich der Verarbeitung meiner personenbezogenen Daten zu. "
-"Die Informationen werden nur verarbeitet und gespeichert zum Zwecke der Bearbeitung "
-"der Kontaktanfrage, maximal jedoch für einen Zeitraum von 6 Monaten. "
-"Sollte aufgrundlage Ihrer Anfrage ein Vertrag zustandekommen, gelten die gesetzlichen Vorschriften. "
-"Mehr Informationen finden Sie unter <a href='/cms/privacy-policy'>Datenschutz</a>"
+msgstr ""
+"Hiermit stimme ich der Verarbeitung meiner personenbezogenen Daten zu. Die "
+"Informationen werden nur verarbeitet und gespeichert zum Zwecke der "
+"Bearbeitung der Kontaktanfrage, maximal jedoch für einen Zeitraum von 6 "
+"Monaten. Sollte aufgrundlage Ihrer Anfrage ein Vertrag zustandekommen, "
+"gelten die gesetzlichen Vorschriften. Mehr Informationen finden Sie unter <a "
+"href='/cms/privacy-policy'>Datenschutz</a>"
 
-msgid "Privacy Policy"
-msgstr "Datenschutz"
+#: .\cms\models.py:20
+msgid "Page name"
+msgstr "Seitenname"
 
-msgid "General business terms"
-msgstr "Allgemeine Geschäftsbedingungen"
+#: .\cms\models.py:22 .\management\models.py:61 .\management\models.py:84
+msgid "Is enabled"
+msgstr "Ist aktiviert"
 
-msgid "Cancellation policy"
-msgstr "Widerrufsrecht"
+#: .\cms\models.py:23
+msgid "URL Path"
+msgstr "URL Pfad"
 
-msgid "Legal"
-msgstr "Impressum"
+#: .\cms\models.py:24
+msgid "Show in navigation"
+msgstr "In Navigation anzeigen"
 
-msgid "Contact"
-msgstr "Kontakt"
+#: .\cms\models.py:25
+msgid "Is predefined page"
+msgstr "Ist vordefinierte Seite"
 
+#: .\cms\models.py:28 .\management\templates\pages\sections-overview.html:43
+msgid "Page"
+msgstr "Seite"
 
+#: .\cms\models.py:49 .\management\templates\pages\sections-overview.html:44
+msgid "Content"
+msgstr "Inhalt"
+
+#: .\cms\models.py:50 .\management\templates\pages\sections-overview.html:45
+msgid "Picture"
+msgstr "Bild"
+
+#: .\cms\models.py:55
+msgid "Section"
+msgstr "Bereich"
+
+#: .\cms\templates\contact.html:15
 msgid "Contact us"
 msgstr "Kontaktieren Sie uns"
 
+#: .\cms\templates\contact.html:29 .\payment\templates\payment.html:104
 msgid "Send"
 msgstr "Senden"
 
+#: .\cms\templates\footer.html:19 .\cms\templates\footer.html:48
+#: .\management\models.py:86
+#: .\management\templates\pages\footers-overview.html:45
 msgid "Sitemap"
 msgstr "Sitemap"
 
+#: .\cms\templates\footer.html:34 .\cms\templates\footer.html:63
+#: .\management\templates\pages\footers-overview.html:48
 msgid "Payment Methods"
 msgstr "Bezahlung"
 
+#: .\cms\templates\legal.html:19 .\cms\templates\mail\base.html:30
+#: .\cms\templates\mail\new_contact_request.html:12
 msgid "Phone"
 msgstr "Telefon"
 
+#: .\cms\templates\legal.html:20 .\cms\templates\mail\base.html:31
+#: .\management\templates\mail\new_client.html:16
 msgid "E-Mail"
 msgstr "E-Mail"
 
+#: .\cms\templates\legal.html:21 .\cms\templates\mail\base.html:32
 msgid "Tax-ID"
 msgstr "Steuernummer"
 
+#: .\cms\templates\legal.html:22 .\cms\templates\mail\base.html:33
 msgid "Commercial Register"
 msgstr "Handelsregister"
 
+#: .\cms\templates\mail\new_contact_request.html:9
 msgid "New individual contact request"
 msgstr "Neue Preisanfrage"
 
+#: .\cms\templates\mail\new_contact_request.html:10 .\management\models.py:60
+#: .\management\models.py:83 .\management\templates\categories-overview.html:46
+#: .\management\templates\customers-overview.html:46
+#: .\management\templates\pages\footers-overview.html:43
+#: .\management\templates\pages\headers-overview.html:43
+#: .\management\templates\products-overview.html:46
+#: .\management\templates\subitems-overview.html:52
+#: .\payment\templates\payments-overview.html:26 .\shipping\forms.py:33
+#: .\shipping\models.py:44 .\shop\models.py:79
+#: .\shop\templates\my_account\address-overview.html:43
 msgid "Name"
 msgstr "Name"
 
-
+#: .\cms\templates\mail\new_contact_request.html:11
+#: .\shop\authentification\forms.py:40
 msgid "Email"
 msgstr "Mail"
 
+#: .\cms\templates\mail\new_contact_request.html:13
+#: .\management\templates\individualoffer.html:81
+#: .\management\templates\individualoffers-overview.html:72
 msgid "Message"
 msgstr "Nachricht"
 
+#: .\cms\templates\navbar.html:80
 msgid "My account"
 msgstr "Mein Konto"
 
+#: .\cms\templates\navbar.html:82
 msgid "My orders"
 msgstr "Meine Bestellungen"
 
+#: .\cms\templates\navbar.html:84 .\management\templates\management.html:178
+#: .\management\templates\settings-details.html:14
+#: .\shop\templates\my_account\my-account.html:86
 msgid "Settings"
 msgstr "Einstellungen"
 
+#: .\cms\templates\navbar.html:88
 msgid "Management"
 msgstr "Administration"
 
+#: .\cms\templates\navbar.html:91
 msgid "Logout"
 msgstr "Abmelden"
 
+#: .\cms\templates\navbar.html:96
 msgid "Login"
 msgstr "Anmelden"
 
-msgid ""
-"Ups, something went wrong. Please try again later or contact an "
-"administrator."
-msgstr "Entschulding, leider ist etwas schiefgegangen. Bitte versuchen Sie es später nocheinmal"
-
+#: .\cms\templates\notify-modal.html:6 .\cms\templates\notify-modal.html:14
+#: .\cms\templates\notify-modal.html:21
+#: .\management\templates\assign-employee.html:37
+#: .\management\templates\change-state.html:35
+#: .\management\templates\delete-modal.html:22
+#: .\management\templates\vue\product-create-vue.html:38
+#: .\management\templates\vue\product-create-vue.html:88
+#: .\shipping\templates\create-shipment.html:16
+#: .\shop\templates\order\delivery.html:389
 msgid "Close"
 msgstr "Schließen"
 
-msgid "Sent"
-msgstr "Gesendet"
+#: .\cms\templates\notify-modal.html:9
+msgid ""
+"Ups, something went wrong. Please try again later or contact an "
+"administrator."
+msgstr ""
+"Entschulding, leider ist etwas schiefgegangen. Bitte versuchen Sie es später "
+"nocheinmal"
 
-msgid "successfully"
-msgstr "erfolgreich"
+#: .\cms\templates\notify-modal.html:17
+msgid "Sent successfully"
+msgstr "Erfolgreich gesendet"
 
+#: .\cms\templates\notify-modal.html:24
 msgid "Looks like you have missed some fields"
 msgstr "Sieht aus, als hätten Sie einige Felder vergessen"
 
+#: .\cms\templates\permission_denied.html:7
+#: .\cms\templates\permission_denied.html:15 .\permissions\templates\401.html:7
+#: .\permissions\templates\401.html:15 .\permissions\templates\403.html:7
+#: .\permissions\templates\403.html:15
 msgid "Permission denied"
 msgstr "Zugriff verweigert"
 
+#: .\cms\templates\permission_denied.html:21
+#: .\permissions\templates\401.html:21 .\permissions\templates\403.html:21
 msgid ""
 "You don't have the required permissions to show this view. If you think this "
 "is wrong please contact our support"
@@ -207,223 +387,503 @@ msgstr ""
 "Sie haben nicht die Berechtigungen, um diese Seite anzuzeigen. Falls Sie "
 "denken dies ist inkorrekt, kontaktieren Sie bitte den Support. "
 
+#: .\cms\templates\permission_denied.html:25
+#: .\permissions\templates\401.html:25 .\permissions\templates\403.html:25
 msgid "Go back"
 msgstr "Zurück"
 
+#: .\cms\views.py:87
 msgid "New contact request"
 msgstr "Neue Kontaktanfrage"
 
+#: .\cms\views.py:94
 msgid "Thank you for your request, we will contact you as soon as possible!"
 msgstr "Vielen Dank für Ihre Anfrage, wir kontaktieren Sie in Kürze"
 
+#: .\cms\views.py:105
+msgid "General Business Terms"
+msgstr "Allgemeine Geschäftsbedingungen"
+
+#: .\cms\views.py:116
+msgid "Legal"
+msgstr "Impressum"
+
+#: .\cms\views.py:127
+msgid "Cancellation Policy"
+msgstr "Widerrufsrecht"
+
+#: .\cms\views.py:138
+msgid "Privacy Policy"
+msgstr "Datenschutz"
+
+#: .\home\settings.py:125
 msgid "German"
 msgstr "Deutsch"
 
+#: .\home\settings.py:126
 msgid "English"
 msgstr "Englisch"
 
+#: .\management\filters.py:9 .\management\templates\management.html:58
+#: .\shop\filters.py:12
 msgid "Search orders"
 msgstr "Bestellungen durchsuchen"
 
-
+#: .\management\forms.py:115
 msgid "Prepayment enabled"
 msgstr "Bezahlung per Vorkasse aktivieren"
 
-
+#: .\management\forms.py:116
 msgid "Prepayment description"
 msgstr "Vorkasse - Beschreibung"
 
-
+#: .\management\forms.py:117
 msgid "Invoice enabled"
 msgstr "Bezahlung per Rechnung aktivieren"
 
-
+#: .\management\forms.py:118
 msgid "Invoice description"
 msgstr "Bezahlung per Rechnung - Beschreibung"
 
+#: .\management\forms.py:119
 msgid "Paypal enabled"
 msgstr "Bezahlung per Paypal aktivieren"
 
-
+#: .\management\forms.py:120
 msgid "Paypal description"
 msgstr "Bezahlung per Paypal - Beschreibung"
 
+#: .\management\forms.py:121
 msgid "Paypal Client ID"
 msgstr "Paypal Client ID"
 
+#: .\management\forms.py:122
 msgid "Paypal Secret"
 msgstr "Paypal Secret"
 
+#: .\management\mixins.py:12
 msgid "Shipment for your order has changed"
 msgstr "Die Lieferung Ihrer Bestellung wurde geändert"
 
+#: .\management\mixins.py:28
 msgid "Your order has been shipped"
 msgstr "Ihre Bestellung wurde versendet"
 
+#: .\management\mixins.py:45 .\shop\templates\my_account\my-account.html:7
+#: .\shop\templates\my_account\my-account.html:18
+msgid "Your account"
+msgstr "Ihr Konto"
+
+#: .\management\models.py:54
 msgid "One Column Layout"
 msgstr "Ein-spaltiges Layout"
 
+#: .\management\models.py:55
 msgid "Two Column Layout"
 msgstr "Zwei-spaltiges Layout"
 
+#: .\management\models.py:56
 msgid "Three Column Layout"
 msgstr "Drei-spaltiges Layout"
 
+#: .\management\models.py:62 .\management\models.py:85
+#: .\management\templates\pages\footers-overview.html:47
+#: .\management\templates\pages\headers-overview.html:46 .\shop\models.py:51
+msgid "Language"
+msgstr "Sprache"
+
+#: .\management\models.py:63 .\management\models.py:88
+msgid "Layout"
+msgstr "Layout"
+
+#: .\management\models.py:64 .\management\models.py:89
+msgid "Content Column One"
+msgstr "Inhalt Spalte Eins"
+
+#: .\management\models.py:65 .\management\models.py:90
+msgid "Content Column Two"
+msgstr "Inhalt Spalte Zwei"
+
+#: .\management\models.py:66 .\management\models.py:91
+msgid "Content Column Three"
+msgstr "Inhalt Spalte Drei"
+
+#: .\management\models.py:87
+msgid "Payment methods"
+msgstr "Bezahlmethoden"
+
+#: .\management\templates\analytics-modal.html:8
+msgid "Current Users"
+msgstr "Aktuelle Nutzer"
+
+#: .\management\templates\assign-employee.html:15
 msgid "Assign Employee"
 msgstr "Mitarbeiter zuweisen"
 
+#: .\management\templates\assign-employee.html:21
 msgid "Please choose your Employee"
 msgstr "Bitte wählen Sie den Mitarbeiter aus"
 
+#: .\management\templates\assign-employee.html:42
+#: .\management\templates\order-details.html:350
 msgid "Assign"
 msgstr "Zuweisen"
 
-msgid "Menu"
-msgstr "Menü"
-
+#: .\management\templates\categories-overview.html:23
+#: .\management\templates\customers-overview.html:23
+#: .\management\templates\discount-overview.html:21
+#: .\management\templates\orders-overview.html:34
+#: .\management\templates\pages\footers-overview.html:21
+#: .\management\templates\pages\headers-overview.html:21
+#: .\management\templates\pages\pages-overview.html:21
+#: .\management\templates\pages\sections-overview.html:21
+#: .\management\templates\products-overview.html:23
+#: .\management\templates\shipment-overview.html:23
+#: .\management\templates\subitems-overview.html:23
 msgid "Filter"
 msgstr "Filter"
 
+#: .\management\templates\categories-overview.html:27
+#: .\management\templates\customers-overview.html:27
+#: .\management\templates\discount-overview.html:25
+#: .\management\templates\orders-overview.html:38
+#: .\management\templates\pages\footers-overview.html:25
+#: .\management\templates\pages\headers-overview.html:25
+#: .\management\templates\pages\pages-overview.html:25
+#: .\management\templates\pages\sections-overview.html:25
+#: .\management\templates\products-overview.html:27
+#: .\management\templates\shipment-overview.html:27
+#: .\management\templates\subitems-overview.html:27
+#: .\shop\templates\my_account\orders.html:28
 msgid "Go"
 msgstr "Los"
 
-
+#: .\management\templates\categories-overview.html:31
 msgid "Add Category"
 msgstr "Kategorie hinzufügen"
 
-msgid "Go back to management"
-msgstr "Zurück zur Administration"
-
+#: .\management\templates\categories-overview.html:48 .\shop\models.py:81
 msgid "Parent Category"
 msgstr "Eltern Kategorie"
 
+#: .\management\templates\categories-overview.html:49
+#: .\management\templates\customers-overview.html:48
+#: .\management\templates\discount-overview.html:46
+#: .\management\templates\pages\footers-overview.html:49
+#: .\management\templates\pages\headers-overview.html:47
+#: .\management\templates\pages\pages-overview.html:48
+#: .\management\templates\pages\sections-overview.html:46
+#: .\management\templates\products-overview.html:48
+#: .\management\templates\subitems-overview.html:54
+#: .\shop\templates\my_account\address-overview.html:49
 msgid "Configuration"
 msgstr "Konfiguration"
 
+#: .\management\templates\categories-overview.html:62
+#: .\management\templates\discount-overview.html:59
+#: .\management\templates\pages\footers-overview.html:65
+#: .\management\templates\pages\headers-overview.html:61
+#: .\management\templates\pages\pages-overview.html:61
+#: .\management\templates\pages\sections-overview.html:59
+#: .\management\templates\products-overview.html:74
+#: .\management\templates\subitems-overview.html:102
+#: .\shop\templates\generic-create-form.html:58
+#: .\shop\templates\my_account\address-overview.html:65
 msgid "Edit"
 msgstr "Bearbeiten"
 
+#: .\management\templates\categories-overview.html:64
+#: .\management\templates\delete-modal.html:7
+#: .\management\templates\delete-modal.html:23
+#: .\management\templates\individualoffer.html:110
+#: .\management\templates\order-details.html:382
+#: .\management\templates\order-details.html:469
+#: .\management\templates\pages\footers-overview.html:67
+#: .\management\templates\pages\headers-overview.html:63
+#: .\management\templates\pages\pages-overview.html:65
+#: .\management\templates\pages\sections-overview.html:61
+#: .\management\templates\products-overview.html:76
+#: .\management\templates\shipment-overview.html:80
+#: .\management\templates\subitems-overview.html:108
+#: .\shop\templates\generic-create-form.html:62
+#: .\shop\templates\my_account\address-overview.html:67
 msgid "Delete"
 msgstr "Löschen"
 
+#: .\management\templates\change-state.html:13
 msgid "Change State"
 msgstr "Status ändern"
 
+#: .\management\templates\change-state.html:19
 msgid "Please choose the next state"
 msgstr "Bitte wählen Sie den nächsten Status aus"
 
+#: .\management\templates\change-state.html:40
 msgid "Change"
 msgstr "Ändern"
 
-msgid "Company"
-msgstr "Unternehmen"
-
-msgid "Edit Contact"
-msgstr "Kontakt bearbeiten"
-
-msgid "Edit Company"
-msgstr "Unternehmen bearbeiten"
-
-msgid "Are you sure you want to delete?"
-msgstr "Wollen Sie wirklich löschen?"
-
-msgid "Add Employee"
-msgstr "Neuen Mitarbeiter anlegen"
-
-msgid "Firstname"
-msgstr "Vorname"
-
-msgid "Lastname"
-msgstr "Nachname"
-
-msgid "All individual offers"
-msgstr "Alle Preisanfragen"
-
-
-msgid "Go back to offer overview"
-msgstr "Zurück zur Übersicht"
-
-msgid "Individual offer request"
-msgstr "Individuelle Preisanfrage"
-
-
-msgid "Date"
-msgstr "Datum"
-
-msgid "Orders"
-msgstr "Bestellungen"
-
-msgid "Order"
-msgstr "Bestellung"
-
-
-msgid "Create order"
-msgstr "Bestellung anlegen"
-
-msgid "Nothing found"
-msgstr "Nichts gefunden"
-
-msgid "Product"
-msgstr "Produkt"
-
-msgid "Your Order"
-msgstr "Ihre Bestellung"
-
-msgid "Your order has been shipped!"
-msgstr "Ihre Bestellugn wurde versendet"
-
-msgid "You can download your odered product in your account"
-msgstr "Sie können Ihr Produkt nun in Ihrem Account herunterladen"
-
-msgid "Track your package"
-msgstr "Paket verfolgen"
-
-msgid "Thank you for your order! Stay up to date by following its status"
-msgstr "Vielen Dank für Ihre Bestellungen, sie können den Status"
-
-msgid "here"
-msgstr "hier verfolgen"
-
-
-msgid "Invoice for your Order"
-msgstr "Rechnung zu Ihrer Bestellung"
-
-msgid ""
-"Thank you for your order! Please find attached the invoice for your order. "
-"Stay up to date by following its status"
-msgstr "Vielen Dank für Ihre Bestellung. Im Anhang finden Sie die Rechnung zu Ihrer Bestellung, Sie können den Status"
-
-msgid "Listed below you will find an overview of your order"
-msgstr "Anbei finden Sie eine Übersicht Ihrer Bestellung"
-
-msgid "management"
-msgstr "Administration"
-
-msgid "All orders"
-msgstr "Alle Bestellungen"
-
-
-msgid "Create new order"
-msgstr "Neue Bestellung anlegen"
-
-msgid "All shipments"
-msgstr "Alle Lieferungen"
-
-msgid "All offer-requests"
-msgstr "Alle Produktanfragen"
-
-msgid "Show orders, track or cancel them"
-msgstr "Bestellung anzeigen, verfolgen oder stornieren"
-
-msgid "Customers"
-msgstr "Kunden"
-
+#: .\management\templates\customers-overview.html:31
+#: .\management\templates\management.html:104
 msgid "Add customer"
 msgstr "Kunde hinzufügen"
 
+#: .\management\templates\customers-overview.html:47 .\shop\models.py:47
+#: .\shop\models.py:318
+msgid "Company"
+msgstr "Unternehmen"
+
+#: .\management\templates\customers-overview.html:61
+#: .\management\templates\order-details.html:426
+#: .\management\templates\shipment-overview.html:45
+#: .\shop\templates\generic-create-form.html:48
+msgid "Actions"
+msgstr "Funktionen"
+
+#: .\management\templates\customers-overview.html:66
+msgid "Edit Contact"
+msgstr "Kontakt bearbeiten"
+
+#: .\management\templates\customers-overview.html:68
+msgid "Edit Company"
+msgstr "Unternehmen bearbeiten"
+
+#: .\management\templates\customers-overview.html:70
+msgid "Reset Password"
+msgstr "Passwort zurücksetzen"
+
+#: .\management\templates\customers-overview.html:74
+msgid "Delete Contact"
+msgstr "Kontakt löschen"
+
+#: .\management\templates\customers-overview.html:78
+msgid "Delete Company"
+msgstr "Unternehmen löschen"
+
+#: .\management\templates\delete-modal.html:19
+msgid "Are you sure you want to delete?"
+msgstr "Wollen Sie wirklich löschen?"
+
+#: .\management\templates\discount-overview.html:29
+msgid "Add Voucher"
+msgstr "Rabatt hinzufügen"
+
+#: .\management\templates\discount-overview.html:43
+msgid "Code"
+msgstr ""
+
+#: .\management\templates\discount-overview.html:44
+#: .\management\templates\pages\pages-overview.html:46
+msgid "Enabled"
+msgstr "Aktiviert"
+
+#: .\management\templates\discount-overview.html:45 .\shop\models.py:311
+#: .\shop\models.py:383
+msgid "Discount"
+msgstr "Rabatt"
+
+#: .\management\templates\employee-overview.html:24
+msgid "Add Employee"
+msgstr "Neuen Mitarbeiter anlegen"
+
+#: .\management\templates\employee-overview.html:37 .\shop\models.py:95
+msgid "Firstname"
+msgstr "Vorname"
+
+#: .\management\templates\employee-overview.html:38 .\shop\models.py:96
+msgid "Lastname"
+msgstr "Nachname"
+
+#: .\management\templates\individualoffer.html:23
+#: .\management\templates\individualoffers-overview.html:24
+msgid "All individual offers"
+msgstr "Alle Preisanfragen"
+
+#: .\management\templates\individualoffer.html:35
+msgid "Go back to offer overview"
+msgstr "Zurück zur Übersicht"
+
+#: .\management\templates\individualoffer.html:51
+msgid "Individual offer request"
+msgstr "Individuelle Preisanfrage"
+
+#: .\management\templates\individualoffer.html:61
+#: .\management\templates\individualoffers-overview.html:77
+#: .\management\templates\order-details.html:529
+msgid "Date"
+msgstr "Datum"
+
+#: .\management\templates\individualoffer.html:90
+#: .\management\templates\management.html:31
+#: .\management\templates\management.html:36
+msgid "Orders"
+msgstr "Bestellungen"
+
+#: .\management\templates\individualoffer.html:97
+#: .\management\templates\individualoffers-overview.html:89
+#: .\management\templates\shipment-overview.html:43
+#: .\shop\templates\my_account\orders.html:144
+msgid "Order"
+msgstr "Bestellung"
+
+#: .\management\templates\individualoffer.html:107
+msgid "Create order"
+msgstr "Bestellung anlegen"
+
+#: .\management\templates\individualoffers-overview.html:46
+#: .\management\templates\orders-overview.html:55
+#: .\shop\templates\my_account\orders.html:43
+msgid "Nothing found"
+msgstr "Nichts gefunden"
+
+#: .\management\templates\individualoffers-overview.html:69
+#: .\management\templates\order-details.html:184
+#: .\payment\templates\bill\confirm.html:65 .\shop\models.py:253
+#: .\shop\models.py:277 .\shop\templates\my_account\orders-detail.html:114
+#: .\shop\templates\order\delivery.html:58
+#: .\shop\templates\order\shopping-cart-detail.html:49
+msgid "Product"
+msgstr "Produkt"
+
+#: .\management\templates\mail\new_client.html:10
+msgid "Your Account at"
+msgstr "Ihr Konto bei"
+
+#: .\management\templates\mail\new_client.html:11
+msgid "Your account is ready!"
+msgstr "Ihr Konto ist bereit!"
+
+#: .\management\templates\mail\new_client.html:12
+msgid "You can now login at"
+msgstr "Sie können sich nun anmelden, unter"
+
+#: .\management\templates\mail\new_client.html:13
+#: .\management\templates\mail\new_shipment.html:15
+#: .\management\templates\mail\order_accepted_invoice.html:13
+#: .\management\templates\mail\shipment_changed.html:15
+#: .\payment\templates\mail\new_order_client.html:13
+msgid "here"
+msgstr "hier verfolgen"
+
+#: .\management\templates\mail\new_client.html:15
+msgid "Your login credentials"
+msgstr "Ihre Logindaten"
+
+#: .\management\templates\mail\new_client.html:17
+msgid "Password"
+msgstr "Passwort"
+
+#: .\management\templates\mail\new_shipment.html:10
+#: .\management\templates\mail\shipment_changed.html:10
+#: .\payment\templates\mail\new_order_client.html:10
+msgid "Your Order"
+msgstr "Ihre Bestellung"
+
+#: .\management\templates\mail\new_shipment.html:11
+#: .\management\templates\mail\shipment_changed.html:11
+msgid "Your order has been shipped!"
+msgstr "Ihre Bestellugn wurde versendet"
+
+#: .\management\templates\mail\new_shipment.html:12
+#: .\management\templates\mail\shipment_changed.html:12
+msgid "You can download your odered product in your account"
+msgstr "Sie können Ihr Produkt nun in Ihrem Account herunterladen"
+
+#: .\management\templates\mail\new_shipment.html:13
+#: .\management\templates\mail\shipment_changed.html:13
+msgid "Track your package"
+msgstr "Paket verfolgen"
+
+#: .\management\templates\mail\new_shipment.html:14
+#: .\management\templates\mail\shipment_changed.html:14
+#: .\payment\templates\mail\new_order_client.html:12
+msgid "Thank you for your order! Stay up to date by following its status"
+msgstr "Vielen Dank für Ihre Bestellungen, sie können den Status"
+
+#: .\management\templates\mail\order_accepted_invoice.html:10
+msgid "Invoice for your Order"
+msgstr "Rechnung zu Ihrer Bestellung"
+
+#: .\management\templates\mail\order_accepted_invoice.html:12
+msgid ""
+"Thank you for your order! Please find attached the invoice for your order. "
+"Stay up to date by following its status"
+msgstr ""
+"Vielen Dank für Ihre Bestellung. Im Anhang finden Sie die Rechnung zu Ihrer "
+"Bestellung, Sie können den Status"
+
+#: .\management\templates\mail\order_accepted_invoice.html:14
+#: .\payment\templates\mail\new_order_client.html:14
+msgid "Listed below you will find an overview of your order"
+msgstr "Anbei finden Sie eine Übersicht Ihrer Bestellung"
+
+#: .\management\templates\mail\order_accepted_invoice.html:30
+#: .\management\templates\management.html:50
+#: .\payment\templates\mail\new_order_client.html:30
+#: .\shop\templates\order\delivery.html:241
+msgid "Voucher"
+msgstr "Rabatt"
+
+#: .\management\templates\management.html:8
+#: .\management\templates\management.html:20
+msgid "management"
+msgstr "Administration"
+
+#: .\management\templates\management.html:39
+#: .\shop\templates\my_account\address-overview.html:27
+#: .\shop\templates\my_account\generic-create.html:28
+#: .\shop\templates\my_account\generic-edit.html:28
+#: .\shop\templates\my_account\orders-detail.html:23
+#: .\shop\templates\my_account\settings.html:26
+msgid "All orders"
+msgstr "Alle Bestellungen"
+
+#: .\management\templates\management.html:41
+msgid "Create new order"
+msgstr "Neue Bestellung anlegen"
+
+#: .\management\templates\management.html:46
+msgid "All shipments"
+msgstr "Alle Lieferungen"
+
+#: .\management\templates\management.html:48
+msgid "All offer-requests"
+msgstr "Alle Produktanfragen"
+
+#: .\management\templates\management.html:53
+msgid "All vouchers"
+msgstr "Alle Rabattcodes"
+
+#: .\management\templates\management.html:55
+msgid "Create new voucher"
+msgstr "Neuen Rabattcode anlegen"
+
+#: .\management\templates\management.html:70
+#: .\shop\templates\my_account\my-account.html:53
+msgid "Show orders, track or cancel them"
+msgstr "Bestellung anzeigen, verfolgen oder stornieren"
+
+#: .\management\templates\management.html:79
+#: .\management\templates\management.html:102
+msgid "Customers"
+msgstr "Kunden"
+
+#: .\management\templates\management.html:86
+msgid "Analytics"
+msgstr "Analysen"
+
+#: .\management\templates\management.html:89
+msgid "Active Sessions"
+msgstr "Aktive Sessions"
+
+#: .\management\templates\management.html:95
+msgid "Active Users"
+msgstr "Aktive Nutzer"
+
+#: .\management\templates\management.html:108
 msgid "Search customers"
 msgstr "Kunden durchsuchen"
 
+#: .\management\templates\management.html:120
 msgid ""
 "Search for customers through email, username, first and last name or company "
 "name"
@@ -431,833 +891,1425 @@ msgstr ""
 "Suchen Sie nach Kunden mittels E-Mail, Benutzername, Vor- und Nachname oder "
 "dem Unternehmensnamen."
 
+#: .\management\templates\management.html:129
 msgid "Products and Categories"
 msgstr "Produkte und Kategorien"
 
+#: .\management\templates\management.html:133
+#: .\shop\templates\product-detail.html:23 .\shop\templates\products.html:24
+#: .\shop\templates\products.html:69
 msgid "Products"
 msgstr "Produkte"
 
+#: .\management\templates\management.html:136
+#: .\management\templates\management.html:162
 msgid "Show"
 msgstr "Anzeigen"
 
-msgid "Create new Product"
-msgstr "Neues Produkt"
+#: .\management\templates\management.html:138
+#: .\management\templates\management.html:164
+msgid "Create"
+msgstr "Hinzufügen"
 
+#: .\management\templates\management.html:141
 msgid "Subitems"
 msgstr "Subprodukte"
 
+#: .\management\templates\management.html:144
+msgid "Show all"
+msgstr "Alle anzeigen"
 
-msgid "Create new SubItem"
-msgstr "Neues Subprodukt anlegen"
+#: .\management\templates\management.html:148
+msgid "Add File"
+msgstr "Dateityp hinzufügen"
 
+#: .\management\templates\management.html:150
+msgid "Add Checkbox"
+msgstr "Checkboxtyp hinzufügen"
+
+#: .\management\templates\management.html:154
+msgid "Add Number"
+msgstr "Nummerntyp hinzufügen"
+
+#: .\management\templates\management.html:156
+msgid "Add Select"
+msgstr "Auswahltyp hinzufügen"
+
+#: .\management\templates\management.html:159 .\shop\templates\products.html:44
 msgid "Categories"
 msgstr "Kategorien"
 
-msgid "Create new Category"
-msgstr "Neue Kategorie"
+#: .\management\templates\management.html:167
+msgid "Add Products and all of the possible sub item types"
+msgstr "Hinzufügen von Produkten und allen möglichen Sub-Produkttypen"
 
+#: .\management\templates\management.html:186
 msgid "Staff"
 msgstr "Mitarbeiter"
 
+#: .\management\templates\management.html:188
 msgid "permissions"
 msgstr "Berechtigungen"
 
+#: .\management\templates\management.html:193
 msgid "Legal Settings"
 msgstr "Unternehmens Einstellungen"
 
+#: .\management\templates\management.html:198
 msgid "mail"
 msgstr "Mail"
 
+#: .\management\templates\management.html:200
 msgid "ldap"
 msgstr "LDAP"
 
+#: .\management\templates\management.html:202
 msgid "shop"
 msgstr "Shop"
 
-
+#: .\management\templates\management.html:204
 msgid "payment"
 msgstr "Bezahlung"
 
+#: .\management\templates\management.html:209
 msgid ""
 "All shop related settings. Manage permissions, staff and products and pages"
 msgstr "Einstellungen für Berechtigungen, Mitarbeiter, LDAP oder Mail"
 
+#: .\management\templates\management.html:218
 msgid "CMS"
 msgstr "CMS"
 
+#: .\management\templates\management.html:224
+#: .\management\templates\management.html:226
 msgid "Pages"
 msgstr "Seiten"
 
+#: .\management\templates\management.html:228
+#: .\management\templates\pages\pages-overview.html:29
 msgid "Add Page"
 msgstr "Seite hinzufügen"
 
+#: .\management\templates\management.html:230
+#: .\management\templates\management.html:232
 msgid "Sections"
 msgstr "Bereiche"
 
+#: .\management\templates\management.html:234
+#: .\management\templates\pages\sections-overview.html:29
 msgid "Add Section"
 msgstr "Bereich hinzufügen"
 
+#: .\management\templates\management.html:236
 msgid "Header"
 msgstr "Header"
 
-
+#: .\management\templates\management.html:238
 msgid "Headers"
 msgstr "Headers"
 
-
+#: .\management\templates\management.html:240
+#: .\management\templates\pages\headers-overview.html:29
 msgid "Add Header"
 msgstr "Header hinzufügen"
 
+#: .\management\templates\management.html:242
 msgid "Footer"
 msgstr "Footer"
 
+#: .\management\templates\management.html:244
 msgid "Footers"
 msgstr "Footers"
 
-
+#: .\management\templates\management.html:246
+#: .\management\templates\pages\footers-overview.html:29
 msgid "Add Footer"
 msgstr "Footer hinzufügen"
 
+#: .\management\templates\management.html:251
 msgid "Show and edit pages"
 msgstr "Seiten anzeigen und bearbeiten"
 
+#: .\management\templates\management.html:252
 msgid "Show and edit Sections"
 msgstr "Bereiche anzeigen und bearbeiten"
 
+#: .\management\templates\management.html:262
 msgid "Accounting"
 msgstr "Buchhaltung"
 
-
+#: .\management\templates\management.html:270
 msgid "Open Dashboard"
 msgstr "Dashboard öffnen"
 
+#: .\management\templates\management.html:274
 msgid "Create or review accounting information"
 msgstr "Buchhaltung anzeigen oder bearbeiten"
 
+#: .\management\templates\order-details.html:55
 msgid "Manage orders"
 msgstr "Bestellungen verwalten"
 
+#: .\management\templates\order-details.html:57
 msgid "Go back to all orders"
 msgstr "Zurück zu allen Buchungen"
 
+#: .\management\templates\order-details.html:86
+#: .\payment\templates\bill\confirm.html:138
+#: .\shop\templates\order\shopping-cart-detail.html:213
+#: .\shop\templates\product-detail.html:78 .\shop\templates\products.html:111
 msgid "incl. Tax"
 msgstr "inkl. Steuer"
 
+#: .\management\templates\order-details.html:89
 msgid "Paid via"
 msgstr "Bezahlt über"
 
+#: .\management\templates\order-details.html:93
 msgid "Already open bill"
 msgstr "Offene Rechnung"
 
-
+#: .\management\templates\order-details.html:97
 msgid "Shipped via"
 msgstr "Versendet über"
 
+#: .\management\templates\order-details.html:105
+#: .\management\templates\order-details.html:159
+#: .\management\templates\order-details.html:436
+#: .\management\templates\shipment-overview.html:53
+#: .\shipping\templates\create-shipment.html:17
+#: .\shop\templates\my_account\orders-detail.html:92
+#: .\shop\templates\my_account\orders-detail.html:308
+#: .\shop\templates\my_account\orders.html:126
 msgid "Online"
 msgstr "Online"
 
+#: .\management\templates\order-details.html:110
 msgid "Not yet shipped"
 msgstr "Noch nicht versendet"
 
+#: .\management\templates\order-details.html:124
+#: .\management\templates\orders-overview.html:75 .\shop\models.py:372
+#: .\shop\templates\my_account\orders-detail.html:50
+#: .\shop\templates\my_account\orders.html:58
+#: .\shop\templates\my_account\orders.html:113
 msgid "State"
 msgstr "Status"
 
+#: .\management\templates\order-details.html:150
+#: .\shop\templates\my_account\orders-detail.html:83
+#: .\shop\templates\my_account\orders.html:120
 msgid "Tracking"
 msgstr "Tracking"
 
+#: .\management\templates\order-details.html:157
+#: .\shop\templates\my_account\orders-detail.html:90
+#: .\shop\templates\my_account\orders.html:124
 msgid "Package: "
 msgstr "Paket: "
 
-
+#: .\management\templates\order-details.html:168
 msgid "Assigned Employee"
 msgstr "Zugewiesener Mitarbeiter"
 
+#: .\management\templates\order-details.html:185
+#: .\management\templates\products-overview.html:47
+#: .\management\templates\subitems-overview.html:53
+#: .\payment\templates\bill\confirm.html:66 .\shipping\forms.py:33
+#: .\shipping\models.py:45 .\shop\models.py:107
+#: .\shop\templates\my_account\orders-detail.html:115
+#: .\shop\templates\order\delivery.html:59
+#: .\shop\templates\order\shopping-cart-detail.html:50
 msgid "Price"
 msgstr "Preis"
 
+#: .\management\templates\order-details.html:246
+#: .\management\templates\order-details.html:303 .\shipping\forms.py:16
+#: .\shop\templates\my_account\orders-detail.html:173
+#: .\shop\templates\my_account\orders-detail.html:222
+#: .\shop\templates\order\delivery.html:121
+#: .\shop\templates\order\delivery.html:172
 msgid "File"
 msgstr "Datei"
 
+#: .\management\templates\order-details.html:260
+#: .\management\templates\order-details.html:315
+#: .\shop\templates\my_account\orders-detail.html:187
+#: .\shop\templates\my_account\orders-detail.html:234
+#: .\shop\templates\order\delivery.html:132
+#: .\shop\templates\order\delivery.html:183
 msgid "Yes"
 msgstr "Ja"
 
+#: .\management\templates\order-details.html:344
+#: .\shop\templates\my_account\orders-detail.html:268
 msgid "Options"
 msgstr "Optionen"
 
-
+#: .\management\templates\order-details.html:346
 msgid "Edit order"
 msgstr "Bestellung bearbeiten"
 
+#: .\management\templates\order-details.html:348
 msgid "Show bill"
 msgstr "Rechnung anzeigen"
 
+#: .\management\templates\order-details.html:353
 msgid "Set State"
 msgstr "Status setzen"
 
+#: .\management\templates\order-details.html:360
+#: .\shop\templates\my_account\orders-detail.html:272
 msgid "Cancel order"
 msgstr "Bestellung stornieren"
 
-
+#: .\management\templates\order-details.html:366
 msgid "Send Invoice"
 msgstr "Rechnung versenden"
 
+#: .\management\templates\order-details.html:368
 msgid "Invoice has not been sent yet"
 msgstr "Rechnung wurde noch nicht versendet"
 
+#: .\management\templates\order-details.html:374
 msgid "Paid"
 msgstr "Bezahlt"
 
+#: .\management\templates\order-details.html:378
 msgid "Ship"
 msgstr "Versenden"
 
+#: .\management\templates\order-details.html:390
+msgid "Addresses"
+msgstr "Adressen"
 
+#: .\management\templates\order-details.html:394
+msgid "Billing Address"
+msgstr "Rechnungsadresse"
+
+#: .\management\templates\order-details.html:404
+msgid "Shipping Address"
+msgstr "Lieferadresse"
+
+#: .\management\templates\order-details.html:415
+#: .\shop\templates\my_account\orders-detail.html:286
 msgid "Shipments"
 msgstr "Lieferungen"
 
+#: .\management\templates\order-details.html:421
+#: .\management\templates\order-details.html:494
+#: .\shop\templates\my_account\orders-detail.html:292
 msgid "#"
-msgstr ""
+msgstr "#"
 
+#: .\management\templates\order-details.html:422
+#: .\management\templates\order-details.html:495
+#: .\management\templates\shipment-overview.html:42
+#: .\shop\templates\my_account\orders-detail.html:293
 msgid "Type"
 msgstr "Typ"
 
+#: .\management\templates\order-details.html:424
+#: .\shop\templates\my_account\orders-detail.html:296
 msgid "Date shipped"
 msgstr "Versanddatum"
 
+#: .\management\templates\order-details.html:425
+#: .\management\templates\order-details.html:496
+#: .\management\templates\shipment-overview.html:44
+#: .\payment\templates\payments-overview.html:27 .\shop\models.py:113
+#: .\shop\templates\my_account\orders-detail.html:298
+#: .\shop\templates\product-detail.html:121 .\shop\templates\products.html:132
 msgid "Details"
 msgstr "Details"
 
-
-msgid "Actions"
-msgstr "Funktionen"
-
+#: .\management\templates\order-details.html:435
+#: .\management\templates\shipment-overview.html:52 .\shipping\models.py:52
+#: .\shipping\templates\create-shipment.html:18
+#: .\shop\templates\my_account\orders-detail.html:307
 msgid "Package"
 msgstr "Paket"
 
+#: .\management\templates\order-details.html:438
+#: .\shop\templates\my_account\orders-detail.html:310
 msgid "Shipped products: "
 msgstr "Versendete Produkte"
 
+#: .\management\templates\order-details.html:442
+#: .\shop\templates\my_account\orders-detail.html:315
 msgid "No products associated with this shipment"
 msgstr "Keine Produkte zu dieser Lieferung"
 
-
+#: .\management\templates\order-details.html:447
+#: .\management\templates\shipment-overview.html:61
 msgid "Price: "
 msgstr "Preis: "
 
+#: .\management\templates\order-details.html:449
+#: .\management\templates\shipment-overview.html:62
 msgid "Weight: "
 msgstr "Gewicht: "
 
-
+#: .\management\templates\order-details.html:451
+#: .\management\templates\shipment-overview.html:63
+#: .\shop\templates\my_account\orders-detail.html:321
 msgid "Shipper: "
-msgstr "Dienstleister"
+msgstr "Dienstleister: "
 
+#: .\management\templates\order-details.html:453
+#: .\management\templates\shipment-overview.html:64
+#: .\shop\templates\my_account\orders-detail.html:323
 msgid "Tracking Code: "
 msgstr "Tracking Code: "
 
-
+#: .\management\templates\order-details.html:455
+#: .\management\templates\shipment-overview.html:66
+#: .\shop\templates\my_account\orders-detail.html:325
 msgid "File: "
-msgstr "Datei"
+msgstr "Datei: "
 
-
+#: .\management\templates\order-details.html:478
+#: .\shop\templates\my_account\orders-detail.html:333
 msgid "No shipments"
 msgstr "Keine Lieferungen"
 
-
+#: .\management\templates\order-details.html:488
 msgid "Payments"
 msgstr "Bezahlungen"
 
-
+#: .\management\templates\order-details.html:506
 msgid "Order ID"
 msgstr "Order ID"
 
+#: .\management\templates\order-details.html:507
 msgid "Transaction ID"
 msgstr "Transaction ID"
 
+#: .\management\templates\order-details.html:508
 msgid "Payer ID"
 msgstr "Payer ID"
 
-
+#: .\management\templates\order-details.html:516
 msgid "No payments"
 msgstr "Keine Bezahlungen"
 
+#: .\management\templates\order-details.html:527
 msgid "Individual Offer Request"
 msgstr "Individuelle Preis Anfrage"
 
-
+#: .\management\templates\order-details.html:538
 msgid "Open"
 msgstr "Öffnen"
 
-
+#: .\management\templates\orders-overview.html:25
 msgid "All Orders"
 msgstr "Alle Bestellungen"
 
+#: .\management\templates\pages\footers-overview.html:44
+#: .\management\templates\pages\headers-overview.html:44
 msgid "Active"
 msgstr "Aktiv"
 
+#: .\management\templates\pages\footers-overview.html:46
+#: .\management\templates\pages\headers-overview.html:45
 msgid "Layout (Columns)"
 msgstr "Layout (Spalten)"
 
-msgid "Language"
-msgstr "Sprache"
-
+#: .\management\templates\pages\pages-overview.html:44
 msgid "Position"
 msgstr "Position"
 
+#: .\management\templates\pages\pages-overview.html:45
 msgid "Pagename"
 msgstr "Seitenname"
 
-msgid "Enabled"
-msgstr "Aktiviert"
-
+#: .\management\templates\pages\pages-overview.html:47
 msgid "Link"
 msgstr "Link"
 
-
-msgid "Page"
-msgstr "Seite"
-
-msgid "Content"
-msgstr "Inhalt"
-
-msgid "Picture"
-msgstr "Bild"
-
-
+#: .\management\templates\payment-settings.html:13
 msgid "Payment Settings"
 msgstr "Bezahleinstellungen"
 
-
+#: .\management\templates\payment-settings.html:38
 msgid "Shop Paymentsettings"
 msgstr "Shop Bezahleinstellungen"
 
-
+#: .\management\templates\payment-settings.html:44
 msgid "Edit your shops payment settings"
 msgstr "Bearbeiten Sie Ihre Bezahleinstellungen"
 
+#: .\management\templates\payment-settings.html:54
+#: .\management\templates\settings-details.html:39
+#: .\shop\templates\generic-create-form.html:84
+#: .\shop\templates\my_account\generic-create.html:39
+#: .\shop\templates\my_account\generic-edit.html:39
+#: .\shop\templates\my_account\settings.html:41
 msgid "Save"
 msgstr "Speichern"
 
-
+#: .\management\templates\products-overview.html:31
 msgid "Add Product"
 msgstr "Produkt hinzufügen"
 
+#: .\management\templates\products-overview.html:44
+#: .\management\templates\subitems-overview.html:50 .\shop\models.py:90
 msgid "Category"
 msgstr "Kategorie"
 
+#: .\management\templates\products-overview.html:45
+#: .\management\templates\subitems-overview.html:51
 msgid "Thumbnail"
 msgstr "Thumbnail"
 
+#: .\management\templates\subitems-overview.html:31
+msgid "Add Filesubitem"
+msgstr "DateiSubitem hinzufügen"
 
-msgid "Add SubItem"
+#: .\management\templates\subitems-overview.html:33
+#, fuzzy
+#| msgid "Add SubItem"
+msgid "Add Checkboxsubitem"
 msgstr "Subitem hinzufügen"
 
+#: .\management\templates\subitems-overview.html:35
+#, fuzzy
+#| msgid "Add SubItem"
+msgid "Add NumbersubItem"
+msgstr "Subitem hinzufügen"
 
+#: .\management\templates\subitems-overview.html:37
+#, fuzzy
+#| msgid "Add SubItem"
+msgid "Add SelectsubItem"
+msgstr "Subitem hinzufügen"
+
+#: .\management\templates\subitems-overview.html:62
+#, fuzzy
+#| msgid "Subitems"
+msgid "Filesubitem"
+msgstr "Subprodukte"
+
+#: .\management\templates\subitems-overview.html:64
+#, fuzzy
+#| msgid "Checkout"
+msgid "Checkboxsubitem"
+msgstr "Checkout"
+
+#: .\management\templates\subitems-overview.html:66
+#, fuzzy
+#| msgid "Number"
+msgid "Numbersubitem"
+msgstr "Nummer"
+
+#: .\management\templates\subitems-overview.html:68
+#, fuzzy
+#| msgid "Subitems"
+msgid "Selectsubitem"
+msgstr "Subprodukte"
+
+#: .\management\templates\subitems-overview.html:105
+#, fuzzy
+#| msgid "Select customer"
+msgid "Select Items"
+msgstr "Kunde auswählen"
+
+#: .\management\templates\vue\product-create-vue.html:37
 msgid "Create Product Attribute"
 msgstr "Produktattribut anlegen"
 
+#: .\management\templates\vue\product-create-vue.html:45
 msgid "Attribute Type"
 msgstr "Attribut Typ"
 
+#: .\management\templates\vue\product-create-vue.html:59
 msgid "Add new attribute type"
 msgstr "Neuen Attributtyp hinzufügen"
 
+#: .\management\templates\vue\product-create-vue.html:80
 msgid "Add new attribute"
 msgstr "Neues Attribut hinzufügen"
 
+#: .\management\views.py:315
+#, fuzzy
+#| msgid "Create new SubItem"
+msgid "Create Selectsubitem"
+msgstr "Neues Subprodukt anlegen"
 
+#: .\management\views.py:332
+#, fuzzy
+#| msgid "Create new SubItem"
+msgid "Create new select item"
+msgstr "Neues Subprodukt anlegen"
+
+#: .\management\views.py:539
 msgid "Order saved"
 msgstr "Bestellung gespeichert"
 
-
+#: .\management\views.py:585
 msgid "Invoice sent"
 msgstr "Rechnung versendet"
 
+#: .\management\views.py:588
 msgid "Something went wrong"
 msgstr "Etwas ist schiefgelaufen"
 
-
+#: .\management\views.py:594
 msgid "Your Invoice "
 msgstr "Ihre Rechnung "
 
+#: .\management\views.py:638
 msgid "Individual offer request deleted"
 msgstr "Individuelle Produktanfrage gelöscht"
 
-
+#: .\management\views.py:649
 msgid "Order deleted"
 msgstr "Bestellung gelöscht"
 
-
+#: .\management\views.py:658
 msgid "Select customer"
 msgstr "Kunde auswählen"
 
-
+#: .\management\views.py:695
 msgid "Define order details"
 msgstr "Orderdetails definieren"
 
-
+#: .\management\views.py:727
 msgid "Select products"
 msgstr "Produkte auswählen"
 
-
+#: .\management\views.py:793
 msgid "Payment settings saved!"
 msgstr "Bezahleinstellungen gespeichert"
 
+#: .\management\views.py:916
+msgid "Create Company"
+msgstr "Unternehmen hinzufügen"
+
+#: .\management\views.py:941
+msgid "Create new contact"
+msgstr "Kontakt hinzufügen"
+
+#: .\management\views.py:951
+msgid "Add contact"
+msgstr "Kontakt hinzufügen"
+
+#: .\management\views.py:952
+msgid "Select a contact to edit"
+msgstr "Wählen Sie einen Kontakt zur Bearbeitung aus"
+
+#: .\management\views.py:976 .\management\views.py:1021
+msgid "Your account at "
+msgstr "Ihr Konto bei "
+
+#: .\management\views.py:1037
+msgid "Create new address"
+msgstr "Neue Adresse anlegen"
+
+#: .\management\views.py:1047
+msgid "Add address"
+msgstr "Adresse hinzufügen"
+
+#: .\management\views.py:1048
+msgid "Select an address to edit"
+msgstr "Wählen Sie eine Adresse zur Bearbeitung aus"
+
+#: .\payment\methods\forms.py:12
 msgid ""
 "I hereby consent that my data entered will be stored and processed for the "
 "purpose of fulfilling the contract. The basis is Art. 6 Para. 1 lit. b GDPR. "
 "The duration of storage is set at 10 years in accordance with Section 257 "
 "(4) HGB.For more information, see our <a target='_blank' href='/cms/privacy-"
 "policy'>privacy policy</a>"
-msgstr "Hiermit stimme ich zu, dass meine personenbezogenen Daten zum Zwecke der Erfüllung des Vertrags gespeichert werden"
-"Grundlage ist Art. 6 Abs. 1 lit. b DSGVO. Die Dauer der Speicherung beträgt 10 Jahre nach Artikel 257 (4) HGB. Mehr Information "
-"hierzu finden Sie unter <a target='_blank' href='/cms/privacy-"
-"policy'>Datenschutz</a>"
+msgstr ""
+"Hiermit stimme ich zu, dass meine personenbezogenen Daten zum Zwecke der "
+"Erfüllung des Vertrags gespeichert werdenGrundlage ist Art. 6 Abs. 1 lit. b "
+"DSGVO. Die Dauer der Speicherung beträgt 10 Jahre nach Artikel 257 (4) HGB. "
+"Mehr Information hierzu finden Sie unter <a target='_blank' href='/cms/"
+"privacy-policy'>Datenschutz</a>"
 
+#: .\payment\methods\forms.py:17
 msgid ""
 "I've read the <a target='_blank' href='/cms/cancellation-"
 "policy'>cancellation policy</a>"
-msgstr "Ich habe die <a target='_blank' href='/cms/cancellation-"
+msgstr ""
+"Ich habe die <a target='_blank' href='/cms/cancellation-"
 "policy'>Widerrufsbelehrung</a> gelesen"
 
+#: .\payment\methods\forms.py:21
 msgid ""
 "I've read the <a target='_blank' href='/cms/gbt'>general business terms</a>"
-msgstr "Ich habe die <a target='_blank' href='/cms/gbt'>Allgemeinen Geschäftsbedingungen</a> gelesen"
+msgstr ""
+"Ich habe die <a target='_blank' href='/cms/gbt'>Allgemeinen "
+"Geschäftsbedingungen</a> gelesen"
 
+#: .\payment\methods\paypal\views.py:95
 msgid "Something went wrong while processing your payment:\n"
 msgstr "Etwas bei der Bearbeitung Ihrer Bezahlung ist schiefgelaufen:\n"
 
+#: .\payment\methods\paypal\views.py:98 .\payment\methods\paypal\views.py:148
 msgid "Something went wrong while processing your payment"
 msgstr "Etwas bei der Bearbeitung Ihrer Bezahlung ist schiefgelaufen"
 
+#: .\payment\templates\bill\confirm.html:26 .\payment\templates\payment.html:25
+#: .\shop\templates\order\delivery.html:30
+#: .\shop\templates\order\delivery.html:476
+#: .\shop\templates\order\shopping-cart-detail.html:22
 msgid "Shoppingcart"
 msgstr "Einkaufswagen"
 
+#: .\payment\templates\bill\confirm.html:33 .\payment\templates\payment.html:31
+#: .\shop\templates\order\delivery.html:35
+#: .\shop\templates\order\shopping-cart-detail.html:28
+#: .\shop\templates\order\shopping-cart-detail.html:228
 msgid "Delivery"
 msgstr "Lieferung"
 
+#: .\payment\templates\bill\confirm.html:41
+#: .\payment\templates\bill\confirm.html:233
+#: .\payment\templates\payment.html:36 .\payment\templates\payment.html:51
+#: .\shop\templates\my_account\orders-detail.html:74
+#: .\shop\templates\order\delivery.html:40
+#: .\shop\templates\order\delivery.html:480
+#: .\shop\templates\order\shopping-cart-detail.html:33
 msgid "Payment"
 msgstr "Bezahlung"
 
+#: .\payment\templates\bill\confirm.html:47 .\payment\templates\payment.html:42
+#: .\shop\templates\order\delivery.html:45
+#: .\shop\templates\order\shopping-cart-detail.html:38
 msgid "Overview"
 msgstr "Übersicht"
 
+#: .\payment\templates\bill\confirm.html:55
 msgid "Order overview"
 msgstr "Bestellübersicht"
 
+#: .\payment\templates\bill\confirm.html:56
 msgid "Please check whether the information you've entered are correct."
 msgstr "Bitte überprüfen Sie, ob ihre Eingaben korrekt sind."
 
+#: .\payment\templates\bill\confirm.html:60 .\shop\mixins.py:46
+#: .\shop\templates\order\order-confirmed.html:17
 msgid "Your order"
 msgstr "Ihre Bestellung"
 
+#: .\payment\templates\bill\confirm.html:116
 msgid "Your payment"
 msgstr "Ihre Bezahlung"
 
-
+#: .\payment\templates\bill\confirm.html:121
 msgid "Payment Method"
 msgstr "Bezahlmethoden"
 
+#: .\payment\templates\bill\confirm.html:137
+msgid "excl. Tax"
+msgstr "exkl. Steuer"
+
+#: .\payment\templates\bill\confirm.html:163
 msgid "Your shipment details"
 msgstr "Ihre Lieferdetails"
 
+#: .\payment\templates\bill\confirm.html:167 .\shop\models.py:71
 msgid "Address"
 msgstr "Adresse"
 
-msgid "Back to select payment"
-msgstr "Zurück zur Bezahlung"
-
+#: .\payment\templates\bill\confirm.html:240
 msgid "Submit order"
 msgstr "Bestellung bestätigen"
 
-msgid "This E-Mail only confirms that we've received your order and does "
+#: .\payment\templates\mail\new_order_client.html:36
+msgid ""
+"\n"
+"        This E-Mail only confirms that we've received your order and does "
 "not constitute a valid purchase agreement.\n"
 "        A valid purchase agreement is made once you receive the invoice.\n"
 "    "
-msgstr "Diese E-Mail bestätigt lediglich den Eingang Ihrer Bestellung und stellt keinen offiziellen Kaufvertrag dar. "
-"Ein offizieller Kaufvertrag kommt beim Versand der Rechnung zustande."
+msgstr ""
+"\n"
+"Diese E-Mail bestätigt lediglich den Eingang Ihrer Bestellung und stellt "
+"keinen offiziellen Kaufvertrag dar. Ein offizieller Kaufvertrag kommt beim "
+"Versand der Rechnung zustande."
 
+#: .\payment\templates\mail\new_order_staff.html:10
 msgid "New Order"
 msgstr "Neue Bestellung"
 
+#: .\payment\templates\mail\new_order_staff.html:30
 msgid "A new order has been placed:"
 msgstr "Neue Bestellung: "
 
+#: .\payment\templates\payment.html:57
 msgid "Please choose a payment method"
 msgstr "Bitte Bezahlmethode auswählen"
 
+#: .\payment\templates\payments-overview.html:16
+#: .\shop\templates\generic-create-form.html:82
 msgid "Back"
 msgstr "Zurück"
 
+#: .\payment\templates\payments-overview.html:18
 msgid "Add new Payment Method"
 msgstr "Neue Bezahlmethode hinzufügen"
 
+#: .\payment\templates\payments-overview.html:28
 msgid "Provider"
 msgstr "Provider"
 
+#: .\permissions\templates\404.html:8
 msgid "Page not found"
 msgstr "Seite nicht gefunden"
 
+#: .\permissions\templates\404.html:11
 msgid "Unfortunatly we are not able to find the page you are looking for"
 msgstr "Leider konnten wir die Seite nicht finden"
 
+#: .\shipping\forms.py:16 .\shipping\forms.py:34
 msgid "Shipped Items"
 msgstr "Gelieferte Produkte"
 
+#: .\shipping\forms.py:33 .\shipping\models.py:46
 msgid "Weight"
 msgstr "Gewicht"
 
+#: .\shipping\forms.py:33 .\shipping\models.py:47
 msgid "Tracking code"
 msgstr "Tracking Code"
 
+#: .\shipping\forms.py:34 .\shipping\models.py:40 .\shipping\models.py:49
 msgid "Shipper"
-msgstr "Dienstleister"
+msgstr "Lieferdienst"
 
+#: .\shipping\models.py:12 .\shipping\models.py:20
+msgid "Continent"
+msgstr "Kontinent"
+
+#: .\shipping\models.py:24
+msgid "Country"
+msgstr "Land"
+
+#: .\shipping\models.py:29
+msgid "Countries"
+msgstr "Länder"
+
+#: .\shipping\models.py:39
+msgid "Shippers"
+msgstr "Lieferdienste"
+
+#: .\shipping\models.py:61 .\shipping\views.py:123
+msgid "Shipment"
+msgstr "Lieferungen"
+
+#: .\shipping\templates\create-shipment.html:7
 msgid "Create Shipment"
 msgstr "Lieferung anlegen"
 
+#: .\shipping\templates\create-shipment.html:13
 msgid "Please choose what kind of shipment this is"
 msgstr "Bitte Lieferungsart auswählen"
 
+#: .\shipping\views.py:23
 msgid "Ship order (Digital)"
 msgstr "Bestellung versenden (Digital)"
 
+#: .\shipping\views.py:24
 msgid ""
 "This will create a digital shipment, meaning that the customer will be able "
 "to download the file directly from his account. If the user ordered the file "
 "anonymously, it'll be send by mail"
-msgstr "Hiermit erstellen Sie eine digitale Lieferung. Das bedeutet, dass"
-"der Kunde die Datei direkt in seinem Kundenkonto herunterladen kann. "
-"Sollte der Nutzer anonym bestellt haben, so wird die Datei in der Mail angehängt."
+msgstr ""
+"Hiermit erstellen Sie eine digitale Lieferung. Das bedeutet, dassder Kunde "
+"die Datei direkt in seinem Kundenkonto herunterladen kann. Sollte der Nutzer "
+"anonym bestellt haben, so wird die Datei in der Mail angehängt."
 
-
+#: .\shipping\views.py:40 .\shipping\views.py:78
 msgid "Shipment created"
 msgstr "Lieferung erstellt"
 
+#: .\shipping\views.py:58
 msgid "Ship order"
 msgstr "Bestellung versenden"
 
+#: .\shipping\views.py:59
 msgid ""
 "This will create a shipment and notify the customer that the item's been "
 "shipped"
-msgstr "Hiermit erstellen Sie eine Lieferung und benachrichten den Kunden, dass das "
+msgstr ""
+"Hiermit erstellen Sie eine Lieferung und benachrichten den Kunden, dass das "
 "Produkt versendet wurde."
 
-
+#: .\shipping\views.py:98
 msgid "Shipment (Digital)"
 msgstr "Lieferung (Digital)"
 
+#: .\shipping\views.py:99
 msgid "Update digital shipment"
 msgstr "(Digitale) Lieferung bearbeiten"
 
-msgid "Shipment"
-msgstr "Lieferungen"
-
-
+#: .\shipping\views.py:124
 msgid "Update shipment"
 msgstr "Lieferung aktuallisieren"
 
+#: .\shop\authentification\forms.py:18
 msgid ""
 "I hereby consent to the processing of my personal data. The information is "
 "only collected and processed for the purpose of registration The basis is "
 "Art. 6 Para. 1 lit. b GDPR. The storage period is until the customer "
 "manually deletes the account. For more information, see our <a href='/cms/"
 "privacy-policy'>privacy policy</a>"
-msgstr "Hiermit stimme ich der Verarbeitung meiner personenbezogenen Daten zu. Die Informationen "
-"werden lediglich zum Zwecke der Registrierung verarbeitet. Rechtsgrundlage hierfür ist Ihre Zustimmung nach "
-"Art. 6 Abs. 1 lit. b DSGVO. Die Dauer der Speicherung ist unbegrenzt, oder bis Sie Ihr Konto löschen. "
-"Mehr Information hierzu finden Sie unter <a href='/cms/"
-"privacy-policy'>Datenschutz</a>"
+msgstr ""
+"Hiermit stimme ich der Verarbeitung meiner personenbezogenen Daten zu. Die "
+"Informationen werden lediglich zum Zwecke der Registrierung verarbeitet. "
+"Rechtsgrundlage hierfür ist Ihre Zustimmung nach Art. 6 Abs. 1 lit. b DSGVO. "
+"Die Dauer der Speicherung ist unbegrenzt, oder bis Sie Ihr Konto löschen. "
+"Mehr Information hierzu finden Sie unter <a href='/cms/privacy-"
+"policy'>Datenschutz</a>"
 
+#: .\shop\authentification\views.py:112
+msgid "Sign up"
+msgstr "Registrieren"
+
+#: .\shop\filters.py:49
+msgid "Search contacts"
+msgstr "Kunden durchsuchen"
+
+#: .\shop\mixins.py:29
+#: .\shop\templates\mail\new_individual_offer_request.html:9
 msgid "New individual offer request"
 msgstr "Neue Indivuelle Preisanfrage"
 
+#: .\shop\mixins.py:72
 msgid "New order has been placed"
 msgstr "Neue Bestellung"
 
+#: .\shop\mixins.py:117
+msgid "Add another item"
+msgstr "Weiteres Produkt hinzufügen"
+
+#: .\shop\mixins.py:118
+msgid "Select an item to edit"
+msgstr "Wählen Sie ein Produkt zur Bearbeitung aus"
+
+#: .\shop\models.py:18
+msgid "Term of payment"
+msgstr "Zeitraum der Bezahlung"
+
+#: .\shop\models.py:19 .\shop\models.py:62
+#: .\shop\templates\my_account\address-overview.html:44
+msgid "Street"
+msgstr "Straße"
+
+#: .\shop\models.py:20 .\shop\models.py:63
+#: .\shop\templates\my_account\address-overview.html:45
+msgid "Number"
+msgstr "Nummer"
+
+#: .\shop\models.py:21 .\shop\models.py:64
+#: .\shop\templates\my_account\address-overview.html:46
+msgid "Zipcode"
+msgstr "PLZ"
+
+#: .\shop\models.py:22 .\shop\models.py:65
+#: .\shop\templates\my_account\address-overview.html:47
+msgid "City"
+msgstr "Stadt"
+
+#: .\shop\models.py:43
 msgid "Male"
 msgstr "Männlich"
 
+#: .\shop\models.py:44
 msgid "Female"
 msgstr "Weiblich"
 
+#: .\shop\models.py:45
 msgid "Others"
 msgstr "Divers"
 
+#: .\shop\models.py:48 .\shop\templates\order\delivery.html:291
+msgid "Title"
+msgstr "Titel"
+
+#: .\shop\models.py:49 .\shop\templates\order\delivery.html:301
+msgid "Gender"
+msgstr "Geschlecht"
+
+#: .\shop\models.py:50
+msgid "Telephone"
+msgstr "Telefon"
+
+#: .\shop\models.py:57 .\shop\models.py:67 .\shop\models.py:275
+#: .\shop\models.py:375 .\shop\templates\my_account\address-overview.html:48
+msgid "Contact"
+msgstr "Kontakt"
+
+#: .\shop\models.py:83
+msgid "Child Category"
+msgstr "Kind Kategorie"
+
+#: .\shop\models.py:84
+msgid "Is main category"
+msgstr "Ist Haupt Kategorie"
+
+#: .\shop\models.py:99
+msgid "Employee"
+msgstr "Mitarbeiter"
+
+#: .\shop\models.py:108
+msgid "Special price"
+msgstr "Spezialpreis"
+
+#: .\shop\models.py:109 .\shop\templates\modals\price_on_request.html:8
+#: .\shop\templates\product-detail.html:68 .\shop\templates\products.html:96
+msgid "Price on request"
+msgstr "Preis auf Anfrage"
+
+#: .\shop\models.py:114
+msgid "Requires file upload"
+msgstr "Benötigt Dateiupload"
+
+#: .\shop\models.py:115
+msgid "Is required"
+msgstr "Wird benötigt"
+
+#: .\shop\models.py:116
+msgid "Is multiple per item"
+msgstr "Mehrfach pro Item"
+
+#: .\shop\models.py:117
+msgid "Is once per order"
+msgstr "Einmal pro Bestellung"
+
+#: .\shop\models.py:183
+msgid "Next state"
+msgstr "Nächster Status"
+
+#: .\shop\models.py:202
+msgid "Order State"
+msgstr "Bestellstatus"
+
+#: .\shop\models.py:241
+msgid "Stock"
+msgstr "Warenbestand"
+
+#: .\shop\models.py:244
+msgid "Product picture"
+msgstr "Produktbild"
+
+#: .\shop\models.py:249
+msgid "Assigned sub products"
+msgstr "Zugewiesene Unterprodukte"
+
+#: .\shop\models.py:250
+msgid "Attributes"
+msgstr "Attribute"
+
+#: .\shop\models.py:283
+msgid "Individual offer"
+msgstr "Individualauftrag"
+
+#: .\shop\models.py:289
+msgid "Eligible products"
+msgstr "Erlaubte Produkte"
+
+#: .\shop\models.py:291
+msgid "Eligible categories"
+msgstr "Erlaubte Kategorien"
+
+#: .\shop\models.py:370
+msgid "Assigned employee"
+msgstr "Zugewiesener Mitarbeiter"
+
+#: .\shop\models.py:377
+msgid "Shipment address"
+msgstr "Lieferadresse"
+
+#: .\shop\models.py:379
+msgid "Billing address"
+msgstr "Rechnungsadresse"
+
+#: .\shop\models.py:381
+msgid "Is cancelled"
+msgstr "Ist abgebrochen"
+
+#: .\shop\my_account\views.py:279
+msgid "New password saved!"
+msgstr "Neues Passwort gespeichert"
+
+#: .\shop\order\views.py:23
 #, python-format
 msgid ""
 "We're sorry, we can not add %(article)s to your shopping cart because it can "
 "only be ordered using our individual offer form"
-msgstr "Es tut uns leid, leider können wir %(article)s nicht Ihrem Warenkorb hinzufügen, "
-"da er lediglich über das Formular angefragt werden kann"
+msgstr ""
+"Es tut uns leid, leider können wir %(article)s nicht Ihrem Warenkorb "
+"hinzufügen, da er lediglich über das Formular angefragt werden kann"
 
+#: .\shop\order\views.py:43
 #, python-format
 msgid ""
 "We're sorry, we can not add %(article)s to your shopping cart because our "
 "stocks are insufficient"
-msgstr "Es tut uns leid, wir können %(article)s nicht Ihrem Warenkorb hinzufügen, da "
+msgstr ""
+"Es tut uns leid, wir können %(article)s nicht Ihrem Warenkorb hinzufügen, da "
 "der Warenbestand zu gering ist."
 
+#: .\shop\rest.py:104
+msgid "Unsupported filetype, supported files are "
+msgstr "Dieser Dateityp wird nicht unterstützt. Folgende Typen sind möglich "
 
+#: .\shop\rest.py:131
+msgid "This field is required"
+msgstr "Dieses Feld wird benötigt"
+
+#: .\shop\rest.py:234 .\shop\rest.py:237
+msgid "Voucher code invalid"
+msgstr "Rabattcode nicht gültig"
+
+#: .\shop\rest.py:245
+msgid "Voucher code not eligible"
+msgstr "Rabattcode nicht anwendbar"
+
+#: .\shop\templates\attribute_side_bar.html:15
 msgid "Shopping-Filters"
 msgstr "Einkaufsmöglichkeiten"
 
+#: .\shop\templates\authentification\login.html:24
+msgid " Remember me"
+msgstr ""
+
+#: .\shop\templates\authentification\login.html:30
+msgid "Forgot the password?"
+msgstr "Passwort vergessen?"
+
+#: .\shop\templates\authentification\login.html:33
+msgid "New?"
+msgstr "Neu?"
+
+#: .\shop\templates\authentification\login.html:35
+msgid "Register here"
+msgstr "Registrierung hier"
+
+#: .\shop\templates\generic-create-form.html:40
 msgid "Please add at least one item to proceed"
 msgstr "Bitte fügen Sie mindestens ein Produkt hinzu um fortzufahren"
 
-msgid "Select an item to edit"
-msgstr "Wählen Sie ein Produkt zur Bearbeitung aus"
-
-msgid "Item"
-msgstr "Produkt"
-
-msgid "Add another item"
-msgstr "Weiteres Produkt hinzufügen"
-
-
+#: .\shop\templates\generic-create-form.html:89
+#: .\shop\templates\generic-create-form.html:92
 msgid "Continue"
 msgstr "Weiter"
 
+#: .\shop\templates\generic-create-form.html:97
+#, fuzzy
+#| msgid "Select an item to edit"
+msgid "You need to select an item to continue"
+msgstr "Wählen Sie ein Produkt zur Bearbeitung aus"
+
+#: .\shop\templates\mail\new_individual_offer_request.html:11
 msgid "From"
 msgstr "Von"
 
-msgid "Price on request"
-msgstr "Preis auf Anfrage"
-
-msgid "We offer products in our shop, that depend heavily on "
+#: .\shop\templates\modals\price_on_request.html:14
+msgid ""
+"\n"
+"                    We offer products in our shop, that depend heavily on "
 "customers' demands. Please use the link provided\n"
 "                    below to request an indivudal offer for this product.\n"
 "                "
-msgstr "Wir bieten in unserem Shop Produkte an, die stark von den Kundenbedürfnissen abhängen. "
-"Bitte nutzen Sie daher das Kontaktformular, um ein Angebot anzufordern."
+msgstr ""
+"Wir bieten in unserem Shop Produkte an, die stark von den Kundenbedürfnissen "
+"abhängen. Bitte nutzen Sie daher das Kontaktformular, um ein Angebot "
+"anzufordern."
 
-
+#: .\shop\templates\my_account\address-overview.html:9
 msgid "Address Settings"
 msgstr "Adress Einstellungen"
 
+#: .\shop\templates\my_account\address-overview.html:29
+#: .\shop\templates\my_account\generic-create.html:30
+#: .\shop\templates\my_account\generic-edit.html:30
+#: .\shop\templates\my_account\orders-detail.html:25
+#: .\shop\templates\my_account\orders.html:32
+#: .\shop\templates\my_account\settings.html:28
 msgid "Go to your account"
 msgstr "Zum Konto"
 
-msgid "Add"
-msgstr "Hinzufügen"
-
-msgid "Street"
-msgstr "Straße"
-
-msgid "Number"
-msgstr "Nummer"
-
-msgid "Zipcode"
-msgstr "PLZ"
-
-msgid "City"
-msgstr "Stadt"
-
-msgid "Your account"
-msgstr "Ihr Konto"
-
-msgid "Your orders"
-msgstr "Ihre Bestellungen"
-
-msgid "Search your orders"
-msgstr "Bestellungen durchsuchen"
-
-msgid "payment settings"
-msgstr "Bezahleinstellungen"
-
-msgid "Your payment methods"
-msgstr "Ihre Bezahlmöglichkeiten"
-
-msgid "Add a payment method"
-msgstr "Neue Bezahlart hinzufügen"
-
-msgid "Show or edit your payment methods"
-msgstr "Bezahlmöglichkeiten anzeigen oder bearbeiten"
-
-msgid "Change account settings"
-msgstr "Kontoeinstellungen bearbeiten"
-
-msgid "Change company settings"
-msgstr "Unternehmenseinstellungen bearbeiten"
-
-msgid "Show addresses"
-msgstr "Adressen anzeigen"
-
-msgid "via "
-msgstr "mit "
-
-msgid "Write review"
-msgstr "Bewertung schreiben"
-
-
-msgid "Orderdetails"
-msgstr "Bestelldetails"
-
-msgid "Bill"
-msgstr "Rechnung"
-
-msgid "Customer Information"
-msgstr "Kundeninformationen"
-
-msgid "No"
-msgstr "Nein"
-
-msgid "Empty Cart"
-msgstr "Leerer Einkaufswagen"
-
-msgid "Total: "
-msgstr "Gesamt: "
-
-
-msgid "Add address details"
-msgstr "Neue Adresse hinzufügen"
-
-msgid "Please correct the following error(s):"
-msgstr "Bitte korrigieren Sie die folgenden Fehler:"
-
-msgid "[[  propertyName]]"
-msgstr ""
-
-msgid "Title"
-msgstr "Titel"
-
-msgid "Dr."
-msgstr "Dr."
-
-msgid "Prof."
-msgstr "Prof."
-
-msgid "Prof. Dr."
-msgstr "Prof. Dr."
-
-msgid "Gender"
-msgstr "Geschlecht"
-
-msgid "Mr"
-msgstr "Herr"
-
-msgid "Mrs"
-msgstr "Frau"
-
-msgid "Divers"
-msgstr "Andere"
-
-
-msgid "firstname"
-msgstr "Vorname"
-
-
-msgid "lastname"
-msgstr "Nachname"
-
-
-msgid "e-mail"
-msgstr "E-Mail"
-
-msgid "telephone"
-msgstr "Telefon"
-
-
-msgid "description of address"
-msgstr "Beschreibung der Adresse"
-
-msgid "street"
-msgstr "Straße"
-
-
-msgid "number"
-msgstr "Nummer"
-
-msgid "zipcode"
-msgstr "PLZ"
-
-msgid "city"
-msgstr "Stadt"
-
-msgid "Required fields"
-msgstr "Pflichtfeld"
-
-msgid "[[propertyName]]"
-msgstr ""
-
-
+#: .\shop\templates\my_account\address-overview.html:32
+#: .\shop\templates\order\delivery.html:411
 msgid "Add Address"
 msgstr "Adresse hinzufügen"
 
-msgid "Back to shoppingcart"
-msgstr "Zurück zum Einkaufswagen"
+#: .\shop\templates\my_account\my-account.html:27
+#: .\shop\templates\my_account\my-account.html:35
+msgid "Your orders"
+msgstr "Ihre Bestellungen"
 
+#: .\shop\templates\my_account\my-account.html:39
+msgid "Search your orders"
+msgstr "Bestellungen durchsuchen"
 
+#: .\shop\templates\my_account\my-account.html:63
+msgid "payment settings"
+msgstr "Bezahleinstellungen"
+
+#: .\shop\templates\my_account\my-account.html:70
+msgid "Your payment methods"
+msgstr "Ihre Bezahlmöglichkeiten"
+
+#: .\shop\templates\my_account\my-account.html:73
+msgid "Add a payment method"
+msgstr "Neue Bezahlart hinzufügen"
+
+#: .\shop\templates\my_account\my-account.html:77
+#: .\shop\templates\my_account\my-account.html:105
+msgid "Show or edit your payment methods"
+msgstr "Bezahlmöglichkeiten anzeigen oder bearbeiten"
+
+#: .\shop\templates\my_account\my-account.html:94
+msgid "Change account settings"
+msgstr "Kontoeinstellungen bearbeiten"
+
+#: .\shop\templates\my_account\my-account.html:96
+#: .\shop\templates\registration\password_reset_confirm.html:16
+msgid "Change password"
+msgstr "Passwort ändern"
+
+#: .\shop\templates\my_account\my-account.html:98
+msgid "Change company settings"
+msgstr "Unternehmenseinstellungen bearbeiten"
+
+#: .\shop\templates\my_account\my-account.html:100
+msgid "Show addresses"
+msgstr "Adressen anzeigen"
+
+#: .\shop\templates\my_account\orders-detail.html:78
+msgid "via "
+msgstr "mit "
+
+#: .\shop\templates\my_account\orders-detail.html:275
+msgid "Write review"
+msgstr "Bewertung schreiben"
+
+#: .\shop\templates\my_account\orders-detail.html:279
+#: .\shop\templates\my_account\orders-detail.html:282
+#: .\shop\templates\my_account\orders.html:81
+msgid "Bill"
+msgstr "Rechnung"
+
+#: .\shop\templates\my_account\orders.html:76
+msgid "Orderdetails"
+msgstr "Bestelldetails"
+
+#: .\shop\templates\my_account\orders.html:90
+msgid "Customer Information"
+msgstr "Kundeninformationen"
+
+#: .\shop\templates\order\delivery.html:132
+#: .\shop\templates\order\delivery.html:183
+msgid "No"
+msgstr "Nein"
+
+#: .\shop\templates\order\delivery.html:208
+msgid "Empty Cart"
+msgstr "Leerer Einkaufswagen"
+
+#: .\shop\templates\order\delivery.html:248
+msgid "Redeem"
+msgstr "Einlösen"
+
+#: .\shop\templates\order\delivery.html:251
+msgid "Voucher applied"
+msgstr "Rabatt angewendet"
+
+#: .\shop\templates\order\delivery.html:270
+msgid "Add address details"
+msgstr "Neue Adresse hinzufügen"
+
+#: .\shop\templates\order\delivery.html:279
+#: .\shop\templates\order\delivery.html:399
+msgid "Please correct the following error(s):"
+msgstr "Bitte korrigieren Sie die folgenden Fehler:"
+
+#: .\shop\templates\order\delivery.html:283
+msgid "[[  propertyName]]"
+msgstr ""
+
+#: .\shop\templates\order\delivery.html:296
+msgid "Dr."
+msgstr "Dr."
+
+#: .\shop\templates\order\delivery.html:297
+msgid "Prof."
+msgstr "Prof."
+
+#: .\shop\templates\order\delivery.html:298
+msgid "Prof. Dr."
+msgstr "Prof. Dr."
+
+#: .\shop\templates\order\delivery.html:305
+msgid "Mr"
+msgstr "Herr"
+
+#: .\shop\templates\order\delivery.html:306
+msgid "Mrs"
+msgstr "Frau"
+
+#: .\shop\templates\order\delivery.html:307
+msgid "Divers"
+msgstr "Andere"
+
+#: .\shop\templates\order\delivery.html:314
+msgid "firstname"
+msgstr "Vorname"
+
+#: .\shop\templates\order\delivery.html:321
+msgid "lastname"
+msgstr "Nachname"
+
+#: .\shop\templates\order\delivery.html:330
+msgid "e-mail"
+msgstr "E-Mail"
+
+#: .\shop\templates\order\delivery.html:338
+msgid "telephone"
+msgstr "Telefon"
+
+#: .\shop\templates\order\delivery.html:347
+msgid "description of address"
+msgstr "Beschreibung der Adresse"
+
+#: .\shop\templates\order\delivery.html:354
+msgid "street"
+msgstr "Straße"
+
+#: .\shop\templates\order\delivery.html:360
+msgid "number"
+msgstr "Nummer"
+
+#: .\shop\templates\order\delivery.html:368
+msgid "zipcode"
+msgstr "PLZ"
+
+#: .\shop\templates\order\delivery.html:376
+msgid "city"
+msgstr "Stadt"
+
+#: .\shop\templates\order\delivery.html:386
+msgid "Required fields"
+msgstr "Pflichtfeld"
+
+#: .\shop\templates\order\delivery.html:391
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: .\shop\templates\order\delivery.html:402
+msgid "[[propertyName]]"
+msgstr ""
+
+#: .\shop\templates\order\offer.html:26
 msgid "Back to products"
 msgstr "Zurück zu den Produkten"
 
+#: .\shop\templates\order\offer.html:35
 msgid "Request an individual offer"
 msgstr "Produkt anfragen"
 
+#: .\shop\templates\order\order-confirmed.html:14
 msgid "We've received your order."
 msgstr "Wir haben Ihre Bestellung erhalten"
 
+#: .\shop\templates\order\order-confirmed.html:15
 msgid "Thanks for choosing our shop!"
 msgstr "Danke, dass Sie uns gewählt haben."
 
+#: .\shop\templates\order\order-confirmed.html:16
 msgid "You may want to check your profile for the current state of your order "
 msgstr ""
 "In ihrem Profil sehen Sie den aktuellen Status Ihrer Bestellung oder hier "
 
+#: .\shop\templates\order\shopping-cart-detail.html:115
+#: .\shop\templates\order\shopping-cart-detail.html:134
+#: .\shop\templates\order\shopping-cart-detail.html:152
+#: .\shop\templates\order\shopping-cart-detail.html:171
 msgid "Looks good!"
 msgstr "Sieht gut aus!"
 
-
+#: .\shop\templates\order\shopping-cart-detail.html:123
 msgid "Current File: "
 msgstr "Aktuelle Datei"
 
-msgid "Continue Shopping"
-msgstr "Weiter einkaufen"
+#: .\shop\templates\order\shopping-cart-detail.html:211
+#: .\shop\templates\order\shopping-cart-nav.html:15
+msgid "Total: "
+msgstr "Gesamt: "
 
+#: .\shop\templates\order\shopping-cart-detail.html:224
+msgid "Shopping"
+msgstr "Einkauf"
+
+#: .\shop\templates\product-detail.html:82
 msgid "We only have a few items left!"
 msgstr "Wir haben nur noch wenige Produkte übrig!"
 
+#: .\shop\templates\product-detail.html:89 .\shop\templates\products.html:136
 msgid "Request offer"
 msgstr "Anfragen"
 
+#: .\shop\templates\product-detail.html:92 .\shop\templates\products.html:139
 msgid "Add to cart"
 msgstr "In den Warenkorb"
 
+#: .\shop\templates\product-detail.html:94 .\shop\templates\products.html:143
 msgid "Not in stock"
 msgstr "Nicht lieferbar"
 
-
+#: .\shop\templates\product-detail.html:116
 msgid "Product Description"
 msgstr "Produkt Beschreibung"
 
+#: .\shop\templates\product-detail.html:125
 msgid "Technical Details"
 msgstr "Technische Details"
 
+#: .\shop\templates\products.html:74
+msgid "Sorry, we are out of stock in this category!"
+msgstr "Entschuldigung, aber das Lager ist für diese Kategorie leer!"
+
+#: .\shop\templates\products.html:107
 msgid "Sale"
 msgstr "Im Angebot"
 
+#: .\shop\templates\registration\password_change_form.html:22
 msgid "Password change"
 msgstr "Passwort ändern"
 
+#: .\shop\templates\registration\password_change_form.html:34
+#: .\shop\templates\registration\password_reset_form.html:25
 msgid "Submit"
 msgstr "Absenden"
 
+#: .\shop\templates\registration\password_reset_complete.html:10
 msgid "Password reset complete"
 msgstr "Passwort zurücksetzen abgeschlossen"
 
+#: .\shop\templates\registration\password_reset_complete.html:11
 msgid "Your new password has been set. You can log in now on the"
 msgstr "Ihr neues Passwort wurde gesetzt. Sie können sich jetzt anmelden."
 
+#: .\shop\templates\registration\password_reset_complete.html:12
 msgid "login page"
 msgstr "Login"
 
+#: .\shop\templates\registration\password_reset_confirm.html:12
+#: .\shop\templates\registration\password_reset_form.html:14
 msgid "Password reset"
 msgstr "Passwort zurücksetzen"
 
-msgid "Change password"
-msgstr "Passwort ändern"
-
+#: .\shop\templates\registration\password_reset_done.html:10
 msgid "Check your inbox"
 msgstr "Prüfen Sie Ihren Posteingang"
 
+#: .\shop\templates\registration\password_reset_done.html:11
 msgid ""
 "We have emailed you instructions for setting your password. You should "
 "receive the email shortly!"
@@ -1265,20 +2317,57 @@ msgstr ""
 "Wir haben Ihnen Anweisungen zum Zurücksetzen des Passworts gesendet. Bitte "
 "prüfen Sie Ihren Posteingang."
 
+#: .\shop\templates\registration\password_reset_form.html:17
 msgid "Please enter the e-mail address associated with your account"
 msgstr "Bitte geben Sie die E-Mailadresse Ihres Kontos ein"
 
+#: .\shop\views.py:211
 msgid "Thank you for your request, we'll contact you soon"
 msgstr "Vielen Dank für Ihre Anfrage, wir werden Sie bald kontaktieren"
+
+#: .\utils\forms.py:40
+msgid "The two password fields didn't match."
+msgstr "Die beiden Passwortfelder stimmen nicht überein"
+
+#: .\utils\forms.py:43 .\utils\forms.py:79
+msgid "New password"
+msgstr "Neues Passwort"
+
+#: .\utils\forms.py:49
+msgid "New password confirmation"
+msgstr "Passwortbestätigung"
+
+#: .\utils\forms.py:80
+msgid "Repeat password"
+msgstr "Passwort wiederholen"
+
+#~ msgid "Item"
+#~ msgstr "Produkt"
+
+#~| msgid "Total: "
+#~ msgid "Total:"
+#~ msgstr "Gesamt: "
+
+#~ msgid "Sent"
+#~ msgstr "Gesendet"
+
+#~ msgid "Create new Category"
+#~ msgstr "Neue Kategorie"
+
+#~ msgid "Back to select payment"
+#~ msgstr "Zurück zur Bezahlung"
+
+#~ msgid "Back to shoppingcart"
+#~ msgstr "Zurück zum Einkaufswagen"
+
+#~ msgid "Continue Shopping"
+#~ msgstr "Weiter einkaufen"
 
 #~ msgid "Ship Methods"
 #~ msgstr "Lieferung"
 
 #~ msgid "Free Ship"
 #~ msgstr "Kostenfreie Lieferung"
-
-#~ msgid "Register"
-#~ msgstr "Registrierung"
 
 #~ msgid "Previous"
 #~ msgstr "Vorherige"
@@ -1288,9 +2377,6 @@ msgstr "Vielen Dank für Ihre Anfrage, wir werden Sie bald kontaktieren"
 
 #~ msgid "More Info"
 #~ msgstr "Weitere Informationen"
-
-#~ msgid "Checkout"
-#~ msgstr "Checkout"
 
 #~ msgid "Open Accounting"
 #~ msgstr "Buchhaltung öffnen"
