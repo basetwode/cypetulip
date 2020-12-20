@@ -1,6 +1,7 @@
 {% load static %}
 {% load i18n %}
 {% load bootstrap4 %}
+{% load cookiebanner %}
 {% get_current_language as language %}
 {% spaceless %}
     <!DOCTYPE html>
@@ -13,11 +14,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <link rel="icon" href="/favicon.ico">
-        {% bootstrap_css %}
-        {% bootstrap_javascript jquery='full' %}
-        <script src="{% static 'jquery/js/jquery.fancybox.min.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'jquery/css/jquery.fancybox.min.css' %}"
-              media="screen">
+
         <title>{{ title }}</title>
 
         {% block head %}
@@ -25,7 +22,9 @@
     </head>
 
     <body role="document" class="d-flex flex-column h-100">
-
+    {% if not 'localhost' in request.META.HTTP_HOST  %}
+    {% cookiebanner_modal %}
+    {% endif %}
     <!-- Modal -->
     {% include 'loading-spinner.html' %}
 
@@ -45,9 +44,13 @@
 
 
     </main>
-
     <!-- Footer  -->
     {% include 'footer.html' %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+    <script src="{% static 'jquery/js/jquery.fancybox.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'jquery/css/jquery.fancybox.min.css' %}"
+          media="screen">
     <script src="{% static 'cms/js/functions.js' %}"></script>
     <script src="{% static 'cms/js/site-loader.js' %}"></script>
 
@@ -63,6 +66,7 @@
     <!-- Custom styles for this template -->
     <link href="{% static 'css/raleway-font.css' %}" rel="preload stylesheet" as="style">
     <link href="{% static 'theme.css' %}" rel='stylesheet' type='text/css'>
+
     {% block renderblocking %}
     {% endblock %}
     <!--[if lt IE 9]>

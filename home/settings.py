@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     'tinymce',
     'django_filters',
     'captcha',
+    'cookiebanner'
 )
 
 MIDDLEWARE = (
@@ -296,6 +297,54 @@ REST_FRAMEWORK = {
         'management.management.CsrfExemptSessionAuthentication',
     )
 
+}
+
+COOKIEBANNER = {
+    "title": _("Cookie settings"),
+    "header_text": _("We are using cookies on this website. A few are essential, others are not."),
+    "footer_text": _("Please accept our cookies"),
+    "footer_links": [
+        {
+            "title": _("Imprint"),
+            "href": "/cms/legal"
+        },
+        {
+            "title": _("Privacy"),
+            "href": "/cms/privacy-policy"
+        },
+    ],
+    "groups": [
+        {
+            "id": "essential",
+            "name": _("Essential"),
+            "description": _("Essential cookies allow this page to work."),
+            "cookies": [
+                {
+                    "pattern": "cookiebanner",
+                    "description": _("Meta cookie for the cookies that are set."),
+                },
+                {
+                    "pattern": "csrftoken",
+                    "description": _("This cookie prevents Cross-Site-Request-Forgery attacks."),
+                },
+                {
+                    "pattern": "sessionid",
+                    "description": _("This cookie is necessary to allow logging in, for example."),
+                },
+            ],
+        },
+        {
+            "id": "analytics",
+            "name": _("Analytics"),
+            "optional": True,
+            "cookies": [
+                {
+                    "pattern": "_pk_.*",
+                    "description": _("Analytics cookie for website analysis."),
+                },
+            ],
+        },
+    ],
 }
 
 RECAPTCHA_PUBLIC_KEY = 'MyRecaptchaKey123'
