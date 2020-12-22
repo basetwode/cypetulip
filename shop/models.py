@@ -281,6 +281,9 @@ class Product(ProductSubItem):
 
         return self.stock == -1 or (self.stock > order_items_count_with_product), self.stock - order_items_count_with_product
 
+    def product_picture(self):
+        return self.productimage_set.first().product_picture if self.productimage_set.count() > 0 else None
+
 
 class ProductImage(models.Model):
     order = models.IntegerField(default=0, blank=True)

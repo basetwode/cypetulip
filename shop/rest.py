@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from shop.models import Address, Contact, Company, Order, OrderDetail, OrderItem, Product, ProductSubItem, FileSubItem, \
     SelectSubItem, CheckBoxSubItem, NumberSubItem, SelectItem, FileOrderItem, SelectOrderItem, NumberOrderItem, \
-    CheckBoxOrderItem, Discount
+    CheckBoxOrderItem, Discount, ProductImage
 from shop.utils import create_hash
 
 
@@ -53,11 +53,16 @@ class NumberSubItemSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    product_picture = serializers.SerializerMethodField('get_image')
 
     class Meta:
         model = Product
-        fields = ['stock', 'assigned_sub_products', 'product_picture', 'max_items_per_order']
+        fields = ['stock', 'assigned_sub_products', 'max_items_per_order', 'product_picture']
         depth = 4
+
+    def get_image(self, object):
+        return ProductImage.objects.filter(product=object).first().product_picture.url\
+            if ProductImage.objects.filter(product=object).count() > 0 else None
 
     def get_fields(self):
         fields = super(ProductSerializer, self).get_fields()
