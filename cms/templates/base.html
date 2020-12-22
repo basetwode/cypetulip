@@ -16,7 +16,12 @@
         <meta name="author" content="">
         <link rel="icon" href="/favicon.ico">
         <style>
+            .hidden {
+                display: none;
+            }
+            {% inline_style 'theme.css' %}
             {% inline_style 'bootstrap/css/bootstrap.min.css' %}
+
         </style>
         <title>{{ title }}</title>
         {% block head %}
