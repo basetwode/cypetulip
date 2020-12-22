@@ -250,13 +250,9 @@ class ProductAttributeTypeInstance(models.Model):
 
 # A product can be whatever one needs, like a plan or a surcharge or hours worked..
 
-
 class Product(ProductSubItem):
     stock = models.IntegerField(default=0, blank=True, null=True, verbose_name=_('Stock'))
     max_items_per_order = models.IntegerField(default=10, verbose_name=_('Maximum number of items per order'))
-    product_picture = models.ImageField(default=None, null=True, blank=True,
-                                        upload_to=public_files_upload_handler,
-                                        storage=fs, verbose_name=_('Product picture'))
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
     is_public = models.BooleanField()
     assigned_sub_products = models.ManyToManyField(ProductSubItem, default=None, blank=True,
@@ -284,6 +280,14 @@ class Product(ProductSubItem):
             .aggregate(count=Sum('count'))['count'] or 0
 
         return self.stock == -1 or (self.stock > order_items_count_with_product), self.stock - order_items_count_with_product
+
+
+class ProductImage(models.Model):
+    order = models.IntegerField(default=0, blank=True)
+    product_picture = models.ImageField(default=None, null=True, blank=True,
+                                        upload_to=public_files_upload_handler,
+                                        storage=fs, verbose_name=_('Product picture'))
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
 
 class IndividualOffer(models.Model):
@@ -465,12 +469,12 @@ class OrderDetail(models.Model):
 
     def increase_stocks(self):
         for order_item in self.order.orderitem_set.all():
-            if isinstance(order_item.product.product, Product):
+            if hasattr(order_item.product, 'product') and isinstance(order_item.product.product, Product):
                 order_item.product.product.increase_stock(order_item.count)
 
     def decrease_stocks(self):
         for order_item in self.order.orderitem_set.all():
-            if isinstance(order_item.product.product, Product):
+            if hasattr(order_item.product, 'product') and isinstance(order_item.product.product, Product):
                 order_item.product.product.decrease_stock(order_item.count)
 
     def apply_discount(self):
@@ -669,7 +673,7 @@ class FileOrderItem(OrderItem):
     file = models.FileField(default=None, null=True,
                             upload_to=order_files_upload_handler,
                             storage=fs)
-    file_name = models.CharField(max_length=40, blank=True)
+    file_name = models.CharField(max_length=200, blank=True)
 
 
 class SelectOrderItem(OrderItem):

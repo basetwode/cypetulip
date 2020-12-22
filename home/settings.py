@@ -301,7 +301,6 @@ REST_FRAMEWORK = {
 
 COOKIEBANNER = {
     "title": _("Cookie settings"),
-    "header_text": _("We are using cookies on this website. A few are essential, others are not."),
     "footer_text": _("Please accept our cookies"),
     "footer_links": [
         {
@@ -331,11 +330,16 @@ COOKIEBANNER = {
                     "pattern": "sessionid",
                     "description": _("This cookie is necessary to allow logging in, for example."),
                 },
+                {
+                    "pattern": "django_language",
+                    "description": _("This cookie is necessary to allow saving your language preference"),
+                },
             ],
         },
         {
             "id": "analytics",
             "name": _("Analytics"),
+            "description": _("These Cookies help us analyzing the website"),
             "optional": True,
             "cookies": [
                 {

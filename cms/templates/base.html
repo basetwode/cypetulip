@@ -1,6 +1,7 @@
 {% load static %}
 {% load i18n %}
 {% load bootstrap4 %}
+{% load inline_static_tags %}
 {% load cookiebanner %}
 {% get_current_language as language %}
 {% spaceless %}
@@ -14,9 +15,10 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <link rel="icon" href="/favicon.ico">
-
+        <style>
+            {% inline_style 'bootstrap/css/bootstrap.min.css' %}
+        </style>
         <title>{{ title }}</title>
-
         {% block head %}
         {% endblock %}
     </head>
@@ -46,7 +48,6 @@
     </main>
     <!-- Footer  -->
     {% include 'footer.html' %}
-    {% bootstrap_css %}
     {% bootstrap_javascript jquery='full' %}
     <script src="{% static 'jquery/js/jquery.fancybox.min.js' %}"></script>
     <link rel="stylesheet" href="{% static 'jquery/css/jquery.fancybox.min.css' %}"

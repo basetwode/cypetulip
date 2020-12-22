@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-20 19:31+0100\n"
+"POT-Creation-Date: 2020-12-21 10:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -426,6 +426,10 @@ msgstr "Impressum"
 msgid "Cancellation Policy"
 msgstr "Widerrufsbelehrung"
 
+#: .\cms\views.py:138
+msgid "Privacy Policy"
+msgstr "Datenschutzerklärung"
+
 #: .\home\settings.py:126
 msgid "German"
 msgstr "Deutsch"
@@ -439,47 +443,52 @@ msgid "Cookie settings"
 msgstr "Cookie Einstellungen"
 
 #: .\home\settings.py:304
-msgid ""
-"We are using cookies on this website. A few are essential, others are not."
-msgstr "Wir benutzen auf unserer Webseite Cookies, einige davon sind notwendig, andere nicht"
-
-#: .\home\settings.py:305
 msgid "Please accept our cookies"
-msgstr "Bitte akzeptieren Sie unsere Cookies"
+msgstr "Cookies akzeptieren"
 
-#: .\home\settings.py:308
+#: .\home\settings.py:307
 msgid "Imprint"
 msgstr "Impressum"
 
-#: .\home\settings.py:312
-msgid "Privacy Policy"
+#: .\home\settings.py:311
+#, fuzzy
+#| msgid "Privacy Policy"
+msgid "Privacy"
 msgstr "Datenschutzerklärung"
 
-#: .\home\settings.py:319
+#: .\home\settings.py:318
 msgid "Essential"
 msgstr "Essentiell"
 
-#: .\home\settings.py:320
+#: .\home\settings.py:319
 msgid "Essential cookies allow this page to work."
 msgstr "Essentielle Cookies sind notwendig, damit diese Seite funktioniert"
 
-#: .\home\settings.py:324
+#: .\home\settings.py:323
 msgid "Meta cookie for the cookies that are set."
 msgstr "Meta cookie für die Cookies die erlaubt werden"
 
-#: .\home\settings.py:328
+#: .\home\settings.py:327
 msgid "This cookie prevents Cross-Site-Request-Forgery attacks."
 msgstr "Dieser Cookie verhindert Cross-Site-Request-Forgery Attacken"
 
-#: .\home\settings.py:332
+#: .\home\settings.py:331
 msgid "This cookie is necessary to allow logging in, for example."
 msgstr "Dieser Cookie ist, z.B. für den Login notwendig"
 
-#: .\home\settings.py:338 .\management\templates\management.html:93
+#: .\home\settings.py:335
+msgid "This cookie is necessary to allow saving your language preference"
+msgstr "Dieser Cookie ist, z.B. für das Speichern Ihrer Spracheinstellung im Shop notwendig"
+
+#: .\home\settings.py:341 .\management\templates\management.html:93
 msgid "Analytics"
 msgstr "Analysen"
 
-#: .\home\settings.py:343
+#: .\home\settings.py:342
+msgid "These Cookies help us analyzing the website"
+msgstr "Diese Cookies helfen uns bei der Webseiten Analyse"
+
+#: .\home\settings.py:347
 msgid "Analytics cookie for website analysis."
 msgstr "Analytics Cookie für die Webseiten Analyse"
 
@@ -2452,6 +2461,12 @@ msgstr "Passwortbestätigung"
 #: .\utils\forms.py:85
 msgid "Repeat password"
 msgstr "Passwort wiederholen"
+
+#~ msgid ""
+#~ "We are using cookies on this website. A few are essential, others are not."
+#~ msgstr ""
+#~ "Wir benutzen auf unserer Webseite Cookies, einige davon sind notwendig, "
+#~ "andere nicht"
 
 #~ msgid "I've read the"
 #~ msgstr "ich habe die"
