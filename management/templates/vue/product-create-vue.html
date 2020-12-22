@@ -3,6 +3,8 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
+{% load fb_versions %}
+
 {% block form %}
 
     {% bootstrap_form form exclude="attributes" layout='horizontal' %}
@@ -15,6 +17,33 @@
         </script>
 
         <div id="app">
+            <div class="row">
+                <div class="col-12">
+                    <h3>{% trans 'Images' %}</h3>
+
+                    <div class="row">
+                        {% for img in object.productimage_set.all %}
+                            <div class="col-lg-3 col-md-4 col-6">
+                                <a href="#" class="d-block mb-4 h-100">
+                                    <img class="img-fluid img-thumbnail" style="object-fit: cover;height: 20vw;" src="{% version img.product_picture 'medium' %}"alt="">
+                                    <button style="position: absolute;right: 20px;" type="button" class="close" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </a>
+                            </div>
+                        {% endfor %}
+                        <div class="col-12">
+                            <div class="form-group files">
+                                <label>Upload Your File </label>
+                                <input id="product-images" type="file" class="form-control" multiple="">
+                            </div>
+                        </div>
+                        <!--item-inner-->
+                    <button @click="uploadProductImages()" class="btn btn-primary">{% trans 'Upload' %}</button>
+
+                    </div>
+                </div>
+            </div>
             <div class="form-group row"><label class="col-md-3 col-form-label" for="id_selectedAttributes">Attributes</label>
                 <div class="col-md-8"><select size="10" v-model="selectedAttributes" name="attributes" class="form-control"
                                               title="" id="id_selectedAttributes"
