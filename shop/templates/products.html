@@ -77,9 +77,10 @@
                         <div class="product-card col-xl-4 col-6 p-0">
                             <div class="card card-hover ">
                                 <a href="/shop/product/{{ product.name }}">
-                                    {% if product.product_picture %}
+
+                                    {% if product.productimage_set.first %}
                                         <img class="card-img-top"
-                                             src="{% version product.product_picture 'medium' %}" alt=""/>
+                                             src="{% version product.productimage_set.first.product_picture 'medium' %}" alt=""/>
                                     {% else %}
                                         <i style="max-width: 150px; height: 150px"
                                            class="fa fa-5x fa-image card-img-top"></i>

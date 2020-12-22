@@ -34,11 +34,11 @@
 
         </div>
         <div class="col-md-4">
-            {% if product.product_picture %}
+            {% if product.productimage_set.first %}
                 <a class="thumbnail fancybox" rel="ligthbox"
-                   href="{% version product.product_picture 'large' %}">
+                   href="{% version product.productimage_set.first.product_picture 'large' %}">
                 <img style=" width: 100%; height: auto; max-width: 25vw;"
-                     src="{% version product.product_picture 'medium' %}"
+                     src="{% version product.productimage_set.first.product_picture 'medium' %}"
                      alt="..."
                      class="img-fluid"/>
             {% else %}
