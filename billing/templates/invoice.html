@@ -210,7 +210,12 @@
             {% for sub_item in item.orderitem_set.all %}
                 <tr style="padding-bottom: 5px">
                     <td valign="top"></td>
-                    <td style="padding-left: 10px" valign="top">{{ sub_item.product.name }}</td>
+                    <td style="padding-left: 10px" valign="top">
+                        {% if sub_item.numberorderitem %}
+                            {{ sub_item.numberorderitem.number }}
+                        {% endif %}
+                        {{ sub_item.product.name }}
+                    </td>
                     <td valign="top">
                         {{ sub_item.price|floatformat:2 }} €</td>
                     <td valign="top"></td>
@@ -218,6 +223,14 @@
                     </td>
                 </tr>
             {% endfor %}
+            {% if item.period_of_performance_start %}
+            <tr style="padding-bottom: 5px">
+                <td valign="top"></td>
+                <td colspan="3" style="padding-left: 10px; font-size: small" valign="top";>{% trans 'Period of performance' %}:
+                    {{ item.period_of_performance_start|date:"d.m.Y" }} - {{ item.period_of_performance_end|date:"d.m.Y" }}
+                </td>
+            </tr>
+            {% endif %}
         {% endfor %}
         </tbody>
         <tfoot>

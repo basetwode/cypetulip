@@ -262,8 +262,8 @@ class CheckboxSubItemCreateUpdateView(LoginRequiredMixin, CreateUpdateView):
     slug_field = 'id'
     slug_url_kwarg = 'subitem_id'
     model = CheckBoxSubItem
-    fields = ['price','tax','name','description', 'details',
-              'is_required','is_once_per_order'
+    fields = ['price','tax', 'price_on_request', 'name','description', 'details',
+              'is_required', 'is_multiple_per_item','is_once_per_order'
               ]
 
     def get_success_url(self):
@@ -276,8 +276,8 @@ class NumberSubItemCreateUpdateView(LoginRequiredMixin, CreateUpdateView):
     slug_field = 'id'
     slug_url_kwarg = 'subitem_id'
     model = NumberSubItem
-    fields = ['price','tax','name','description', 'details',
-              'is_required', 'is_once_per_order'
+    fields = ['price','tax','price_on_request', 'name','description', 'details',
+              'is_required', 'is_multiple_per_item', 'is_once_per_order'
               ]
 
     def get_success_url(self):
@@ -290,7 +290,7 @@ class FileSubItemCreationView(LoginRequiredMixin, CreateUpdateView):
     slug_field = 'id'
     slug_url_kwarg = 'subitem_id'
     model = FileSubItem
-    fields = ['price','tax','name','description', 'details',
+    fields = ['price','tax', 'price_on_request', 'name','description', 'details',
               'is_required', 'is_multiple_per_item', 'is_once_per_order',
               'extensions']
 
@@ -304,8 +304,8 @@ class SelectSubItemCreationView(LoginRequiredMixin, WizardView):
     slug_field = 'id'
     slug_url_kwarg = 'subitem_id'
     model = SelectSubItem
-    fields = ['price','tax','name','description', 'details',
-              'is_required', 'is_once_per_order',
+    fields = ['price','tax', 'price_on_request', 'name','description', 'details',
+              'is_required', 'is_multiple_per_item', 'is_once_per_order',
               ]
 
     def get_back_url(self):

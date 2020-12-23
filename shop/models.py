@@ -541,6 +541,9 @@ class OrderItem(models.Model):
     price_discounted = models.FloatField(default=None, blank=True, null=True)
     price_discounted_wt = models.FloatField(default=None, blank=True, null=True)
     applied_discount = models.FloatField(default=None, blank=True, null=True)
+    period_of_performance_start = models.DateTimeField(null=True, blank=True)
+    period_of_performance_end = models.DateTimeField(null=True, blank=True)
+    allowable = models.BooleanField(default=True, blank=True, null=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None, recalculate_tax=False):
@@ -613,6 +616,8 @@ class OrderItem(models.Model):
         return f"{self.count}x {self.product.name if self.product else ''} {self.price}"
 
     def total_wt(self, include_discount=False):
+        if not self.allowable:
+            return 0
         sub_items = OrderItem.objects.filter(order_item=self)
         return (calculate_sum(sub_items, True, include_discount)  + (
             (self.price_wt if not include_discount else self.price_discounted_wt) \
@@ -620,6 +625,8 @@ class OrderItem(models.Model):
                self.count
 
     def total(self, include_discount=False):
+        if not self.allowable:
+            return 0
         sub_items = OrderItem.objects.filter(order_item=self)
         return (calculate_sum(sub_items, False, include_discount) + (
             self.price if not include_discount else self.price_discounted) \

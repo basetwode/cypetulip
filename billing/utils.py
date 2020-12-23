@@ -20,6 +20,7 @@ def calculate_sum(order_items, include_tax=False, include_discount=False):
         price_field = 'price_discounted'
         price_field_wt = 'price_discounted_wt'
 
+    order_items = order_items.filter(allowable=True)
     if include_tax:
         total = order_items.aggregate(
             total=Round(Sum(price_field_wt, field=price_field_wt), 2))['total']
@@ -35,6 +36,7 @@ def calculate_sum_order(order_items, include_tax=False, include_discount=False):
     if include_discount:
         price_field = 'total_discounted'
         price_field_wt = 'total_discounted_wt'
+    order_items = order_items.filter(allowable=True)
     return reduce(lambda total, order_item: total + order_item,
                  [getattr(order_item, price_field_wt if include_tax else price_field)() for order_item in order_items \
                   .filter(order_item__isnull=True)],0)

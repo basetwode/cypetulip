@@ -107,7 +107,8 @@ class OrderItemForm(ModelForm):
 
     class Meta:
         model = OrderItem
-        fields = ['search', 'product', 'count', 'price', 'price_wt']
+        fields = ['search', 'product', 'count', 'price', 'price_wt', 'allowable', 'period_of_performance_start',
+                  'period_of_performance_end']
         required = ['product', 'count']
         widgets = {
             'product': SearchableSelect(),
@@ -118,7 +119,7 @@ class OrderItemForm(ModelForm):
         for field in self.Meta.required:
             self.fields[field].required = True
         #self.fields['order_item'].queryset = OrderItem.objects.filter(order=order).exclude(id=self.instance.id)
-        self.fields['product'].queryset = Product.objects.all()
+        #self.fields['product'].queryset = Product.objects.all()
 
 
 class PaymentProviderForm(Form):
