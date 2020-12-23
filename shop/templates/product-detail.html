@@ -6,7 +6,6 @@
 {% load bootstrap4 %}
 
 {% block head %}
-    <script src="{% static 'utils.js' %}"></script>
     <title>{{ product.name }}</title>
 {% endblock %}
 
@@ -35,17 +34,55 @@
         </div>
         <div class="col-md-4">
             {% if product.productimage_set.first %}
-                <a class="thumbnail fancybox" rel="ligthbox"
-                   href="{% version product.productimage_set.first.product_picture 'large' %}">
-                <img style=" width: 100%; height: auto; max-width: 25vw;"
-                     src="{% version product.productimage_set.first.product_picture 'medium' %}"
-                     alt="..."
-                     class="img-fluid"/>
+            <div id="product" class="carousel slide" data-ride="carousel">
+
+                    <!-- Indicators -->
+                    <ul class="carousel-indicators">
+
+                        {% for image in product.productimage_set.all %}
+                            {% if forloop.first %}
+                                <li data-target="#image-{{forloop.counter}}" data-slide-to="{{ forloop.counter }}" class="active"></li>
+                            {% else %}
+                                <li data-target="#image-{{forloop.counter}}" data-slide-to="{{ forloop.counter }}"></li>
+                            {% endif %}
+
+                        {% endfor %}
+                    </ul>
+
+                    <!-- The slideshow -->
+                    <div class="carousel-inner text-center">
+
+                        {% for image in product.productimage_set.all  %}
+                            {% if forloop.first %}
+                                <div class="carousel-item active">
+                                    <a data-fancybox rel="lightbox"
+                                                                         href="{{ image.product_picture.url }}">
+                                    <img class="img-fluid"  style="object-fit: cover;height: 25vh;" src="{% version image.product_picture 'large' %}">
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div class="carousel-item">
+                                    <a data-fancybox rel="lightbox"
+                                       href="{{ image.product_picture.url }}">
+                                        <img class="img-fluid"  style="object-fit: cover;height: 25vh;" src="{% version image.product_picture 'medium' %}"></a>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <!-- Left and right controls -->
+                    <a class="carousel-control-prev"  href="#product" data-slide="prev">
+                        <span><i class="text-black-50 fas fa-chevron-left"></i></span>
+                    </a>
+                    <a class="carousel-control-next"  href="#product" data-slide="next">
+                        <span><i class="text-black-50 fas fa-chevron-right"></i></span>
+                    </a>
+            </div>
+
             {% else %}
                 <i style=" width: 100%; height: auto; max-width: 25vw;"
                    class="fa fa-4x fa-image img-thumbnail"></i>
             {% endif %}
-            </a>
         </div>
         <div class="products col-md-8">
             <div class="card">
@@ -155,14 +192,8 @@
     </div>
 
 
-    <script>
+{% endblock %}
 
-        //FANCYBOX
-        //https://github.com/fancyapps/fancyBox
-        $(".fancybox").fancybox({
-            openEffect: "none",
-            closeEffect: "none"
-        });
-
-    </script>
+{% block renderblocking %}
+<script src="{% static 'utils.js' %}"></script>
 {% endblock %}

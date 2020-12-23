@@ -350,6 +350,7 @@ COOKIEBANNER = {
         },
     ],
 }
+CACHE_MIDDLEWARE_SECONDS = 0
 
 RECAPTCHA_PUBLIC_KEY = 'MyRecaptchaKey123'
 RECAPTCHA_PRIVATE_KEY = 'MyRecaptchaPrivateKey456'
