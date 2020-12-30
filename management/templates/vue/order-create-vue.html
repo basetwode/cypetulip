@@ -94,9 +94,7 @@
                                 </tr>
                                 </thead>
                                 <tbody >
-                                <template v-if="orderItems.length === 0">
-                                    <tr><td colspan="6"><a @click="addOrderItem" class="dropdown-item" href="#"><span><i class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new item' %}</span></a></td></tr>
-                                </template>
+
                                 <template v-for="(item, index) in orderItems" >
                                     <tr :class="{'table-warning': item.edit}" style="border-top: 1px solid #004f72; padding-top: 5px;">
                                         <td valign="top">[[index]]</td>
@@ -337,6 +335,8 @@
                                         </tr>
 
                                 </template>
+                                <tr><td colspan="6"><a @click="addOrderItem" class="dropdown-item" href="#"><span><i class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new item' %}</span></a></td></tr>
+
                                 </tbody>
                                 <tfoot>
                                 <tr style="padding-top: 10px; border-top: 3px dashed #004f72;">

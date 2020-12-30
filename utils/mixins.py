@@ -104,7 +104,7 @@ class EmailThread(threading.Thread):
 
         if 'object' in self.context and isinstance(self.context['object'], Order):
             for order_item in self.context['object'].orderitem_set.all():
-                if hasattr(order_item.product,'product') and order_item.product.product.product_picture:
+                if hasattr(order_item.product,'product') and order_item.product.product.product_picture():
                     product_file = order_item.product.product.product_picture.open("rb")
                     try:
                         product_img = MIMEImage(product_file.read())

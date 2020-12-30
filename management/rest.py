@@ -1,13 +1,14 @@
 from rest_framework import routers, viewsets, serializers
 from rest_framework.permissions import DjangoModelPermissions, IsAdminUser
 
-from payment.models import PaymentDetail, PaymentMethod
+from payment.models import PaymentDetail, PaymentMethod, Payment
 from shop.models import Product, ProductCategory, ProductAttributeType, ProductAttributeTypeInstance, ProductSubItem, \
     ProductImage, Company, Contact, Address, OrderDetail, OrderItem, CheckBoxOrderItem, NumberOrderItem, \
     SelectOrderItem, FileOrderItem, Order, OrderState
 from shop.rest import AddressViewSet, GuestViewSet, ContactViewSet, DeliveryViewSet, OrderViewSet, OrderItemViewSet, \
     CheckboxOrderItemViewSet, NumberOrderItemViewSet, SelectOrderItemViewSet, FileOrderItemViewSet, ApplyVoucherViewSet, \
     ContactSerializer, AddressSerializer, OrderItemDeserializer
+from shop.utils import create_hash
 
 
 class ProductAttributeTypeSerializer(serializers.HyperlinkedModelSerializer):
@@ -278,6 +279,12 @@ class PaymentDetailAdmViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
     queryset = PaymentDetail.objects.all()
     serializer_class = PaymentDetailSerializer
+
+    def perform_create(self, serializer):
+        payment_details = super(PaymentDetailAdmViewSet, self).perform_create(serializer)
+        payment = Payment(is_paid=False, details=serializer.instance,token=create_hash())
+        payment.save()
+        return payment_details
 
 
 class PaymentMethodAdmViewSet(viewsets.ModelViewSet):
