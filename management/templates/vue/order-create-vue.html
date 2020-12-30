@@ -32,7 +32,7 @@
                 <div class="card">
                     <div class="card-header">
 
-                        <button @click="showPreview" class="btn btn-outline-primary float-right" type="button">Preview</button>
+                        <button @click="showPreview" class="btn btn-outline-primary float-right" type="button">{% trans 'Preview' %}</button>
                     </div>
 
                     <div class="card-body">
@@ -48,7 +48,7 @@
                             </div>
                         </div>
                         <div v-if="selectedContact" class="form-group row">
-                            <label class="col-md-3" for="shippingSelect">{% trans 'Select Shipping address' %}</label>
+                            <label class="col-md-3" for="shippingSelect">{% trans 'Select shipping address' %}</label>
                             <div class="col-md-6">
                                 <select @change="onShippingSelected($event)" v-model="selectedShippingAddress" class="form-control" id="shippingSelect">
                                     <option v-for="address in addresses" v-bind:value="address.id">
@@ -62,7 +62,7 @@
                             </div>
                         </div>
                         <div v-if="selectedShippingAddress && !billingAddressEqualShipping" class="form-group row">
-                            <label class="col-md-3" for="billingSelect">{% trans 'Select Billing address' %}</label>
+                            <label class="col-md-3" for="billingSelect">{% trans 'Select billing address' %}</label>
                             <div class="col-md-9">
                                 <select @change="onBillingSelected($event)" v-model="selectedBillingAddress" class="form-control" id="billingSelect">
                                     <option v-for="address in addresses" v-bind:value="address.id">
@@ -95,7 +95,7 @@
                                 </thead>
                                 <tbody >
                                 <template v-if="orderItems.length === 0">
-                                    <tr><td colspan="6"><a @click="addOrderItem" class="dropdown-item" href="#"><span><i class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;Add new item</span></a></td></tr>
+                                    <tr><td colspan="6"><a @click="addOrderItem" class="dropdown-item" href="#"><span><i class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new item' %}</span></a></td></tr>
                                 </template>
                                 <template v-for="(item, index) in orderItems" >
                                     <tr :class="{'table-warning': item.edit}" style="border-top: 1px solid #004f72; padding-top: 5px;">
@@ -169,8 +169,8 @@
                                                     <span style="font-size: 1.3rem; color:blue"><i class="fa fa-xs fa-plus-square"></i></span>
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                    <a @click="addOrderItem" class="dropdown-item" href="#"><span><i class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;Add new item</span></a>
-                                                    <a @click="addSubOrderItem(item)" class="dropdown-item" href="#"><span><i class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;Add new subitem</span></a>
+                                                    <a @click="addOrderItem" class="dropdown-item" href="#"><span><i class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new item' %}</span></a>
+                                                    <a @click="addSubOrderItem(item)" class="dropdown-item" href="#"><span><i class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new subitem' %}</span></a>
                                                 </div>
                                             </template>
                                             <template v-if="item.edit">
