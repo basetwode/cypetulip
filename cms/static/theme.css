@@ -27,6 +27,7 @@ body {
 }
 
 .overlay-hidden {
+
     display: none !important; /* Hidden by default */
 }
 
@@ -1073,4 +1074,33 @@ footer .box {
     font-weight: 600;
     text-transform: capitalize;
     text-align: center;
+}
+
+.preview-overlay {
+    position: absolute; /* Sit on top of the page content */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0px;
+
+    right: 0;
+    bottom: 0;
+    border: 5px solid white;
+    background-color: rgba(255, 255, 255, 0.95); /* Black background with opacity */
+    z-index: 1020; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */;
+}
+
+.preview-overlay-hidden {
+    display: none !important; /* Hidden by default */
+    transition: height 0ms 400ms, opacity 400ms 0ms;
+}
+.editable-table  button {
+    display: none;
+}
+
+.editable-table tr:hover button {
+    display: inline-block;
+}
+.editable-table tr.selected button {
+    display: inline-block;
 }

@@ -1175,3 +1175,12 @@ class MergeAccounts(LoginRequiredMixin, FormView, NotifyNewCustomerAccountView):
     def get_form_kwargs(self):
         form_kwargs = super(MergeAccounts, self).get_form_kwargs()
         return {**form_kwargs, **{'contact': Contact.objects.get(id=self.kwargs['id'])}}
+
+
+class OrderCreateView(CreateUpdateView):
+    model = Order
+    slug_field = 'order_hash'
+    slug_url_kwarg = 'order_hash'
+    template_name = 'vue/order-create-vue.html'
+    fields = '__all__'
+    context_object_name = 'order'

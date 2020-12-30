@@ -24,7 +24,7 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               SelectItemCreationView, SelectItemDeleteView, CompanyCreationView, ContactCreationView,
                               ContactDeleteView, AddressCreationView, AddressDeleteView, ContactResetPwdView,
                               CompanyDeleteView, PercentageDiscountEditView, DiscountOverview,
-                              FixedAmountDiscountEditView, CreateOrderSubItem, MergeAccounts)
+                              FixedAmountDiscountEditView, CreateOrderSubItem, MergeAccounts, OrderCreateView)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
@@ -106,16 +106,18 @@ urlpatterns = [
     url(r'^employees/$', EmployeeOverviewView.as_view(), name="employee_overview"),
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/assign/$',
         OrderAssignEmployeeView.as_view(), name="assign_employee"),
-    url(r'^orders/create/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
-        CreateOrderView.as_view(), name="create_order"),
-    url(r'^orders/detail/create/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
-        CreateOrderDetailView.as_view(), name="create_order_detail"),
-    url(r'^orders/item/create/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
-        CreateOrderItem.as_view(), name="create_order_item"),
-    url(r'^orders/item/delete/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
-        DeleteOrderItem.as_view(), name="delete_order_item"),
-    url(r'^orders/subitem/create/(?P<parent_id>[0-9]+)/$',
-        CreateOrderSubItem.as_view(), name="create_order_subitem"),
+    url(r'^orders/create/(?P<order_hash>[a-zA-Z0-9\\s\-_ ]*)/$', OrderCreateView.as_view(),
+        name="create_order"),
+    # url(r'^orders/create/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+    #     CreateOrderView.as_view(), name="create_order"),
+    # url(r'^orders/detail/create/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+    #     CreateOrderDetailView.as_view(), name="create_order_detail"),
+    # url(r'^orders/item/create/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+    #     CreateOrderItem.as_view(), name="create_order_item"),
+    # url(r'^orders/item/delete/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+    #     DeleteOrderItem.as_view(), name="delete_order_item"),
+    # url(r'^orders/subitem/create/(?P<parent_id>[0-9]+)/$',
+    #     CreateOrderSubItem.as_view(), name="create_order_subitem"),
 
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/cancel/$',
         OrderCancelView.as_view(), name="cancel_order"),
@@ -158,4 +160,6 @@ urlpatterns = [
     url(r'^fixeddiscount/create/(?P<id>[a-zA-Z0-9_.-]*)$', FixedAmountDiscountEditView.as_view(),
         name="fixed_discount_edit"),
     url(r'^discount/$', DiscountOverview.as_view(), name="discount_overview"),
+
+
 ]

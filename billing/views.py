@@ -25,18 +25,31 @@ class HTMLPreview(View):
         order_detail = OrderDetail.objects.get(order=_order)
         contact = order_detail.contact
         company = _order.company
-        order_items = OrderItem.objects.filter(order=_order)
+        order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True).annotate(
+            price_t=Round(F('price') * Cast(F('count'), FloatField()),2),
+        )
+        if not order_detail.date_bill:
+            order_detail.date_bill = datetime.now()
+        order_detail.date_due = order_detail.date_bill + timedelta(days=company.term_of_payment)
 
         legal_settings = LegalSetting.objects.first()
+        total_without_tax = calculate_sum(order_items)
+        total_with_tax = calculate_sum(order_items, True)
+        payment_detail = PaymentDetail.objects.get(order=_order)
+        tax_rate = int(round(total_with_tax / total_without_tax, 2)*100)-100 if total_without_tax > 0 else 0
 
-        template = get_template('invoice.html')
         context = {
+            'total': total_with_tax,
+            'total_without_tax': total_without_tax,
+            'tax': round(order_detail.total_wt() - order_detail.total(), 2),
+            'tax_rate': tax_rate,
             'order': _order,
-            'order_items': order_items,
             'order_detail': order_detail,
+            'order_items': order_items,
             'contact': contact,
             'company': company,
-            'invoice_settings': legal_settings
+            'payment_detail': payment_detail,
+            'invoice_settings': legal_settings,
         }
 
         return render(request, 'invoice.html', context)

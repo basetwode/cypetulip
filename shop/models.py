@@ -548,7 +548,8 @@ class OrderItem(models.Model):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None, recalculate_tax=False):
         price_changed = self.price_changed()
-        if price_changed and self.product and not self.product.price_on_request:
+
+        if (not self.order_detail.state or not self.price) and price_changed and self.product and not self.product.price_on_request:
             self.price = self.get_product_special_price() if self.get_product_special_price() else self.get_product_price()
             self.price_wt = self.get_product_price_wt()
             self.applied_discount = 0
@@ -562,6 +563,11 @@ class OrderItem(models.Model):
         if not self.pk or price_changed:
             self.apply_discount_if_eligible(self.order_detail.discount,
                                             save=False) if self.order_detail.discount else None
+        if self.price_wt != self.calculate_tax(self.price):
+            self.price_wt = self.calculate_tax(self.price)
+            self.applied_discount = 0
+            self.price_discounted = self.price
+            self.price_discounted_wt = self.price_wt
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
         for order_item in OrderItem.objects.filter(order_item=self):
@@ -619,10 +625,12 @@ class OrderItem(models.Model):
         if not self.allowable:
             return 0
         sub_items = OrderItem.objects.filter(order_item=self)
-        return (calculate_sum(sub_items, True, include_discount)  + (
-            (self.price_wt if not include_discount else self.price_discounted_wt) \
-            if sub_items.count() > 0 else 0 + self.price_wt if not include_discount else self.price_discounted_wt)) * \
+        sum = (calculate_sum(sub_items, True, include_discount)  + (
+            (float(self.price_wt) if not include_discount else self.price_discounted_wt) \
+            if sub_items.count() > 0 else 0 + float(self.price_wt) if not include_discount else self.price_discounted_wt)) * \
                self.count
+        return Decimal(f"{sum}") \
+            .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
     def total(self, include_discount=False):
         if not self.allowable:
@@ -672,10 +680,10 @@ class OrderItem(models.Model):
 
     def price_changed(self):
         return \
-            not self.price_wt if hasattr(self, 'fileorderitem') else \
+            (not self.price_wt or self.price_wt != self.calculate_tax(self.price)) if hasattr(self, 'fileorderitem') else \
             self.checkboxorderitem.price_changed() if hasattr(self, 'checkboxorderitem') else \
                 self.selectorderitem.price_changed() if hasattr(self, 'selectorderitem') else \
-                    not self.price_wt
+                    (not self.price_wt or self.price_wt != self.calculate_tax(self.price))
 
 
 # Corresponding OrderItems for the subproducts

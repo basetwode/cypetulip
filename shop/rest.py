@@ -90,6 +90,11 @@ class ProductSubItemSerializer(serializers.ModelSerializer):
 
 
 class OrderItemDeserializer(serializers.ModelSerializer):
+    price = serializers.ReadOnlyField()
+    total_wt = serializers.ReadOnlyField()
+    allowable = serializers.HiddenField(default=True)
+    period_of_performance_start = serializers.DateField(input_formats=['%Y-%m-%d',],required=False )
+    period_of_performance_end = serializers.DateField(input_formats=['%Y-%m-%d',],required=False)
 
     class Meta:
         model = OrderItem
@@ -97,6 +102,8 @@ class OrderItemDeserializer(serializers.ModelSerializer):
 
 
 class FileOrderItemSerializer(serializers.ModelSerializer):
+    price = serializers.ReadOnlyField()
+    allowable = serializers.HiddenField(default=True)
 
     class Meta:
         model = FileOrderItem
@@ -116,6 +123,8 @@ class FileOrderItemSerializer(serializers.ModelSerializer):
 
 
 class SelectOrderItemSerializer(serializers.ModelSerializer):
+    price = serializers.ReadOnlyField()
+    allowable = serializers.HiddenField(default=True)
 
     class Meta:
         model = SelectOrderItem
@@ -123,6 +132,8 @@ class SelectOrderItemSerializer(serializers.ModelSerializer):
 
 
 class NumberOrderItemSerializer(serializers.ModelSerializer):
+    price = serializers.ReadOnlyField()
+    allowable = serializers.HiddenField(default=True)
 
     class Meta:
         model = NumberOrderItem
@@ -130,6 +141,8 @@ class NumberOrderItemSerializer(serializers.ModelSerializer):
 
 
 class CheckboxOrderItemSerializer(serializers.ModelSerializer):
+    price = serializers.ReadOnlyField()
+    allowable = serializers.HiddenField(default=True)
 
     class Meta:
         model = CheckBoxOrderItem
@@ -145,15 +158,17 @@ class CheckboxOrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    price = serializers.ReadOnlyField()
     product = ProductSubItemSerializer()
     randID = SerializerMethodField(source='get_rand_id')
     errors = SerializerMethodField()
     valid = SerializerMethodField()
+    total_wt = serializers.ReadOnlyField()
 
     class Meta:
         model = OrderItem
-        fields = ['product', 'price', 'price_wt', 'count', 'id', 'fileorderitem', 'valid', 'applied_discount',
-                  'price_discounted', 'price_discounted_wt',
+        fields = ['product', 'price', 'price_wt', 'count', 'id', 'fileorderitem', 'valid', 'applied_discount', 'allowable',
+                  'price_discounted', 'price_discounted_wt', 'total_wt', 'period_of_performance_start','period_of_performance_end',
                   'numberorderitem', 'selectorderitem', 'checkboxorderitem', 'randID', 'errors']
         depth = 4
 
