@@ -293,6 +293,7 @@ router.register(r'adm/contacts/(?P<contactId>[0-9]*)/addresses', AddressAdmViewS
 router.register(r'adm/orderstate', OrderStateViewSet)
 router.register(r'adm/order', OrderAdmViewSet)
 router.register(r'adm/orderdetails/(?P<order_hash>[a-zA-Z0-9\\s\-_ ]*)', OrderDetailAdmViewSet)
+router.register(r'adm/orderdetails', OrderDetailAdmViewSet)
 router.register(r'adm/orderitem', OrderItemAdmViewSet)
 router.register(r'adm/fileorderitem', FileOrderItemAdmViewSet)
 router.register(r'adm/checkboxorderitem', CheckboxOrderItemAdmViewSet)

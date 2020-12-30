@@ -621,7 +621,7 @@
                             'contact': this.selectedContact
                         })
                     } else {
-                        axios.post('/api/v1/adm/orderdetails//', {
+                        axios.post('/api/v1/adm/orderdetails/', {
                             'order_number':this.selectedOrderHash,
                             // in this case we do't need order.id since the data came from a different rest api (see saveOrder)
                             'order':this.selectedOrder.id,
