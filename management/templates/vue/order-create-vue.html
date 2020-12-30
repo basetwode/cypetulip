@@ -502,7 +502,7 @@
                     billPreview.addClass('preview-overlay-hidden');
                 },
                 getBillPreview: function(){
-                    axios.get('http://localhost:8000/billing/bill_pr/'+this.selectedOrderHash+'')
+                    axios.get('/billing/bill_pr/'+this.selectedOrderHash+'')
                         .then(response => {
                             this.billPreview = response.data
                         });

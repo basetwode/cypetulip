@@ -342,7 +342,7 @@
 
             <div class="col-lg-3 col-md-12 col-sm-12 text-center">
                 <h5 class="h-bold">{% trans 'Options' %}</h5>
-                <a href="{% url 'create_order' order.order_hash %}"
+                <a href="{% url 'update_order' order.order_hash %}"
                    class="btn btn-fw btn-warning">{% trans 'Edit order' %}</a>
                 <a href="{% url 'invoice_pdf' order.order_hash %}" target="_blank"
                    class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>

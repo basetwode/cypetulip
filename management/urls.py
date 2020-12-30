@@ -107,6 +107,8 @@ urlpatterns = [
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/assign/$',
         OrderAssignEmployeeView.as_view(), name="assign_employee"),
     url(r'^orders/create/(?P<order_hash>[a-zA-Z0-9\\s\-_ ]*)/$', OrderCreateView.as_view(),
+        name="update_order"),
+    url(r'^orders/create/$', OrderCreateView.as_view(),
         name="create_order"),
     # url(r'^orders/create/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
     #     CreateOrderView.as_view(), name="create_order"),
