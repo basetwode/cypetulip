@@ -101,6 +101,7 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('shop:my_account')
 
     def form_valid(self, form):
+        order_from_session = Order.objects.filter(session=self.request.session.session_key, orderdetail__state__isnull=True)
         user = form.save(commit=False)
         company = Company(name="", term_of_payment=10, street="",number="",zipcode="",city="")
         company.save()
@@ -112,8 +113,18 @@ class RegisterView(CreateView):
         raw_password = form.cleaned_data.get('password1')
         user_ = authenticate(username=email, password=raw_password)
         if not self.request.user.is_authenticated:
-            login(self.request, user_)
-        return super(RegisterView, self).form_valid(form)
+            auth_login(self.request, user_)
+        self.migrate_order(user, order_from_session )
+        return HttpResponseRedirect(self.success_url)
+
+    def migrate_order(self, contact, order_from_session):
+        if order_from_session.count() > 0:
+            order = order_from_session.first()
+            order.company = contact.company
+            order.save()
+            order_detail = order.orderdetail_set.first()
+            order_detail.contact = contact
+            order_detail.save()
 
     def get_context_data(self, **kwargs):
         return {**{'buttonText': _('Sign up')}, **super(RegisterView, self).get_context_data(**kwargs)}
