@@ -17,6 +17,12 @@
                 <div style="overflow: auto" class="card-header">
                     <h4 class="h-bold">{% trans 'Menu' %}</h4>
                     <hr>
+                    {% if contact.company.logo %}
+                        <div class="col-sm-6 pb-2">
+                            <img class="card-img-top"
+                                 src="{{ contact.company.logo.url }}" alt=""/>
+                        </div>
+                    {% endif %}
                     <div class="col-md-12"><span>{{ contact.first_name }} {{ contact.last_name }}</span></div>
                     <div class="col-md-12"><span
                             style="font-size: small; font-weight: bold">{{ contact.company.name }}</span></div>
@@ -44,7 +50,7 @@
 
                     <div class="card-body">
 
-                        <form method="post" id="settings-form"
+                        <form enctype="multipart/form-data" method="post" id="settings-form"
                               action="{% url next_url %}">
                             {% csrf_token %}
                             {% bootstrap_form form layout='horizontal' %}

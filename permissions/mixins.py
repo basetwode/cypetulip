@@ -2,6 +2,8 @@ from django.contrib.auth.mixins import AccessMixin
 from django.contrib.auth.mixins import LoginRequiredMixin as LoginRequired
 from django.contrib.contenttypes.models import ContentType
 
+from shop.models import Company, Contact
+
 
 class PermissionPostGetRequiredMixin(AccessMixin):
     """
@@ -93,7 +95,16 @@ class PermissionOwnsObjectMixin(AccessMixin):
             return object_instance.count() == 1
 
         object_instance = self.get_model().objects.filter(**kwargs)
-        return getattr(object_instance[0], self.field_name).id == self.request.user.id if object_instance else False
+        is_own_object = getattr(object_instance[0], self.field_name).id == self.request.user.id if object_instance else False
+        if is_own_object:
+            return True
+        # Test whether the object belongs to another company contact
+        contact = Contact.objects.get(user_ptr=self.request.user)
+        return Contact.objects \
+                   .filter(company=contact.company) \
+                   .filter(user_ptr_id=getattr(object_instance[0], self.field_name).id) \
+                   .count() > 0 \
+            if object_instance else False
 
     def dispatch(self, request, *args, **kwargs):
         if not self.has_permission_object():

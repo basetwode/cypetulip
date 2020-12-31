@@ -65,6 +65,10 @@
                         <div class="row">
                             <div class="col-md-3" style="text-align: left; ">
                                 {{ order_detail.contact.first_name }} {{ order_detail.contact.last_name }}
+                                {% if order_detail.contact.company.name %}
+                                    <br><small><b>{{ order_detail.contact.company.name }}</b></small>
+
+                                {% endif %}
                             </div>
                             <div class="col-md-3" style="text-align: left; ">
                                 <strong> {% trans 'Orderdate' %}</strong>

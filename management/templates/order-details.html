@@ -1,6 +1,7 @@
 {% extends 'base-mgmt.html' %}
 {% load static %}
 {% load recurse %}
+{% load fb_versions %}
 {% load bootstrap4 %}
 
 {% load i18n %}
@@ -28,8 +29,12 @@
                         </div>
                     </h4>
                     <div class="card-body">
-
-
+                    {% if order.company.logo %}
+                    <div class="col-sm-12">
+                        <img class="card-img-top"
+                             src="{{ order.company.logo.url }}" alt=""/>
+                    </div>
+                    {% endif %}
                     <div class="col-sm-12">
                         {{ order.company.street }} {{ order.company.number }}
                     </div>

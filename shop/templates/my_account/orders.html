@@ -65,7 +65,7 @@
                                 {{ order_detail.total_discounted_wt|floatformat:2 }} €
                             </div>
                             <div class="col-md-5 col-12" style="text-align: left; ">
-                                <strong> Ordernr.:
+                                <strong> {% trans 'Ordernr' %}
                                     <small>{{ order_detail.unique_nr }}</small></strong>
                             </div>
                         </div>
@@ -74,11 +74,14 @@
                             <div class="col-12" style="text-align: left; ">
                                 <a class="btn btn-outline-secondary mr-2"
                                    href="{% url 'shop:detail_order' order_detail.order.order_hash %}">{% trans 'Orderdetails' %}</a>
+                                {% if order_detail.bill_sent %}
+                                    <a class="btn btn-outline-secondary mr-2"
+                                       target="_blank" href="{% url 'invoice_pdf' order_detail.order.order_hash %}"
+                                    >{% trans 'Bill' %}</a>
+                                {% else %}
+                                    <button class="btn btn-outline-secondary mr-2" disabled
+                                    >{% trans 'Bill' %}</button> {% endif %}
 
-                                <button class="btn btn-outline-secondary mr-2" disabled
-                                        {% if not order_detail.bill_sent %}disabled{% endif %}
-                                        target="_blank" href="{% url 'invoice_pdf' order_detail.order.order_hash %}"
-                                >{% trans 'Bill' %}</button>
                             </div>
 
                         </div>

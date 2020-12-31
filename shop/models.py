@@ -15,7 +15,7 @@ from mediaserver.upload import (company_files_upload_handler, fs, order_files_up
 
 
 class Company(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, blank=True, null=True)
     company_id = models.CharField(max_length=100, blank=True, null=True)
     term_of_payment = models.IntegerField(default=10, verbose_name=_('Term of payment'))
     street = models.CharField(max_length=40, default=None, verbose_name=_('Street'))
@@ -37,7 +37,7 @@ class Company(models.Model):
                           using, update_fields)
 
     def __str__(self):
-        return self.name
+        return self.name or ""
 
 
 class Contact(DjangoUser):

@@ -221,7 +221,7 @@ class AddressOverviewView(PermissionPostGetRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         contact = Contact.objects.get(user_ptr=self.request.user)
-        addresses = Address.objects.filter(contact=contact)
+        addresses = Address.objects.filter(contact__in=contact.company.contact_set.all())
         _json = json.loads(
             serializers.serialize('json', addresses.all(), use_natural_foreign_keys=True,
                                   use_natural_primary_keys=True))
@@ -235,18 +235,25 @@ class AddressCreationView(PermissionPostGetRequiredMixin, CreateView):
     template_name = 'my_account/generic-create.html'
     context_object_name = 'address'
     model = Address
-    fields = '__all__'
+    fields = ['name','street','number','zipcode','city',]
 
     def get_success_url(self):
         return reverse_lazy('shop:address_overview')
 
+    def form_valid(self, form):
+        address = form.save(commit=False)
+        address.contact = Contact.objects.get(user_ptr=self.request.user.id)
+        return super(AddressCreationView, self).form_valid(form)
 
-class AddressEditView(PermissionPostGetRequiredMixin, PermissionOwnsObjectMixin, UpdateView):
+
+class AddressEditView(PermissionPostGetRequiredMixin, UpdateView):
+    permission_get_required = ['shop.view_address']
+    permission_post_required = ['shop.change_address']
     field_name = "contact"
     template_name = 'my_account/generic-edit.html'
     context_object_name = 'address'
     model = Address
-    fields = '__all__'
+    fields = ['name','street','number','zipcode','city',]
 
     address_id = None
     slug_field = 'id'
@@ -256,7 +263,9 @@ class AddressEditView(PermissionPostGetRequiredMixin, PermissionOwnsObjectMixin,
         return reverse_lazy('shop:address_overview')
 
 
-class AddressDeleteView(PermissionPostGetRequiredMixin, PermissionOwnsObjectMixin, DeleteView):
+class AddressDeleteView(PermissionPostGetRequiredMixin, DeleteView):
+    permission_get_required = ['shop.delete_address']
+    permission_post_required = ['shop.delete_address']
     model = Address
     field_name = "contact"
     slug_field = 'id'

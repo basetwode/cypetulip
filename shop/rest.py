@@ -321,7 +321,7 @@ class AddressViewSet(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:
             user = self.request.user
             contact = Contact.objects.get(user_ptr=user)
-            return Address.objects.filter(contact=contact)
+            return Address.objects.filter(contact__in=contact.company.contact_set.all())
         else:
             raise NotFound()
 

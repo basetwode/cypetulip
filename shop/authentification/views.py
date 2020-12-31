@@ -102,7 +102,7 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         user = form.save(commit=False)
-        company = Company(name=user.email, term_of_payment=10, street="",number="",zipcode="",city="")
+        company = Company(name="", term_of_payment=10, street="",number="",zipcode="",city="")
         company.save()
         user.company = company
         user.email = user.username

@@ -171,6 +171,9 @@
 <main>
     <div id="details" class="clearfix">
         <div id="client">
+            {% if contact.company.name %}
+                <div class="name">{{ contact.company.name }}</div>
+            {% endif %}
             <div class="name">{{ contact.first_name }} {{ contact.last_name }}</div>
             <div class="name">{{ order_detail.billing_address.street }} {{ order_detail.billing_address.number }}</div>
             <div class="name">{{ order_detail.billing_address.zipcode }} {{ order_detail.billing_address.city }}</div>
