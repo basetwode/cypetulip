@@ -1,5 +1,7 @@
 <!-- Main jumbotron for a primary marketing message or call to action -->
-
+{% block head %}
+    <title>{{ page.page_name }} - {{ title }}</title>
+{% endblock %}
 <h1>{{ page.page_name }}</h1>
 
 {% for section in sections %}

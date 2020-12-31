@@ -27,7 +27,7 @@ def get_sites(request):
 
 def get_page_title(request):
     return {
-        'title': settings.SHOP_NAME
+        'title': LegalSetting.objects.first().company_name
     }
 
 

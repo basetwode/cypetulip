@@ -6,7 +6,7 @@
 {% load fb_versions %}
 
 {% block head %}
-    <title>Products</title>
+    <title>{% trans 'Products' %} {% if selected_category %} - {{ selected_category }}{% endif %} - {{ title }}</title>
 {% endblock %}
 
 {% block body %}
@@ -66,7 +66,7 @@
             <div class="products-list card-deck mt-3 mt-md-0">
             <div class="row w-100">
                 <div class="col-12">
-                    <h3>{% trans 'Products' %}</h3>
+                    <h1>{% trans 'Products' %}{% if selected_category %} - {{ selected_category }}{% endif %}</h1>
                 </div>
             </div>
                 <div class="row w-100">

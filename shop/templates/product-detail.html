@@ -6,7 +6,7 @@
 {% load bootstrap4 %}
 
 {% block head %}
-    <title>{{ product.name }}</title>
+    <title> {{ product.name }} - {{ product.category }} - {{ title }}</title>
 {% endblock %}
 
 {% block body %}
@@ -89,7 +89,7 @@
 
                 <div class="product">
                     <div class="card-body">
-                        <h3>{{ product.name }}</h3>
+                        <h1>{{ product.name }}</h1>
                     </div>
                     <div class="row no-gutters">
 

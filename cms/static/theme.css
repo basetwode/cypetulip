@@ -1104,3 +1104,6 @@ footer .box {
 .editable-table tr.selected button {
     display: inline-block;
 }
+h1 {
+    font-size: 1.9rem;
+}
