@@ -65,11 +65,11 @@
             {% endif %}
             <div class="products-list card-deck mt-3 mt-md-0">
             <div class="row w-100">
-                <div class="col-12">
+                <div class="col-12 pl-4">
                     <h1>{% trans 'Products' %}{% if selected_category %} - {{ selected_category }}{% endif %}</h1>
                 </div>
             </div>
-                <div class="row w-100">
+                <div class="row w-100" style="margin: 0px">
                     {% if not products %}
                         {% trans 'Sorry, we are out of stock in this category!' %}
                     {% endif %}
@@ -97,7 +97,7 @@
                                                   class="badge badge-pill badge-success badge-primary badge-price-on-request">{% trans 'Price on request' %}
                                                         </span>
                                         {% elif product.special_price %}
-                                            <span style="text-decoration: line-through">{{ product.price_wt | floatformat:2 }} &euro;</span>
+                                            <span class="d-none d-sm-block" style="text-decoration: line-through">{{ product.price_wt | floatformat:2 }} &euro;</span>
                                             <strong style="color: red"
                                                     class="font-weight-bold">{{ product.special_price_wt | floatformat:2 }}
                                                 &euro;</strong>

@@ -923,6 +923,10 @@ footer .box {
 .btn, .card, .form-control, .img-thumbnail {
     border-radius: 0 !important;
 }
+.products {
+    padding-right: 0px;
+    padding-left: 0px;
+}
 
 .products .attributes .list-group-item {
 
@@ -953,8 +957,14 @@ footer .box {
     padding: 10px;
 }
 .products .card-body.product-text {
-    height: 50px;
-    font-size: 15px;
+     height: 70px;
+     font-size: 15px;
+}
+@media only screen and (min-width: 600px) {
+    .products .card-body.product-text {
+        height: 50px;
+        font-size: 15px;
+    }
 }
 
 .products .card-body.product-attributes {
