@@ -106,6 +106,11 @@
             color: #0087C3;
             margin: 0;
         }
+        #invoice h2 {
+            color: #00577f;
+            font-size: 1.1rem;
+            margin: 0;
+        }
 
         #invoice .date {
             margin: 0;
@@ -181,6 +186,7 @@
         </div>
         <div id="invoice">
             <h1>{% trans 'Invoice' %} {{order_detail.unique_nr}}</h1>
+            <h2>{% trans 'Customer Nr' %} {{contact.customer_nr}}</h2>
             <div class="date">{% trans 'Invoice Date' %} {{ order_detail.date_bill|date:"d.m.Y" }}</div>
             <div class="date">{% trans 'Due Date' %} {{order_detail.date_due|date:"d.m.Y"}}</div>
         </div>
@@ -281,7 +287,8 @@
 </main>
 <footer>
     <div style="margin-top: 40px;text-align: center">
-        {% trans 'Invoice was created on a computer and is valid without the signature and seal.' %}
+        {% trans 'Invoice was created on a computer and is valid without the signature and seal.' %}<br>
+        {% trans 'If not stated otherwise the invoice date equals the period of performance. ' %}
     </div>
 </footer>
 </body>

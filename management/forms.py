@@ -30,7 +30,7 @@ class ContactUserForm(ModelForm):
 
     def clean(self):
         cleaned_data = super(ContactUserForm, self).clean()
-        if Contact.objects.filter(username=cleaned_data.get("email")).exists():
+        if Contact.objects.filter(username=cleaned_data.get("email")).exclude(id=self.instance.id).exists():
             raise forms.ValidationError(_('An user with the given email already exists'))
         return cleaned_data
 
@@ -47,6 +47,12 @@ class ContactUserIncludingPasswordForm(SetPasswordForm):
                   'new_password1',
                   'new_password2'
                   ]
+
+    def clean(self):
+        cleaned_data = super(ContactUserIncludingPasswordForm, self).clean()
+        if Contact.objects.filter(username=cleaned_data.get("email")).exists():
+            raise forms.ValidationError(_('An user with the given email already exists'))
+        return cleaned_data
 
 
 class ContactUserUpdatePasswordForm(SetPasswordForm):

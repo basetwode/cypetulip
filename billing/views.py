@@ -19,7 +19,12 @@ from permissions.mixins import LoginRequiredMixin, PermissionOwnsObjectMixin
 from shop.models import Order, OrderDetail, OrderItem
 
 
-class HTMLPreview(View):
+class HTMLPreview(PermissionOwnsObjectMixin, View):
+    model = OrderDetail
+    slug_field = "order__order_hash"
+    slug_url_kwarg = "order"
+    field_name = "contact"
+
     def get(self, request, order):
         _order = Order.objects.get(order_hash=order)
         order_detail = OrderDetail.objects.get(order=_order)

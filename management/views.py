@@ -198,6 +198,7 @@ class CustomersOverviewView(LoginRequiredMixin,  PaginatedFilterViews, FilterVie
     template_name = 'customers-overview.html'
     model = Contact
     paginate_by = 20
+    ordering = ['company__customer_nr', 'company_customer_nr']
     filterset_class = ContactFilter
 
 

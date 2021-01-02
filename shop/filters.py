@@ -52,7 +52,8 @@ class ContactFilter(django_filters.FilterSet):
     type = django_filters.ChoiceFilter(field_name="type", label=_('By type'),
                                        choices=(('anonymous', 'Anonymous Only'),
                                                 ('registered', 'Registered Only')),
-                                       method='filter_by_type')
+                                       method='filter_by_type',
+                                       initial="registered")
 
     class Meta:
         model = Contact
