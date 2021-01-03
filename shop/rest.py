@@ -293,6 +293,7 @@ class GuestViewSet(viewsets.ViewSet):
                 contact_serializer = ContactSerializer(data={**request.data['contact'],**{
                     'password': secrets.token_hex(32),
                     'username': request.data['contact']['email']+"_"+secrets.token_hex(6),
+                    'session': request.session.session_key,
                     'email': request.data['contact']['email'],
                 }})
                 if address_serializer.is_valid():

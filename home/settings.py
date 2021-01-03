@@ -294,7 +294,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
-        'management.management.CsrfExemptSessionAuthentication',
+        'management.authentication.CsrfExemptSessionAuthentication',
     ),'DATETIME_FORMAT': '%Y-%m-%d',
 
 }
@@ -351,6 +351,8 @@ COOKIEBANNER = {
     ],
 }
 CACHE_MIDDLEWARE_SECONDS = 0
+
+SESSION_COOKIE_AGE = 60
 
 RECAPTCHA_PUBLIC_KEY = 'MyRecaptchaKey123'
 RECAPTCHA_PRIVATE_KEY = 'MyRecaptchaPrivateKey456'

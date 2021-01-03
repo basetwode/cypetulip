@@ -51,6 +51,7 @@ class Contact(DjangoUser):
         ('F', _('Female')),
         ('D', _('Others')),
     )
+    session = models.CharField(max_length=40, blank=True, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, verbose_name=_('Company'))
     company_customer_nr = models.IntegerField(blank=True, null=True, verbose_name=_('Company Customer Nr'))
     title = models.CharField(max_length=20, blank=True, null=True, verbose_name=_('Title'))
@@ -74,7 +75,7 @@ class Contact(DjangoUser):
          update_fields=None):
 
         if self.company_customer_nr is None:
-            nr = (Contact.objects.filter(company=self.company).order_by(
+            nr = (Contact.objects.filter(company=self.company, company_customer_nr__isnull=False).order_by(
                 'company_customer_nr').last().company_customer_nr + 1) \
                 if Contact.objects.filter(company=self.company, company_customer_nr__isnull=False).exists() else 1
             self.company_customer_nr = nr
@@ -528,6 +529,9 @@ class OrderDetail(models.Model):
 
     def total_discounted_wt(self):
         return self.total_wt(True)  # - (self.discount_amount or 0)
+
+    def tax(self):
+        return self.total_discounted_wt() - self.total_discounted()
 
     def total_discount(self):
         return round(self.total() - self.total_discounted(), 2)

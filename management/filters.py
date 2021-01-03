@@ -33,3 +33,4 @@ class DiscountFilter(django_filters.FilterSet):
     class Meta:
         model = Discount
         fields = ['enabled']
+
