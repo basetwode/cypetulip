@@ -1,15 +1,20 @@
+import zipfile
+
 import datetime
 from functools import reduce
 
+from django.core.files import File
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import render
 # Create your views here.
 from django.views import View
 from django_filters.views import FilterView
+from six import StringIO, BytesIO
 
 from accounting.filters import OrderDetailFilter
 from billing.utils import calculate_sum
+from billing.views import GeneratePDFFile
 from payment.models import Payment
 from permissions.mixins import LoginRequiredMixin
 from shop.models import Order, OrderItem, OrderState, OrderDetail
@@ -55,7 +60,38 @@ class AccountingViewExportCSV(AccountingView):
     def get(self, request, *args, **kwargs):
 
         response = super(AccountingViewExportCSV, self).get(request,*args,**kwargs)
-        filename = "accounting%s.csv" % '_asd'
+        filename = "accounting%s.csv" % ''
         content = "attachment; filename=%s" % filename
         response['Content-Disposition'] = content
         return response
+
+
+class AccountingFullExport(AccountingViewExportCSV):
+    content_type = 'application/x-zip-compressed'
+
+    def get(self, request, *args, **kwargs):
+        response_csv = super(AccountingFullExport, self).get(request,*args,**kwargs)
+        response = HttpResponse(self.create_zip(response_csv))
+        filename = "accounting%s.zip" % ''
+        content = "attachment; filename=%s" % filename
+        response['Content-Disposition'] = content
+        return response
+
+    def create_zip(self, csv):
+        s = BytesIO()
+        # The zip compressor
+        zf = zipfile.ZipFile(s, "w")
+        for order_detail in self.get_context_data().get("filter").qs:
+            if order_detail.bill_file:
+                zf.write(order_detail.bill_file.path,f"{order_detail.unique_nr()}.pdf")
+            else:
+                try:
+                    pdf = GeneratePDFFile().generate(order_detail.order)
+                    order_detail.bill_file = File(pdf,f"I_{order_detail.unique_nr()}.pdf")
+                    order_detail.save()
+                    zf.write(order_detail.bill_file.path,f"{order_detail.unique_nr()}.pdf")
+                except:
+                    pass
+        zf.writestr("accounting.csv",csv.rendered_content)
+        zf.close()
+        return s.getvalue()

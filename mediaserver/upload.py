@@ -20,7 +20,11 @@ def company_files_upload_handler(company, filename):
 
 def order_files_upload_handler(order, filename):
     order.file_name = filename
-    return "orders/{hash}/{file}".format(hash=order.order.order_hash, file=__create_hash(filename))
+    return "orders/{hash}/order/{file}".format(hash=order.order.order_hash, file=__create_hash(filename))
+
+
+def invoice_files_upload_handler(order, filename):
+    return "orders/{hash}/invoice/Invoice_{file}.pdf".format(hash=order.order.order_hash, file=order.unique_nr())
 
 
 def shipment_files_upload_handler(shipment, filename):

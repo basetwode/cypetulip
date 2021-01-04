@@ -4,6 +4,7 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.contrib.sessions.models import Session
+from django.core.files import File
 from django.db.transaction import commit
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -578,6 +579,8 @@ class OrderAcceptInvoiceView(View, EmailMixin):
 
     def send_invoice(self, _order, ):
         pdf = GeneratePDFFile().generate(_order.order)
+        _order.bill_file = File(pdf,f"I_{_order.unique_nr()}.pdf")
+        _order.save()
         total = calculate_sum(_order.order.orderitem_set, True)
         self.send_mail(_order.contact, _('Your Invoice ') + _order.unique_nr(), '', {'object': _order.order,
                                                                                      'contact': _order.contact,

@@ -11,7 +11,7 @@ from tinymce import HTMLField
 
 from billing.utils import calculate_sum, calculate_sum_order
 from mediaserver.upload import (company_files_upload_handler, fs, order_files_upload_handler,
-                                public_files_upload_handler, rand_key)
+                                public_files_upload_handler, rand_key, invoice_files_upload_handler)
 
 
 class Company(models.Model):
@@ -424,6 +424,9 @@ class OrderDetail(models.Model):
                               blank=True, verbose_name=_('State'))
     date_bill = models.DateTimeField(null=True, blank=True)
     bill_sent = models.BooleanField(default=False, blank=True)
+    bill_file = models.FileField(default=None, null=True,
+                            upload_to=invoice_files_upload_handler,
+                            storage=fs)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Contact'))
     shipment_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True,
                                          related_name='shipment_address', verbose_name=_('Shipment address'))
