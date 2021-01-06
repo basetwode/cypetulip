@@ -338,6 +338,7 @@ class Discount(models.Model):
     count = models.IntegerField(default=0)
     valid_until_count = models.IntegerField(default=-1)
     enabled = models.BooleanField(default=True)
+    show_in_products = models.BooleanField(default=False)
     date_added = models.DateTimeField(auto_now=True, blank=True)
 
     def is_invalid(self):

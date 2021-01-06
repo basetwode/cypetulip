@@ -962,13 +962,13 @@ footer .box {
 }
 @media only screen and (min-width: 600px) {
     .products .card-body.product-text {
-        height: 50px;
+        height: 60px;
         font-size: 15px;
     }
 }
 
 .products .card-body.product-attributes {
-    height: 80px;
+    height: 90px;
 }
 
 .products .guarantee {

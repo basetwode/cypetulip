@@ -74,7 +74,7 @@
                         {% trans 'Sorry, we are out of stock in this category!' %}
                     {% endif %}
                     {% for product in products %}
-                        <div class="product-card col-xl-4 col-6 p-0">
+                        <div class="product-card col-xl-4 col-6 p-2">
                             <div class="card card-hover ">
                                 <a href="/shop/product/{{ product.name }}">
 
@@ -111,7 +111,28 @@
                                     {% if not product.price_on_request %}
                                     <small class="float-right">({% trans 'incl. Tax' %})</small>{% endif %}
                                 </div>
+                                <div class="card-body pb-1 pl-3">
+
+                                        {% if product.discount_set.count > 0 %}
+                                            {% with product.discount_set.last as voucher %}
+                                                <strong style="color: #da5200"
+                                                        class="font-weight-bold">
+                                                        </span><i class="fas fa-s fa-exclamation-circle"></i>
+                                                    {% if voucher.percentagediscount %}
+                                                        {% blocktranslate with percent=voucher.percentagediscount.discount_percentage_in_percent id=voucher.voucher_id %}
+                                                            Save up to {{ percent }} % with: {{ id }}
+                                                        {% endblocktranslate %}
+                                                    {% else %}
+                                                        {% blocktranslate with amount=voucher.fixedamountdiscount.amount id=voucher.voucher_id %}
+                                                            Save up to {{ amount }} € with: {{ id }}
+                                                        {% endblocktranslate %}
+                                                    {% endif %}
+                                                    &euro;</strong><br>
+                                            {% endwith %}
+                                        {% endif %}
+                                </div>
                                 <div class="card-body product-attributes">
+
                                     {% regroup product.attributes.all by type as attributes_grouped %}
                                     {% for attribute in attributes_grouped|slice:":3" %}
                                         <div class="d-flex align-items-center flex-row guarantee"><i
