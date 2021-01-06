@@ -7,7 +7,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView, DetailView
 from django_filters.views import FilterView
 from django.utils.translation import ugettext_lazy as _
 
@@ -19,36 +19,38 @@ from shop.models import Contact, Order, OrderItem, Product, OrderDetail, Address
 from shop.my_account.forms import CompanyForm, ContactForm
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
-from utils.mixins import PaginatedFilterViews
+from utils.mixins import PaginatedFilterViews, APIMixin
 from utils.views import CreateUpdateView
 
 
-class OrderDetailView(PermissionOwnsObjectMixin, View):
+class OrderDetailView(PermissionOwnsObjectMixin, APIMixin, DetailView):
     model = OrderDetail
     slug_field = "order__order_hash"
     slug_url_kwarg = "order"
     field_name = "contact"
     template_name = 'my_account/orders-detail.html'
 
-    def get(self, request, order):
-        _order = Order.objects.get(order_hash=order)
-        order_details = OrderDetail.objects.get(order_number=order)
+    def get_context_data(self, **kwargs):
+        context = super(OrderDetailView, self).get_context_data(**kwargs)
+
+        _order = self.object.order
+        order_details = self.object
         if _order:
             order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True,
                                                    product__in=Product.objects.all())
             total_without_tax = calculate_sum(order_items)
             total_with_tax = calculate_sum(order_items, True)
-            return render(request, self.template_name,
-                          {
-                              'total': total_with_tax,
-                              'total_without_tax': total_without_tax,
-                              'tax': round(total_with_tax - total_without_tax, 2),
-                              'order_details': order_details, 'order': _order, 'contact': order_details.contact,
-                              'order_items': order_items,
-                              'order_items_once_only': get_orderitems_once_only(_order)})
 
-    def post(self, request):
-        pass
+            context = {**context, **{
+                  'total': total_with_tax,
+                  'total_without_tax': total_without_tax,
+                  'tax': round(total_with_tax - total_without_tax, 2),
+                  'order_details': order_details, 'order': _order, 'contact': order_details.contact,
+                  'order_items': order_items,
+                  'order_items_once_only': get_orderitems_once_only(_order)}}
+
+        return context
+
 
 
 class OrdersView(LoginRequiredMixin, PermissionPostGetRequiredMixin,  PaginatedFilterViews, FilterView):

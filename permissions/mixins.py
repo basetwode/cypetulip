@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import AccessMixin
 from django.contrib.auth.mixins import LoginRequiredMixin as LoginRequired
 from django.contrib.contenttypes.models import ContentType
 
-from shop.models import Company, Contact
+from shop.models import Company, Contact, Order, OrderDetail
 
 
 class PermissionPostGetRequiredMixin(AccessMixin):
@@ -87,24 +87,40 @@ class PermissionOwnsObjectMixin(AccessMixin):
 
     def has_permission_object(self):
         kwargs = {'{0}'.format(self.get_slug_id()): self.kwargs[self.get_slug_kwarg()]}
+        object_instance = self.get_model().objects.filter(**kwargs)
 
-        if self.request.user.is_staff:
-            return True
+        return self.request.user.is_staff or \
+               self.test_anonymous_ownership(**kwargs) or \
+               self.test_object_ownership(object_instance, self.field_name) or \
+               self.test_order_ownership()
+
+    def test_anonymous_ownership(self, **kwargs):
         if not self.request.user.is_authenticated:
             object_instance = self.get_model().objects.filter(order__session=self.request.session.session_key, **kwargs)
             return object_instance.count() == 1
 
-        object_instance = self.get_model().objects.filter(**kwargs)
-        is_own_object = getattr(object_instance[0], self.field_name).id == self.request.user.id if object_instance else False
+    # Used to test for existing objects. Tests whether the contact is set on the given model.
+    def test_object_ownership(self, object_instance, field_name):
+        is_own_object = getattr(object_instance[0], field_name).id == self.request.user.id if object_instance else False
         if is_own_object:
             return True
         # Test whether the object belongs to another company contact
         contact = Contact.objects.get(user_ptr=self.request.user)
         return Contact.objects \
                    .filter(company=contact.company) \
-                   .filter(user_ptr_id=getattr(object_instance[0], self.field_name).id) \
+                   .filter(user_ptr_id=getattr(object_instance[0], field_name).id) \
                    .count() > 0 \
             if object_instance else False
+
+    # Used to test for new objects. Tests whether the contact is set on the order that is related to the new object
+    def test_order_ownership(self):
+        if self.get_model() is not Order:
+            # todo: orderdetails too
+            if 'order' in self.kwargs or 'order_hash' in self.kwargs:
+                order_detail = OrderDetail.objects.filter(order__order_hash=self.kwargs[self.get_slug_kwarg()])
+                owns_order = self.test_object_ownership(order_detail, 'contact')
+                return owns_order
+        return False
 
     def dispatch(self, request, *args, **kwargs):
         if not self.has_permission_object():

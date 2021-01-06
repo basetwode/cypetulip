@@ -1,8 +1,9 @@
-from django.apps import AppConfig
+from django.apps import AppConfig, apps
+
+from utils.apps import BaseConfig
 
 
-
-class WebappConfig(AppConfig):
+class WebappConfig(BaseConfig):
     name = 'shop'
 
     def ready(self):
@@ -36,3 +37,5 @@ class WebappConfig(AppConfig):
                 init_state.save()
         except :
             print("DB not migrated")
+        super(WebappConfig, self).ready()
+

@@ -2,17 +2,21 @@ import threading
 import time
 from email.mime.image import MIMEImage
 
+from django.apps import apps
 from django.core import mail
 from django.core.checks import translation
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template.loader import render_to_string
+from django.urls import resolve
 from django.views import View
 from django.db import connections
+from django.views.generic.base import ContextMixin
 
 from home import settings
 from management.models import LegalSetting, MailSetting
 from shipping.models import OnlineShipment
 from shop.models import Order
+
 
 class EmailLogMixin:
 
@@ -22,7 +26,6 @@ class EmailLogMixin:
         #     contact=
         #     kwargs
         # )
-
 
 
 class EmailMixin:
@@ -37,7 +40,7 @@ class EmailMixin:
             # Host for sending e-mail.
             settings.EMAIL_HOST = mail_setting.smtp_server
             # Port for sending e-mail.
-            settings.EMAIL_PORT =  mail_setting.smtp_port
+            settings.EMAIL_PORT = mail_setting.smtp_port
             settings.DEFAULT_FROM_EMAIL = mail_setting.smtp_default_from
             # Optional SMTP authentication information for EMAIL_HOST.
             settings.EMAIL_HOST_USER = mail_setting.smtp_user
@@ -45,8 +48,8 @@ class EmailMixin:
             settings.EMAIL_USE_TLS = mail_setting.stmp_use_tls
         return get_connection(
             host=settings.EMAIL_HOST,
-            port= settings.EMAIL_PORT,
-            username= settings.EMAIL_HOST_USER,
+            port=settings.EMAIL_PORT,
+            username=settings.EMAIL_HOST_USER,
             password=settings.EMAIL_HOST_PASSWORD,
             use_tls=settings.EMAIL_USE_TLS
         )
@@ -55,6 +58,7 @@ class EmailMixin:
         mail_thread = EmailThread(receiver_user, content, subject, context, self.get_template(), self.connection())
         mail_thread.create_mail()
         mail_thread.start()
+
 
 class EmailThread(threading.Thread):
     def __init__(self, receiver_user, content, subject, context, email_template, connection):
@@ -70,8 +74,7 @@ class EmailThread(threading.Thread):
     def create_mail(self):
         result = None
         tries = 0
-        #while (result is None or result is not 1) and tries < 5:
-
+        # while (result is None or result is not 1) and tries < 5:
 
         print("Sending new email to " + self.receiver_user.email)
         legal = LegalSetting.objects.first()
@@ -104,7 +107,7 @@ class EmailThread(threading.Thread):
 
         if 'object' in self.context and isinstance(self.context['object'], Order):
             for order_item in self.context['object'].orderitem_set.all():
-                if hasattr(order_item.product,'product') and order_item.product.product.product_picture():
+                if hasattr(order_item.product, 'product') and order_item.product.product.product_picture():
                     product_file = order_item.product.product.product_picture().open("rb")
                     try:
                         product_img = MIMEImage(product_file.read())
@@ -120,8 +123,9 @@ class EmailThread(threading.Thread):
         self.email = email
 
     def run(self):
-        result =  self.email.send()
-        print("Mail sent: "+ str(result))
+        result = self.email.send()
+        print("Mail sent: " + str(result))
+
 
 class PaginatedFilterViews(View):
     def get_context_data(self, **kwargs):
@@ -132,3 +136,16 @@ class PaginatedFilterViews(View):
                 del querystring['page']
             context['querystring'] = querystring.urlencode()
         return context
+
+
+class APIMixin(ContextMixin):
+
+    def get_context_data(self, **kwargs):
+        context = super(APIMixin, self).get_context_data(**kwargs)
+        context = {**context, **self.get_api_config()}
+        return context
+
+    def get_api_config(self):
+        current_app = resolve(self.request.path)
+        config = apps.get_app_config(current_app.app_name)
+        return {'api_config': config.api[current_app.app_name]}

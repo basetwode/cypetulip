@@ -10,6 +10,11 @@ def get_var(dictionary, key):
     return dictionary.get(key)
 
 
+@register.filter
+def is_available(button, arg):
+    return button['is_available'](arg)
+
+
 @register.filter(name='addcss')
 def addcss(value, arg):
     return value.as_widget(attrs={'class': arg})

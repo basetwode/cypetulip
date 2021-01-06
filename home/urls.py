@@ -26,6 +26,7 @@ from permissions import urls as perm_urls
 from shop import urls as shop_urls
 from accounting import urls as accounting_urls
 from shipping import urls as shipping_urls
+from rma import urls as rma_urls
 
 # from Accounting import urls as accounting_urls
 # from home import settings
@@ -56,6 +57,7 @@ urlpatterns = [
     url(r'^payment/', include(payment_urls, namespace='payment')),
     url(r'^accounting/', include(accounting_urls, namespace='accounting')),
     url(r'^shipping/', include(shipping_urls, namespace='shipping')),
+    url(r'^rma/', include(rma_urls, namespace='rma')),
 
     url(r'^password_reset/$', PasswordResetViewSmtp.as_view(), name='password_reset'),
     url(r'^password_reset/done/$', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),

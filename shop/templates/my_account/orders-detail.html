@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load recurse %}
+{% load get_type %}
 
 {% load i18n %}
 {% block head %}
@@ -280,6 +281,18 @@
                         {% else %}
                             <button class="btn btn-fw btn-secondary" disabled
                             >{% trans 'Bill' %}</button> {% endif %}
+                        {% with api_config|get_var:'myaccount.orders.order.buttons'  as apiconfig %}
+                        {% for btn_key, button in apiconfig.items %}
+
+                            {% if button|is_available:order.order_hash %}
+                                <a href="{% url button.url order.order_hash %}"
+                                   class="btn btn-fw btn-secondary">{{ button.text }}</a>
+                            {% else %}
+                                <button class="btn btn-fw btn-secondary" disabled
+                                >{{ button.text }}</button>
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
                     </div>
                 </div>
                 <div class="card-footer">

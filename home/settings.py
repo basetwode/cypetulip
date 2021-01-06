@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'shipping',
     'accounting',
     'utils',
+    'rma',
     'filebrowser',
     'django.contrib.admin',
     'tinymce',
@@ -352,7 +353,7 @@ COOKIEBANNER = {
 }
 CACHE_MIDDLEWARE_SECONDS = 0
 
-SESSION_COOKIE_AGE = 60
+#SESSION_COOKIE_AGE = 60
 
 RECAPTCHA_PUBLIC_KEY = 'MyRecaptchaKey123'
 RECAPTCHA_PRIVATE_KEY = 'MyRecaptchaPrivateKey456'
