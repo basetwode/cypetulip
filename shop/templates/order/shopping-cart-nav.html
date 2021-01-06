@@ -1,5 +1,6 @@
 {% load static %}
 {% load i18n %}
+{% load fb_versions %}
 <a href="#shopping-cart" class="dropdown-toggle nav-link"
    data-target="#shopping-cart" data-toggle="dropdown" role="button"
    aria-haspopup="true"
@@ -25,7 +26,7 @@
                 <div class="col-4">
                     <div class="col-8">
                         {% if order.product.product.product_picture %}
-                            <img src="{{ order.product.product.product_picture.url }}"
+                            <img src="{% version order.product.product.productimage_set.first.product_picture 'thumbnail' %}"
                                  alt="..."
                                  class="img-fluid img-fluid img-thumbnail"/>
                         {% else %}

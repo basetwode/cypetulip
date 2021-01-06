@@ -111,13 +111,15 @@
                                     {% if not product.price_on_request %}
                                     <small class="float-right">({% trans 'incl. Tax' %})</small>{% endif %}
                                 </div>
-                                <div class="card-body pb-1 pl-3">
 
-                                        {% if product.discount_set.count > 0 %}
-                                            {% with product.discount_set.last as voucher %}
+                                {% if product.discount_set.count > 0 %}
+                                    {% with product.discount_set.last as voucher %}
+                                        {% if voucher.show_in_products %}
+
+                                            <div class="card-body pb-1 pl-3">
                                                 <strong style="color: #da5200"
                                                         class="font-weight-bold">
-                                                        </span><i class="fas fa-s fa-exclamation-circle"></i>
+                                                    </span><i class="fas fa-s fa-exclamation-circle"></i>
                                                     {% if voucher.percentagediscount %}
                                                         {% blocktranslate with percent=voucher.percentagediscount.discount_percentage_in_percent id=voucher.voucher_id %}
                                                             Save up to {{ percent }} % with: {{ id }}
@@ -128,9 +130,11 @@
                                                         {% endblocktranslate %}
                                                     {% endif %}
                                                     &euro;</strong><br>
-                                            {% endwith %}
+
+                                            </div>
                                         {% endif %}
-                                </div>
+                                    {% endwith %}
+                                {% endif %}
                                 <div class="card-body product-attributes">
 
                                     {% regroup product.attributes.all by type as attributes_grouped %}
