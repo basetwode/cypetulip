@@ -65,3 +65,5 @@ wkhtmltopdf==0.2
 paypalhttp==1.0.0
 paypal-checkout-serversdk==1.0.1
 django-cookiebanner==0.2.2
+csscompressor==0.9.5
+django-compressor==2.4

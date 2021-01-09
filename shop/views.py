@@ -37,7 +37,7 @@ class IndexView(View):
 class ProductView(TaxView, ListView):
     template_name = 'products.html'
     context_object_name = 'products'
-    paginate_by = 9
+    paginate_by = 18
 
     def _get_url_page(self, products_list, page):
         paginator = Paginator(products_list, self.paginate_by)

@@ -1,10 +1,3 @@
-{
-%
-load
-static
-%
-}
-
 
 body {
     font-family: "Raleway", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
@@ -50,12 +43,7 @@ body {
 /*    zbackground-image:linear-gradient(to bottom, #{{main_color_lighter}} 0,#{{main_color}} 100%);*/
 /*}*/
 
-#sidebar-wrapper {
-    background: #{{main_color}
-}
 
-;
-}
 
 footer {
     /*height: 100%;*/
@@ -727,24 +715,12 @@ footer .box {
     position: fixed;
 }
 
-.product-row {
-    background-color: #{{main_color_lighter}
-}
-
-;
-}
 
 .error-row {
     background-color: #fff0f0 !important;
     color: #0f0f0f !important;
 }
 
-.payment .panel-heading {
-    background-color: #{{main_color_lighter}
-}
-
-;
-}
 
 .panel-heading {
 

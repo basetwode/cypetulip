@@ -90,7 +90,7 @@
             </div>
             <div class="pagination text-xs-center justify-content-center"
                  style="align-content: center; text-align: center">
-                {% bootstrap_pagination products extra=request.GET.urlencode %}
+                {% bootstrap_pagination products pages_to_show=7 extra=request.GET.urlencode %}
             </div>
         </div>
     </div>

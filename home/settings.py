@@ -62,7 +62,8 @@ INSTALLED_APPS = (
     'tinymce',
     'django_filters',
     'captcha',
-    'cookiebanner'
+    'cookiebanner',
+    'compressor',
 )
 
 MIDDLEWARE = (
@@ -357,6 +358,16 @@ CACHE_MIDDLEWARE_SECONDS = 0
 
 RECAPTCHA_PUBLIC_KEY = 'MyRecaptchaKey123'
 RECAPTCHA_PRIVATE_KEY = 'MyRecaptchaPrivateKey456'
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # other finders..
+    'compressor.finders.CompressorFinder',
+)
+
+COMPRESS_ENABLED = True
+COMPRESS_FILTERS = {'css': ['compressor.filters.cssmin.CSSCompressorFilter'], 'js': ['compressor.filters.jsmin.JSMinFilter']}
 
 import sys
 

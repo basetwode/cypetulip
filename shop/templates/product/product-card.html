@@ -7,7 +7,7 @@
         <a href="{% url 'shop:product_detail' product.category.path product.name %}">
 
             {% if product.productimage_set.first %}
-                <img class="card-img-top"
+                <img class="card-img-top" loading="lazy"
                      src="{% version product.productimage_set.first.product_picture 'medium' %}" alt=""/>
             {% else %}
                 <i style="max-width: 150px; height: 150px"
