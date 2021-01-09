@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-06 20:11+0100\n"
+"POT-Creation-Date: 2021-01-09 12:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -256,8 +256,8 @@ msgstr "Zwischensumme"
 
 #: .\billing\templates\invoice.html:252
 #: .\management\templates\discount-overview.html:47
-#: .\management\templates\vue\order-create-vue.html:347 .\shop\models.py:354
-#: .\shop\models.py:438
+#: .\management\templates\vue\order-create-vue.html:347 .\shop\models.py:366
+#: .\shop\models.py:450
 msgid "Discount"
 msgstr "Rabatt"
 
@@ -293,7 +293,9 @@ msgstr ""
 #: .\billing\templates\invoice.html:291
 msgid ""
 "If not stated otherwise the invoice date equals the period of performance. "
-msgstr "Falls nicht anders angegeben, entspricht das Rechnungsdatum dem Leistungsdatum"
+msgstr ""
+"Falls nicht anders angegeben, entspricht das Rechnungsdatum dem "
+"Leistungsdatum"
 
 #: .\cms\forms.py:18 .\shop\forms.py:47
 msgid ""
@@ -624,8 +626,9 @@ msgstr "Paypal Secret"
 msgid ""
 "Can not merge into anonymous user, because there already is a registered "
 "user with this email. Please select the existing user as the leading user."
-msgstr "Zusammenführung nicht möglich, da bereits ein bestehender Nutzer mit dieser E-Mail Adresse existiert. "
-"Wählen Sie diesen Nutzer als Zielnutzer aus."
+msgstr ""
+"Zusammenführung nicht möglich, da bereits ein bestehender Nutzer mit dieser "
+"E-Mail Adresse existiert. Wählen Sie diesen Nutzer als Zielnutzer aus."
 
 #: .\management\mixins.py:12
 msgid "Shipment for your order has changed"
@@ -771,7 +774,7 @@ msgid "Add customer"
 msgstr "Kunde hinzufügen"
 
 #: .\management\templates\customers-overview.html:47 .\shop\models.py:55
-#: .\shop\models.py:372
+#: .\shop\models.py:384
 msgid "Company"
 msgstr "Unternehmen"
 
@@ -880,13 +883,14 @@ msgstr "Bestellung anlegen"
 #: .\management\templates\individualoffers-overview.html:46
 #: .\management\templates\orders-overview.html:55
 #: .\shop\templates\my_account\orders.html:43
+#: .\shop\templates\product\product-carousel.html:24
 msgid "Nothing found"
 msgstr "Nichts gefunden"
 
 #: .\management\templates\individualoffers-overview.html:69
 #: .\management\templates\order-details.html:189
 #: .\payment\templates\bill\confirm.html:65 .\shop\models.py:284
-#: .\shop\models.py:323 .\shop\templates\my_account\orders-detail.html:115
+#: .\shop\models.py:335 .\shop\templates\my_account\orders-detail.html:115
 #: .\shop\templates\order\delivery.html:58
 #: .\shop\templates\order\shopping-cart-vue.html:11
 msgid "Product"
@@ -1199,7 +1203,8 @@ msgstr "Zurück zu allen Buchungen"
 #: .\management\templates\vue\order-create-vue.html:78
 #: .\payment\templates\bill\confirm.html:138
 #: .\shop\templates\order\shopping-cart-vue.html:200
-#: .\shop\templates\product-detail.html:115 .\shop\templates\products.html:112
+#: .\shop\templates\product-detail.html:115
+#: .\shop\templates\product\product-card.html:40
 msgid "incl. Tax"
 msgstr "inkl. Steuer"
 
@@ -1231,7 +1236,7 @@ msgid "Not yet shipped"
 msgstr "Noch nicht versendet"
 
 #: .\management\templates\order-details.html:129
-#: .\management\templates\orders-overview.html:79 .\shop\models.py:425
+#: .\management\templates\orders-overview.html:79 .\shop\models.py:437
 #: .\shop\templates\my_account\orders-detail.html:51
 #: .\shop\templates\my_account\orders.html:58
 #: .\shop\templates\my_account\orders.html:116
@@ -1363,7 +1368,8 @@ msgstr "Versanddatum"
 #: .\management\templates\shipment-overview.html:44
 #: .\payment\templates\payments-overview.html:27 .\shop\models.py:138
 #: .\shop\templates\my_account\orders-detail.html:311
-#: .\shop\templates\product-detail.html:178 .\shop\templates\products.html:154
+#: .\shop\templates\product-detail.html:174
+#: .\shop\templates\product\product-card.html:86
 msgid "Details"
 msgstr "Details"
 
@@ -2065,8 +2071,8 @@ msgstr "Geschlecht"
 msgid "Telephone"
 msgstr "Telefon"
 
-#: .\shop\models.py:72 .\shop\models.py:92 .\shop\models.py:321
-#: .\shop\models.py:431 .\shop\templates\my_account\address-overview.html:48
+#: .\shop\models.py:72 .\shop\models.py:92 .\shop\models.py:333
+#: .\shop\models.py:443 .\shop\templates\my_account\address-overview.html:48
 msgid "Contact"
 msgstr "Kontakt"
 
@@ -2087,7 +2093,8 @@ msgid "Special price"
 msgstr "Spezialpreis"
 
 #: .\shop\models.py:134 .\shop\templates\modals\price_on_request.html:8
-#: .\shop\templates\product-detail.html:105 .\shop\templates\products.html:97
+#: .\shop\templates\product-detail.html:105
+#: .\shop\templates\product\product-card.html:25
 msgid "Price on request"
 msgstr "Preis auf Anfrage"
 
@@ -2135,31 +2142,31 @@ msgstr "Zugewiesene Unterprodukte"
 msgid "Attributes"
 msgstr "Attribute"
 
-#: .\shop\models.py:312
+#: .\shop\models.py:324
 msgid "Product picture"
 msgstr "Produktbild"
 
-#: .\shop\models.py:329
+#: .\shop\models.py:341
 msgid "Individual offer"
 msgstr "Individualauftrag"
 
-#: .\shop\models.py:334
+#: .\shop\models.py:346
 msgid "Eligible products"
 msgstr "Erlaubte Produkte"
 
-#: .\shop\models.py:336
+#: .\shop\models.py:348
 msgid "Eligible categories"
 msgstr "Erlaubte Kategorien"
 
-#: .\shop\models.py:423
+#: .\shop\models.py:435
 msgid "Assigned employee"
 msgstr "Zugewiesener Mitarbeiter"
 
-#: .\shop\models.py:433
+#: .\shop\models.py:445
 msgid "Shipment address"
 msgstr "Lieferadresse"
 
-#: .\shop\models.py:435
+#: .\shop\models.py:447
 msgid "Billing address"
 msgstr "Rechnungsadresse"
 
@@ -2442,7 +2449,7 @@ msgid "You may want to check your profile for the current state of your order "
 msgstr ""
 "In ihrem Profil sehen Sie den aktuellen Status Ihrer Bestellung oder hier "
 
-#: .\shop\templates\order\shopping-cart-nav.html:15
+#: .\shop\templates\order\shopping-cart-nav.html:16
 #: .\shop\templates\order\shopping-cart-vue.html:198
 msgid "Total: "
 msgstr "Gesamt: "
@@ -2470,55 +2477,58 @@ msgstr "Loggen Sie sich ein oder fahren Sie als Gast fort"
 msgid "Continue as guest"
 msgstr "Weiter als Gast"
 
-#: .\shop\templates\product-detail.html:124 .\shop\templates\products.html:122
+#: .\shop\templates\product-detail.html:124
 #, python-format
-msgid ""
-"\n"
-"                                                            Save up to "
-"%(percent)s %% with: %(id)s\n"
-"                                                        "
-msgstr "Sparen Sie bis zu %(percent)s mit: %(id)s\n"
+msgid "Save up to %(percent)s %% with: %(id)s"
+msgstr "Sparen Sie bis zu %(percent)s %% mit: %(id)s"
 
-#: .\shop\templates\product-detail.html:128 .\shop\templates\products.html:126
+#: .\shop\templates\product-detail.html:126
 #, python-format
-msgid ""
-"\n"
-"                                                            Save up to "
-"%(amount)s € with: %(id)s\n"
-"                                                        "
-msgstr "Sparen Sie bis zu %(amount)s € mit: %(id)s\n"
+msgid "Save up to %(amount)s € with: %(id)s"
+msgstr "Sparen Sie bis zu %(amount)s € mit: %(id)s"
 
-#: .\shop\templates\product-detail.html:139
+#: .\shop\templates\product-detail.html:135
 msgid "We only have a few items left!"
 msgstr "Wir haben nur noch wenige Produkte übrig!"
 
-#: .\shop\templates\product-detail.html:146 .\shop\templates\products.html:158
+#: .\shop\templates\product-detail.html:142
+#: .\shop\templates\product\product-card.html:90
 msgid "Request offer"
 msgstr "Anfragen"
 
-#: .\shop\templates\product-detail.html:149 .\shop\templates\products.html:161
+#: .\shop\templates\product-detail.html:145
+#: .\shop\templates\product\product-card.html:93
 msgid "Add to cart"
 msgstr "In den Warenkorb"
 
-#: .\shop\templates\product-detail.html:151 .\shop\templates\products.html:165
+#: .\shop\templates\product-detail.html:147
+#: .\shop\templates\product\product-card.html:97
 msgid "Not in stock"
 msgstr "Nicht lieferbar"
 
-#: .\shop\templates\product-detail.html:173
+#: .\shop\templates\product-detail.html:169
 msgid "Product Description"
 msgstr "Produkt Beschreibung"
 
-#: .\shop\templates\product-detail.html:182
+#: .\shop\templates\product-detail.html:178
 msgid "Technical Details"
 msgstr "Technische Details"
+
+#: .\shop\templates\product-detail.html:208
+msgid "Customers who bought this, also bought"
+msgstr "Kunden die diesen Artikel gekauft haben, kauften auch"
+
+#: .\shop\templates\product-detail.html:213
+msgid "Similar products"
+msgstr "Ähnliche Produkte"
+
+#: .\shop\templates\product\product-card.html:36
+msgid "Sale"
+msgstr "Im Angebot"
 
 #: .\shop\templates\products.html:74
 msgid "Sorry, we are out of stock in this category!"
 msgstr "Entschuldigung, aber das Lager ist für diese Kategorie leer!"
-
-#: .\shop\templates\products.html:108
-msgid "Sale"
-msgstr "Im Angebot"
 
 #: .\shop\templates\registration\password_change_form.html:22
 msgid "Password change"
@@ -2581,6 +2591,20 @@ msgstr "Passwortbestätigung"
 #: .\utils\forms.py:85
 msgid "Repeat password"
 msgstr "Passwort wiederholen"
+
+#~ msgid ""
+#~ "\n"
+#~ "                                                            Save up to "
+#~ "%(percent)s %% with: %(id)s\n"
+#~ "                                                        "
+#~ msgstr "Sparen Sie bis zu %(percent)s mit: %(id)s\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "                                                            Save up to "
+#~ "%(amount)s € with: %(id)s\n"
+#~ "                                                        "
+#~ msgstr "Sparen Sie bis zu %(amount)s € mit: %(id)s\n"
 
 #~ msgid "payment settings"
 #~ msgstr "Bezahleinstellungen"

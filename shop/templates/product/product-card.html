@@ -49,13 +49,9 @@
                                 class="font-weight-bold">
                             </span><i class="fas fa-s fa-exclamation-circle"></i>
                             {% if voucher.percentagediscount %}
-                                {% blocktranslate with percent=voucher.percentagediscount.discount_percentage_in_percent id=voucher.voucher_id %}
-                                    Save up to {{ percent }} % with: {{ id }}
-                                {% endblocktranslate %}
+                                {% blocktranslate with percent=voucher.percentagediscount.discount_percentage_in_percent id=voucher.voucher_id %}Save up to {{ percent }} % with: {{ id }}{% endblocktranslate %}
                             {% else %}
-                                {% blocktranslate with amount=voucher.fixedamountdiscount.amount id=voucher.voucher_id %}
-                                    Save up to {{ amount }} € with: {{ id }}
-                                {% endblocktranslate %}
+                                {% blocktranslate with amount=voucher.fixedamountdiscount.amount id=voucher.voucher_id %}Save up to {{ amount }} € with: {{ id }}{% endblocktranslate %}
                             {% endif %}
                             &euro;</strong><br>
 
