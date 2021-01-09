@@ -3,7 +3,7 @@ from datetime import datetime
 from _decimal import ROUND_HALF_UP, Decimal
 from django.contrib.auth.models import User as DjangoUser
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
 from django.utils.translation import gettext_lazy as _
@@ -303,6 +303,15 @@ class Product(ProductSubItem):
 
     def product_picture(self):
         return self.productimage_set.first().product_picture if self.productimage_set.count() > 0 else None
+
+    def get_also_bought_products(self):
+        from django.db.models import Count
+        related_orderitems = OrderItem.objects.filter(order_detail__in=OrderDetail.objects.filter(orderitem__product=self),
+                                                      order_item__isnull=True).exclude(product=self).order_by('product')
+        return Product.objects.all()\
+            .annotate(ocount=Count('orderitem', filter=Q(orderitem__in=related_orderitems)))\
+            .filter(ocount__gt=0)\
+            .order_by('-ocount')
 
 
 class ProductImage(models.Model):

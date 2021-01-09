@@ -207,8 +207,40 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-12"><hr></div>
+        <div class="col-md-12 p-2 products">
+            <h4>{% trans 'Customers who bought this, also bought' %}:</h4>
+            <div id="product-relprods"
+                 class="products-list card-deck mt-3 mt-md-0 scrolling-wrapper-flexbox p-3 products-horizontal carousel slide"
+                 data-ride="carousel" data-interval="100000">
 
+                <a class="control-prev" href="#product-relprods" data-slide="prev"><span><i
+                        class="text-black-50 fas fa-chevron-left"></i>
+                </span></a>
+                <div class="carousel-inner row w-100 mx-auto" role="listbox">
+                    {% for also_bought_product in product.get_also_bought_products|slice:":50" %}
+                        {% if forloop.first %}
+                            <div class="product-card col-lg-3 col-md-4 col-12 p-2 carousel-item active">
+                                {% include 'product/product-card.html' with product=also_bought_product %}
+                            </div>
+                        {% else %}
+                            <div class="product-card col-lg-3 col-md-4 col-12 p-2 carousel-item">
+                                {% include 'product/product-card.html' with product=also_bought_product %}
+                            </div>
+
+                        {% endif %}
+                    {% empty %}
+                            <h5 class="pl-3 text-center w-100">{% trans 'Nothing found' %}</h5>
+                    {% endfor %}
+                </div>
+                <a class="control-next" href="#product-relprods" data-slide="next"><span><i
+                        class="text-black-50 fas fa-chevron-right"></i>
+                </span></a>
+            </div>
+
+        </div>
     </div>
+
     </div>
 
 
@@ -216,4 +248,26 @@
 
 {% block renderblocking %}
 <script src="{% static 'utils.js' %}"></script>
+    <script>
+    $('#product-relprods').on('slide.bs.carousel', function (e) {
+
+        var $e = $(e.relatedTarget);
+        var idx = $e.index();
+        var itemsPerSlide = 3;
+        var totalItems = {{  product.get_also_bought_products}};
+
+        if (idx >= totalItems-(itemsPerSlide-1)) {
+            var it = itemsPerSlide - (totalItems - idx);
+            for (var i=0; i<it; i++) {
+                // append slides to end
+                if (e.direction=="left") {
+                    $('.carousel-item').eq(i).appendTo('.carousel-inner');
+                }
+                else {
+                    $('.carousel-item').eq(0).appendTo('.carousel-inner');
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}

@@ -74,105 +74,10 @@
                         {% trans 'Sorry, we are out of stock in this category!' %}
                     {% endif %}
                     {% for product in products %}
+
                         <div class="product-card col-xl-4 col-6 p-2">
-                            <div class="card card-hover ">
-                                <a href="/shop/product/{{ product.name }}">
-
-                                    {% if product.productimage_set.first %}
-                                        <img class="card-img-top"
-                                             src="{% version product.productimage_set.first.product_picture 'medium' %}" alt=""/>
-                                    {% else %}
-                                        <i style="max-width: 150px; height: 150px"
-                                           class="fa fa-5x fa-image card-img-top"></i>
-                                    {% endif %}
-                                </a>
-
-
-                                <div class="card-body product-text">
-                                    <div class="d-flex justify-content-between">
-                                            <span class="font-weight-bold"><a class="text-center"
-                                                                              href="/shop/product/{{ product.name }}">{{ product.name }}</a></span>
-                                        {% if product.price_on_request %}
-                                            <span data-toggle="modal" data-target="#price_on_request"
-                                                  class="badge badge-pill badge-success badge-primary badge-price-on-request">{% trans 'Price on request' %}
-                                                        </span>
-                                        {% elif product.special_price %}
-                                            <span class="d-none d-sm-block" style="text-decoration: line-through">{{ product.price_wt | floatformat:2 }} &euro;</span>
-                                            <strong style="color: red"
-                                                    class="font-weight-bold">{{ product.special_price_wt | floatformat:2 }}
-                                                &euro;</strong>
-                                        {% else %}
-                                            <span>{{ product.price_wt | floatformat:2 }} &euro;</span>
-                                        {% endif %} </div>
-                                    {% if product.special_price %}
-                                        <span class="badge badge-pill badge-danger badge-primary">{% trans 'Sale' %}
-                                                        </span>
-                                    {% endif %}
-                                    {% if not product.price_on_request %}
-                                    <small class="float-right">({% trans 'incl. Tax' %})</small>{% endif %}
-                                </div>
-
-                                {% if product.discount_set.count > 0 %}
-                                    {% with product.discount_set.last as voucher %}
-                                        {% if voucher.show_in_products %}
-
-                                            <div class="card-body pb-1 pl-3">
-                                                <strong style="color: #da5200"
-                                                        class="font-weight-bold">
-                                                    </span><i class="fas fa-s fa-exclamation-circle"></i>
-                                                    {% if voucher.percentagediscount %}
-                                                        {% blocktranslate with percent=voucher.percentagediscount.discount_percentage_in_percent id=voucher.voucher_id %}
-                                                            Save up to {{ percent }} % with: {{ id }}
-                                                        {% endblocktranslate %}
-                                                    {% else %}
-                                                        {% blocktranslate with amount=voucher.fixedamountdiscount.amount id=voucher.voucher_id %}
-                                                            Save up to {{ amount }} € with: {{ id }}
-                                                        {% endblocktranslate %}
-                                                    {% endif %}
-                                                    &euro;</strong><br>
-
-                                            </div>
-                                        {% endif %}
-                                    {% endwith %}
-                                {% endif %}
-                                <div class="card-body product-attributes">
-
-                                    {% regroup product.attributes.all by type as attributes_grouped %}
-                                    {% for attribute in attributes_grouped|slice:":3" %}
-                                        <div class="d-flex align-items-center flex-row guarantee"><i
-                                                class="fas fa-check-circle"></i> <span
-                                                class="guarantee">{{ attribute.grouper.name }}:
-
-                                            {% for attribute_item in attribute.list %}
-                                                {{ attribute_item.value }}{% if not forloop.last %}, {% endif %}
-                                            {% endfor %}</span></div>
-                                    {% endfor %}
-
-                                </div>
-                                <hr>
-                                <div class="card-body">
-                                    <div class="price-number">
-                                    </div>
-                                    <div class="clear"></div>
-                                    <div class="text-right buttons"><a href="/shop/product/{{ product.name }}"
-                                                                       class="btn btn-outline-dark">{% trans 'Details' %}</a>
-                                        {% if product.price_on_request %}
-                                            <a type="button"
-                                               class="btn btn-dark"
-                                               href="{% url 'shop:individual_offer' product.name %}">{% trans 'Request offer' %}</a>
-                                        {% elif product.stock > 0 or product.stock == -1 %}
-                                            <button class="btn btn-dark"
-                                                    onclick="addToCart('{{ product.name }}')">{% trans 'Add to cart' %}
-                                            </button>
-                                        {% else %}
-                                            <button disabled
-                                                    class="btn btn-outline-dark">{% trans 'Not in stock' %}</button>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
+                            {% include 'product/product-card.html' with product=product %}
                         </div>
-
                     {% endfor %}
                 </div>
 
