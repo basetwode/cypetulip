@@ -23,9 +23,14 @@
                             href="{% url 'shop:products' %}">
                         {% trans 'Products' %}
                     </a></li>
+                    {% if selected_category.mother_category %}
+                        <li class="breadcrumb-item"><a href="{% url 'shop:products' selected_category.mother_category.path %}">
+                            {{ selected_category.mother_category }}
+                        </a></li>
+                    {% endif %}
                     {% if selected_category %}
                         <li class="breadcrumb-item {% if selected_category %} active{% endif %} " aria-current="page"><a
-                                href="{% url 'shop:products' %} {{ selected_category }}">
+                                href="{% url 'shop:products' selected_category.path%}">
                             {{ selected_category }}
                         </a>
                         </li>

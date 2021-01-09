@@ -100,6 +100,7 @@ class Address(models.Model):
 
 
 class ProductCategory(models.Model):
+    path = models.CharField(max_length=300, verbose_name=_('Path'), null=True, blank=True)
     description = models.CharField(max_length=300, verbose_name=_('Description'))
     name = models.CharField(max_length=50, verbose_name=_('Name'))
     mother_category = models.ForeignKey(
@@ -113,6 +114,14 @@ class ProductCategory(models.Model):
 
     class Meta:
         verbose_name = _('Category')
+
+    def build_path(self, path=""):
+        return self.mother_category.build_path(self.name+("-"+path if path else "")) if self.mother_category else self.name+("-"+path if path else "")
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.path = self.build_path()
+        super(ProductCategory, self).save(force_insert, force_update, using, update_fields)
 
 
 class Employee(models.Model):

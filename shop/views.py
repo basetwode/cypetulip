@@ -52,7 +52,7 @@ class ProductView(TaxView, ListView):
     def get_queryset(self):
         selected_category = None
         if 'category' in self.kwargs:
-            selected_category = ProductCategory.objects.filter(name=self.kwargs['category'])
+            selected_category = ProductCategory.objects.filter(path=self.kwargs['category'])
             if selected_category and selected_category.count() > 0 and selected_category[0].child_categories.all():
                 products = Product.objects.filter(is_public=True, category__in=selected_category[0].
                                                   child_categories.all())
@@ -97,7 +97,8 @@ class ProductView(TaxView, ListView):
 
         selected_category = ''
         if 'category' in self.kwargs:
-            selected_category = self.kwargs['category']
+            # selected_category = self.kwargs['category']
+            selected_category = ProductCategory.objects.get(path=self.kwargs['category'])
 
         return {**context, **{'sections': sections, 'products': products,
                               'categories': categories,
@@ -110,8 +111,8 @@ class ProductView(TaxView, ListView):
 class ProductDetailView(View):
     template_name = 'product-detail.html'
 
-    def get(self, request, product):
-        selected_product = Product.objects.filter(is_public=True, name=product)
+    def get(self, request, category, product):
+        selected_product = Product.objects.filter(is_public=True, name=product, category__path=category)
         categories = ProductCategory.objects.filter(is_main_category=True)
         if selected_product.count() > 0:
             selected_product = selected_product[0]

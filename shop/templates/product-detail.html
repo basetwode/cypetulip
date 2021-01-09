@@ -21,7 +21,12 @@
                     <li class="breadcrumb-item"><a href="{% url 'shop:products' %}">
                         {% trans 'Products' %}
                     </a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'shop:products' %} {{ product.category }}">
+                    {% if product.category.mother_category %}
+                    <li class="breadcrumb-item"><a href="{% url 'shop:products' product.category.mother_category.path %}">
+                        {{ product.category.mother_category }}
+                    </a></li>
+                    {% endif %}
+                    <li class="breadcrumb-item"><a href="{% url 'shop:products' product.category.path %}">
                         {{ product.category }}
                     </a></li>
                     <li class="breadcrumb-item active" aria-current="page"><a
