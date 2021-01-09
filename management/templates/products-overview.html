@@ -37,6 +37,10 @@
             </div>
         </div>
         <div class="col-sm-12 col-md-9 mt-2 mt-md-0">
+            <div class="pt-3 pagination text-xs-center justify-content-center"
+                 style="align-content: center; text-align: center">
+                {% bootstrap_pagination page_obj extra=request.GET.urlencode %}
+            </div>
             <table class="table table-hover table-striped table-responsive-sm">
                 <thead class="thead-dark">
                 <tr>
@@ -49,7 +53,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for product in filter.qs %}
+                {% for product in object_list %}
                     <tr>
                         <td>{{ product.id }}</td>
                         <td>{{ product.category }}</td>
@@ -84,6 +88,10 @@
                 </tbody>
 
             </table>
+            <div class="pt-3 pagination text-xs-center justify-content-center"
+                 style="align-content: center; text-align: center">
+                {% bootstrap_pagination page_obj extra=request.GET.urlencode %}
+            </div>
         </div>
     </div>
 

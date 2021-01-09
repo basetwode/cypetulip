@@ -173,15 +173,17 @@ class CategoriesOverviewView(LoginRequiredMixin, ListView):
                       {'filter': filter})
 
 
-class ProductsOverviewView(LoginRequiredMixin, ListView):
+class ProductsOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView):
     template_name = 'products-overview.html'
     context_object_name = 'products'
     model = Product
+    paginate_by = 40
+    filterset_class = ProductFilter
 
-    def get(self, request, *args, **kwargs):
-        filter = ProductFilter(request.GET, queryset=Product.objects.all())
-        return render(request, self.template_name,
-                      {'filter': filter})
+    # def get(self, request, *args, **kwargs):
+    #     filter = ProductFilter(request.GET, queryset=Product.objects.all())
+    #     return render(request, self.template_name,
+    #                   {'filter': filter})
 
 
 class SubItemOverviewView(LoginRequiredMixin, ListView):
