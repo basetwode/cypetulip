@@ -44,10 +44,19 @@ class Command(BaseCommand):
             for i in range(0, 200):
                 special_price_yes = True if random.randint(0,10) > 8 else False
                 price = random.randint(6, 70)
-                product,_ = Product.objects.get_or_create(stock=10, max_items_per_order=5, category=category, is_public=True,
+                product = Product.objects.filter(stock=10, max_items_per_order=5, category=category, is_public=True,
                                   description=text,
                                   details=text,
                                   name=category.name + "-" + str(i))
+                _created = False
+                if product.count() == 0:
+                    product = Product(stock=10, max_items_per_order=5, category=category, is_public=True,
+                                           description=text,
+                                           details=text,
+                                           name=category.name + "-" + str(i))
+                    _created = True
+                else:
+                    product = product.first()
                 product.special_price= random.randint(6,price) if special_price_yes else 0
                 product.price = price
                 product.save()
