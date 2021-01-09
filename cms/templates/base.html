@@ -18,6 +18,8 @@
         <link rel="icon" href="/favicon.ico">
 
         <link rel="preload" href="{% static 'fonts/raleway-v14-latin-regular.woff2' %}" as="font" type="font/woff2" crossorigin>
+        <link rel="preload" href="{% static 'fontawesome-free/webfonts/fa-solid-900.woff2' %}" as="font" type="font/woff2" crossorigin>
+
         {% compress css inline %}
             <link rel="stylesheet" href={% static 'bootstrap/css/bootstrap.min.css' %} type="text/css" charset="utf-8">
             <style type="text/css">
@@ -71,7 +73,6 @@
     {% endcompress %}
 
     <link href="{% static 'fontawesome-free/css/solid.min.css' %}" rel="stylesheet">
-    <link href="{% static 'fontawesome-free/css/fontawesome.min.css' %}" rel="stylesheet">
 
     <link href="{% static 'css/raleway-font.css' %}" rel="preload stylesheet" as="style">
 
