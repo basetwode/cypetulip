@@ -313,6 +313,9 @@ class Product(ProductSubItem):
             .filter(ocount__gt=0)\
             .order_by('-ocount')
 
+    def get_related_products(self):
+        return Product.objects.filter(category=self.category)
+
 
 class ProductImage(models.Model):
     order = models.IntegerField(default=0, blank=True)
