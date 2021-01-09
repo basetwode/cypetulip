@@ -73,7 +73,7 @@ class ProductView(TaxView, ListView):
         for selected_attribute in selected_attributes:
             products = products.filter(attributes__id__in=[selected_attribute.id])
 
-        return products
+        return products.order_by('id')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ProductView, self).get_context_data(**kwargs)
