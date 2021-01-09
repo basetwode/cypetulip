@@ -538,11 +538,6 @@ footer .box {
     display: block;
 }
 
-.flag {
-    width: 16px;
-    height: 11px;
-    background: url('images/flags.png') no-repeat
-}
 
 .order-step, .checkout-step, .overview-step, .payment-step, .payment-overview-step {
     padding: 0px 0px 40px;
