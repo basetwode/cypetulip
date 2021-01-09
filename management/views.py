@@ -4,6 +4,7 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.contrib.sessions.models import Session
+from django.core import management
 from django.core.files import File
 from django.db.transaction import commit
 from django.http import HttpResponse
@@ -1202,6 +1203,12 @@ class CacheManagementView(LoginRequiredMixin, FormView):
         if form.cleaned_data['clear_html_cache']:
             self.flush_cache()
             messages.success(self.request, _("HTML Cache cleared successfully"))
+        if form.cleaned_data['recompile_css_js']:
+            try:
+                management.call_command('compress', verbosity=0)
+                messages.success(self.request, _("JS/CSS successfully recompiled"))
+            except:
+                messages.error(self.request,_("Offline compression not enabled. CSS/JS are generated on-the-fly"))
         return form_valid
 
     def flush_cache(self):

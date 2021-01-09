@@ -175,3 +175,4 @@ class MergeAccountsForm(Form):
 
 class ClearCacheForm(Form):
     clear_html_cache = BooleanField(label=_("Clear HTML Cache"), required=False)
+    recompile_css_js = BooleanField(label=_("Recompile JS/CSS"), required=False)
