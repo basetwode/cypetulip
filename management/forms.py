@@ -171,3 +171,7 @@ class MergeAccountsForm(Form):
                 _('Can not merge into anonymous user, because there already is a registered user with this email. '
                   'Please select the existing user as the leading user.'))
         return cleaned_data
+
+
+class ClearCacheForm(Form):
+    clear_html_cache = BooleanField(label=_("Clear HTML Cache"), required=False)

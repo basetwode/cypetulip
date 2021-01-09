@@ -12,7 +12,7 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 # Create your views here.
-from django.views.generic import DetailView, ListView, View, DeleteView
+from django.views.generic import DetailView, ListView, View, DeleteView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, FormView
 from django_filters.views import FilterView
 
@@ -22,7 +22,7 @@ from cms.models import Page, Section
 from home import settings
 from management.filters import OrderDetailFilter, DiscountFilter
 from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm, ProductForm, \
-    ContactUserForm, ContactUserIncludingPasswordForm, ContactUserUpdatePasswordForm, MergeAccountsForm
+    ContactUserForm, ContactUserIncludingPasswordForm, ContactUserUpdatePasswordForm, MergeAccountsForm, ClearCacheForm
 from management.mixins import NotifyNewCustomerAccountView
 from management.models import LdapSetting, MailSetting, LegalSetting, ShopSetting, Header, Footer
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME, PaymentProvider
@@ -1181,10 +1181,27 @@ class MergeAccounts(LoginRequiredMixin, FormView, NotifyNewCustomerAccountView):
         return {**form_kwargs, **{'contact': Contact.objects.get(id=self.kwargs['id'])}}
 
 
-class OrderCreateView(CreateUpdateView):
+class OrderCreateView(LoginRequiredMixin, CreateUpdateView):
     model = Order
     slug_field = 'order_hash'
     slug_url_kwarg = 'order_hash'
     template_name = 'vue/order-create-vue.html'
     fields = '__all__'
     context_object_name = 'order'
+
+
+class CacheManagementView(LoginRequiredMixin, FormView):
+    template_name = 'cache-management.html'
+    form_class = ClearCacheForm
+    success_url = reverse_lazy('cache_management_view')
+
+    def form_valid(self, form):
+        form_valid = super(CacheManagementView, self).form_valid(form)
+        if form.cleaned_data['clear_html_cache']:
+            self.flush_cache()
+            messages.success(self.request, _("HTML Cache cleared successfully"))
+        return form_valid
+
+    def flush_cache(self):
+        from django.core.cache import cache
+        cache.clear()
