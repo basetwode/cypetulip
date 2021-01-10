@@ -1205,10 +1205,12 @@ class CacheManagementView(LoginRequiredMixin, FormView):
             messages.success(self.request, _("HTML Cache cleared successfully"))
         if form.cleaned_data['recompile_css_js']:
             try:
+                management.call_command('collectstatic', verbosity=0, interactive=False)
                 management.call_command('compress', verbosity=0)
                 messages.success(self.request, _("JS/CSS successfully recompiled"))
             except:
                 messages.error(self.request,_("Offline compression not enabled. CSS/JS are generated on-the-fly"))
+
             cache_setting = CacheSetting.objects.first()
             cache_setting.cache_clear_required = False
             cache_setting.save()
