@@ -40,22 +40,42 @@
             </nav>
 
         </div>
-        <div class="col-md-3 categories">
+        <div class="col-md-3 categories ">
             <div class="position-sticky">
-                <div class="categories-list" id="accordionCategories">
+                <div class="categories-list d-none d-sm-block" id="accordionCategories">
                     <div class="card border-0">
-                        <div class="pt-3 pl-3">
+                        <div class="pt-3 pl-3" data-toggle="collapse" data-target="#collapseCategories"
+                             aria-expanded="true" aria-controls="collapseCategories"  style="cursor: pointer">
                             <h4>
                                 {% trans 'Categories' %}
                             </h4>
                         </div>
-                        <div id="collapseCategories" class="panel-collapse collapse show">
+                        <div id="collapseCategories" class="panel-collapse show">
                             <ul class="list-group">
                                 {% include 'category-tree.html' %}
                             </ul>
                         </div>
                     </div>
+                </div>
+                <div class="d-block d-sm-none ">
+                    {% if selected_category %}<span><a href="{% url 'shop:products' selected_category.mother_category.path %}"> <i
+                            class="fa fa-arrow-left" style="font-size: 1.4rem"></i></a></span><br>{% endif %}
+                    <div class="scrolling-wrapper-flexbox">
+                        {% if not selected_category %}
+                            {% for category in categories %}
+                                <div class="card m-2">
+                                    <div class="card-header"><a
+                                            href="{% url 'shop:products' category.path %}"> {{ category }}</a></div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
 
+                            {% for category in selected_category.productcategory_set.all %}
+                                <div class="card m-2">
+                                    <div class="card-header"><a
+                                            href="{% url 'shop:products' category.path %}"> {{ category }}</a></div>
+                                </div>
+                            {% endfor %} {% endif %}</div>
                 </div>
                 {% include 'attribute_side_bar.html' %}
             </div>
@@ -71,9 +91,10 @@
             <div class="products-list card-deck mt-3 mt-md-0">
             <div class="row w-100">
                 <div class="col-12 pl-4">
-                    <h1>{% trans 'Products' %}{% if selected_category %} - {{ selected_category }}{% endif %}</h1>
+                    <h1>{% if selected_category %} {{ selected_category }}{% else %}{% trans 'Products' %}{% endif %}</h1>
                 </div>
             </div>
+                <p class="pl-3">{{ products.paginator.count }} {% trans 'items' %}</p>
                 <div class="row w-100" style="margin: 0px">
                     {% if not products %}
                         {% trans 'Sorry, we are out of stock in this category!' %}

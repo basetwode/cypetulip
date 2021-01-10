@@ -33,7 +33,7 @@
                             <div class="dropdown-menu" aria-labelledby="productCategories">
                                 {% for category in cms_categories %}
                                     <a class="dropdown-item"
-                                       href="{% url 'shop:products' category.name %}">{{ category.name }}</a>
+                                       href="{% url 'shop:products' category.path %}">{{ category.name }}</a>
                                 {% endfor %}
                             </div>
                         </li>

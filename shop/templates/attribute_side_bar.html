@@ -8,14 +8,15 @@
 
     </style>
 {% endblock %}
-<div class="attributes categories-list">
+<div class="attributes  d-none d-sm-block categories-list">
     <div class="card mt-3">
-        <div class="pt-3 pl-3">
+        <div class="pt-3 pl-3" data-toggle="collapse" data-target="#collapseShopping"
+             aria-expanded="true" aria-controls="collapseShopping" style="cursor: pointer">
             <h4>
-                <a >{% trans 'Shopping-Filters' %}</a>
+                <a>{% trans 'Shopping-Filters' %}</a>
             </h4>
         </div>
-        <div class="panel-collapse">
+        <div id="collapseShopping" class="panel-collapse show">
             <form id="attributeForm" class="mt-2 mb-2" method="get" action="">
                 {% for field in attribute_form %}
                     {{ field.as_hidden }}
@@ -59,4 +60,8 @@
 
         </div>
     </div>
+</div>
+
+<div class="attributes  d-block d-sm-none categories-list">
+
 </div>

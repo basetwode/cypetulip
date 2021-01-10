@@ -43,13 +43,15 @@ body {
 .navbar {
   background-color: $navbar-bg;
   color: $navbar-color;
+
   .dropdown-menu {
-    background-color: lighten($navbar-bg,5%);
+    background-color: lighten($navbar-bg, 5%);
     color: $navbar-color;
 
   }
 }
-.navbar a{
+
+.navbar a {
   color: $navbar-color;
 }
 
@@ -57,6 +59,7 @@ body {
 
   background-color: $breadcrumb-bg !important;
   color: invert($breadcrumb-bg) !important;
+
   a {
     color: invert($breadcrumb-bg) !important;
   }
@@ -76,6 +79,7 @@ body {
   background-color: $footer-bg;
 
 }
+
 .footer .list-unstyled a {
   color: invert($footer-bg);
 }
@@ -344,11 +348,8 @@ footer .box {
 }
 
 .products-img img {
-
   width: 100%;
-
 }
-
 
 .products-list .heading {
   background-color: #f5f5f5;
@@ -379,10 +380,6 @@ footer .box {
   padding: 10px;
 }
 
-.fancybox {
-
-}
-
 .product-detail-box .price {
   line-height: 36px;
   font-family: 'Lato', sans-serif;
@@ -400,18 +397,10 @@ footer .box {
   padding-bottom: 5px;
 }
 
-.categories-list {
-
-}
-
-.path {
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
-
 #accordion .glyphicon {
   margin-right: 10px;
 }
+
 .text {
   color: invert($body-bg);
 }
@@ -452,7 +441,7 @@ footer .box {
 
 .panel-collapse .list-group-item li.list-group-item {
   margin: 0 -15px;
-  border-top: 1px solid darken($list-group-bg,10%);
+  border-top: 1px solid darken($list-group-bg, 10%);
   border-bottom: 0;
   padding-left: 30px;
 }
@@ -466,15 +455,14 @@ footer .box {
 }
 
 .panel-collapse div.list-group .list-group a.list-group-item {
-  border-top: 1px solid darken($list-group-bg,10%);
+  border-top: 1px solid darken($list-group-bg, 10%);
   border-bottom: 0;
   padding-left: 30px;
 }
 
 .panel-collapse .list-group-item li.list-group-item {
-  border-top: 1px solid darken($list-group-bg,10%);
+  border-top: 1px solid darken($list-group-bg, 10%);
 }
-
 
 .center {
   margin-left: auto;
@@ -506,37 +494,6 @@ footer .box {
   min-height: 40px;
 }
 
-/*.table>tbody>tr>td, .table>tfoot>tr>td{*/
-/*    vertical-align: middle;*/
-/*}*/
-
-@media screen and (max-width: 576px) {
-  /*    table#cart tbody td .form-control{*/
-  /*		width:20%;*/
-  /*		display: inline !important;*/
-  /*	}*/
-  /*	.actions .btn{*/
-  /*		width:36%;*/
-  /*		margin:1.5em 0;*/
-  /*	}*/
-  /*	.actions .btn-info{*/
-  /*		float:left;*/
-  /*	}*/
-  /*	.actions .btn-danger{*/
-  /*		float:right;*/
-  /*	}*/
-  /*table#cart thead { display: none; }*/
-  /*table#cart tbody td { display: block; padding: .6rem;}*/
-  /*	table#cart tbody tr td:first-child { background: #333; color: #fff; }*/
-  /*	table#cart tbody td:before {*/
-  /*		content: attr(data-th); font-weight: bold;*/
-  /*		display: inline-block; width: 8rem;*/
-  /*	}*/
-  /*table#cart tfoot td{display:block; }*/
-  /*table#cart tfoot td .btn{display:block;}*/
-
-}
-
 .sub-product {
   border-left: 1px solid;
 }
@@ -565,7 +522,6 @@ footer .box {
   cursor: inherit;
   display: block;
 }
-
 
 .order-step, .checkout-step, .overview-step, .payment-step, .payment-overview-step {
   padding: 0px 0px 40px;
@@ -626,21 +582,16 @@ footer .box {
   position: fixed;
 }
 
-
 .error-row {
   background-color: #fff0f0 !important;
   color: #0f0f0f !important;
 }
 
-
 .panel-heading {
-
   color: black;
   background-color: #f5f5f5;
   border: 1px solid #eeeeee;
-
 }
-
 
 .payment .active {
   background-color: #0D3349;
@@ -688,51 +639,6 @@ footer .box {
 
 .align-right {
   text-align: right;
-}
-
-.ui-autocomplete {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 1000;
-  float: left;
-  display: none;
-  min-width: 160px;
-  _width: 160px;
-  padding: 4px 0;
-  margin: 2px 0 0 0;
-  list-style: none;
-  background-color: #ffffff;
-  border-color: #ccc;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-style: solid;
-  border-width: 1px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  -webkit-background-clip: padding-box;
-  -moz-background-clip: padding;
-  background-clip: padding-box;
-}
-
-.ui-menu-item > a.ui-corner-all {
-  display: block;
-  padding: 3px 15px;
-  clear: both;
-  font-weight: normal;
-  line-height: 18px;
-  color: #555555;
-  white-space: nowrap;
-}
-
-
-.ui-menu-item:hover {
-  text-decoration: none;
-  color: #000000;
-  background-color: #f0f0f0;
 }
 
 
@@ -1011,7 +917,6 @@ footer .box {
   background-color: rgba(255, 255, 255, 0.95); /* Black background with opacity */
   z-index: 1020; /* Specify a stack order in case you're using a different order for other elements */
   cursor: pointer; /* Add a pointer on hover */
-
 }
 
 .preview-overlay-hidden {

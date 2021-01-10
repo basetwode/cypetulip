@@ -6,9 +6,9 @@
            href="/shop/products/{{ category.path }}?">{{ category.name }}</a>
     </div>
 
-    {% if category.child_categories.all|length %}
+    {% if category.productcategory_set.all|length %}
     <ul class="list-group sub">
-        {% include "category-tree.html" with categories=category.child_categories.all %}
+        {% include "category-tree.html" with categories=category.productcategory_set.all %}
     </ul>
     {% endif %}
 </li>
