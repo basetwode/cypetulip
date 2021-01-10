@@ -10,7 +10,23 @@
 {% endblock %}
 
 {% block body %}
+    <div class="modal fade modal-fullscreen" id="filterModal"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" style="height: 100%; max-width: none; width: 100vw; margin:0" role="document">
+            <div class="modal-content" style="height: 100%;">
 
+
+                <div class="modal-body">
+                    <span><a href="#"  data-dismiss="modal"> <i
+                            class="fa fa-arrow-left" style="font-size: 1.4rem"></i> Filter</a></span><br>
+                    {% include 'attribute_side_bar.html'  with cssclass="no-bg" %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     {% include 'modals/price_on_request.html' %}
     {% bootstrap_messages %}
     <div class="row products">
@@ -64,20 +80,23 @@
                         {% if not selected_category %}
                             {% for category in categories %}
                                 <div class="card m-2">
-                                    <div class="card-header"><a
+                                    <div class="card-header border-0"><a
                                             href="{% url 'shop:products' category.path %}"> {{ category }}</a></div>
                                 </div>
                             {% endfor %}
                         {% else %}
 
                             {% for category in selected_category.productcategory_set.all %}
-                                <div class="card m-2">
-                                    <div class="card-header"><a
+                                <div class="card m-2 ">
+                                    <div class="card-header border-0"><a class="text"
                                             href="{% url 'shop:products' category.path %}"> {{ category }}</a></div>
                                 </div>
                             {% endfor %} {% endif %}</div>
                 </div>
-                {% include 'attribute_side_bar.html' %}
+
+                <div class="attributes  d-none d-sm-block categories-list">
+                    {% include 'attribute_side_bar.html' %}
+                </div>
             </div>
         </div>
         <div class="col-md-9 products">
@@ -90,8 +109,15 @@
             {% endif %}
             <div class="products-list card-deck mt-3 mt-md-0">
             <div class="row w-100">
-                <div class="col-12 pl-4">
+                <div class="col-10 pl-4">
                     <h1>{% if selected_category %} {{ selected_category }}{% else %}{% trans 'Products' %}{% endif %}</h1>
+                </div>
+                <div class="col-2">
+                    <div class="attributes  d-block d-sm-none categories-list">
+                        <span data-toggle="modal" data-target="#filterModal">
+                            Filter
+                        </span>
+                    </div>
                 </div>
             </div>
                 <p class="pl-3">{{ products.paginator.count }} {% trans 'items' %}</p>

@@ -179,6 +179,7 @@ class ProductsOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView)
     context_object_name = 'products'
     model = Product
     paginate_by = 40
+    ordering = 'id'
     filterset_class = ProductFilter
 
     # def get(self, request, *args, **kwargs):
@@ -1219,3 +1220,4 @@ class CacheManagementView(LoginRequiredMixin, FormView):
     def flush_cache(self):
         from django.core.cache import cache
         cache.clear()
+
