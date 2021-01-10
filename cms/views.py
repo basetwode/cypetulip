@@ -65,12 +65,9 @@ class CSSSettingsView(LoginRequiredMixin, FormView):
         out = open(result_f, 'w')
         out.writelines(new_template)
         out.close()
-        # template_content = template.read()
-        # template_content = template_content.replace("$db-maincolor", )
-        #
-        # out.write(template_content)
-        # template.close()
-        # out.close()
+        with open(os.path.join(STATIC_ROOT, 'base.scss'), 'w') as out_static:
+            out_static.writelines(new_template)
+            out_static.close()
         cache_setting = CacheSetting.objects.first()
         cache_setting.cache_clear_required = True
         cache_setting.save()
