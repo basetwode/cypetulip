@@ -1,15 +1,19 @@
+import os
+
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import View, TemplateView, FormView
+from django.views.generic import View, TemplateView, FormView, UpdateView
 
-from cms.forms import ContactForm
-from cms.models import CSSSetting, Page, Section
-from management.models import MailSetting, LegalSetting
+from cms.forms import ContactForm, CSSSettingForm
+from cms.models import Page, Section
+from home.settings import STATIC_ROOT
+from management.models import MailSetting, LegalSetting, CacheSetting
 from permissions.error_handler import raise_404
 # Create your views here.
+from permissions.mixins import LoginRequiredMixin
 from shop.models import Contact
 from utils.mixins import EmailMixin
 
@@ -22,6 +26,55 @@ class AdminView(View):
     def post(self, request):
         # <view logic>
         return HttpResponse('CMSAdmin')
+
+
+class CSSSettingsView(LoginRequiredMixin, FormView):
+    form_class = CSSSettingForm
+    template_name = 'management/csssettings-edit.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CSSSettingsView, self).get_context_data(**kwargs)
+        from django.contrib.staticfiles import finders
+        result_f = finders.find('base.scss')
+        template = open(result_f, 'r')
+        form={}
+        for line in template.readlines():
+            if line.startswith("$"):
+                line = line.split(":")
+                form.setdefault(line[0],line[1].replace(";\n","").strip(" "))
+        return {**context, **{'form':form}}
+
+
+    def get_success_url(self):
+        return reverse_lazy('css-settings', kwargs={'css_settings_id':1})
+
+    def form_valid(self, form):
+        result = super(CSSSettingsView, self).form_valid(form)
+        from django.contrib.staticfiles import finders
+        result_f = finders.find('base.scss')
+        template = open(result_f, 'r')
+
+        new_template = ""
+        for line in template.readlines():
+            if line.startswith("$"):
+                line = line.split(":")
+                new_template += line[0]+": "+form.data[line[0]]+";\n"
+            else:
+                new_template+=line
+        template.close()
+        out = open(result_f, 'w')
+        out.writelines(new_template)
+        out.close()
+        # template_content = template.read()
+        # template_content = template_content.replace("$db-maincolor", )
+        #
+        # out.write(template_content)
+        # template.close()
+        # out.close()
+        cache_setting = CacheSetting.objects.first()
+        cache_setting.cache_clear_required = True
+        cache_setting.save()
+        return result
 
 
 # This is for added sites #
@@ -45,28 +98,6 @@ class GenericView(View):
     def post(self, request, site):
         # <view logic>
         return HttpResponse('GenericSite')
-
-
-class CSSView(View):
-    template_name = 'theme.css'
-
-    def get(self, request):
-        css_settings = CSSSetting.objects.all()
-        color_dict = {}
-        if css_settings.count() > 0:
-            css_settings = css_settings[0]
-
-            main_color_lighter = css_settings.main_color
-            red = int('0x' + main_color_lighter[:2], 16) + 6
-            green = int('0x' + main_color_lighter[2:4], 16) + 6
-            blue = int('0x' + main_color_lighter[4:6], 16) + 6
-            main_color_lighter = ("0x%0.2X" % red)[2:4] + ("0x%0.2X" % green)[2:4] + ("0x%0.2X" % blue)[2:4]
-            print(main_color_lighter)
-            color_dict.setdefault('main_color', css_settings.main_color)
-            color_dict.setdefault('main_color_lighter', main_color_lighter)
-            color_dict.setdefault('second_color', css_settings.second_color)
-
-        return render(request, self.template_name, color_dict, content_type='text/css')
 
 
 class PermissionDeniedView(TemplateView):

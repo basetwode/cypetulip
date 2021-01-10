@@ -30,7 +30,7 @@
                         {{ product.category }}
                     </a></li>
                     <li class="breadcrumb-item active" aria-current="page"><a
-                            href="{% url 'shop:products' product.name %}">
+                            href="{% url 'shop:product_detail' product.category.path product.name %}">
                         {{ product.name }}
                     </a></li>
                 </ol>
@@ -89,7 +89,7 @@
                    class="fa fa-4x fa-image img-thumbnail"></i>
             {% endif %}
         </div>
-        <div class="products col-md-8">
+        <div class=" col-md-8">
             <div class="card">
 
                 <div class="product">
@@ -165,7 +165,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12 bg-light mt-md-3">
+        <div class="col-md-12 mt-md-3">
             <div class="mb-5">
                 <ul class="nav nav-tabs nav-pills with-arrow lined flex-column flex-sm-row text-center"
                     role="tablist">

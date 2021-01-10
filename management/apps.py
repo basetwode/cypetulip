@@ -8,4 +8,8 @@ class ManagementConfig(AppConfig):
     name = 'management'
 
     def ready(self):
-        pass
+        try:
+            from management.models import CacheSetting
+            cache_settings,_ = CacheSetting.objects.get_or_create()
+        except :
+            pass

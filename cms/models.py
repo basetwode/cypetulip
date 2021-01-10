@@ -55,6 +55,3 @@ class Section(models.Model):
         verbose_name = _('Section')
 
 
-class CSSSetting(models.Model):
-    main_color = models.CharField(max_length=6)
-    second_color = models.CharField(max_length=6)

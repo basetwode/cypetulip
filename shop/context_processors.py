@@ -1,7 +1,10 @@
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
+
 __author__ = 'Anselm'
 
 from cms.models import Page
-from management.models import Header, Footer
+from management.models import Header, Footer, CacheSetting
 from payment.models import PaymentMethod
 from shop.models import (Contact, Order, OrderItem,
                          Product, ProductCategory)
@@ -69,3 +72,10 @@ def footer(request):
 def categories(request):
     categories_list = ProductCategory.objects.all()
     return {'cms_categories': categories_list}
+
+
+def cache_clear_neccessary(request):
+    cache_settings = CacheSetting.objects.first()
+    if cache_settings.cache_clear_required and request.user.is_superuser:
+        messages.warning(request, _("Cache needs to be updated. Please go to cache management"))
+    return {}

@@ -25,7 +25,7 @@ from management.filters import OrderDetailFilter, DiscountFilter
 from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm, ProductForm, \
     ContactUserForm, ContactUserIncludingPasswordForm, ContactUserUpdatePasswordForm, MergeAccountsForm, ClearCacheForm
 from management.mixins import NotifyNewCustomerAccountView
-from management.models import LdapSetting, MailSetting, LegalSetting, ShopSetting, Header, Footer
+from management.models import LdapSetting, MailSetting, LegalSetting, ShopSetting, Header, Footer, CacheSetting
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME, PaymentProvider
 from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
 from shipping.models import Shipment
@@ -1209,6 +1209,9 @@ class CacheManagementView(LoginRequiredMixin, FormView):
                 messages.success(self.request, _("JS/CSS successfully recompiled"))
             except:
                 messages.error(self.request,_("Offline compression not enabled. CSS/JS are generated on-the-fly"))
+            cache_setting = CacheSetting.objects.first()
+            cache_setting.cache_clear_required = False
+            cache_setting.save()
         return form_valid
 
     def flush_cache(self):

@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load bootstrap4 %}
 {% bootstrap_css %}
+{% load compress %}
 {% get_current_language as language %}
 {% spaceless %}
 <!DOCTYPE html>
@@ -14,7 +15,15 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <link rel="icon" href="/favicon.ico">
-        {% bootstrap_css %}
+
+        {% compress css inline %}
+            <link rel="stylesheet" href={% static 'base.scss' %} type="text/x-scss" charset="utf-8">
+            <style type="text/css">
+                .hidden {
+                    display: none;
+                }</style>
+        {% endcompress %}
+
         {% bootstrap_javascript jquery='full' %}
         <script src="{% static 'jquery/js/jquery.fancybox.min.js' %}"></script>
         <link rel="stylesheet" href="{% static 'jquery/css/jquery.fancybox.min.css' %}"

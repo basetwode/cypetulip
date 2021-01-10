@@ -3,7 +3,7 @@
 {% load bootstrap4 %}
 {% get_current_language as language %}
 
-<nav class="navbar navbar-expand-sm navbar-light bg-light sticky-top">
+<nav class="navbar navbar-expand-sm  sticky-top">
     <div class="container d-flex">
         <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#navbar"
                 aria-expanded="false" aria-controls="navbar">
@@ -21,13 +21,13 @@
                 {% for page in sites_nav %}
                     {% if page.page_id == 'products' %}
                         <li class="nav-item nav-link dropdown">
-                            <a role="button" style="color: rgba(0,0,0,.5);"
+                            <a role="button"
                                href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}
                                    /">{% endif %}
                                {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
                             <a class="dropdown-toggle" href="#" id="productCategories" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                               style="color: rgba(0,0,0,.5);">
+                               >
                                 <span class="caret"></span>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="productCategories">

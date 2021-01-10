@@ -1,6 +1,6 @@
 from cms.models import Page
 from home import settings
-from management.models import LegalSetting
+from management.models import LegalSetting, CacheSetting
 
 __author__ = ''
 
@@ -37,3 +37,7 @@ def get_legal_information(request):
     return {
         'legal': legal
     }
+
+def get_js_css_version(request):
+    cache_settings = CacheSetting.objects.first()
+    return cache_settings.current_version

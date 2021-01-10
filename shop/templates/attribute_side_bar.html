@@ -9,13 +9,13 @@
     </style>
 {% endblock %}
 <div class="attributes categories-list">
-    <div class="mt-3">
-        <div>
+    <div class="card mt-3">
+        <div class="pt-3 pl-3">
             <h4>
-                <a>{% trans 'Shopping-Filters' %}</a>
+                <a >{% trans 'Shopping-Filters' %}</a>
             </h4>
         </div>
-        <div>
+        <div class="panel-collapse">
             <form id="attributeForm" class="mt-2 mb-2" method="get" action="">
                 {% for field in attribute_form %}
                     {{ field.as_hidden }}

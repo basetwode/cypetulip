@@ -102,6 +102,7 @@ TEMPLATES = [
                 'shop.context_processors.header',
                 'shop.context_processors.footer',
                 'shop.context_processors.categories',
+                'shop.context_processors.cache_clear_neccessary',
             ],
         },
     },
@@ -368,6 +369,10 @@ STATICFILES_FINDERS = (
 
 COMPRESS_ENABLED = True
 COMPRESS_FILTERS = {'css': ['compressor.filters.cssmin.CSSCompressorFilter'], 'js': ['compressor.filters.jsmin.JSMinFilter']}
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'sass.bat {infile} {outfile}'),
+)
+
 
 import sys
 

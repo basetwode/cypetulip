@@ -1,0 +1,54 @@
+{% extends 'base-mgmt.html' %}
+{% load static %}
+{% load recurse %}
+{% load bootstrap4 %}
+
+{% load i18n %}
+{% block head %}
+    <title>Products</title>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <script src="{% static 'jquery/js/jquery-ui.min.js' %}"></script>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+    {{ form.media }}
+{% endblock %}
+
+{% block body %}
+    {% bootstrap_messages %}
+    <div class="row">
+        <div class="col-md-3 mt-2 mt-md-0">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9">
+            <form method="post" enctype="multipart/form-data">{% csrf_token %}
+
+                <div class="card">
+                    <div class="card-header">
+                        <input class="btn btn-primary" type="submit" value="Save">
+                    </div>
+                    <div class="card-body">
+                        {% for field,value in form.items %}
+                            <div class="form-group row"><label class="col-md-3 col-form-label"
+                                                               for="id_{{ field }}">{{ field }}</label>
+                                <div class="col-md-9"><input type="color" name="{{ field }}" value="{{ value }}"
+                                                             maxlength="6" class="form-control"
+                                                             placeholder="Main color" title="" required=""
+                                                             id="id_{{ field }}"></div>
+                            </div>
+                        {% endfor %}
+                    </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

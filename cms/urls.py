@@ -11,7 +11,7 @@ app_name = 'cms'
 urlpatterns = [
     url(r'^admin/$', AdminView.as_view()),
     url(r'^permissions-denied/$', PermissionDeniedView.as_view(), name='permissions_denied'),
-    url(r'^theme.css$', CSSView.as_view()),
+    url(r'^css-setting/(?P<css_settings_id>[a-zA-Z0-9_.-]*)$', CSSSettingsView.as_view(), name='css-settings'),
     url(r"contact/$", ContactView.as_view(), name="contact"),
     url(r"legal/$", cache_page(CACHE_MIDDLEWARE_SECONDS)(LegalView.as_view()), name="legal"),
     url(r"general-business-terms/$", cache_page(CACHE_MIDDLEWARE_SECONDS)(GBTView.as_view()), name="gbt"),

@@ -29,3 +29,6 @@ class ContactForm(forms.Form):
         self.fields['captcha'] = ReCaptchaField(widget=ReCaptchaV2Checkbox,
                                                 public_key=settings.google_recaptcha_publickey,
                                                 private_key=settings.google_recaptcha_privatekey)
+
+class CSSSettingForm(forms.Form):
+    pass

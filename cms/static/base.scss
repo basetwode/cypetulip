@@ -1,0 +1,29 @@
+
+$body-bg: #ffffff;
+$body-bg-secondary: #d9d9d9;
+$body-color: #262626;
+// todo: rename to -bg and add -color
+// todo: write file from database
+$navbar-bg: #05438a;
+$navbar-color: #d9d9d9;
+$footer-bg: #303030;
+$breadcrumb-bg: #ebebeb;
+$card-bg: #ebebeb;
+$card-color: #000000;
+$list-group-bg: #dedede;
+$list-group-color: #1c1c1c;
+
+
+$primary: #00438a;
+$secondary: #6c757d;
+$success: #28a745;
+$info: #17a2b8;
+$warning: #ffc107;
+$danger: #dc3545;
+$light: #f8f9fa;
+$dark: #343a40;
+
+
+@import "bootstrap-src/scss/bootstrap";
+@import "theme.scss";
+

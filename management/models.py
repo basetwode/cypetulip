@@ -1,3 +1,5 @@
+import secrets
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from tinymce import HTMLField
@@ -102,3 +104,8 @@ class Footer(models.Model):
 
     def delete(self, using=None, keep_parents=False):
         super(Footer, self).delete(using, keep_parents)
+
+
+class CacheSetting(models.Model):
+    css_js_cache_enabled = models.BooleanField(verbose_name=_('Is CSS/JS cache enabled'), default=True)
+    cache_clear_required = models.BooleanField(default=False)
