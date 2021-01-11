@@ -47,7 +47,9 @@ body {
   .dropdown-menu {
     background-color: lighten($navbar-bg, 5%);
     color: $navbar-color;
-
+  }
+  .dropdown-item {
+    color: $navbar-color;
   }
 }
 
@@ -1055,5 +1057,19 @@ h1 {
   .tab-pane {
     color: $card-color;
   }
+}
+.no-bg {
+  border: none;
+  background-color: transparent;
+  .list-group-item {
+    background-color: transparent;
+
+  }
+}
+.flex-item {
+  border: 1px solid $border-color;
+  padding: 5px;
+  margin: 10px;
+  background-color: $card-bg;
 }
 
