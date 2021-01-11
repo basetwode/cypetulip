@@ -65,13 +65,16 @@ class ProductView(TaxView, ListView):
             filter(productattributetypeinstance__product__in=products).annotate(count=Count('name', distinct=True))
         attribute_form = ProductAttributeForm(product_attribute_categories, self.request.GET)
 
-        attribute_filter = (Q(type__name=k, value=v) for k, v in attribute_form.data.items()) \
-            if attribute_form.data else None
+        attribute_filter =(reduce(operator.or_,(Q(type__name=k, value=v_spl) for v_spl in v.split('.'))) for k, v in self.request.GET.items()) \
+            if len(self.request.GET)>0 else None
+
+
         selected_attributes = ProductAttributeTypeInstance.objects.filter(reduce(operator.or_, attribute_filter)) \
             if attribute_filter else []
 
-        for selected_attribute in selected_attributes:
-            products = products.filter(attributes__id__in=[selected_attribute.id])
+
+        for type in ProductAttributeType.objects.filter(productattributetypeinstance__in=selected_attributes).distinct():
+            products = products.filter(attributes__id__in=selected_attributes.filter(type=type))
 
         return products.order_by('id')
 
@@ -90,8 +93,8 @@ class ProductView(TaxView, ListView):
         # Update available list of attributes
         product_attribute_categories = ProductAttributeType.objects. \
             filter(productattributetypeinstance__product__in=products).annotate(count=Count('name', distinct=True))
-        product_attribute_types = ProductAttributeTypeInstance.objects. \
-            filter(product__in=products).annotate(count=Count('value', product__in=products))
+        product_attribute_types = ProductAttributeTypeInstance.objects.all().\
+            annotate(count=Count('product',filter=Q(product__in=products)))
 
         products = self._get_url_page(products, self.request.GET.get('page'))
 

@@ -19,7 +19,7 @@
                 <div class="modal-body">
                     <span><a href="#"  data-dismiss="modal"> <i
                             class="fa fa-arrow-left" style="font-size: 1.4rem"></i> Filter</a></span><br>
-                    {% include 'attribute_side_bar.html'  with cssclass="no-bg" %}
+                    {% include 'attribute_filter_mobile.html'  with cssclass="no-bg" %}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -94,11 +94,9 @@
                             {% endfor %} {% endif %}</div>
                 </div>
 
-                <div class="attributes  d-none d-sm-block categories-list">
-                    {% include 'attribute_side_bar.html' %}
-                </div>
             </div>
         </div>
+
         <div class="col-md-9 products">
             {% if sections %}
                 {% for section in sections %}
@@ -108,18 +106,22 @@
                 {% endfor %}
             {% endif %}
             <div class="products-list card-deck mt-3 mt-md-0">
-            <div class="row w-100">
-                <div class="col-10 pl-4">
-                    <h1>{% if selected_category %} {{ selected_category }}{% else %}{% trans 'Products' %}{% endif %}</h1>
-                </div>
-                <div class="col-2">
-                    <div class="attributes  d-block d-sm-none categories-list">
-                        <span data-toggle="modal" data-target="#filterModal">
-                            Filter
-                        </span>
+                <div class="row w-100">
+                    <div class="col-10 pl-4">
+                        <h1>{% if selected_category %} {{ selected_category }}{% else %}{% trans 'Products' %}{% endif %}</h1>
                     </div>
+                    <div class="col-2">
+                        <div class="attributes  d-block d-sm-none categories-list">
+                            <span data-toggle="modal" data-target="#filterModal">
+                                Filter
+                            </span>
+                        </div>
+                    </div>
+
                 </div>
-            </div>
+                <div class=" d-none d-sm-block">
+                    {% include 'attributes_filter_desktop.html' %}
+                </div>
                 <p class="pl-3">{{ products.paginator.count }} {% trans 'items' %}</p>
                 <div class="row w-100" style="margin: 0px">
                     {% if not products %}
@@ -132,13 +134,13 @@
                         </div>
                     {% endfor %}
                 </div>
-
+                <div class="pagination text-xs-center justify-content-center pt-2"
+                     style="align-content: center; text-align: center">
+                    {% bootstrap_pagination products pages_to_show=7 extra=request.GET.urlencode %}
+                </div>
 
             </div>
-            <div class="pagination text-xs-center justify-content-center"
-                 style="align-content: center; text-align: center">
-                {% bootstrap_pagination products pages_to_show=7 extra=request.GET.urlencode %}
-            </div>
+
         </div>
     </div>
 {% endblock %}
