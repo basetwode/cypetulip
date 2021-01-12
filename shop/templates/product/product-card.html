@@ -4,15 +4,17 @@
 {% load bootstrap4 %}
 {% load fb_versions %}
     <div class="card card-hover ">
-        <a href="{% url 'shop:product_detail' product.category.path product.name %}">
-
-            {% if product.productimage_set.first %}
+    {% with product.category.path as category_path %}
+        <a href="{% url 'shop:product_detail' category_path product.name %}">
+            {% with product.productimage_set.first as product_image %}
+            {% if product_image %}
                 <img class="card-img-top" loading="lazy"
-                     src="{% version product.productimage_set.first.product_picture 'medium' %}" alt=""/>
+                     src="{% version product_image.product_picture 'medium' %}" alt=""/>
             {% else %}
                 <i style="max-width: 150px; height: 150px"
                    class="fa fa-5x fa-image card-img-top"></i>
             {% endif %}
+        {% endwith %}
         </a>
 
 
@@ -75,7 +77,7 @@
         </div>
         <hr>
         <div class="card-body">
-            <div class="text-right buttons"><a href="{% url 'shop:product_detail' product.category.path product.name %}"
+            <div class="text-right buttons"><a href="{% url 'shop:product_detail' category_path product.name %}"
                                                class="btn btn-outline-dark">{% trans 'Details' %}</a>
                 {% if product.price_on_request %}
                     <a type="button"
@@ -91,4 +93,5 @@
                 {% endif %}
             </div>
         </div>
+    {% endwith %}
     </div>

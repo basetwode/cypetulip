@@ -150,6 +150,15 @@ MEDIA_ROOT = '/var/cypetulip'
 MEDIA_URL = '/media/'
 
 FILEBROWSER_DIRECTORY = ''
+FILEBROWSER_VERSION_QUALITY = 70
+FILEBROWSER_VERSIONS = {
+    'admin_thumbnail': {'verbose_name': 'Admin Thumbnail', 'width': 60, 'height': 60, 'opts': 'crop'},
+    'thumbnail': {'verbose_name': 'Thumbnail (1 col)', 'width': 60, 'height': 60, 'opts': 'crop'},
+    'small': {'verbose_name': 'Small (2 col)', 'width': 140, 'height': '', 'opts': ''},
+    'medium': {'verbose_name': 'Medium (4col )', 'width': 270, 'height': '', 'opts': ''},
+    'big': {'verbose_name': 'Big (6 col)', 'width': 460, 'height': '', 'opts': ''},
+    'large': {'verbose_name': 'Large (8 col)', 'width': 680, 'height': '', 'opts': ''}
+}
 DIRECTORY = ''
 FILEBROWSER_MEDIA_ROOT = '/var/cypetulip/public'
 
