@@ -13,7 +13,7 @@
            href="/shop/products/{{ category.path }}?">{{ category.name }}</a>
     </div>
 
-    {% if category.productcategory_set.all.count > 0 %}
+    {% if category.productcategory_set.count > 0 %}
         {% if category.name in selected_category.path %}
         <ul class="list-group sub">
         {% if category.id == selected_category.id %}

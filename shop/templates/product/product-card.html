@@ -3,36 +3,37 @@
 {% load i18n %}
 {% load bootstrap4 %}
 {% load fb_versions %}
-    <div class="card card-hover ">
+<div class="card card-hover ">
     {% with product.category.path as category_path %}
         <a href="{% url 'shop:product_detail' category_path product.name %}">
             {% with product.productimage_set.all.0 as product_image %}
-            {% if product_image %}
-                <img class="card-img-top" loading="lazy"
-                     src="{% version product_image.product_picture 'medium' %}" alt=""/>
-            {% else %}
-                <i style="max-width: 150px; height: 150px"
-                   class="fa fa-5x fa-image card-img-top"></i>
-            {% endif %}
-        {% endwith %}
+                {% if product_image %}
+                    <img class="card-img-top" loading="lazy"
+                         src="{% version product_image.product_picture 'medium' %}" alt=""/>
+                {% else %}
+                    <i style="max-width: 150px; height: 150px"
+                       class="fa fa-5x fa-image card-img-top"></i>
+                {% endif %}
+            {% endwith %}
         </a>
 
 
         <div class="card-body product-text">
             <div class="d-flex justify-content-between">
-                                            <span class="font-weight-bold"><a class="text-center"
-                                                                              href="/shop/product/{{ product.name }}">{{ product.name }}</a></span>
+                <a class="text-center font-weight-bold"
+                   href="/shop/product/{{ product.name }}">{{ product.name }}</a>
                 {% if product.price_on_request %}
                     <span data-toggle="modal" data-target="#price_on_request"
                           class="badge badge-pill badge-success badge-primary badge-price-on-request">{% trans 'Price on request' %}
                                                         </span>
                 {% elif product.special_price %}
-                    <span class="d-none d-sm-block" style="text-decoration: line-through">{{ product.price_wt | floatformat:2 }} &euro;</span>
+                    <span class="d-none d-sm-block"
+                          style="text-decoration: line-through">{{ product.price_wt | floatformat:2 }} &euro;</span>
                     <strong style="color: red"
                             class="font-weight-bold">{{ product.special_price_wt | floatformat:2 }}
                         &euro;</strong>
                 {% else %}
-                    <span>{{ product.price_wt | floatformat:2 }} &euro;</span>
+                    {{ product.price_wt | floatformat:2 }} &euro;
                 {% endif %} </div>
             {% if product.special_price %}
                 <span class="badge badge-pill badge-danger badge-primary">{% trans 'Sale' %}
@@ -49,11 +50,13 @@
                     <div class="card-body pb-1 pl-3">
                         <strong style="color: #da5200"
                                 class="font-weight-bold">
-                            </span><i class="fas fa-s fa-exclamation-circle"></i>
+                            <i class="fas fa-s fa-exclamation-circle"></i>
                             {% if voucher.percentagediscount %}
-                                {% blocktranslate with percent=voucher.percentagediscount.discount_percentage_in_percent id=voucher.voucher_id %}Save up to {{ percent }} % with: {{ id }}{% endblocktranslate %}
+                                {% blocktranslate with percent=voucher.percentagediscount.discount_percentage_in_percent id=voucher.voucher_id %}
+                                    Save up to {{ percent }} % with: {{ id }}{% endblocktranslate %}
                             {% else %}
-                                {% blocktranslate with amount=voucher.fixedamountdiscount.amount id=voucher.voucher_id %}Save up to {{ amount }} € with: {{ id }}{% endblocktranslate %}
+                                {% blocktranslate with amount=voucher.fixedamountdiscount.amount id=voucher.voucher_id %}
+                                    Save up to {{ amount }} € with: {{ id }}{% endblocktranslate %}
                             {% endif %}
                             &euro;</strong><br>
 
@@ -94,4 +97,4 @@
             </div>
         </div>
     {% endwith %}
-    </div>
+</div>

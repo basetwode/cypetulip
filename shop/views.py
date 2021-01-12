@@ -52,12 +52,9 @@ class ProductView(TaxView, ListView):
     def get_queryset(self):
         selected_category = None
         if 'category' in self.kwargs:
-            selected_category = ProductCategory.objects.filter(path=self.kwargs['category'])
-            if selected_category and selected_category.count() > 0 and selected_category[0].child_categories.all():
-                products = Product.objects.filter(is_public=True, category__in=selected_category[0].
-                                                  child_categories.all())
-            else:
-                products = Product.objects.filter(is_public=True, category__in=selected_category)
+            selected_category = ProductCategory.objects.get(path=self.kwargs['category'])
+            relevant_categories = ProductCategory.objects.filter(path__startswith=selected_category.path)
+            products = Product.objects.filter(is_public=True, category__in=relevant_categories)
         if not selected_category:
             products = Product.objects.filter(is_public=True)
 
@@ -68,10 +65,8 @@ class ProductView(TaxView, ListView):
         attribute_filter =(reduce(operator.or_,(Q(type__name=k, value=v_spl) for v_spl in v.split('.'))) for k, v in self.request.GET.items()) \
             if len(self.request.GET)>0 else None
 
-
         selected_attributes = ProductAttributeTypeInstance.objects.filter(reduce(operator.or_, attribute_filter)) \
             if attribute_filter else []
-
 
         for type in ProductAttributeType.objects.filter(productattributetypeinstance__in=selected_attributes).distinct():
             products = products.filter(attributes__id__in=selected_attributes.filter(type=type))
@@ -96,16 +91,13 @@ class ProductView(TaxView, ListView):
         product_attribute_categories = ProductAttributeType.objects. \
             filter(productattributetypeinstance__product__in=products).annotate(count=Count('name', distinct=True))
         product_attribute_types = ProductAttributeTypeInstance.objects.all().\
-            annotate(count=Count('product',filter=Q(product__in=products))).select_related('type')
+            annotate(count=Count('product',filter=Q(product__in=products)))
 
         products = self._get_url_page(products, self.request.GET.get('page'))
 
         selected_category = ''
         if 'category' in self.kwargs:
-            # selected_category = self.kwargs['category']
-            if __name__ == '__main__':
-                selected_category = ProductCategory.objects.get(path=self.kwargs['category']).\
-                    prefetch_related('productcategory_set').select_related('mother_category')
+            selected_category = ProductCategory.objects.get(path=self.kwargs['category'])
 
         return {**context, **{'sections': sections, 'products': products,
                               'categories': categories,

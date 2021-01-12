@@ -41,7 +41,7 @@
                          id="collapseFilter-{{ attribute_category.name }}"
                          data-parent="#attributesAccordion" class="collapse">
                         {% for instance in type_instances %}
-                            {% if instance.type.id == attribute_category.id %}
+                            {% if instance.type_id == attribute_category.id %}
 
                                 <li class="list-group-item" id="v_hm">
                                     <div class="heading">

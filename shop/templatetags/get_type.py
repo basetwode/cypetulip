@@ -1,3 +1,5 @@
+import re
+
 __author__ = 'Anselm'
 
 from django import template
@@ -22,3 +24,11 @@ def addcss(value, arg):
 @register.filter(name='countchars')
 def count_chars(value, char):
     return value.count(char)
+
+@register.filter(name='ismobile')
+def is_mobile(request):
+    MOBILE_AGENT_RE=re.compile(r".*(iphone|mobile|androidtouch)",re.IGNORECASE)
+    if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
+        return True
+    else:
+        return False

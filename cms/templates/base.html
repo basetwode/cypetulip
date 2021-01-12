@@ -59,12 +59,7 @@
     {% include 'footer.html' %}
 
     {% bootstrap_javascript jquery='full' %}
-    {% compress css file thirdparty %}
-        <link rel="stylesheet" href="{% static 'jquery/css/jquery.fancybox.min.css' %}"
-              media="screen">
-    {% endcompress %}
     {% compress js file thirdparty %}
-        <script src="{% static 'jquery/js/jquery.fancybox.min.js' %}"></script>
         <script src="{% static 'cms/js/functions.js' %}"></script>
         <script src="{% static 'cms/js/site-loader.js' %}"></script>
         <script defer src="{% static 'fontawesome-free/js/fontawesome.min.js' %}"></script>
