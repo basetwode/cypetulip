@@ -33,7 +33,7 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             {% for instance in type_instances %}
-                {% if instance in attribute_category.productattributetypeinstance_set.all %}
+                {% if instance.type.id == attribute_category.id %}
 
                     {% if instance.value in selected %}
                         <button type="button" class="dropdown-item font-weight-bold" href="#" class="link"
