@@ -8,10 +8,14 @@ from django.db.models import Count, Q, Prefetch
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie, vary_on_headers
 from django.views.generic import View, ListView, FormView
 
 from cms.models import Section
+from home.settings import CACHE_MIDDLEWARE_SECONDS
 from permissions.error_handler import raise_404
 from shop.forms import ProductAttributeForm, IndividualOfferForm
 from shop.mixins import TaxView, EmailNotifyStaffView
@@ -34,6 +38,8 @@ class IndexView(View):
         return HttpResponse('result')
 
 
+@method_decorator(vary_on_headers('User-Agent'), name='dispatch')
+@method_decorator(cache_page(CACHE_MIDDLEWARE_SECONDS), name='dispatch')
 class ProductView(TaxView, ListView):
     template_name = 'products.html'
     context_object_name = 'products'
