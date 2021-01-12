@@ -6,7 +6,7 @@
     <div class="card card-hover ">
     {% with product.category.path as category_path %}
         <a href="{% url 'shop:product_detail' category_path product.name %}">
-            {% with product.productimage_set.first as product_image %}
+            {% with product.productimage_set.all.0 as product_image %}
             {% if product_image %}
                 <img class="card-img-top" loading="lazy"
                      src="{% version product_image.product_picture 'medium' %}" alt=""/>
@@ -43,7 +43,7 @@
         </div>
 
         {% if product.discount_set.count > 0 %}
-            {% with product.discount_set.last as voucher %}
+            {% with product.discount_set.all.0 as voucher %}
                 {% if voucher.show_in_products %}
 
                     <div class="card-body pb-1 pl-3">

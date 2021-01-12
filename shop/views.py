@@ -4,7 +4,7 @@ from functools import reduce
 
 from django.contrib import messages
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Prefetch
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
@@ -17,7 +17,7 @@ from shop.forms import ProductAttributeForm, IndividualOfferForm
 from shop.mixins import TaxView, EmailNotifyStaffView
 from shop.models import (Order, OrderDetail, OrderState,
                          Product, ProductCategory, OrderItem, ProductAttributeType, ProductAttributeTypeInstance,
-                         Contact)
+                         Contact, ProductImage)
 # Create your views here.
 from shop.utils import json_response
 
@@ -76,14 +76,16 @@ class ProductView(TaxView, ListView):
         for type in ProductAttributeType.objects.filter(productattributetypeinstance__in=selected_attributes).distinct():
             products = products.filter(attributes__id__in=selected_attributes.filter(type=type))
 
-        return products.order_by('id')
+        return products.order_by('id').prefetch_related(
+            Prefetch('productimage_set', queryset=ProductImage.objects.order_by('id')),
+            'attributes','discount_set',)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ProductView, self).get_context_data(**kwargs)
 
         sections = Section.objects.filter(page__page_name="Products")
 
-        categories = ProductCategory.objects.filter(is_main_category=True)
+        categories = ProductCategory.objects.filter(is_main_category=True).prefetch_related('productcategory_set')
         products = self.object_list
 
         product_attribute_categories = ProductAttributeType.objects. \
@@ -94,14 +96,16 @@ class ProductView(TaxView, ListView):
         product_attribute_categories = ProductAttributeType.objects. \
             filter(productattributetypeinstance__product__in=products).annotate(count=Count('name', distinct=True))
         product_attribute_types = ProductAttributeTypeInstance.objects.all().\
-            annotate(count=Count('product',filter=Q(product__in=products)))
+            annotate(count=Count('product',filter=Q(product__in=products))).select_related('type')
 
         products = self._get_url_page(products, self.request.GET.get('page'))
 
         selected_category = ''
         if 'category' in self.kwargs:
             # selected_category = self.kwargs['category']
-            selected_category = ProductCategory.objects.get(path=self.kwargs['category'])
+            if __name__ == '__main__':
+                selected_category = ProductCategory.objects.get(path=self.kwargs['category']).\
+                    prefetch_related('productcategory_set').select_related('mother_category')
 
         return {**context, **{'sections': sections, 'products': products,
                               'categories': categories,
