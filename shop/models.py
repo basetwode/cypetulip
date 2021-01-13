@@ -1,3 +1,4 @@
+import math
 from datetime import datetime
 
 from _decimal import ROUND_HALF_UP, Decimal
@@ -611,7 +612,7 @@ class OrderItem(models.Model):
         if not self.pk or price_changed:
             self.apply_discount_if_eligible(self.order_detail.discount,
                                             save=False) if self.order_detail.discount else None
-        if self.price_wt != self.calculate_tax(self.price):
+        if not math.isclose(self.price_wt, self.calculate_tax(self.price), rel_tol=1e-5):
             self.price_wt = self.calculate_tax(self.price)
             self.applied_discount = 0
             self.price_discounted = self.price

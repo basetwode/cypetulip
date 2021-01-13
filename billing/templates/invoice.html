@@ -130,7 +130,7 @@
 
         #thanks {
             font-size: 14px;
-            margin-bottom: 50px;
+            margin-bottom: 20px;
         }
 
         #notices {
@@ -217,9 +217,9 @@
                 </td>
             </tr>
             {% for sub_item in item.orderitem_set.all %}
-                <tr style="padding-bottom: 5px">
+                <tr style="padding-bottom: 3px">
                     <td valign="top"></td>
-                    <td style="padding-left: 10px" valign="top">
+                    <td style="padding-left: 10px; padding-top: 0; margin-top: 0" valign="top">
                         {% if sub_item.numberorderitem %}
                             {{ sub_item.numberorderitem.number }}
                         {% endif %}
@@ -272,7 +272,7 @@
         </tfoot>
     </table>
     <div id="thanks">{% trans 'Thank you for your order' %}!</div>
-    <div id="notices">
+    <div id="notices" style="{ -pdf-keep-with-next: true; }">
         {% if payment_detail.method.name == 'Bill' or  payment_detail.method.name == 'Prepayment' %}
             <div>{% trans 'Notice' %}:<br>{% trans 'Please send the aforementioned invoice total to the following account' %}</div>
             <div class="notice">
@@ -286,9 +286,12 @@
     </div>
 </main>
 <footer>
-    <div style="margin-top: 40px;text-align: center">
-        {% trans 'Invoice was created on a computer and is valid without the signature and seal.' %}<br>
-        {% trans 'If not stated otherwise the invoice date equals the period of performance. ' %}
+    <div style="margin-top: 20px;text-align: center">
+        <div id="footer_content">
+            {% trans 'Invoice was created on a computer and is valid without the signature and seal.' %}<br>
+            {% trans 'If not stated otherwise the invoice date equals the period of performance. ' %}
+        </div>
+
     </div>
 </footer>
 </body>

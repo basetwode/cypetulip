@@ -185,7 +185,9 @@
                                                                 {% elif sub_item.selectorderitem %}
                                                                     {{ sub_item.selectorderitem.selected_item }}
                                                                 {% elif sub_item.checkboxorderitem %}
-                                                                    {% trans 'Yes' %}
+                                                                    {% if sub_item.checkboxorderitem.is_checked %}
+                                                                        {% trans 'Yes' %}{% else%}
+                                                                        {% trans 'No' %}{% endif %}
                                                                 {% elif sub_item.numberorderitem %}
                                                                     {{ sub_item.numberorderitem.number }}
                                                                 {% endif %}
