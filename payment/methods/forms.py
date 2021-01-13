@@ -20,7 +20,7 @@ class LegalForm(forms.Form):
 
     general_business_terms = BooleanField(required=True,
                                           label=mark_safe_lazy(_(
-                                              "I've read the <a target='_blank' href='/cms/gbt'>general business terms</a>")))
+                                              "I've read the <a target='_blank' href='/cms/general-business-terms'>general business terms</a>")))
 
 
 
