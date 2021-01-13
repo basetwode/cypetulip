@@ -123,6 +123,7 @@
                                         {% if product.discount_set.count > 0 %}
                                             {% with product.discount_set.last as voucher %}
 
+                                                {% if voucher.show_in_products %}
                                                 <strong style="color: #da5200"
                                                         class="font-weight-bold">
                                                     </span><i class="fas fa-s fa-exclamation-circle"></i>
@@ -132,6 +133,7 @@
                                                         {% blocktranslate with amount=voucher.fixedamountdiscount.amount id=voucher.voucher_id %}Save up to {{ amount }} € with: {{ id }}{% endblocktranslate %}
                                                     {% endif %}
                                                     &euro;</strong><br>
+                                                {% endif %}
                                             {% endwith %}
                                         {% endif %}
                                         </div>
