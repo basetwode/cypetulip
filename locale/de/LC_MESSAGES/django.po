@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-13 22:31+0100\n"
+"POT-Creation-Date: 2021-01-13 22:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1778,7 +1778,9 @@ msgstr "JS/CSS wurde neu erstellt"
 
 #: .\management\views.py:1213
 msgid "Offline compression not enabled. CSS/JS are generated on-the-fly"
-msgstr "Offline Kompression ist nicht aktiviert. CSS / JS Dateien werden on-the-fly generiert"
+msgstr ""
+"Offline Kompression ist nicht aktiviert. CSS / JS Dateien werden on-the-fly "
+"generiert"
 
 #: .\payment\methods\forms.py:14
 msgid ""
@@ -1807,8 +1809,8 @@ msgid ""
 "I've read the <a target='_blank' href='/cms/general-business-terms'>general "
 "business terms</a>"
 msgstr ""
-"Ich habe die <a target='_blank' href='/cms/general-business-terms'>Allgemeinen "
-"Geschäftsbedingungen</a> gelesen"
+"Ich habe die <a target='_blank' href='/cms/general-business-"
+"terms'>Allgemeinen Geschäftsbedingungen</a> gelesen"
 
 #: .\payment\methods\paypal\views.py:95
 msgid "Something went wrong while processing your payment:\n"
@@ -1877,8 +1879,8 @@ msgid "Address"
 msgstr "Adresse"
 
 #: .\payment\templates\bill\confirm.html:240
-msgid "Submit order"
-msgstr "Bestellung bestätigen"
+msgid "Buy now"
+msgstr "Zahlungspflichtig bestellen"
 
 #: .\payment\templates\mail\new_order_client.html:38
 msgid ""
@@ -2672,6 +2674,9 @@ msgstr "Passwortbestätigung"
 #: .\utils\forms.py:85
 msgid "Repeat password"
 msgstr "Passwort wiederholen"
+
+#~ msgid "Submit order"
+#~ msgstr "Bestellung bestätigen"
 
 #~ msgid ""
 #~ "\n"
