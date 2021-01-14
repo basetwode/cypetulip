@@ -53,7 +53,7 @@ System requirements:
 - Django >3.1.0
 
 
-#Installation
+# Installation
 
 Run the setup
 ```
