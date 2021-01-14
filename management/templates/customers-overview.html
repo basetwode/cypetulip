@@ -29,6 +29,8 @@
                     </form>
                     <a href="{% url 'company_create' '' %}"
                        class="btn btn-primary btn-fw">{% trans 'Add customer' %}</a>
+                    <a href="{% url 'customer_import' %}"
+                       class="btn btn-primary btn-fw">{% trans 'CSV Import' %}</a>
                     <hr>
 
                     <a href="{% url 'management_index' %}"

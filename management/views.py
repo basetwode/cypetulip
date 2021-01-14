@@ -1,3 +1,4 @@
+import csv
 import secrets
 from datetime import datetime
 
@@ -23,7 +24,8 @@ from cms.models import Page, Section
 from home import settings
 from management.filters import OrderDetailFilter, DiscountFilter
 from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm, ProductForm, \
-    ContactUserForm, ContactUserIncludingPasswordForm, ContactUserUpdatePasswordForm, MergeAccountsForm, ClearCacheForm
+    ContactUserForm, ContactUserIncludingPasswordForm, ContactUserUpdatePasswordForm, MergeAccountsForm, ClearCacheForm, \
+    CustomerImportForm
 from management.mixins import NotifyNewCustomerAccountView
 from management.models import LdapSetting, MailSetting, LegalSetting, ShopSetting, Header, Footer, CacheSetting
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME, PaymentProvider
@@ -1221,3 +1223,43 @@ class CacheManagementView(LoginRequiredMixin, FormView):
         from django.core.cache import cache
         cache.clear()
 
+
+class CustomerImportView(LoginRequiredMixin, FormView):
+    template_name = 'customer-import.html'
+    form_class = CustomerImportForm
+    success_url = reverse_lazy('customers_overview')
+
+    def form_valid(self, form):
+        csv_reader = csv.DictReader(chunk.decode() for chunk in self.request.FILES["input_file"])
+        count_successful_imports = 0
+        errors = []
+
+        for row in csv_reader:
+            try:
+                if not Contact.objects.filter(username=row["email"]).exists():
+                    company = Company(name=row['company_name'], street=row['street'], number=row['number'],
+                                      zipcode=row['zipcode'], city=row['city'])
+                    company.save()
+                    contact = Contact(company=company, gender=row['gender'], telephone=row['phone'], email=row["email"],
+                                      username=row["email"], first_name=row['firstname'], last_name=row['lastname'],
+                                      password=row['password'],
+                                      language='de')
+                    contact.save()
+                    address = Address(name=row['street'] + " " + row['number'], street=row['street'],
+                                      number=row['number'], zipcode=row['zipcode'], city=row['city'], contact=contact)
+                    address.save()
+
+                    group = Group.objects.get(name="client")
+                    group.user_set.add(contact)
+                    sgroup = Group.objects.get(name='client supervisor')
+                    sgroup.user_set.add(contact)
+                    count_successful_imports+=1
+                else:
+                    errors.append(_("User with mail %(mail)s already exists") % {'mail':row['email']})
+            except Exception as e:
+                errors.append(str(e))
+        messages.success(self.request, _("Successfully imported %(total_success)s of %(total)s") %
+                         {'total_success':str(count_successful_imports), 'total':csv_reader.line_num-1})
+        if len(errors)>0:
+            messages.error(self.request, ", ".join(errors))
+        return super(CustomerImportView, self).form_valid(form)

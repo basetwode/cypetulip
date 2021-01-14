@@ -36,7 +36,7 @@ class Company(models.Model):
         if self.company_id is None or len(self.company_id) == 0:
             self.company_id = rand_key(12)
         if self.customer_nr is None:
-            nr = (Company.objects.all().order_by('customer_nr').last().customer_nr + 1) \
+            nr = (Company.objects.filter(customer_nr__isnull=False).order_by('customer_nr').last().customer_nr + 1) \
                 if Company.objects.all().count() > 0 and Company.objects.filter(customer_nr__isnull=False).exists() else 1
             self.customer_nr = nr
         models.Model.save(self, force_insert, force_update,

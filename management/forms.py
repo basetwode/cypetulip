@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.forms import ModelForm, CharField, Form, BooleanField, Textarea, forms, ModelMultipleChoiceField, \
-    ModelChoiceField
+    ModelChoiceField, FileField
 from django.utils.translation import ugettext_lazy as _
 
 from shop.models import OrderDetail, Address, Order, OrderItem, Product, ProductSubItem, Contact, Company
@@ -176,3 +176,7 @@ class MergeAccountsForm(Form):
 class ClearCacheForm(Form):
     clear_html_cache = BooleanField(label=_("Clear HTML Cache"), required=False)
     recompile_css_js = BooleanField(label=_("Recompile JS/CSS"), required=False)
+
+
+class CustomerImportForm(Form):
+    input_file = FileField(label=_("Import file"), required=False)

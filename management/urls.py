@@ -25,7 +25,7 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               ContactDeleteView, AddressCreationView, AddressDeleteView, ContactResetPwdView,
                               CompanyDeleteView, PercentageDiscountEditView, DiscountOverview,
                               FixedAmountDiscountEditView, CreateOrderSubItem, MergeAccounts, OrderCreateView,
-                              CacheManagementView)
+                              CacheManagementView, CustomerImportView)
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
@@ -159,6 +159,7 @@ urlpatterns = [
         ContactDeleteView.as_view(), name="contact_delete"),
     url(r'^contact/pwd/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
         ContactResetPwdView.as_view(), name="contact_pwd_reset"),
+    url(r'^contact/import/$', CustomerImportView.as_view(), name="customer_import"),
 
     url(r'^percentagediscount/create/(?P<id>[a-zA-Z0-9_.-]*)$', PercentageDiscountEditView.as_view(),
         name="percentage_discount_edit"),
