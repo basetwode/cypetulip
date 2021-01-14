@@ -4,11 +4,11 @@
 
 
 
-CypeTulip is a free open source e-commerce system. Its strength is its highly flexible product systeem,
+CypeTulip is a free open source e-commerce system. Its strength is its highly flexible product system,
 that allows both digital and regular products, but also customizable products.
 Products can require file uploads, selects, or number-/checkbox inputs.  
 
-Screenshots can be found here https://cloud.bwk-technik.de/d/d31f4b48979144dcb14f/
+Screenshots can be found [here](https://cloud.bwk-technik.de/d/d31f4b48979144dcb14f/).
 
 ## Current Features
 - E-commerce 
@@ -16,8 +16,8 @@ Screenshots can be found here https://cloud.bwk-technik.de/d/d31f4b48979144dcb14
     - Free configurable products (as described above)
     - On request products
     - Categories
-    - System Vouchers (fixed price and percentage)
-    - Dynamic Product attributes / including filtering
+    - System vouchers (fixed price and percentage)
+    - Dynamic product attributes / including filtering
 - CMS
     - Pages
     - Sections (WYSIWYG)
@@ -27,7 +27,7 @@ Screenshots can be found here https://cloud.bwk-technik.de/d/d31f4b48979144dcb14
     - Bill
     - Paypal 
 - Management
-    - Basic management functionality (Add/edit products, subproducts, categories, ...)
+    - Basic management functionality (add/edit products, subproducts, categories, ...)
     - Manually create orders / clients
     - Accounting Dashboard
     - Create order from on request product
