@@ -40,8 +40,14 @@
                         <div class="form-group row">
                             <label class="col-md-3"  for="customerSelect">{% trans 'Select customer' %}</label>
                             <div class="col-md-9">
-                                <select @change="onContactSelected($event)" v-model="selectedContact" class="form-control" id="customerSelect">
-                                    <option v-for="contact in contacts" v-bind:value="contact.id">
+                                <input type="text" name="filter"
+                                       v-model="contactFilter"
+                                       class="form-control"
+                                       placeholder="{% trans 'Filter' %}"
+                                       title=""
+                                       required="" id="id_filter">
+                                <select @change="onContactSelected($event)" v-model="selectedContact" class="form-control mt-2" :size="calcContactSelectSize" id="customerSelect">
+                                    <option v-for="contact in contactsFiltered" v-bind:value="contact.id">
                                         [[ contact.username ]] ([[contact.company.name]])
                                     </option>
                                 </select>
@@ -172,7 +178,7 @@
                                                 </div>
                                             </template>
                                             <template v-if="item.edit">
-                                                <button style="display: inline-block; position: relative;" @click="discardItemChanges(item)" type="button" class="close ">
+                                                <button style="display: inline-block; position: relative;" @click="discardItemChanges(item, index)" type="button" class="close ">
                                                     <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i class="fa fa-xs fa-times-circle"></i></span>
                                                 </button>
                                                 <button style="display: inline-block;position: relative; right:7px;" @click="saveItemChanges(item)" type="button" class="close" >
@@ -323,7 +329,7 @@
                                                     </button>
                                                 </template>
                                                 <template v-if="sub_item.edit">
-                                                    <button style="display: inline-block; position: relative;" @click="discardItemChanges(sub_item)" type="button" class="close ">
+                                                    <button style="display: inline-block; position: relative;" @click="discardSubItemChanges(item, sub_item, index)" type="button" class="close ">
                                                         <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i class="fa fa-xs fa-times-circle"></i></span>
                                                     </button>
                                                     <button style="display: inline-block;position: relative; right:7px;" @click="saveItemChanges(sub_item, item)" type="button" class="close" >
@@ -413,6 +419,7 @@
                 selectedCompany: '',
                 contacts: [],
                 selectedContact: '',
+                contactFilter: '',
                 addresses: [],
                 selectedShippingAddress: '',
                 selectedBillingAddress: '',
@@ -427,6 +434,24 @@
                 billPreview: '',
                 paymentMethods: [],
                 orderStates: []
+            },
+            computed: {
+                calcContactSelectSize(){
+                    if(this.contactsFiltered.length > 10)
+                        return 6;
+                    else if(this.contactsFiltered.length> 4)
+                        return 4;
+                    else return 3;
+                },
+                contactsFiltered(){
+                    if(this.contactFilter.length===0)
+                        return this.contacts;
+                    return this.contacts.filter((contact) => {
+                        return (contact.first_name+contact.last_name+contact.email+contact.company.name)
+                            .toLowerCase().indexOf(this.contactFilter) >= 0;
+                    });
+
+                }
             },
             mounted() {
                 this.selectedOrderHash = selectedOrder;
@@ -558,9 +583,19 @@
                     }
                     return product.price_on_request;
                 },
-                discardItemChanges: function(item){
+                discardSubItemChanges: function(item, sub_item, index) {
+                    sub_item.edit='';
+                    sub_item.edit_pop='';
+                    if(!sub_item.id){
+                        this.deleteSubOrderItem(item, index);
+                    }
+                },
+                discardItemChanges: function(item, index){
                     item.edit='';
                     item.edit_pop='';
+                    if(!item.id){
+                        this.deleteOrderItem(index)
+                    }
                 },
                 transformItem(item, parent_item, uri){
                     let formData = new FormData();
