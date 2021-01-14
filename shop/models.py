@@ -450,6 +450,7 @@ class OrderDetail(models.Model):
     bill_file = models.FileField(default=None, null=True,
                             upload_to=invoice_files_upload_handler,
                             storage=fs)
+    bill_number = models.IntegerField(default=None, blank=True, null=True)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Contact'))
     shipment_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True,
                                          related_name='shipment_address', verbose_name=_('Shipment address'))
@@ -463,7 +464,10 @@ class OrderDetail(models.Model):
     discount_percentage = models.FloatField(default=0, blank=True, null=True, editable=False)
 
     def unique_nr(self):
-        return "CTNR" + str(self.id).rjust(10, "0")
+        return "CT-NR" + str(self.id).rjust(10, "0")
+
+    def unique_bill_nr(self):
+        return "CT-INR" + str(self.bill_number).rjust(10, "0")
 
     def send_order(self):
         self.date_added = datetime.now()
@@ -509,7 +513,6 @@ class OrderDetail(models.Model):
             self.is_cancelled = False
         if not self.state and self.orderitem_set.count() == 0:
             self.remove_voucher()
-
         if not self.order.company and self.contact:
             self.order.company = self.contact.company
             self.order.save()

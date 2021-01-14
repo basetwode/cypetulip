@@ -185,8 +185,15 @@
 
         </div>
         <div id="invoice">
-            <h1>{% trans 'Invoice' %} {{order_detail.unique_nr}}</h1>
-            <h2>{% trans 'Customer Nr' %} {{contact.customer_nr}}</h2>
+            <h1>{% trans 'Invoice' %}
+                {% if order_detail.bill_number %}
+                    {{ order_detail.unique_bill_nr }}
+                {% else %}
+                    <-DRAFT->
+                {% endif %}
+            </h1>
+            <div >{% trans 'Order Nr' %} {{order_detail.unique_nr}}</div>
+            <div >{% trans 'Customer Nr' %} {{contact.customer_nr}}</div>
             <div class="date">{% trans 'Invoice Date' %} {{ order_detail.date_bill|date:"d.m.Y" }}</div>
             <div class="date">{% trans 'Due Date' %} {{order_detail.date_due|date:"d.m.Y"}}</div>
         </div>

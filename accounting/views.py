@@ -83,13 +83,13 @@ class AccountingFullExport(AccountingViewExportCSV):
         zf = zipfile.ZipFile(s, "w")
         for order_detail in self.get_context_data().get("filter").qs:
             if order_detail.bill_file:
-                zf.write(order_detail.bill_file.path,f"{order_detail.unique_nr()}.pdf")
+                zf.write(order_detail.bill_file.path,f"{order_detail.unique_bill_nr()}.pdf")
             else:
                 try:
                     pdf = GeneratePDFFile().generate(order_detail.order)
-                    order_detail.bill_file = File(pdf,f"I_{order_detail.unique_nr()}.pdf")
+                    order_detail.bill_file = File(pdf,f"I_{order_detail.unique_bill_nr()}.pdf")
                     order_detail.save()
-                    zf.write(order_detail.bill_file.path,f"{order_detail.unique_nr()}.pdf")
+                    zf.write(order_detail.bill_file.path,f"{order_detail.unique_bill_nr()}.pdf")
                 except:
                     pass
         zf.writestr("accounting.csv",csv.rendered_content)

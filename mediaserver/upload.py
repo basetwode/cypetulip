@@ -24,7 +24,7 @@ def order_files_upload_handler(order, filename):
 
 
 def invoice_files_upload_handler(order, filename):
-    return "orders/{hash}/invoice/Invoice_{file}.pdf".format(hash=order.order.order_hash, file=order.unique_nr())
+    return "orders/{hash}/invoice/Invoice_{file}.pdf".format(hash=order.order.order_hash, file=order.unique_bill_nr())
 
 
 def rma_files_upload_handler(rma, filename):

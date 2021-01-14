@@ -23,7 +23,8 @@
                         <div style="overflow: auto">
                             <div class="col-md-12"><span>{{ order.company }}</span></div>
                             <div class="col-md-12"><span style="font-size: small; font-weight: bold">
-                                    {{ order_detail.contact.first_name }} {{ order_detail.contact.last_name }}
+                                    {{ order_detail.contact.first_name }} {{ order_detail.contact.last_name }}<br>
+                                    {{ order_detail.contact.customer_nr }}
                                 </span>
                             </div>
                         </div>
@@ -118,6 +119,15 @@
                         <div class="col-md-4">
                             <strong>Ordernr.:</strong>
                             <div><small>{{ order.orderdetail_set.first.unique_nr }}</small>
+                            </div>
+                            <strong>{% trans 'Bill Nr' %}.:</strong>
+                            <div><small>
+                                {% if order.orderdetail_set.first.bill_number %}
+                                {{ order.orderdetail_set.first.unique_bill_nr }}
+                                {% else %}
+                                    {% trans 'Invoice has not been sent yet' %}
+                                {% endif %}
+                            </small>
                             </div>
                         </div>
                     </div>

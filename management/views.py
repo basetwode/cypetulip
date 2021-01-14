@@ -584,17 +584,22 @@ class OrderAcceptInvoiceView(View, EmailMixin):
             return redirect(request.META.get('HTTP_REFERER'))
 
     def send_invoice(self, _order, ):
+        if not _order.bill_number:
+            _order.bill_number = (OrderDetail.objects.filter(bill_number__isnull=False).order_by(
+                'bill_number').last().bill_number + 1) \
+                if OrderDetail.objects.filter(bill_number__isnull=False).exists() else 1
+            _order.save()
         pdf = GeneratePDFFile().generate(_order.order)
-        _order.bill_file = File(pdf,f"I_{_order.unique_nr()}.pdf")
+        _order.bill_file = File(pdf,f"I_{_order.unique_bill_nr()}.pdf")
         _order.save()
         total = calculate_sum(_order.order.orderitem_set, True)
-        self.send_mail(_order.contact, _('Your Invoice ') + _order.unique_nr(), '', {'object': _order.order,
+        self.send_mail(_order.contact, _('Your Invoice ') + _order.unique_bill_nr(), '', {'object': _order.order,
                                                                                      'contact': _order.contact,
                                                                                      'total': total,
                                                                                      'order': _order.order,
                                                                                      'order_detail':_order,
                                                                                      'files': {_(
-                                                                                         'Invoice') + "_" + _order.unique_nr() +
+                                                                                         'Invoice') + "_" + _order.unique_bill_nr() +
                                                                                                ".pdf": pdf.getvalue()},
                                                                                      'host': self.request.META[
                                                                                          'HTTP_HOST']})
