@@ -18,7 +18,9 @@
         {% for order_item in order.orderitem_set.all %}
         <tr>
             <td>
+                {% if order_item.product.product %}
                 <img style="padding:10px; max-height: 50px" src="cid:{{ order_item.product.product.product_picture.name }}">
+                {% endif %}
             </td>
             <td>{{ order_item.count }} x {{ order_item.product.name }}</td>
             <td>
