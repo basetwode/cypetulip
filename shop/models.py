@@ -101,7 +101,7 @@ class Address(models.Model):
 
 
 class ProductCategory(models.Model):
-    path = models.CharField(max_length=300, verbose_name=_('Path'), null=True, blank=True)
+    path = models.CharField(max_length=300, verbose_name=_('Path'), null=True, blank=True, db_index=True)
     description = models.CharField(max_length=300, verbose_name=_('Description'))
     name = models.CharField(max_length=50, verbose_name=_('Name'))
     mother_category = models.ForeignKey(
@@ -261,7 +261,7 @@ class OrderState(models.Model):
 
 
 class ProductAttributeType(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, db_index=True)
 
     def __str__(self):
         return self.name
