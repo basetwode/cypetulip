@@ -95,12 +95,14 @@ class PermissionOwnsObjectMixin(AccessMixin):
                self.test_order_ownership()
 
     def test_anonymous_ownership(self, **kwargs):
-        if not self.request.user.is_authenticated:
+        if not self.request.user.is_authenticated and self.request.session.session_key:
             object_instance = self.get_model().objects.filter(order__session=self.request.session.session_key, **kwargs)
             return object_instance.count() == 1
 
     # Used to test for existing objects. Tests whether the contact is set on the given model.
     def test_object_ownership(self, object_instance, field_name):
+        if not self.request.user.is_authenticated:
+            return False
         is_own_object = getattr(object_instance[0], field_name).id == self.request.user.id if object_instance else False
         if is_own_object:
             return True
