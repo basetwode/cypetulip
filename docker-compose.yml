@@ -1,0 +1,41 @@
+
+version: '3.7'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./packaging/cypetulip/Dockerfile
+    working_dir: /opt/cypetulip
+    command:  daphne -b 0.0.0.0 -p 8000 home.asgi:application
+    volumes:
+      - .:/opt/cypetulip
+      - static_volume:/var/cypetulip/static
+      - media_volume:/var/cypetulip/media
+    expose:
+      - 8000
+    env_file:
+      - ./packaging/cypetulip/.env.cypetulip.prod
+    depends_on:
+      - redis
+    links:
+      - redis
+  nginx:
+    build:
+      context: ./packaging/nginx
+      dockerfile: Dockerfile
+    env_file:
+      - ./packaging/nginx/.env.nginx.prod
+    volumes:
+      - static_volume:/var/cypetulip/static
+    ports:
+      - 80:80
+    depends_on:
+      - web
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+volumes:
+  static_volume:
+  media_volume:
