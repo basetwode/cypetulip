@@ -61,8 +61,13 @@ COPY ./packaging/cypetulip/entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 RUN pip install -r /opt/cypetulip/requirements.txt
-RUN mkdir /var/cypetulip
-RUN chown -R app:app /opt/cypetulip
+
+
+RUN mkdir /var/cypetulip/
+RUN mkdir /var/cypetulip/static
+RUN mkdir /var/cypetulip/media
 RUN chown -R app:app /var/cypetulip
+RUN chown -R app:app /opt/cypetulip
+
 USER app
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
