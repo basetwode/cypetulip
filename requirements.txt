@@ -67,3 +67,5 @@ paypal-checkout-serversdk==1.0.1
 django-cookiebanner==0.2.2
 csscompressor==0.9.5
 django-compressor==2.4
+django-recaptcha==2.0.6
+daphne==3.0.1
