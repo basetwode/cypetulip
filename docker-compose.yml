@@ -36,6 +36,30 @@ services:
     image: redis
     ports:
       - "6379:6379"
+  celery:
+    build:
+      context: .
+      dockerfile: ./packaging/cypetulip/Dockerfile
+    command: celery -A home beat -l INFO
+    volumes:
+      - .:/opt/cypetulip
+    env_file:
+      - ./packaging/cypetulip/.env.cypetulip.prod
+    depends_on:
+      - web
+      - redis
+  celery-beat:
+    build:
+      context: .
+      dockerfile: ./packaging/cypetulip/Dockerfile
+    command: celery -A home worker -l INFO
+    volumes:
+      - .:/opt/cypetulip
+    env_file:
+      - ./packaging/cypetulip/.env.cypetulip.prod
+    depends_on:
+      - web
+      - redis
 volumes:
   static_volume:
   media_volume:

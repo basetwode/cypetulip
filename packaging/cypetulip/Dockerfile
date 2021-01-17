@@ -1,9 +1,5 @@
-FROM python:3.8.3
-
-
+FROM python:3.9 as builder
 ENV HOME=/opt/cypetulip/
-
-RUN adduser app && adduser app app
 # Install packages needed to run your application (not build deps):
 #   mime-support -- for mime types when serving static files
 #   postgresql-client -- for running database commands
@@ -14,6 +10,8 @@ RUN set -ex \
     libpcre3 \
     mime-support \
     postgresql-client \
+    build-essential \
+    libpq-dev \
     gettext \
     " \
     && seq 1 8 | xargs -I{} mkdir -p /usr/share/man/man{} \
@@ -23,45 +21,45 @@ RUN set -ex \
 # Copy in your requirements file
 COPY requirements.txt requirements.txt
 
-# OR, if you're using a directory for your requirements, copy everything (comment out the above and uncomment this if so):
-# ADD requirements /requirements
+RUN pip wheel --no-deps --no-cache-dir --wheel-dir /opt/cypetulip/wheels -r requirements.txt
+ADD https://github.com/sass/dart-sass/releases/download/1.32.2/dart-sass-1.32.2-linux-x64.tar.gz /tmp/dart-sass/
+RUN tar -xf /tmp/dart-sass/dart-sass-1.32.2-linux-x64.tar.gz -C /opt/
 
-# Install build deps, then run `pip install`, then remove unneeded build deps all in a single step.
-# Correct the path to your production requirements file, if needed.
+
+FROM python:3.9-slim-buster
+RUN adduser app && adduser app app
+COPY ./packaging/cypetulip/local_settings.py /etc/cypetulip/
+# Copy your application code to the container (make sure you create a .dockerignore file if any large files or directories should be excluded)
+WORKDIR /opt/cypetulip/
+
+COPY --from=builder /opt/cypetulip/wheels /wheels
+COPY --from=builder requirements.txt .
+COPY --from=builder /opt/dart-sass /opt/dart-sass
+
 RUN set -ex \
     && BUILD_DEPS=" \
     build-essential \
-    libpcre3-dev \
     libpq-dev \
+    libpcre3-dev \
     " \
     && apt-get update && apt-get install -y --no-install-recommends $BUILD_DEPS \
-    && pip install --no-cache-dir -r /requirements.txt \
-    \
+    && pip install --no-cache /wheels/* \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $BUILD_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
-
-COPY ./packaging/cypetulip/local_settings.py /etc/cypetulip/
-
-# todo cron.d
-# todo fix permissions on shared volumes so it can be run as app:app
-# test deploy
-
-# Copy your application code to the container (make sure you create a .dockerignore file if any large files or directories should be excluded)
-
-WORKDIR /opt/cypetulip/
 COPY . /opt/cypetulip/
-
-ADD https://github.com/sass/dart-sass/releases/download/1.32.2/dart-sass-1.32.2-linux-x64.tar.gz /tmp/dart-sass/
-RUN tar -xf /tmp/dart-sass/dart-sass-1.32.2-linux-x64.tar.gz -C /opt/
-#RUN wget https://github.com/sass/dart-sass/releases/download/1.32.2/dart-sass-1.32.2-linux-x64.tar.gz && tar -xf dart-sass-1.32.2-linux-x64.tar.gz
-
+RUN set -ex \
+    && BUILD_DEPS=" \
+    gettext \
+    libjpeg-dev \
+    libopenjp2-7 \
+    libtiff5 \
+    " \
+    && apt-get update && apt-get install -y --no-install-recommends $BUILD_DEPS \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY ./packaging/cypetulip/entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
-
-RUN pip install -r /opt/cypetulip/requirements.txt
-
 
 RUN mkdir /var/cypetulip/
 RUN mkdir /var/cypetulip/static
