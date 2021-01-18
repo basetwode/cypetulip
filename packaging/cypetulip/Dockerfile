@@ -45,7 +45,7 @@ RUN set -ex \
     && apt-get update && apt-get install -y --no-install-recommends $BUILD_DEPS \
     && pip install --no-cache /wheels/* \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $BUILD_DEPS \
-    && rm -rf /var/lib/apt/lists/*
+                                      && rm -rf /var/lib/apt/lists/*
 
 COPY . /opt/cypetulip/
 RUN set -ex \
@@ -63,7 +63,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 RUN mkdir /var/cypetulip/
 RUN mkdir /var/cypetulip/static
-RUN mkdir /var/cypetulip/media
+RUN mkdir /var/cypetulip/company
+RUN mkdir /var/cypetulip/orders
+RUN mkdir /var/cypetulip/public
 RUN chown -R app:app /var/cypetulip
 RUN chown -R app:app /opt/cypetulip
 

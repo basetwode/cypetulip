@@ -10,8 +10,7 @@ services:
     command:  daphne -b 0.0.0.0 -p 8000 home.asgi:application
     volumes:
       - .:/opt/cypetulip
-      - static_volume:/var/cypetulip/static:rw
-      - media_volume:/var/cypetulip/media:rw
+      - media_volume:/var/cypetulip/
     expose:
       - 8000
     env_file:
@@ -27,7 +26,7 @@ services:
     env_file:
       - ./packaging/nginx/.env.nginx.prod
     volumes:
-      - static_volume:/var/cypetulip/static:ro
+      - media_volume:/var/cypetulip/
     ports:
       - 80:80
     depends_on:
@@ -36,7 +35,9 @@ services:
     image: redis
     ports:
       - "6379:6379"
-  celery:
+    volumes:
+      - ./redis-volume:/data
+  celery-beat:
     build:
       context: .
       dockerfile: ./packaging/cypetulip/Dockerfile
@@ -48,18 +49,24 @@ services:
     depends_on:
       - web
       - redis
-  celery-beat:
+  celery-worker:
     build:
       context: .
       dockerfile: ./packaging/cypetulip/Dockerfile
     command: celery -A home worker -l INFO
     volumes:
       - .:/opt/cypetulip
+      - media_volume:/var/cypetulip/
     env_file:
       - ./packaging/cypetulip/.env.cypetulip.prod
     depends_on:
       - web
       - redis
+  flower:
+    image: mher/flower
+    env_file:
+      - ./packaging/cypetulip/.env.cypetulip.prod
+    ports:
+      - 8888:8888
 volumes:
-  static_volume:
   media_volume:

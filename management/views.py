@@ -1,5 +1,6 @@
 import csv
 import secrets
+import traceback
 from datetime import datetime
 
 from django.contrib import messages
@@ -23,6 +24,7 @@ from billing.views import GeneratePDFFile
 from cms.models import Page, Section
 from home import settings
 from management.filters import OrderDetailFilter, DiscountFilter
+from management.flower import FlowerView
 from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm, ProductForm, \
     ContactUserForm, ContactUserIncludingPasswordForm, ContactUserUpdatePasswordForm, MergeAccountsForm, ClearCacheForm, \
     CustomerImportForm
@@ -580,11 +582,13 @@ class OrderAcceptInvoiceView(View, EmailMixin):
             messages.success(request, _("Invoice sent"))
             return redirect(request.META.get('HTTP_REFERER'))
         except Exception as e:
+            traceback.print_last()
             messages.error(request, _("Something went wrong"))
             return redirect(request.META.get('HTTP_REFERER'))
 
     def send_invoice(self, _order, ):
         if not _order.bill_number:
+            _order.date_bill = datetime.now()
             _order.bill_number = (OrderDetail.objects.filter(bill_number__isnull=False).order_by(
                 'bill_number').last().bill_number + 1) \
                 if OrderDetail.objects.filter(bill_number__isnull=False).exists() else 1
@@ -600,7 +604,7 @@ class OrderAcceptInvoiceView(View, EmailMixin):
                                                                                      'order_detail':_order,
                                                                                      'files': {_(
                                                                                          'Invoice') + "_" + _order.unique_bill_nr() +
-                                                                                               ".pdf": pdf.getvalue()},
+                                                                                               ".pdf": _order.bill_file},
                                                                                      'host': self.request.META[
                                                                                          'HTTP_HOST']},
                        _order.contact.billing_mail)
@@ -1269,3 +1273,23 @@ class CustomerImportView(LoginRequiredMixin, FormView):
         if len(errors)>0:
             messages.error(self.request, ", ".join(errors))
         return super(CustomerImportView, self).form_valid(form)
+
+
+class CommmunicationView(TemplateView, FlowerView):
+    template_name = 'communication-log.html'
+    paginate_by = 20
+
+    # todo: UI, show everything and contact, order from db
+    # todo: detail views with buttons
+    # todo: results
+    # todo: replace flower with direct api calls
+    def get_context_data(self, **kwargs):
+        page = int(self.request.GET['page']) if 'page' in self.request.GET else 0
+        tasks = self.get_tasks(page, self.paginate_by)
+        tasks_enhanced = [{**task.to_dict(),**{'order': task.get_args()}} for task in tasks]
+        return {**{
+            "tasks": tasks,
+            "previous_page": page -1 if page > 0 else 0,
+            "curr_page": page,
+            "next_page": page +1 if len(tasks) > 0 and len(tasks)>=self.paginate_by else page,
+        },**super(CommmunicationView, self).get_context_data(**kwargs)}

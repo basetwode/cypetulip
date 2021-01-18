@@ -33,6 +33,7 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
+FLOWER_URL = os.environ.get("FLOWER_URL", "flower://flower:5555/0")
 
 CELERY_BEAT_SCHEDULE = {
     "clean_sessions": {
