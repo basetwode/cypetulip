@@ -54,14 +54,14 @@ class EmailMixin:
             use_tls=settings.EMAIL_USE_TLS
         )
 
-    def send_mail(self, receiver_user, subject, content, context):
-        mail_thread = EmailThread(receiver_user, content, subject, context, self.get_template(), self.connection())
+    def send_mail(self, receiver_user, subject, content, context, email_to=None):
+        mail_thread = EmailThread(receiver_user, content, subject, context, self.get_template(), self.connection(), email_to)
         mail_thread.create_mail()
         mail_thread.start()
 
 
 class EmailThread(threading.Thread):
-    def __init__(self, receiver_user, content, subject, context, email_template, connection):
+    def __init__(self, receiver_user, content, subject, context, email_template, connection, email_to=None):
         super(EmailThread, self).__init__()
         self.subject = subject
         self.context = context
@@ -70,6 +70,7 @@ class EmailThread(threading.Thread):
         self.receiver_user = receiver_user
         self.connection = connection
         self.email = None
+        self.email_to = email_to
 
     def create_mail(self):
         result = None
@@ -89,6 +90,9 @@ class EmailThread(threading.Thread):
         email.content_subtype = 'html'
         email.attach_alternative(html_content, "text/html")
         email.to = [self.receiver_user.email]
+        if self.email_to:
+            email.to.append(self.email_to)
+
 
         logo_file = legal.logo.open("rb")
         try:

@@ -59,6 +59,7 @@ class Contact(DjangoUser):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, verbose_name=_('Gender'))
     telephone = models.CharField(max_length=40, verbose_name=_('Telephone'))
     language = models.CharField(max_length=2, default='en', verbose_name=_('Language'))
+    billing_mail = models.EmailField(default=None, blank=True, null=True)
 
     def __str__(self):
         return str(self.company) + ' - ' + self.last_name + ' ' + self.first_name + f" ({self.username})"

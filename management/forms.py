@@ -25,7 +25,7 @@ class ContactUserForm(ModelForm):
 
     class Meta:
         model = Contact
-        fields = ['email','first_name','last_name','title','gender','telephone','language',
+        fields = ['email','first_name','last_name','title','gender','telephone','language','billing_mail',
                   'is_client_supervisor']
 
     def clean(self):

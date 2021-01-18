@@ -602,7 +602,8 @@ class OrderAcceptInvoiceView(View, EmailMixin):
                                                                                          'Invoice') + "_" + _order.unique_bill_nr() +
                                                                                                ".pdf": pdf.getvalue()},
                                                                                      'host': self.request.META[
-                                                                                         'HTTP_HOST']})
+                                                                                         'HTTP_HOST']},
+                       _order.contact.billing_mail)
 
 
 class ShipmentOverviewView(LoginRequiredMixin, ListView):
