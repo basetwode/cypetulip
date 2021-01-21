@@ -130,36 +130,32 @@
 </nav>
 <div class="bg-white shadow-sm d-block d-sm-none">
     <nav class="nav nav-underline" aria-label="Secondary navigation">
-        <ul class="navbar-nav">
-            {% for page in sites_nav %}
-                {% if page.page_id == 'products' %}
-                    <li class="nav-item dropdown">
-                        <a role="button" class="btn"
-                           href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}
-                               /">{% endif %}
-                           {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
-                        <a class="btn dropdown-toggle dropdown-toggle-split" href="#" id="productCategories"
-                           role="button"
-                           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="caret"></span>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="productCategories">
-                            {% for category in cms_categories %}
-                                <a class="dropdown-item"
-                                   href="{% url 'shop:products' category.path %}">{{ category.name }}</a>
-                            {% endfor %}
-                        </div>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}
-                               /">{% endif %}
-                           {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+        {% for page in sites_nav %}
+            {% if page.page_id == 'products' %}
+                <div class="nav-item dropdown">
+                    <a role="button" class="btn"
+                       href="{% if page.link %}{{ page.link }}{% else %}/cms/{{ page.page_name }}/{% endif %}">
+                        {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
+                    <a class="btn dropdown-toggle dropdown-toggle-split" href="#" id="productCategories"
+                       role="button"
+                       data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="productCategories">
+                        {% for category in cms_categories %}
+                            <li><a class="dropdown-item"
+                                   href="{% url 'shop:products' category.path %}">{{ category.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <div class="nav-item">
+                    <a class="btn"
+                       href="{% if page.link %}{{ page.link }}{% else %}/cms/{{ page.page_name }}/{% endif %}">
+                        {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
+                </div>
+            {% endif %}
+        {% endfor %}
     </nav>
 </div>
 
