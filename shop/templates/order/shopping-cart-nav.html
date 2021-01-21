@@ -1,28 +1,28 @@
 {% load static %}
 {% load i18n %}
 {% load fb_versions %}
-<a href="#shopping-cart" class="dropdown-toggle nav-link"
-   data-target="#shopping-cart" data-toggle="dropdown" role="button"
+<a href="#shopping-cart" class="dropdown-toggle dropdown-toggle-split"
+   data-bs-target="#shopping-cart" data-bs-toggle="dropdown" role="button"
    aria-haspopup="true"
    aria-expanded="false"><i class="fa fa-shopping-cart"></i><span
-        class="ml-1 badge badge-dark">{{ open_orders | length }}</span>
+        class="ms-1 badge bg-dark">{{ open_orders | length }}</span>
     <span class="caret"></span>
 </a>
-<div class="dropdown-menu dropdown-menu-right padding-1rem" id="shoppingcart">
-    <div class="dropdown-header" style="min-height: 30px; width: 450px;">
+<div class="dropdown-menu dropdown-menu-end" id="shoppingcart">
+    <div class="dropdown-header">
         <div class="row">
             <a href="{% url 'shop:shopping_cart' %}"
                class="col-3 btn btn-secondary btn-sm text-align-right"><i class="fa fa-shopping-cart"></i></a>
-            <strong class="col-3 text-right my-auto">{% trans 'Total: ' %}</strong>
-            <span class="col-5 text-right my-auto">{{ total_cart | floatformat }} &euro;</span>
+            <strong class="col-5 col-md-3 text-right my-auto me-auto">{% trans 'Total: ' %}</strong>
+            <span class="col-4 col-md-5 text-right my-auto me-auto">{{ total_cart | floatformat }} &euro;</span>
         </div>
 
     </div>
 
     {% for order in open_orders %}
-        <div class="dropdown-divider hidden-sm"></div>
-        <div class="dropdown-item hidden-sm">
-            <div class="row" style="min-height: 30px; width: 450px;">
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item">
+            <div class="row m-auto">
                 <div class="col-4">
                     <div class="col-8">
                         {% if order.product.product.product_picture %}
@@ -45,9 +45,6 @@
 
     {% endfor %}
     <div class="dropdown-divider"></div>
-    <div class="row" style="padding: 0.25rem 0.5rem 0rem 2.5rem">
-
-
-    </div>
+    <div class="row" style="padding: 0.25rem 0.5rem 0rem 2.5rem"></div>
 
 </div>

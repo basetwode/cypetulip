@@ -1,3 +1,4 @@
+from django.db.models import Count
 from rest_framework import routers, viewsets, serializers
 from rest_framework.permissions import DjangoModelPermissions, IsAdminUser
 
@@ -7,7 +8,7 @@ from shop.models import Product, ProductCategory, ProductAttributeType, ProductA
     SelectOrderItem, FileOrderItem, Order, OrderState
 from shop.rest import AddressViewSet, GuestViewSet, ContactViewSet, DeliveryViewSet, OrderViewSet, OrderItemViewSet, \
     CheckboxOrderItemViewSet, NumberOrderItemViewSet, SelectOrderItemViewSet, FileOrderItemViewSet, ApplyVoucherViewSet, \
-    ContactSerializer, AddressSerializer, OrderItemDeserializer
+    ContactSerializer, AddressSerializer
 from shop.utils import create_hash
 
 
@@ -52,27 +53,24 @@ class ProductSubItemSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = ProductImage
         fields = '__all__'
 
 
 class CompanySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Company
         fields = '__all__'
 
 
 class OrderSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Order
         fields = '__all__'
 
-class OrderDetailSerializer(serializers.ModelSerializer):
 
+class OrderDetailSerializer(serializers.ModelSerializer):
     total = serializers.ReadOnlyField()
     total_wt = serializers.ReadOnlyField()
 
@@ -82,10 +80,9 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-
     total_wt = serializers.ReadOnlyField()
-    period_of_performance_start = serializers.DateField(input_formats=['%Y-%m-%d',],required=False )
-    period_of_performance_end = serializers.DateField(input_formats=['%Y-%m-%d',],required=False)
+    period_of_performance_start = serializers.DateField(input_formats=['%Y-%m-%d', ], required=False)
+    period_of_performance_end = serializers.DateField(input_formats=['%Y-%m-%d', ], required=False)
 
     class Meta:
         model = OrderItem
@@ -93,28 +90,24 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class FileOrderItemSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = FileOrderItem
         fields = '__all__'
 
 
 class SelectOrderItemSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = SelectOrderItem
         fields = '__all__'
 
 
 class NumberOrderItemSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = NumberOrderItem
         fields = '__all__'
 
 
 class CheckboxOrderItemSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = CheckBoxOrderItem
         fields = '__all__'
@@ -129,24 +122,31 @@ class CheckboxOrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderStateSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = OrderState
         fields = '__all__'
 
 
 class PaymentDetailSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = PaymentDetail
         fields = '__all__'
 
 
 class PaymentMethodSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = PaymentMethod
         fields = '__all__'
+
+
+class AccountingOrderDetailSerializer(serializers.ModelSerializer):
+    counted_orders = serializers.JSONField()
+    date_bill__month = serializers.JSONField()
+
+    class Meta:
+        model = OrderDetail
+        fields = ['counted_orders', 'date_bill__month']
+
 
 ###############################################################
 
@@ -190,7 +190,7 @@ class AddressAdmViewSet(viewsets.ModelViewSet):
         if 'contactId' in self.kwargs:
             contact = Contact.objects.get(id=self.kwargs['contactId'])
             return Address.objects.filter(contact__in=contact.company.contact_set.all())
-        else :
+        else:
             return super(AddressAdmViewSet, self).get_queryset()
 
 
@@ -282,7 +282,7 @@ class PaymentDetailAdmViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         payment_details = super(PaymentDetailAdmViewSet, self).perform_create(serializer)
-        payment = Payment(is_paid=False, details=serializer.instance,token=create_hash())
+        payment = Payment(is_paid=False, details=serializer.instance, token=create_hash())
         payment.save()
         return payment_details
 
@@ -291,6 +291,13 @@ class PaymentMethodAdmViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
     queryset = PaymentMethod.objects.all()
     serializer_class = PaymentMethodSerializer
+
+
+class AccountingOrderDetailPerYearViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = OrderDetail.objects.values('date_bill__month') \
+        .annotate(counted_orders=Count('date_bill__month'))
+    serializer_class = AccountingOrderDetailSerializer
 
 
 router = routers.DefaultRouter()
@@ -320,9 +327,10 @@ router.register(r'deliveries', DeliveryViewSet)
 router.register(r'order', OrderViewSet)
 router.register(r'voucher', ApplyVoucherViewSet)
 router.register(r'orderitem', OrderItemViewSet)
-router.register(r'fileorderitem',FileOrderItemViewSet)
-router.register(r'selectorderitem',SelectOrderItemViewSet)
-router.register(r'numberorderitem',NumberOrderItemViewSet)
-router.register(r'checkboxorderitem',CheckboxOrderItemViewSet)
+router.register(r'fileorderitem', FileOrderItemViewSet)
+router.register(r'selectorderitem', SelectOrderItemViewSet)
+router.register(r'numberorderitem', NumberOrderItemViewSet)
+router.register(r'checkboxorderitem', CheckboxOrderItemViewSet)
 router.register(r'productimage', ProductImageViewSet)
 router.register(r'product/(?P<productId>[0-9]*)/productimage', ProductImageViewSetForProduct)
+router.register(r'accounting/orders/(?P<year>[0-9]{4})', AccountingOrderDetailPerYearViewSet)

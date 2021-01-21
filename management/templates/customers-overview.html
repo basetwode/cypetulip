@@ -59,7 +59,9 @@
                         <td>
                             {% include 'delete-modal.html' with id=contact.company.id url='company_delete' url_param='id' %}
                             <div class="dropdown show">
-                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
+                                   id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false">
                                     {% trans 'Actions' %}
                                 </a>
 
@@ -77,9 +79,9 @@
                                     <a class="dropdown-item"
                                        href="{% url 'contact_create' contact.company.id contact.id %}">{% trans 'Delete Contact' %}</a>
 
-                                    <button class="dropdown-item"  data-toggle="modal"
-                                            data-target="#delete-modal-{{ contact.company.id}}"
-                                       >{% trans 'Delete Company' %}</button>
+                                    <button class="dropdown-item" data-bs-toggle="modal"
+                                            data-bs-target="#delete-modal-{{ contact.company.id }}"
+                                    >{% trans 'Delete Company' %}</button>
 
 
                                 </div>

@@ -88,12 +88,12 @@
 
                                         {% if offer.order_set.count > 0 %}
                                             <h4>{% trans 'Orders' %}: </h4>
-                                            <div class="row pl-3">
+                                            <div class="row ps-3">
                                                 {% for order in offer.order_set.all %}
 
                                                     <a href="{% url 'management_detail_order' order.order_hash %}"
                                                        class=" list-group-item list-group-item-action">
-                                                        <div class="pl-4 col-md-12">
+                                                        <div class="ps-4 col-md-12">
                                                             {% trans 'Order' %}:
                                                             {{ order.orderdetail_set.first.unique_nr }}
                                                         </div>
@@ -103,11 +103,12 @@
                                         {% endif %}
                                     </div>
                                     <div class="card-footer">
-                                        <a href="{% url 'create_order' '' %}?product={{offer.product.id}}&contact={{offer.contact.id}}&ior={{ offer.id }}"
-                                           class="btn float-right btn-primary">{% trans 'Create order' %}</a>
-                                        <form method="post" action="{% url 'individualoffer_delete' offer.id  %}">
+                                        <a href="{% url 'create_order' '' %}?product={{ offer.product.id }}&contact={{ offer.contact.id }}&ior={{ offer.id }}"
+                                           class="btn float-end btn-primary">{% trans 'Create order' %}</a>
+                                        <form method="post" action="{% url 'individualoffer_delete' offer.id %}">
                                             {% csrf_token %}
-                                            <input type="submit" class="btn-danger btn" value="{% trans 'Delete' %}"><br>
+                                            <input type="submit" class="btn-danger btn"
+                                                   value="{% trans 'Delete' %}"><br>
                                         </form>
                                     </div>
                                 </div>

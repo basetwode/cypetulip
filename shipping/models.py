@@ -55,7 +55,7 @@ class Package(models.Model):
 class Shipment(models.Model):
     order = models.ForeignKey(OrderDetail, on_delete=models.SET_NULL, null=True, blank=True, )
     date_shipped = models.DateTimeField(auto_now_add=True)
-    order_items_shipped = models.ManyToManyField(OrderItem, null=True, blank=True)
+    order_items_shipped = models.ManyToManyField(OrderItem, blank=True)
 
     class Meta:
         verbose_name = _('Shipment')

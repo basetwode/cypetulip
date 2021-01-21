@@ -20,19 +20,22 @@
                     <h4 class="h-bold">{% trans "Menu" %}</h4>
                 </div>
                 <div class="card-body">
-                    <div class="card-title h4">{% trans 'Filter' %}</div>
-                    <form action="" method="get">
+                    {% if filter.size %}
+                        <div class="card-title h4">{% trans 'Filter' %}</div>
+                        <form action="" method="get">
 
-                        {% bootstrap_form filter.form %}
-                        <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
+                            {% bootstrap_form filter.form %}
+                            <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
 
-                    </form>
+                        </form>
+                    {% endif %}
+
                     <a href="{% url 'filesubitem_create' '' %}"
                        class="btn btn-fw btn-primary">{% trans 'Add Filesubitem' %}</a>
                     <a href="{% url 'checkboxsubitem_create' '' %}"
                        class="btn btn-fw btn-primary">{% trans 'Add Checkboxsubitem' %}</a>
                     <a href="{% url 'numbersubitem_create' '' %}"
-                      class="btn btn-fw btn-primary">{% trans 'Add NumbersubItem' %}</a>
+                       class="btn btn-fw btn-primary">{% trans 'Add NumbersubItem' %}</a>
                     <a href="{% url 'selectsubitem_create' '' %}"
                        class="btn btn-fw btn-primary">{% trans 'Add SelectsubItem' %}</a>
                     <hr>
@@ -95,17 +98,17 @@
                                         {% elif subitem.numbersubitem %}
                                             href="{% url 'numbersubitem_create' subitem.numbersubitem.id %}"
                                         {% elif subitem.selectsubitem %}
-                                            href="{% url 'selectsubitem_create' subitem.selectsubitem.id %}"
+                                   href="{% url 'selectsubitem_create' subitem.selectsubitem.id %}"
 
                                         {% endif %}
 
                                 >{% trans 'Edit' %}</a>
                                 {% if subitem.selectsubitem %}
                                     <a class="btn btn-outline-dark"
-                                       href="{% url 'selectitem_create' subitem.id ''%}" >{% trans 'Select Items' %}</a>
+                                       href="{% url 'selectitem_create' subitem.id '' %}">{% trans 'Select Items' %}</a>
                                 {% endif %}
-                                <button class="btn btn-outline-dark" data-toggle="modal"
-                                        data-target="#delete-modal-{{ subitem.id }}">{% trans 'Delete' %}</button>
+                                <button class="btn btn-outline-dark" data-bs-toggle="modal"
+                                        data-bs-target="#delete-modal-{{ subitem.id }}">{% trans 'Delete' %}</button>
                                 {% include 'delete-modal.html' with id=subitem.id url='subitem_delete' url_param='subitem_delete_id' %}
 
                             </div>

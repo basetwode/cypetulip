@@ -37,7 +37,7 @@
                     <h2>{{ page_title }}</h2>
                 </div>
                 {% if object_list.count == 0 %}
-                    <span class="pt-3 pl-3 warning">{% trans 'Please add at least one item to proceed' %}</span>
+                    <span class="pt-3 ps-3 warning">{% trans 'Please add at least one item to proceed' %}</span>
                 {% endif %}
                 {% if object_list %}
                     <div class="card-body">
@@ -79,21 +79,21 @@
                     </div>
                     <div class="card-footer">
                         <a href="{{ return_url }}"
-                           class="btn btn-primary pr-2">{% trans 'Back' %}</a>
+                           class="btn btn-primary pe-2">{% trans 'Back' %}</a>
                         {% if next_url %}
-                            <input class="float-right btn btn-warning" type="submit" value="{% trans 'Save' %}">
+                            <input class="float-end btn btn-warning" type="submit" value="{% trans 'Save' %}">
                             <a href="{{ next_url }}"
-                               class="btn float-right btn-primary mr-1
+                               class="btn float-end btn-primary me-1
                             {% if object_list.count == 0 or requires_selection_on_next %}
                             disabled
                             {% endif %}">{% trans 'Continue' %}</a>
 
                         {% else %}
-                            <input class="float-right btn btn-primary" type="submit" value="{% trans 'Continue' %}">
+                            <input class="float-end btn btn-primary" type="submit" value="{% trans 'Continue' %}">
                         {% endif %}
 
                         {% if requires_selection_on_next %}
-                            <p class="float-right pr-2">
+                            <p class="float-end pe-2">
                                 {% trans 'You need to select an item to continue' %}</p>
                         {% endif %}
                     </div>

@@ -101,7 +101,7 @@
                         {% for sub_item in order.orderitem_set.all %}
                             <tr id="{{ order.id }}-{{ sub_item.id }}" style="border-top: none; background-color: white">
                                 <td colspan="3">
-                                    <div class="row pl-3">
+                                    <div class="row ps-3">
 
                                         <div class="col-6">
                                             <span>{{ sub_item.product.name }}</span>
@@ -245,7 +245,8 @@
                                 <div class="modal-header">
                                     <h5 class="modal-title"
                                         id="add-account-modal-title">{% trans 'Add address details' %}</h5>
-                                    <button type="button" ref="modalClose" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button type="button" ref="modalClose" class="close" data-bs-dismiss="modal"
+                                            aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -362,7 +363,7 @@
                                         * {% trans 'Required fields' %}
                                     </div>
                                     <button type="button" class="btn btn-secondary"
-                                            data-dismiss="modal">{% trans 'Close' %}</button>
+                                            data-bs-dismiss="modal">{% trans 'Close' %}</button>
                                     <button type="button" v-on:click="addAccount"
                                             class="btn btn-primary">{% trans 'Add' %}</button>
                                 </div>
@@ -383,21 +384,21 @@
                     </div>
                     <div class="accordion">
 
-                        <div class="btn btn-outline-dark mb-1 ml-0" data-toggle="modal" type="button"
-                             data-target="#add-modal">{% trans 'Add Address' %}</div>
+                        <div class="btn btn-outline-dark mb-1 ms-0" data-bs-toggle="modal" type="button"
+                             data-bs-target="#add-modal">{% trans 'Add Address' %}</div>
                         <h4 class="pt-2">{% trans 'Select shipment address' %}</h4>
                         <div v-for="entry in addresses">
                             <div class="card">
                                 <div class="card-header" :id="`heading${entry.name}`">
                                     <h5 class="mb-0">
                                         <input :id="`input${entry.id}`" type="radio"
-                                               name="shipment-address" data-toggle="collapse"
-                                               :data-target="`#body${entry.id}`"
+                                               name="shipment-address" data-bs-toggle="collapse"
+                                               :data-bs-target="`#body${entry.id}`"
                                                aria-expanded="false" :aria-controls="`#body${entry.name}`"
                                                v-model="shipment"
                                                v-bind:value="entry.id">
                                         <label :for="`input${entry.id}`"
-                                               data-toggle="collapse" :data-target="`#body${entry.id}`">
+                                               data-bs-toggle="collapse" :data-bs-target="`#body${entry.id}`">
                                             <i class="fas fa-truck"></i>
                                             [[ entry.name ]]</label>
                                     </h5>
@@ -420,13 +421,13 @@
                                 <div class="card-header" :id="`heading-bill${entry.name}`">
                                     <h5 class="mb-0">
                                         <input :id="`input-bill${entry.id}`" type="radio"
-                                               name="bill-address" data-toggle="collapse"
-                                               :data-target="`#body-bill${entry.id}`"
+                                               name="bill-address" data-bs-toggle="collapse"
+                                               :data-bs-target="`#body-bill${entry.id}`"
                                                aria-expanded="false" :aria-controls="`#body-bill${entry.name}`"
                                                v-model="billing"
                                                v-bind:value="entry.id">
                                         <label :for="`input-bill${entry.id}`"
-                                               data-toggle="collapse" :data-target="`#body-bill${entry.id}`">
+                                               data-bs-toggle="collapse" :data-bs-target="`#body-bill${entry.id}`">
                                             <i class="fas fa-truck"></i>
                                             [[ entry.name ]]</label>
                                     </h5>
@@ -448,12 +449,12 @@
 
                     <div class="row pt-3 pb-2">
                         <div class="col">
-                            <a href="{% url 'shop:shopping_cart' %}" class="btn btn-warning ml-0"><i
+                            <a href="{% url 'shop:shopping_cart' %}" class="btn btn-warning ms-0"><i
                                     class="fa fa-angle-left"></i> {% trans 'Shoppingcart' %}</a>
                         </div>
                         <div class="col">
                             <a v-on:click="submitDelivery"
-                               class="btn btn-success float-right">{% trans 'Payment' %} <i
+                               class="btn btn-success float-end">{% trans 'Payment' %} <i
                                     class="fa fa-angle-right"></i></a>
                         </div>
                     </div>

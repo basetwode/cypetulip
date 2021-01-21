@@ -13,23 +13,24 @@
 {% block body %}
 
     {%  if request|ismobile %}
-    <div class="modal fade modal-fullscreen" id="filterModal"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" style="height: 100%; max-width: none; width: 100vw; margin:0" role="document">
-            <div class="modal-content" style="height: 100%;">
+        <div class="modal fade modal-fullscreen" id="filterModal" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" style="height: 100%; max-width: none; width: 100vw; margin:0" role="document">
+                <div class="modal-content" style="height: 100%;">
 
 
-                <div class="modal-body">
-                    <span><a href="#"  data-dismiss="modal"> <i
+                    <div class="modal-body">
+                    <span><a href="#" data-bs-dismiss="modal"> <i
                             class="fa fa-arrow-left" style="font-size: 1.4rem"></i> Filter</a></span><br>
-                    {% include 'attributes_filter_mobile.html'  with cssclass="no-bg" %}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        {% include 'attributes_filter_mobile.html'  with cssclass="no-bg" %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     {% endif %}
     {% include 'modals/price_on_request.html' %}
     {% bootstrap_messages %}
@@ -63,11 +64,11 @@
         <div class="col-md-3 categories ">
 
             {%  if not request|ismobile %}
-            <div class="position-sticky">
+                <div class="position-sticky">
                 <div class="categories-list d-none d-sm-block" id="accordionCategories">
                     <div class="card border-0">
-                        <div class="pt-3 pl-3" data-toggle="collapse" data-target="#collapseCategories"
-                             aria-expanded="true" aria-controls="collapseCategories"  style="cursor: pointer">
+                        <div class="pt-3 ps-3" data-bs-toggle="collapse" data-bs-target="#collapseCategories"
+                             aria-expanded="true" aria-controls="collapseCategories" style="cursor: pointer">
                             <h4>
                                 {% trans 'Categories' %}
                             </h4>
@@ -113,14 +114,14 @@
                     </div>
                 {% endfor %}
             {% endif %}
-            <div class="products-list card-deck mt-3 mt-md-0">
+            <div class="products-list card-group mt-3 mt-md-0">
                 <div class="row w-100">
-                    <div class="col-10 pl-4">
+                    <div class="col-10 ps-4">
                         <h1>{% if selected_category %} {{ selected_category }}{% else %}{% trans 'Products' %}{% endif %}</h1>
                     </div>
                     <div class="col-2">
                         <div class="attributes  d-block d-sm-none categories-list">
-                            <span data-toggle="modal" data-target="#filterModal">
+                            <span data-bs-toggle="modal" data-bs-target="#filterModal">
                                 Filter
                             </span>
                         </div>
@@ -129,11 +130,11 @@
                 </div>
 
                 {% if not request|ismobile %}
-                <div class=" d-none d-sm-block">
-                    {% include 'attributes_filter_desktop.html' %}
-                </div>
+                    <div class=" d-none d-sm-block">
+                        {% include 'attributes_filter_desktop.html' %}
+                    </div>
                 {% endif %}
-                <p class="pl-3">{{ products.paginator.count }} {% trans 'items' %}</p>
+                <p class="ps-3">{{ products.paginator.count }} {% trans 'items' %}</p>
                 <div class="row w-100" style="margin: 0px">
                     {% if not products %}
                         {% trans 'Sorry, we are out of stock in this category!' %}

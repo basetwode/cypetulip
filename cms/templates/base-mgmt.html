@@ -1,7 +1,6 @@
 {% load static %}
 {% load i18n %}
 {% load bootstrap4 %}
-{% bootstrap_css %}
 {% load compress %}
 {% get_current_language as language %}
 {% spaceless %}
@@ -16,6 +15,7 @@
         <meta name="author" content="">
         <link rel="icon" href="/favicon.ico">
 
+        <!-- Custom styles for this template -->
         {% compress css inline %}
             <link rel="stylesheet" href={% static 'base.scss' %} type="text/x-scss" charset="utf-8">
             <style type="text/css">
@@ -25,13 +25,14 @@
         {% endcompress %}
 
         {% bootstrap_javascript jquery='full' %}
-        <script src="{% static 'jquery/js/jquery.fancybox.min.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'jquery/css/jquery.fancybox.min.css' %}"
-              media="screen">
-        <title>Cypetulip Management</title>
-        <script src="{% static 'cms/js/functions.js' %}"></script>
-        <script src="{% static 'cms/js/site-loader.js' %}"></script>
-
+        {% compress js file thirdparty %}
+            <script src="{% static 'cms/js/functions.js' %}"></script>
+            <script src="{% static 'cms/js/site-loader.js' %}"></script>
+            <script defer src="{% static 'fontawesome-free/js/fontawesome.min.js' %}"></script>
+            <script defer src="{% static 'fontawesome-free/js/solid.min.js' %}"></script>
+            <script src="{% static 'products.js' %}"></script>
+            <script src="{% static 'utils.js' %}"></script>
+        {% endcompress %}
         {% block head %}
         {% endblock %}
     </head>
@@ -40,7 +41,7 @@
     <!-- Modal -->
     {% include 'loading-spinner.html' %}
     <!-- Fixed navbar -->
-{% include 'navbar.html' %}
+    {% include 'navbar.html' %}
 
     <main role="main" id="main" class="mb-5 mt-3">
 
@@ -65,7 +66,7 @@
 
     <link href="{% static 'fontawesome-free/css/brands.min.css' %}" rel="stylesheet">
     <script defer src="{% static 'fontawesome-free/js/brands.min.js' %}"></script>
-    <!-- Custom styles for this template -->
+
     <link href="{% static 'css/raleway-font.css' %}" rel="preload stylesheet" as="style">
     <link href="{% static 'theme.css' %}" rel='stylesheet' type='text/css'>
     <!--[if lt IE 9]>

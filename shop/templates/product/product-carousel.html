@@ -2,7 +2,7 @@
 {% load i18n %}
 
 <div id="productcarousel-{{name}}"
-     class="products-list card-deck mt-3 mt-md-0 scrolling-wrapper-flexbox p-3 products-horizontal carousel slide"
+     class="products-list card-group mt-3 mt-md-0 scrolling-wrapper-flexbox p-3 products-horizontal carousel slide"
      data-ride="carousel" data-interval="100000">
 
     <a class="control-prev" href="#productcarousel-{{name}}" data-slide="prev"><span><i
@@ -21,10 +21,10 @@
 
             {% endif %}
         {% empty %}
-            <h5 class="pl-3 text-center w-100">{% trans 'Nothing found' %}</h5>
+            <h5 class="ps-3 text-center w-100">{% trans 'Nothing found' %}</h5>
         {% endfor %}
     </div>
-    <a class="control-next" href="#productcarousel-{{name}}" data-slide="next"><span><i
+    <a class="control-next" href="#productcarousel-{{ name }}" data-slide="next"><span><i
             class="text fas fa-chevron-right"></i>
                 </span></a>
 </div>

@@ -85,8 +85,8 @@
 
                                 <a href="{% url 'management_detail_order' order.order_hash %}"
                                    class=" list-group-item list-group-item-action">
-                                    <div class="pl-4 col-md-12">
-                                    {% trans 'Order' %}:
+                                    <div class="ps-4 col-md-12">
+                                        {% trans 'Order' %}:
                                             {{ order.orderdetail_set.first.unique_nr }}
                                     </div>
                                 </a>

@@ -76,8 +76,8 @@
                                href="{% url 'shipping:onlineshipment_show' shipment.id %}">Open</a>
                         {% endif %}
 
-                            <a href="#" class="btn btn-fw btn-outline-dark" data-toggle="modal"
-                               data-target="#delete-modal-{{ shipment.id }}">{% trans 'Delete' %}</a>
+                            <a href="#" class="btn btn-fw btn-outline-dark" data-bs-toggle="modal"
+                               data-bs-target="#delete-modal-{{ shipment.id }}">{% trans 'Delete' %}</a>
                             {% include 'delete-modal.html' with id=shipment.id order_hash=shipment.order.order.order_hash url='shipping:shipment_delete' url_param='subitem_delete_id' %}
                         </td>
                     </tr>

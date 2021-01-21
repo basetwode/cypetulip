@@ -42,14 +42,14 @@
                     <div class="card-footer">
                         <a href="{{ return_url }}" class="btn btn-primary"> {% trans 'Back' %}</a>
                         <a type="submit" @click="submitCart()"
-                           class="btn btn-primary float-right">{% trans 'Continue' %}</a>
+                           class="btn btn-primary float-end">{% trans 'Continue' %}</a>
                         <form id="next-step-form" action="{{ success_url }}" method="get">
                         </form>
                     </div>
                 </div>
             </div>
             <button type="button" class="btn btn-primary" ref="showErrorModal" style="display: none"
-                    data-toggle="modal" data-target="#errorModal">
+                    data-bs-toggle="modal" data-bs-target="#errorModal">
             </button>
             <div class="modal show modal-active" id="errorModal" tabindex="-1" aria-labelledby="errorModallLabel"
                  aria-hidden="true">
@@ -57,7 +57,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="errorModalLabel">{% trans 'We are sorry' %}</h5>
-                            <button type="button" ref="closeErrorModal" class="close" data-dismiss="modal"
+                            <button type="button" ref="closeErrorModal" class="close" data-bs-dismiss="modal"
                                     aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>

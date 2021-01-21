@@ -57,12 +57,12 @@
                         <td>{{ page.is_enabled }}</td>
                         <td>{{ page.link }}</td>
                         <td>
-                            <div>  <a class="btn btn-outline-dark"
-                                      href="{% url 'page_edit' page.id %}">{% trans 'Edit' %}</a>
+                            <div><a class="btn btn-outline-dark"
+                                    href="{% url 'page_edit' page.id %}">{% trans 'Edit' %}</a>
                                 {% if not page.is_predefined %}
 
-                                    <button class="btn btn-outline-dark" data-toggle="modal"
-                                            data-target="#delete-modal-{{ page.id }}">{% trans 'Delete' %}</button>
+                                    <button class="btn btn-outline-dark" data-bs-toggle="modal"
+                                            data-bs-target="#delete-modal-{{ page.id }}">{% trans 'Delete' %}</button>
                                     {% include 'delete-modal.html' with id=page.id url='page_delete' url_param='page_id' %}
                                 {% endif %}
                             </div>

@@ -22,276 +22,289 @@
         </h1>
     </div>
 
-    <div class="card-deck">
-        <div class="card">
-            <div class="card-header text-center">
-                <div>
-                    <i class="fas fa-shopping-basket fa-4x"></i>
-                </div>
-                <div>
-                    <strong>{% trans 'Orders' %}</strong>
-                </div>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-header text-center">
+                    <div>
+                        <i class="fas fa-shopping-basket fa-4x"></i>
+                    </div>
+                    <div>
+                        <strong>{% trans 'Orders' %}</strong>
+                    </div>
 
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">{% trans 'Orders' %}</h5>
-                <div class="btn-group">
-                    <a href="{% url 'management_all_orders' %}"
-                       class="btn btn-primary mr-1">{% trans 'All orders' %}</a> </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{% trans 'Orders' %}</h5>
                     <div class="btn-group">
-                    <a href="{% url 'create_order' %}"
-                       class="btn btn-primary mr-1 mt-1">{% trans 'Create new order' %}</a>
-                </div>
-                <hr>
-                <div class="btn-group">
-                    <a href="{% url 'all_shipments' %}"
-                       class="btn btn-primary mr-1">{% trans 'All shipments' %}</a>
-                    <a href="{% url 'individualoffers_overview' %}"
-                       class="btn btn-primary mr-1">{% trans 'All offer-requests' %}</a></div>
-                <hr>
-                <h5 class="card-title">{% trans 'Voucher' %}</h5>
-                <div class="btn-group">
-                    <a href="{% url 'discount_overview' %}"
-                       class="btn btn-primary mr-1">{% trans 'All vouchers' %}</a>
-                </div>
-                <div class="btn-group ">
-                    <a href="{% url 'percentage_discount_edit' '' %}"
-                       class="btn btn-primary mr-1">{% trans 'Add Percentage Voucher' %}</a>
-                </div>
-                <div class="btn-group mt-1">
-                    <a href="{% url 'fixed_discount_edit' '' %}"
-                       class="btn btn-primary mr-1">{% trans 'Add Fixed Amount Voucher' %}</a>
-                </div>
-                <hr>
-                <p>{% trans 'Search orders' %}</p>
-                <form action="{% url 'search_orders' %}">
-                    <div class="input-group">
-                        <input id="order-search" type="text" class="form-control"
-                               placeholder="Search for...">
-                        <div class="input-group-prepend">
-                            <button class="btn btn-primary m-0" type="button">Go!</button>
-                        </div>
+                        <a href="{% url 'management_all_orders' %}"
+                           class="btn btn-primary me-1">{% trans 'All orders' %}</a>
+                        <a href="{% url 'create_order' %}"
+                           class="btn btn-primary me-1">{% trans 'Create new order' %}</a>
                     </div>
-                </form>
-            </div>
-            <div class="card-footer">
-                <p class="card-text">{% trans 'Show orders, track or cancel them' %}</p>
+                    <hr>
+                    <div class="btn-group">
+                        <a href="{% url 'all_shipments' %}"
+                           class="btn btn-primary me-1">{% trans 'All shipments' %}</a>
+                        <a href="{% url 'individualoffers_overview' %}"
+                           class="btn btn-primary me-1">{% trans 'All offer-requests' %}</a></div>
+                    <hr>
+                    <h5 class="card-title">{% trans 'Voucher' %}</h5>
+                    <div class="btn-group">
+                        <a href="{% url 'discount_overview' %}"
+                           class="btn btn-primary me-1">{% trans 'All vouchers' %}</a>
+                        <a href="{% url 'percentage_discount_edit' '' %}"
+                           class="btn btn-primary me-1">{% trans 'Add Percentage Voucher' %}</a><br/>
+
+                    </div>
+                    <div class="btn-group"><a href="{% url 'fixed_discount_edit' '' %}"
+                                              class="btn btn-primary me-1 mt-1">{% trans 'Add Fixed Amount Voucher' %}</a>
+                    </div>
+                    <hr>
+                    <p>{% trans 'Search orders' %}</p>
+                    <form action="{% url 'search_orders' %}">
+                        <div class="input-group">
+                            <input id="order-search" type="text" class="form-control"
+                                   placeholder="Search for...">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-primary m-0" type="button">Go!</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <p class="card-text">{% trans 'Show orders, track or cancel them' %}</p>
+                </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-header text-center">
-                <div>
-                    <i class="fa fa-user-circle fa-4x"></i>
-                </div>
-                <div>
-                    <strong>{% trans 'Customers' %}</strong>
-                </div>
-            </div>
-
-            <div class="card-body">
-                <div>
-
-                    <h5 class="card-title">{% trans 'Analytics' %}</h5>
-
-                    <button type="button" class="btn btn-outline-primary">
-                        {% trans 'Active Sessions' %}: <span class="badge badge-success" style="font-size: 90%;">{{ active_sessions.count }}</span>
-                        <span class="sr-only">unread messages</span>
-                    </button>
-                     <br>
-                    {% include 'analytics-modal.html'  with objects=users%}
-                    <button type="button" class="btn btn-outline-primary mt-1 mb-1" data-toggle="modal"
-                            data-target="#analytics">
-                        {% trans 'Active Users' %}: <span class="badge badge-success" style="font-size: 90%;">{{users.count}}</span>
-                        <span class="sr-only">unread messages</span>
-                    </button>
-                </div>
-                <hr>
-                <div class="btn-group">
-                    <a href="{% url 'customers_overview' %}"
-                       class="btn btn-primary mr-1">{% trans 'Customers' %}</a>
-                    <a href="{% url 'company_create' '' %}"
-                       class="btn btn-primary mr-1">{% trans 'Add customer' %}</a>
-                </div>
-
-                <hr>
-                <p>{% trans 'Search customers' %}</p>
-                <form action="{% url 'search_orders' %}">
-                    <div class="input-group">
-                        <input id="customer-search" type="text" class="form-control"
-                               placeholder="Search for...">
-                        <div class="input-group-btn">
-                            <button class="btn btn-primary m-0" type="button">Go!</button>
-                        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header text-center">
+                    <div>
+                        <i class="fa fa-user-circle fa-4x"></i>
                     </div>
-                </form>
-            </div>
-            <div class="card-footer">
-                <p>{% trans 'Search for customers through email, username, first and last name or company name' %}</p>
+                    <div>
+                        <strong>{% trans 'Customers' %}</strong>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div>
+
+                        <h5 class="card-title">{% trans 'Analytics' %}</h5>
+
+                        <button type="button" class="btn btn-outline-primary">
+                            {% trans 'Active Sessions' %}: <span class="badge bg-success"
+                                                                 style="font-size: 90%;">{{ active_sessions.count }}</span>
+                            <span class="sr-only">unread messages</span>
+                        </button>
+                        <br>
+                        {% include 'analytics-modal.html'  with objects=users %}
+                        <button type="button" class="btn btn-outline-primary mt-1 mb-1" data-bs-toggle="modal"
+                                data-bs-target="#analytics">
+                            {% trans 'Active Users' %}: <span class="badge bg-success"
+                                                              style="font-size: 90%;">{{ users.count }}</span>
+                            <span class="sr-only">unread messages</span>
+                        </button>
+                    </div>
+                    <hr>
+                    <div class="btn-group">
+                        <a href="{% url 'customers_overview' %}"
+                           class="btn btn-primary me-1">{% trans 'Customers' %}</a>
+                        <a href="{% url 'company_create' '' %}"
+                           class="btn btn-primary me-1">{% trans 'Add customer' %}</a>
+                    </div>
+
+                    <hr>
+                    <p>{% trans 'Search customers' %}</p>
+                    <form action="{% url 'search_orders' %}">
+                        <div class="input-group">
+                            <input id="customer-search" type="text" class="form-control"
+                                   placeholder="Search for...">
+                            <div class="input-group-btn">
+                                <button class="btn btn-primary m-0" type="button">Go!</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <p>{% trans 'Search for customers through email, username, first and last name or company name' %}</p>
+                </div>
             </div>
         </div>
-        <div class="card">
-            <div style="overflow: auto" class="card-header text-center">
-                <div>
-                    <i class="fa fa-box-open fa-4x"></i>
+        <div class="col">
+            <div class="card">
+                <div style="overflow: auto" class="card-header text-center">
+                    <div>
+                        <i class="fa fa-box-open fa-4x"></i>
+                    </div>
+                    <div>
+                        <strong>{% trans 'Products and Categories' %}</strong>
+                    </div>
                 </div>
-                <div>
-                    <strong>{% trans 'Products and Categories' %}</strong>
+                <div class="card-body">
+                    <h5 class="card-title">{% trans 'Products' %}</h5>
+                    <div class="btn-group">
+                        <a href="{% url 'products_overview' %}"
+                           class="btn btn-primary me-1">{% trans 'Show' %}</a>
+                        <a href="{% url 'create_product' %}"
+                           class="btn btn-primary me-1">{% trans 'Create' %}</a>
+                    </div>
+                    <hr>
+                    <h5 class="card-title">{% trans 'Subitems' %}</h5>
+                    <div class="btn-group mt-1">
+                        <a href="{% url 'subitem_overview' %}"
+                           class="btn btn-primary me-1">{% trans 'Show all' %}</a>
+                    </div>
+                    <div class="btn-group mt-1">
+                        <a href="{% url 'filesubitem_create' '' %}"
+                           class="btn btn-primary me-1">{% trans 'Add File' %}</a>
+                        <a href="{% url 'checkboxsubitem_create' '' %}"
+                           class="btn btn-primary me-1">{% trans 'Add Checkbox' %}</a>
+                    </div>
+                    <div class="btn-group mt-1">
+                        <a href="{% url 'numbersubitem_create' '' %}"
+                           class="btn btn-primary me-1">{% trans 'Add Number' %}</a>
+                        <a href="{% url 'selectsubitem_create' '' %}"
+                           class="btn btn-primary me-1">{% trans 'Add Select' %}</a>
+                    </div>
+                    <hr>
+                    <h5 class="card-title">{% trans 'Categories' %}</h5>
+                    <div class="btn-group">
+                        <a href="{% url 'categories_overview' %}"
+                           class="btn btn-primary me-1">{% trans 'Show' %}</a>
+                        <a href="{% url 'create_category' %}"
+                           class="btn btn-primary me-1">{% trans 'Create' %}</a></div>
                 </div>
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">{% trans 'Products' %}</h5>
-                <div class="btn-group">
-                    <a href="{% url 'products_overview' %}"
-                       class="btn btn-primary mr-1">{% trans 'Show' %}</a>
-                    <a href="{% url 'create_product' %}"
-                       class="btn btn-primary mr-1">{% trans 'Create' %}</a>
+                <div class="card-footer">
+                    <p>{% trans 'Add Products and all of the possible sub item types' %}</p>
                 </div>
-                <hr>
-                <h5 class="card-title">{% trans 'Subitems' %}</h5>
-                <div class="btn-group mt-1">
-                    <a href="{% url 'subitem_overview' %}"
-                       class="btn btn-primary mr-1">{% trans 'Show all' %}</a>
-                </div>
-                <div class="btn-group mt-1">
-                    <a href="{% url 'filesubitem_create' '' %}"
-                       class="btn btn-primary mr-1">{% trans 'Add File' %}</a>
-                    <a href="{% url 'checkboxsubitem_create' '' %}"
-                       class="btn btn-primary mr-1">{% trans 'Add Checkbox' %}</a>
-                </div>
-                <div class="btn-group mt-1">
-                    <a href="{% url 'numbersubitem_create' '' %}"
-                       class="btn btn-primary mr-1">{% trans 'Add Number' %}</a>
-                    <a href="{% url 'selectsubitem_create' '' %}"
-                       class="btn btn-primary mr-1">{% trans 'Add Select' %}</a>
-                </div>
-                <hr>
-                <h5 class="card-title">{% trans 'Categories' %}</h5>
-                <div class="btn-group">
-                    <a href="{% url 'categories_overview' %}"
-                       class="btn btn-primary mr-1">{% trans 'Show' %}</a>
-                    <a href="{% url 'create_category' %}"
-                       class="btn btn-primary mr-1">{% trans 'Create' %}</a></div>
-            </div>
-            <div class="card-footer">
-                <p>{% trans 'Add Products and all of the possible sub item types' %}</p>
             </div>
         </div>
     </div>
     <br>
-    <div class="card-deck">
-        <div class="card">
-            <div class="card-header text-center">
-                <div>
-                    <i class="fa fa-cog fa-4x"></i>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-header text-center">
+                    <div>
+                        <i class="fa fa-cog fa-4x"></i>
+                    </div>
+                    <div><strong>{% trans 'Settings' %}</strong></div>
                 </div>
-                <div><strong>{% trans 'Settings' %}</strong></div>
-            </div>
 
-            <div class="card-body">
+                <div class="card-body">
 
-                <div class="card-text">
-                    <div class="btn-group">
-                        <a href="{% url 'employee_overview' %}"
-                           class="btn btn-primary mr-1">{% trans 'Staff' %}</a>
-                        <a href="{% url 'shop:all_orders' %}"
-                           class="btn btn-primary mr-1">{% trans 'permissions' %}</a>
-                    </div>
-                    <hr>
-                    <div class="btn-group">
-                        <a href="{% url 'legal_settings_details'  1 %}"
-                           class="btn btn-primary mr-1">{% trans 'Legal Settings' %}</a>
-                    </div>
-                    <hr>
-                    <div class="btn-group">
-                        <a href="{% url 'mail_settings_details' 1 %}"
-                           class="btn btn-primary mr-1">{% trans 'mail' %}</a>
-                        <a href="{% url 'ldap_settings_details'  1 %}"
-                           class="btn btn-primary mr-1">{% trans 'ldap' %}</a>
-                        <a href="{% url 'shop_settings_details'  1 %}"
-                           class="btn btn-primary mr-1">{% trans 'shop' %}</a>
-                        <a href="{% url 'payment_settings_details' %}"
-                           class="btn btn-primary mr-1">{% trans 'payment' %}</a>
-                    </div>
-                    <hr>
-                    <div class="card-text w-100">{% trans 'Cache Management' %}</div>
-                    <div class="btn-group">
-                        <a href="{% url 'cache_management_view'  %}"
-                           class="btn btn-primary mr-1">{% trans 'Cache management' %}</a>
+                    <div class="card-text">
+                        <div class="btn-group">
+                            <a href="{% url 'employee_overview' %}"
+                               class="btn btn-primary me-1">{% trans 'Staff' %}</a>
+                            <a href="{% url 'shop:all_orders' %}"
+                               class="btn btn-primary me-1">{% trans 'permissions' %}</a>
+                        </div>
+                        <hr>
+                        <div class="btn-group">
+                            <a href="{% url 'legal_settings_details'  1 %}"
+                               class="btn btn-primary me-1">{% trans 'Legal Settings' %}</a>
+                        </div>
+                        <hr>
+                        <div class="btn-group">
+                            <a href="{% url 'mail_settings_details' 1 %}"
+                               class="btn btn-primary me-1">{% trans 'mail' %}</a>
+                            <a href="{% url 'ldap_settings_details'  1 %}"
+                               class="btn btn-primary me-1">{% trans 'ldap' %}</a>
+                            <a href="{% url 'shop_settings_details'  1 %}"
+                               class="btn btn-primary me-1">{% trans 'shop' %}</a>
+                            <a href="{% url 'payment_settings_details' %}"
+                               class="btn btn-primary me-1">{% trans 'payment' %}</a>
+                        </div>
+                        <hr>
+                        <div class="card-text w-100">{% trans 'Cache Management' %}</div>
+                        <div class="btn-group">
+                            <a href="{% url 'cache_management_view' %}"
+                               class="btn btn-primary me-1">{% trans 'Cache management' %}</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-footer">
-                <p>{% trans 'All shop related settings. Manage permissions, staff and products and pages' %}</p>
+                <div class="card-footer">
+                    <p>{% trans 'All shop related settings. Manage permissions, staff and products and pages' %}</p>
+                </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-header text-center">
-                <div>
-                    <i class="fas fa-laptop-medical fa-4x"></i>
+        <div class="col">
+            <div class="card">
+                <div class="card-header text-center">
+                    <div>
+                        <i class="fas fa-laptop-medical fa-4x"></i>
+                    </div>
+                    <div>
+                        <strong>{% trans 'CMS' %}</strong>
+                    </div>
                 </div>
-                <div>
-                    <strong>{% trans 'CMS' %}</strong>
+
+                <div class="card-body">
+                    <div class="card-text">{% trans 'Theme' %}</div>
+                    <a href="{% url 'css-settings' 1 %}"
+                       class="btn btn-primary me-1">{% trans 'Edit theme' %}</a>
+                    <hr>
+                    <div class="card-text">{% trans 'Pages' %}</div>
+                    <a href="{% url 'pages' %}"
+                       class="btn btn-primary me-1">{% trans 'Pages' %}</a>
+                    <a href="{% url 'create_page' %}"
+                       class="btn btn-primary">{% trans 'Add Page' %}</a>
+                    <hr>
+                    <div class="card-text">{% trans 'Sections' %}</div>
+                    <a href="{% url 'sections' %}"
+                       class="btn btn-primary me-1">{% trans 'Sections' %}</a>
+                    <a href="{% url 'create_section' %}"
+                       class="btn btn-primary">{% trans 'Add Section' %}</a>
+                    <hr>
+                    <div class="card-text">{% trans 'Header' %}</div>
+                    <a href="{% url 'headers_overview' %}"
+                       class="btn btn-primary me-1">{% trans 'Headers' %}</a>
+                    <a href="{% url 'header_create' %}"
+                       class="btn btn-primary">{% trans 'Add Header' %}</a>
+                    <hr>
+                    <div class="card-text">{% trans 'Footer' %}</div>
+                    <a href="{% url 'footers_overview' %}"
+                       class="btn btn-primary me-1">{% trans 'Footers' %}</a>
+                    <a href="{% url 'footer_create' %}"
+                       class="btn btn-primary">{% trans 'Add Footer' %}</a>
+
+
                 </div>
-            </div>
+                <div class="card-footer">
+                    <p>{% trans 'Show and edit pages' %}</p>
+                    <p>{% trans 'Show and edit Sections' %}</p>
 
-            <div class="card-body">
-                <div class="card-text">{% trans 'Theme' %}</div>
-                <a href="{% url 'css-settings' 1%}"
-                   class="btn btn-primary mr-1">{% trans 'Edit theme' %}</a>
-                <hr>
-                <div class="card-text">{% trans 'Pages' %}</div>
-                <a href="{% url 'pages' %}"
-                   class="btn btn-primary mr-1">{% trans 'Pages' %}</a>
-                <a href="{% url 'create_page' %}"
-                   class="btn btn-primary">{% trans 'Add Page' %}</a>
-                <hr>
-                <div class="card-text">{% trans 'Sections' %}</div>
-                <a href="{% url 'sections' %}"
-                   class="btn btn-primary mr-1">{% trans 'Sections' %}</a>
-                <a href="{% url 'create_section' %}"
-                   class="btn btn-primary">{% trans 'Add Section' %}</a>
-                <hr>
-                <div class="card-text">{% trans 'Header' %}</div>
-                <a href="{% url 'headers_overview' %}"
-                   class="btn btn-primary mr-1">{% trans 'Headers' %}</a>
-                <a href="{% url 'header_create' %}"
-                   class="btn btn-primary">{% trans 'Add Header' %}</a>
-                <hr>
-                <div class="card-text">{% trans 'Footer' %}</div>
-                <a href="{% url 'footers_overview' %}"
-                   class="btn btn-primary mr-1">{% trans 'Footers' %}</a>
-                <a href="{% url 'footer_create' %}"
-                   class="btn btn-primary">{% trans 'Add Footer' %}</a>
-
-
-            </div>
-            <div class="card-footer">
-                <p>{% trans 'Show and edit pages' %}</p>
-                <p>{% trans 'Show and edit Sections' %}</p>
-
+                </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-header text-center">
-                <div>
-                    <i class="fas fa-balance-scale fa-4x"></i>
+        <div class="col">
+            <div class="card">
+                <div class="card-header text-center">
+                    <div>
+                        <i class="fas fa-balance-scale fa-4x"></i>
+                    </div>
+                    <div>
+                        <strong>{% trans 'Accounting' %}</strong>
+                    </div>
                 </div>
-                <div>
-                    <strong>{% trans 'Accounting' %}</strong>
-                </div>
-            </div>
 
-            <div class="card-body">
-                <div class="card-text">
+                <div class="card-body">
+                    <div class="card-text">
 
-                    <a href="{% url 'accounting:index' %}"
-                       class="btn btn-primary">{% trans 'Open Dashboard' %}</a>
+                        <a href="{% url 'accounting:index' %}"
+                           class="btn btn-primary">{% trans 'Open Dashboard' %}</a>
+
+                    </div>
                 </div>
-            </div>
-            <div class="card-footer">
-                <p>{% trans 'Create or review accounting information' %}</p>
+                <div class="card-footer">
+                    <p>{% trans 'Create or review accounting information' %}</p>
+                </div>
             </div>
         </div>
+
 
     </div>
 

@@ -27,22 +27,23 @@
 
             </div>
         </div>
-        <div class="col-sm-12 col-md-9">
+        <div class="col-sm-12 col-md-9 mt-1 mt-md-0">
 
-                <div class="card">
-                    <div class="card-header">
+            <div class="card">
+                <div class="card-header">
 
-                        <button @click="showPreview" class="btn btn-outline-primary float-right" type="button">{% trans 'Preview' %}</button>
-                    </div>
+                    <button @click="showPreview" class="btn btn-outline-primary float-end"
+                            type="button">{% trans 'Preview' %}</button>
+                </div>
 
-                    <div class="card-body">
-                        <h4>{% trans 'Orderdetails' %}</h4>
-                        <div class="form-group row">
-                            <label class="col-md-3"  for="customerSelect">{% trans 'Select customer' %}</label>
-                            <div class="col-md-9">
-                                <input type="text" name="filter"
-                                       v-model="contactFilter"
-                                       class="form-control"
+                <div class="card-body">
+                    <h4>{% trans 'Orderdetails' %}</h4>
+                    <div class="form-group row">
+                        <label class="col-md-3" for="customerSelect">{% trans 'Select customer' %}</label>
+                        <div class="col-md-9">
+                            <input type="text" name="filter"
+                                   v-model="contactFilter"
+                                   class="form-control"
                                        placeholder="{% trans 'Filter' %}"
                                        title=""
                                        required="" id="id_filter">
@@ -160,20 +161,29 @@
                                         </td>
                                         <td>
                                             <template v-if="!item.edit">
-                                                <button  @click="deleteOrderItem(index)"  type="button" class="close " style="position: relative;">
-                                                    <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i class="fa fa-xs fa-trash"></i></span>
+                                                <button @click="deleteOrderItem(index)" type="button" class="close "
+                                                        style="position: relative;">
+                                                    <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i
+                                                            class="fa fa-xs fa-trash"></i></span>
                                                 </button>
-                                                <button @click="item.edit = 'true'" type="button" class="close " style="position: relative; right:7px; ">
-                                                    <span style="font-size: 1.3rem; color:blue" aria-hidden="true"><i class="fa fa-xs fa-edit"></i></span>
+                                                <button @click="item.edit = 'true'" type="button" class="close "
+                                                        style="position: relative; right:7px; ">
+                                                    <span style="font-size: 1.3rem; color:blue" aria-hidden="true"><i
+                                                            class="fa fa-xs fa-edit"></i></span>
                                                 </button>
-                                                <button @click="editOrderItemPeriodOfPerformance(item)" type="button" class="close " style="position: relative; right:9px; ">
-                                                    <span style="font-size: 1.3rem; color:blue" aria-hidden="true"><i class="fa fa-xs fa-business-time"></i></span>
+                                                <button @click="editOrderItemPeriodOfPerformance(item)" type="button"
+                                                        class="close " style="position: relative; right:9px; ">
+                                                    <span style="font-size: 1.3rem; color:blue" aria-hidden="true"><i
+                                                            class="fa fa-xs fa-business-time"></i></span>
                                                 </button>
-                                                <button type="button" class="close " data-toggle="dropdown" style="position: relative; right:13px; top:1px " >
-                                                    <span style="font-size: 1.3rem; color:blue"><i class="fa fa-xs fa-plus-square"></i></span>
+                                                <button type="button" class="close " data-bs-toggle="dropdown"
+                                                        style="position: relative; right:13px; top:1px ">
+                                                    <span style="font-size: 1.3rem; color:blue"><i
+                                                            class="fa fa-xs fa-plus-square"></i></span>
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                    <a @click="addOrderItem" class="dropdown-item" href="#"><span><i class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new item' %}</span></a>
+                                                    <a @click="addOrderItem" class="dropdown-item" href="#"><span><i
+                                                            class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new item' %}</span></a>
                                                     <a @click="addSubOrderItem(item)" class="dropdown-item" href="#"><span><i class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new subitem' %}</span></a>
                                                 </div>
                                             </template>
@@ -398,9 +408,9 @@
                                 <input type="submit" class="btn-danger btn " value="{% trans 'Delete' %}"><br>
                             </form>
                         </div>
-                        <div class="col-6">
-                        <a class="btn btn-primary float-right"
-                           :href="managementURL+'orders/'+selectedOrderHash">{% trans 'Continue' %}</a>
+                            <div class="col-6">
+                                <a class="btn btn-primary float-end"
+                                   :href="managementURL+'orders/'+selectedOrderHash">{% trans 'Continue' %}</a>
                     </div></div>
                     </div>
                 </div>

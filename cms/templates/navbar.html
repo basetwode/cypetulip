@@ -3,103 +3,173 @@
 {% load bootstrap4 %}
 {% get_current_language as language %}
 
-<nav class="navbar navbar-expand-sm  sticky-top">
-    <div class="container d-flex">
-        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#navbar"
-                aria-expanded="false" aria-controls="navbar">
-            <span class="navbar-toggler-icon"><i class="fa fa-bars fa-2x pt-1" style="font-size: 1.6rem"></i></span>
-        </button>
-        <a class="navbar-brand d-block d-sm-none" href="/">{{ title }}</a>
-        <div id="shopping-cart-mobile" class="cart nav-item d-block d-sm-none">
-            <a class="btn btn-secondary btn-sm" href="{% url 'shop:shopping_cart' %}"><i
-                    class="fa fa-shopping-cart"></i><span
-                    class="ml-1 badge badge-dark">{{ open_orders | length }}</span></a>
-        </div>
-        <a class="navbar-brand d-none d-sm-block" href="/">{{ title }}</a>
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="navbar-nav navbar-left">
-                {% for page in sites_nav %}
-                    {% if page.page_id == 'products' %}
-                        <li class="nav-item nav-link dropdown">
-                            <a role="button"
-                               href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}
-                                   /">{% endif %}
-                               {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
-                            <a class="dropdown-toggle" href="#" id="productCategories" role="button"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                               >
-                                <span class="caret"></span>
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="productCategories">
-                                {% for category in cms_categories %}
-                                    <a class="dropdown-item"
-                                       href="{% url 'shop:products' category.path %}">{{ category.name }}</a>
-                                {% endfor %}
-                            </div>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link"
-                               href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}
-                                   /">{% endif %}
-                               {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-            <ul class="ml-auto nav navbar-nav navbar-right ">
-                <li id="lang-dropdown" class="nav-item dropdown">
-                    <a href="#lang-dropdown" style="text-transform: uppercase" class="dropdown-toggle nav-link"
-                       data-toggle="dropdown" data-target="#lang-dropdown"
-                       role="button" aria-haspopup="true"
-                       aria-expanded="false"><img class="flag flag-{{ language }}"/> {{ language }} </a>
-                    <div class="dropdown-menu  dropdown-menu-right ">
-                        <form id="lang-form">
-                            {% csrf_token %}
-                        </form>
-                        <a class="dropdown-item" onclick="setLanguage('de')"><img class="flag flag-de"/> Deutsch</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" onclick="setLanguage('en')"><img class="flag "/> English</a>
-                    </div>
-                </li>
-                <li id="shopping-cart" class="cart nav-item dropdown d-none d-sm-block">
-                    {% include 'order/shopping-cart-nav.html' %}
-                </li>
-                {% if user.is_authenticated %}
+<nav class="navbar navbar-expand-lg d-sm-block d-none sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">{{ title }}</a>
+        <ul class="navbar-nav me-auto d-none d-sm-block ">
 
-
-                    <li id="usermenu" class="nav-item dropdown">
-                        <a href="#usermenu" style="text-transform: capitalize;"
-                           class="dropdown-toggle nav-link text-lowercase"
-                           data-toggle="dropdown"
-                           role="button" aria-haspopup="true" data-target="#usermenu"
-                           aria-expanded="false"><i class="fa fa-user"></i> {{ user.username }} <span
-                                class="caret"></span></a>
-                        <div class="dropdown-menu  dropdown-menu-right ">
-                            <span class="dropdown-header ">{{ user.first_name }} {{ user.last_name }}</span>
-                            <a class="dropdown-item" href="{% url 'shop:my_account' %}">{% trans 'My account' %}</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'shop:all_orders' %}">{% trans 'My orders' %}</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'shop:account_settings' %}">{% trans 'Settings' %}</a>
-                            {% if user.is_staff %}
-                                <div class="dropdown-divider"></div>
+            {% for page in sites_nav %}
+                {% if page.page_id == 'products' %}
+                    <li class="nav-item dropdown">
+                        <a role="button" class="btn"
+                           href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}
+                               /">{% endif %}
+                           {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
+                        <a class="btn dropdown-toggle dropdown-toggle-split" href="#" id="productCategories"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"></span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="productCategories">
+                            {% for category in cms_categories %}
                                 <a class="dropdown-item"
-                                   href="{% url 'management_index' %}">{% trans 'Management' %}</a>
-                            {% endif %}
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/shop/logout">{% trans 'Logout' %}</a>
+                                   href="{% url 'shop:products' category.path %}">{{ category.name }}</a>
+                            {% endfor %}
                         </div>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/shop/login">{% trans 'Login' %}</a>
+                        <a class="nav-link"
+                           href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}
+                               /">{% endif %}
+                           {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
                     </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <div class="navbar-nav d-flex">
+            <a class="btn btn-primary nav-item" href="/shop/cart/">
+                <i class="fa fa-shopping-cart"></i><span
+                    class="ms-1 badge bg-dark">{{ open_orders | length }}</span></a>
 
+            <div id="lang-dropdown" class="btn btn-primary nav-item dropdown">
+                <a href="#lang-dropdown" style="text-transform: uppercase; text-decoration:none;"
+                   class="dropdown-toggle dropdown-toggle-split"
+                   data-bs-toggle="dropdown" data-bs-target="#lang-dropdown"
+                   role="button" aria-haspopup="true"
+                   aria-expanded="false"> {{ language }} </a>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <form id="lang-form">
+                        {% csrf_token %}
+                    </form>
+                    <a class="dropdown-item" onclick="setLanguage('de')"> Deutsch</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" onclick="setLanguage('en')"> English</a>
+                </div>
+            </div>
+            {% if user.is_authenticated %}
+                <div id="usermenu" class="btn btn-primary nav-item dropdown">
+                    <a href="#usermenu" style="text-transform: capitalize;"
+                       class="dropdown-toggle text-lowercase"
+                       data-bs-toggle="dropdown"
+                       role="button" aria-haspopup="true" data-bs-target="#usermenu"
+                       aria-expanded="false"><i class="fa fa-user"></i><span
+                            class="caret"></span></a>
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <span class="dropdown-header ">{{ user.first_name }} {{ user.last_name }}</span>
+                        <a class="dropdown-item" href="{% url 'shop:my_account' %}">{% trans 'My account' %}</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'shop:all_orders' %}">{% trans 'My orders' %}</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'shop:account_settings' %}">{% trans 'Settings' %}</a>
+                        {% if user.is_staff %}
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item"
+                               href="{% url 'management_index' %}">{% trans 'Management' %}</a>
+                        {% endif %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/shop/logout">{% trans 'Logout' %}</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="btn btn-primary nav-item">
+                    <a href="/shop/login">{% trans 'Login' %}</a>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+</nav>
+<nav class="navbar navbar-expand-lg sticky-top navbar-dark d-block d-sm-none justify-content-end"
+     aria-label="Main navigation">
+    <div class="container">
+        <a class="navbar-brand" href="/">{{ title }}</a>
+        <a class="btn btn-primary nav-item ms-auto" href="/shop/cart/">
+            <i class="fa fa-shopping-cart"></i><span class="ms-1 badge bg-dark">{{ open_orders | length }}</span></a>
+        <button class="navbar-toggler p-0 border-0" type="button" data-bs-toggle="offcanvas"
+                aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="navbar-collapse offcanvas-collapse" id="navbarCanvas">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if user.is_authenticated %}
+                    <span class="dropdown-header ">{{ user.first_name }} {{ user.last_name }}</span>
+                    <a class="dropdown-item" href="{% url 'shop:my_account' %}">{% trans 'My account' %}</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'shop:all_orders' %}">{% trans 'My orders' %}</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'shop:account_settings' %}">{% trans 'Settings' %}</a>
+                    {% if user.is_staff %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item"
+                           href="{% url 'management_index' %}">{% trans 'Management' %}</a>
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/shop/logout">{% trans 'Logout' %}</a>
+                {% else %}
+                    <div class="btn btn-primary nav-item">
+                        <a href="/shop/login">{% trans 'Login' %}</a>
+                    </div>
                 {% endif %}
             </ul>
 
         </div>
-        <!--/.nav-collapse -->
     </div>
 </nav>
+<div class="bg-white shadow-sm d-block d-sm-none">
+    <nav class="nav nav-underline" aria-label="Secondary navigation">
+        <ul class="navbar-nav">
+            {% for page in sites_nav %}
+                {% if page.page_id == 'products' %}
+                    <li class="nav-item dropdown">
+                        <a role="button" class="btn"
+                           href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}
+                               /">{% endif %}
+                           {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
+                        <a class="btn dropdown-toggle dropdown-toggle-split" href="#" id="productCategories"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"></span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="productCategories">
+                            {% for category in cms_categories %}
+                                <a class="dropdown-item"
+                                   href="{% url 'shop:products' category.path %}">{{ category.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="{% if page.link %}{{ page.link }}">{% else %}/cms/{{ page.page_name }}
+                               /">{% endif %}
+                           {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+</div>
+
+
+<script>
+    (function () {
+        'use strict'
+
+        document.querySelector('[data-bs-toggle="offcanvas"]').addEventListener('click', function () {
+            document.querySelector('.offcanvas-collapse').classList.toggle('open')
+        })
+    })()
+</script>

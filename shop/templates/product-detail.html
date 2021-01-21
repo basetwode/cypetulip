@@ -39,16 +39,18 @@
         </div>
         <div class="col-md-4">
             {% if product.productimage_set.first %}
-            <div id="product" class="carousel slide" data-ride="carousel">
+                <div id="product" class="carousel slide" data-ride="carousel">
 
                     <!-- Indicators -->
                     <ul class="carousel-indicators">
 
                         {% for image in product.productimage_set.all %}
                             {% if forloop.first %}
-                                <li data-target="#image-{{forloop.counter}}" data-slide-to="{{ forloop.counter }}" class="active"></li>
+                                <li data-bs-target="#image-{{ forloop.counter }}" data-slide-to="{{ forloop.counter }}"
+                                    class="active"></li>
                             {% else %}
-                                <li data-target="#image-{{forloop.counter}}" data-slide-to="{{ forloop.counter }}"></li>
+                                <li data-bs-target="#image-{{ forloop.counter }}"
+                                    data-slide-to="{{ forloop.counter }}"></li>
                             {% endif %}
 
                         {% endfor %}
@@ -57,7 +59,7 @@
                     <!-- The slideshow -->
                     <div class="carousel-inner text-center">
 
-                        {% for image in product.productimage_set.all  %}
+                        {% for image in product.productimage_set.all %}
                             {% if forloop.first %}
                                 <div class="carousel-item active">
                                     <a data-fancybox rel="lightbox"
@@ -106,8 +108,8 @@
                                     </p>
                                     <p class="price">
                                         {% if product.price_on_request %}
-                                            <span data-toggle="modal" data-target="#price_on_request"
-                                              class="badge badge-pill badge-success badge-primary badge-price-on-request">{% trans 'Price on request' %}
+                                            <span data-bs-toggle="modal" data-bs-target="#price_on_request"
+                                                  class="badge rounded-pill bg-success bg-primary badge-price-on-request">{% trans 'Price on request' %}
                                                         </span>
                                         {% elif product.special_price %}
                                             <span style="text-decoration: line-through">{{ product.price_wt | floatformat:2 }} &euro;</span>
@@ -173,16 +175,16 @@
                     role="tablist">
                     <li class="nav-item  flex-sm-fill">
                         <a class="active nav-link text-uppercase font-weight-bold rounded-0"
-                           data-toggle="tab"
+                           data-bs-toggle="tab"
                            href="#description">{% trans 'Product Description' %}</a>
                     </li>
                     <li class="nav-item flex-sm-fill">
                         <a class="nav-link text-uppercase font-weight-bold rounded-0"
-                           data-toggle="tab"
+                           data-bs-toggle="tab"
                            href="#details">{% trans 'Details' %}</a></li>
                     <li class="nav-item flex-sm-fill">
                         <a class="nav-link text-uppercase font-weight-bold rounded-0"
-                           data-toggle="tab"
+                           data-bs-toggle="tab"
                            href="#technical-details">{% trans 'Technical Details' %}</a></li>
                 </ul>
                 <div class="tab-content">

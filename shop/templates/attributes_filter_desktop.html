@@ -18,7 +18,7 @@
                 <div class="flex-item dropdown" style="border: 2px solid black;">
                 <button class="btn btn-secondary-outline dropdown-toggle font-weight-bold" type="button"
                         id="dropdownMenuButton"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{ attribute_category.name }}
 
                 {% with selected|countchars:'.' as selected_items %}
@@ -27,7 +27,7 @@
             {% else %}
                 <div class="flex-item dropdown">
                 <button class="btn btn-secondary-outline dropdown-toggle" type="button" id="dropdownMenuButton"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{ attribute_category.name }}
             {% endif %}
         </button>
@@ -42,7 +42,7 @@
                         {% if not selected %}
                             ({{ instance.count }})
                         {% endif %}
-                        <i class="fa fa-check position-absolute mr-2 mt-1" style="right: 0"></i>
+                        <i class="fa fa-check position-absolute me-2 mt-1" style="right: 0"></i>
                     {% else %}
                         <button type="button" class="dropdown-item" href="#" class="link"
                                 onclick="setAttributeParam('{{ attribute_category.name }}','{{ instance.value }}')">

@@ -354,8 +354,8 @@ class IndividualOffer(models.Model):
 
 class Discount(models.Model):
     voucher_id = models.CharField(unique=True, max_length=20, default="VOUCHER")
-    eligible_products = models.ManyToManyField(Product, blank=True, null=True, verbose_name=_('Eligible products'))
-    eligible_categories = models.ManyToManyField(ProductCategory, blank=True, null=True,
+    eligible_products = models.ManyToManyField(Product, blank=True, verbose_name=_('Eligible products'))
+    eligible_categories = models.ManyToManyField(ProductCategory, blank=True,
                                                  verbose_name=_('Eligible categories'))
     valid_until_date = models.DateTimeField(blank=True, null=True)
     count = models.IntegerField(default=0)

@@ -23,8 +23,8 @@
                 <a class="text-center font-weight-bold"
                    href="/shop/product/{{ product.name }}">{{ product.name }}</a>
                 {% if product.price_on_request %}
-                    <span data-toggle="modal" data-target="#price_on_request"
-                          class="badge badge-pill badge-success badge-primary badge-price-on-request">{% trans 'Price on request' %}
+                    <span data-bs-toggle="modal" data-bs-target="#price_on_request"
+                          class="badge rounded-pill bg-success bg-primary badge-price-on-request">{% trans 'Price on request' %}
                                                         </span>
                 {% elif product.special_price %}
                     <span class="d-none d-sm-block"
@@ -36,18 +36,18 @@
                     {{ product.price_wt | floatformat:2 }} &euro;
                 {% endif %} </div>
             {% if product.special_price %}
-                <span class="badge badge-pill badge-danger badge-primary">{% trans 'Sale' %}
+                <span class="badge rounded-pill bg-danger bg-primary">{% trans 'Sale' %}
                                                         </span>
             {% endif %}
             {% if not product.price_on_request %}
-                <small class="float-right">({% trans 'incl. Tax' %})</small>{% endif %}
+                <small class="float-end">({% trans 'incl. Tax' %})</small>{% endif %}
         </div>
 
         {% if product.discount_set.count > 0 %}
             {% with product.discount_set.all.0 as voucher %}
                 {% if voucher.show_in_products %}
 
-                    <div class="card-body pb-1 pl-3">
+                    <div class="card-body pb-1 ps-3">
                         <strong style="color: #da5200"
                                 class="font-weight-bold">
                             <i class="fas fa-s fa-exclamation-circle"></i>

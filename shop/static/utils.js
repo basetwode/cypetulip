@@ -5,6 +5,7 @@ function addToCart(product) {
         data: $('#add-cart-form').serialize(),
 
         success: function (data) {
+            $('#alert-success').show();
             $('#shopping-cart').html(data);
         },
         error: function (response) {

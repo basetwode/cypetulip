@@ -64,19 +64,20 @@
                                     <div class="card-header" id="heading{{ payment_method.name }}">
                                         <h2 class="mb-0">
                                             <input id="input{{ payment_method.name }}" type="radio"
-                                                   name="method" data-toggle="collapse"
-                                                   data-target="#body{{ payment_method.name }}"
+                                                   name="method" data-bs-toggle="collapse"
+                                                   data-bs-target="#body{{ payment_method.name }}"
                                                    aria-expanded="false" aria-controls="#body{{ payment_method.name }}"
                                                    value="{{ payment_method.id }}">
-                                            <label class="pl-2" for="input{{ payment_method.name }}"
-                                                   data-toggle="collapse" data-target="#body{{ payment_method.name }}"
+                                            <label class="ps-2" for="input{{ payment_method.name }}"
+                                                   data-bs-toggle="collapse"
+                                                   data-bs-target="#body{{ payment_method.name }}"
                                             >
                                                 {% if payment_method.name == 'Bill' %}
-                                                <i class="fas fa-file-invoice"></i> {% trans 'Invoice' %}
+                                                    <i class="fas fa-file-invoice"></i> {% trans 'Invoice' %}
                                                 {% elif payment_method.name == 'Prepayment' %}
-                                                <i class="fas fa-money-check-alt"></i> {% trans 'Prepayment' %}
+                                                    <i class="fas fa-money-check-alt"></i> {% trans 'Prepayment' %}
                                                 {% else %}
-                                                <i class="fab fa-cc-{{ payment_method.name|lower }}"></i>
+                                                    <i class="fab fa-cc-{{ payment_method.name|lower }}"></i>
                                                     {{ payment_method.name }}
                                                 {% endif %}</label>
                                         </h2>
@@ -107,7 +108,7 @@
         <div class="row mb-2 justify-content-end">
             <div class="col">
                 <a onclick="submitForm('create/','payment-form')"
-                   class="btn btn-success float-right">{% trans 'Continue' %} <i
+                   class="btn btn-success float-end">{% trans 'Continue' %} <i
                         class="fa fa-angle-right"></i></a>
             </div>
         </div>

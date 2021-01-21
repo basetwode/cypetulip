@@ -20,23 +20,23 @@
 
             <tr class="font-weight-bold" style="background-color: rgba(0, 0, 0, .06);">
                 <td>
-                    <div class="row ">
-                        <div class="col-2 col-md-2">
-                            <select class="custom-select" style="max-width: 57px; min-width: 57px" required
+                    <div class="row">
+                        <div class="col-5 col-md-2">
+                            <select class="form-select" required
                                     v-model="order_item.count" @change="orderItemCountChanged(order_item)">
                                 <option v-for="index in order_item.product.product.max_items_per_order"
                                         :value="index">[[index]]
                                 </option>
                             </select>
                         </div>
-                        <div class="d-none d-sm-block col-md-2">
+                        <div class="d-none d-sm-block col-md-3">
 
                             <img v-if="order_item.product.product.product_picture"
                                  :src="order_item.product.product.product_picture"
                                  class="img-fluid img-thumbnail"/>
                             <i v-else class="fa fa-4x fa-image img-thumbnail"></i>
                         </div>
-                        <div class="col-10 col-md-7 ">
+                        <div class="col-7 col-md-7 text-break">
                             [[order_item.product.name]]
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                 <tr style="background-color: white"
                     v-for="(order_items_subproduct, index) in getOrderItemsForSubproduct(order_item, subproduct.id)">
 
-                    <td colspan="3" class="pl-4">
+                    <td colspan="3" class="ps-4">
                         <div class="row">
                             <div class="col-6">
                                 <span>[[subproduct.name]]</span>
@@ -103,7 +103,7 @@
                                         [[error]]
                                     </p>
                                 </div>
-                                <div class="w-100 pt-1 pl-2">
+                                <div class="w-100 pt-1 ps-2">
                                     <span>{% trans 'Current File: ' %} [[order_items_subproduct.fileorderitem.file_name]]</span>
                                 </div>
                             </div>

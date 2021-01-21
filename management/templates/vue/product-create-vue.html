@@ -18,8 +18,10 @@
 
         <div id="app">
 
-            <div class="form-group row"><label class="col-md-3 col-form-label" for="id_selectedAttributes">Attributes</label>
-                <div class="col-md-8"><select size="10" v-model="selectedAttributes" name="attributes" class="form-control"
+            <div class="form-group row"><label class="col-md-3 col-form-label"
+                                               for="id_selectedAttributes">Attributes</label>
+                <div class="col-md-8"><select size="10" v-model="selectedAttributes" name="attributes"
+                                              class="form-control"
                                               title="" id="id_selectedAttributes"
                                               multiple="">
                     <option v-for="option in productAttributeTypeInstances" v-bind:value="option.id">
@@ -28,7 +30,8 @@
 
                 </select></div>
                 <div class="col-md-1">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#product-attribute-create">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#product-attribute-create">
                         <i class="fa fa-plus"></i>
                     </button>
                 </div>
@@ -38,7 +41,8 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">{% trans 'Create Product Attribute' %}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
+                            <button type="button" class="close" data-bs-dismiss="modal"
+                                    aria-label="{% trans 'Close' %}">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -46,9 +50,10 @@
 
                             <div class="form-group row"><label class="col-md-3 col-form-label"
                                                                for="id_attributes">{% trans 'Attribute Type' %}</label>
-                                <div class="col-md-9"><select  v-model="selectedType" name="attributesModal" class="form-control" title=""
+                                <div class="col-md-9"><select v-model="selectedType" name="attributesModal"
+                                                              class="form-control" title=""
                                                               id="id_attributetypes"
-                                                              >
+                                >
                                     <option v-for="option in productAttributeTypes" v-bind:value="option">
                                         [[ option.name ]]
                                     </option>
@@ -79,21 +84,26 @@
 
                         </div>
                             <div v-if="selectedType" class="form-group row">
-                            <label class="offset-1 col-md-3 col-form-label"
-                                   for="id_attributes">{% trans 'Add new attribute' %}</label>
-                            <div class="col-md-7"><input type="text" v-model="newTypeInstanceName" maxlength="300" class="form-control"
-                                                         placeholder="Instance Value" title=""></div>
-                            <div class="col-md-1"><button  type="button" v-on:click="addProductAttributeTypeInstance()" class="btn btn-primary" >
-                                <i class="fa fa-plus"></i>
-                            </button></div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+                                <label class="offset-1 col-md-3 col-form-label"
+                                       for="id_attributes">{% trans 'Add new attribute' %}</label>
+                                <div class="col-md-7"><input type="text" v-model="newTypeInstanceName" maxlength="300"
+                                                             class="form-control"
+                                                             placeholder="Instance Value" title=""></div>
+                                <div class="col-md-1">
+                                    <button type="button" v-on:click="addProductAttributeTypeInstance()"
+                                            class="btn btn-primary">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
             <div class="row">
                 <div class="col-12">
                     <h3>{% trans 'Images' %}</h3>
@@ -111,20 +121,22 @@
                         <div class="col-12">
                             <div class="form-group files">
                                 <label>Upload Your File </label>
-                                <input :ref="'product-images'" id="product-images" type="file" class="form-control" multiple="">
+                                <input :ref="'product-images'" id="product-images" type="file" class="form-control"
+                                       multiple="">
                             </div>
                         </div>
                         <!--item-inner-->
-                        <button type="button" v-on:click="uploadProductImages()" class="float-right btn btn-primary">{% trans 'Upload' %}</button>
+                        <button type="button" v-on:click="uploadProductImages()"
+                                class="float-end btn btn-primary">{% trans 'Upload' %}</button>
 
                     </div>
                 </div>
             </div>
 
-        <div class="col-md-1">
-{#            {% include 'modals/product-attribute-create.html' %}#}
+            <div class="col-md-1">
+                {#            {% include 'modals/product-attribute-create.html' %}#}
+            </div>
         </div>
-    </div>
 
     <script>
         var app = new Vue({

@@ -363,11 +363,11 @@
                    class="btn btn-fw btn-warning">{% trans 'Edit order' %}</a>
                 <a href="{% url 'invoice_pdf' order.order_hash %}" target="_blank"
                    class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
-                <a class="btn btn-fw btn-secondary" data-toggle="modal" style="color: #fff"
-                   data-target="#assign-employee-modal">{% trans 'Assign' %}</a>
+                <a class="btn btn-fw btn-secondary" data-bs-toggle="modal" style="color: #fff"
+                   data-bs-target="#assign-employee-modal">{% trans 'Assign' %}</a>
                 {% include 'assign-employee.html' with employees=employees order_hash=order.order_hash %}
-                <a class="btn btn-fw btn-secondary" data-toggle="modal" style="color: #fff"
-                   data-target="#change-state-modal">{% trans 'Set State' %}</a>
+                <a class="btn btn-fw btn-secondary" data-bs-toggle="modal" style="color: #fff"
+                   data-bs-target="#change-state-modal">{% trans 'Set State' %}</a>
                 {% include 'change-state.html' with states=states order_hash=order.order_hash %}
                 {% for order_detail in order.orderdetail_set.all %}
                     <form action="{% url 'shop:detail_order_cancel_order' order.order_hash %}" method="post">
@@ -382,7 +382,8 @@
                     <button type="submit"
                             class="btn btn-fw btn-secondary">{% trans 'Send Invoice' %}</button>
                     {% for order_detail in order.orderdetail_set.all %}
-                        {% if not order_detail.bill_sent %}<small>{% trans 'Invoice has not been sent yet' %}</small>{% endif %}
+                        {% if not order_detail.bill_sent %}<small>{% trans 'Invoice has not been sent yet' %}</small>
+                        {% endif %}
                     {% endfor %}
                 </form>
                 <form action="{% url 'pay_order' order.order_hash %}" method="post">
@@ -390,9 +391,9 @@
                     <button type="submit" {% if payment.is_paid %}disabled{% endif %}
                             class="btn btn-fw btn-secondary">{% trans 'Paid' %}</button>
                 </form>
-                <button href="#" class="btn btn-fw btn-secondary" data-toggle="modal"
+                <button href="#" class="btn btn-fw btn-secondary" data-bs-toggle="modal"
                         {% if order.is_send %}{% endif %}
-                        data-target="#create-modal">{% trans 'Ship' %}</button>
+                        data-bs-target="#create-modal">{% trans 'Ship' %}</button>
                 {% include 'create-shipment.html' with order_hash=order.order_hash %}
                 <form method="post" action="{% url 'delete_order' order.order_hash %}">
                     {% csrf_token %}
@@ -451,12 +452,14 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td>{% if shipment.packageshipment %} {% trans 'Package' %}{% else %}
                                     {% trans 'Online' %}{% endif %}</td>
-                                <td>{{ shipment.date_shipped }}<br><p></p>
+                                <td>{{ shipment.date_shipped }}<br>
+                                    <p></p>
                                     <small><b>{% trans 'Shipped products: ' %}</b></small><br>
                                     {% for shipped_product in shipment.order_items_shipped.all %}
-                                        <p class="pl-3 pt-2">{{ shipped_product.product.name }}</p>
+                                        <p class="ps-3 pt-2">{{ shipped_product.product.name }}</p>
                                     {% empty %}
-                                        <p  class="pl-3 pt-2"><small>{% trans 'No products associated with this shipment' %}</small></p>
+                                        <p class="ps-3 pt-2">
+                                            <small>{% trans 'No products associated with this shipment' %}</small></p>
                                     {% endfor %}
                                 </td>
                                 <td>
@@ -482,8 +485,8 @@
                                        href="{% url 'shipping:onlineshipment_show' shipment.id %}">Open</a>
                                 {% endif %}
 
-                                    <a href="#" class="btn btn-outline-dark" data-toggle="modal"
-                                       data-target="#delete-modal-{{ shipment.id }}">{% trans 'Delete' %}</a>
+                                    <a href="#" class="btn btn-outline-dark" data-bs-toggle="modal"
+                                       data-bs-target="#delete-modal-{{ shipment.id }}">{% trans 'Delete' %}</a>
                                     {% include 'delete-modal.html' with id=shipment.id order_hash=order.order_hash url='shipping:shipment_delete' url_param='subitem_delete_id' %}
                                 </td>
                             </tr>

@@ -324,9 +324,9 @@
                                         <td>{{ shipment.date_shipped }}
                                             <small><b>{% trans 'Shipped products: ' %}</b></small><br>
                                             {% for shipped_product in shipment.order_items_shipped.all %}
-                                                <p class="pl-3 pt-2">{{ shipped_product.product.name }}</p>
+                                                <p class="ps-3 pt-2">{{ shipped_product.product.name }}</p>
                                             {% empty %}
-                                                <p class="pl-3 pt-2">
+                                                <p class="ps-3 pt-2">
                                                     <small>{% trans 'No products associated with this shipment' %}</small>
                                                 </p>
                                             {% endfor %}</td>
