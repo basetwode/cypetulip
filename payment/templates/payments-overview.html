@@ -19,27 +19,30 @@
 
     <br>
     <br>
-    <table class="table table-hover table-striped table-responsive-sm">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">{% trans 'Name' %}</th>
-            <th scope="col">{% trans 'Details' %}</th>
-            <th scope="col">{% trans 'Provider' %}</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for method in payment_methods %}
+    <div class="table-responsive-sm">
+        <table class="table table-hover table-striped">
+            <thead class="thead-dark">
             <tr>
-                <td>{{ method.id }}</td>
-                <td>{{ method.name }}</td>
-                <td>{{ method.details }}</td>
-                <td>{{ method.provider }}</td>
-
+                <th scope="col">#</th>
+                <th scope="col">{% trans 'Name' %}</th>
+                <th scope="col">{% trans 'Details' %}</th>
+                <th scope="col">{% trans 'Provider' %}</th>
             </tr>
-        {% endfor %}
-        </tbody>
+            </thead>
+            <tbody>
+            {% for method in payment_methods %}
+                <tr>
+                    <td>{{ method.id }}</td>
+                    <td>{{ method.name }}</td>
+                    <td>{{ method.details }}</td>
+                    <td>{{ method.provider }}</td>
 
-    </table>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
 
 {% endblock %}
