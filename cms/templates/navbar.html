@@ -129,27 +129,21 @@
     </div>
 </nav>
 <div class="bg-white shadow-sm d-block d-sm-none">
-    <nav class="nav nav-underline" aria-label="Secondary navigation">
+    <nav class="row flex-nowrap overflow-auto" aria-label="Secondary navigation">
         {% for page in sites_nav %}
             {% if page.page_id == 'products' %}
-                <div class="nav-item dropdown">
+                <div class="col-5 dropdown">
                     <a role="button" class="btn"
                        href="{% if page.link %}{{ page.link }}{% else %}/cms/{{ page.page_name }}/{% endif %}">
                         {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
-                    <a class="btn dropdown-toggle dropdown-toggle-split" href="#" id="productCategories"
-                       role="button"
-                       data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="btn dropdown-toggle dropdown-toggle-split" href="#"
+                       role="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent"
+                       aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="productCategories">
-                        {% for category in cms_categories %}
-                            <li><a class="dropdown-item"
-                                   href="{% url 'shop:products' category.path %}">{{ category.name }}</a></li>
-                        {% endfor %}
-                    </ul>
                 </div>
             {% else %}
-                <div class="nav-item">
+                <div class="col">
                     <a class="btn"
                        href="{% if page.link %}{{ page.link }}{% else %}/cms/{{ page.page_name }}/{% endif %}">
                         {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
@@ -157,6 +151,18 @@
             {% endif %}
         {% endfor %}
     </nav>
+</div>
+
+<div class="collapse" id="navbarToggleExternalContent">
+    <div class="container">
+        <div class="w-100 h-100 mt-0 nav-item position-absolute bg-white" style="z-index: 100"
+             aria-labelledby="productCategories">
+            {% for category in cms_categories %}
+                <div><a class="nav-link"
+                        href="{% url 'shop:products' category.path %}">{{ category.name }}</a></div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 
