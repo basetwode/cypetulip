@@ -6,6 +6,37 @@
 <head>
     <title>Title</title>
     <style type="text/css">
+        @page {
+            size: a4 portrait;
+            @frame logo_frame { /* Static Frame */
+            -pdf-frame-content: logo;
+            left: 50pt;
+            width: 512pt;
+            top: 35pt;
+            height: 100pt;
+        }
+        @frame company_frame {
+            /* Static Frame */
+        -pdf-frame-content:company;
+        right: 38pt; width: 512pt; top: 35pt; height: 100pt;
+        }
+        @frame content_frame {
+            /* Content Frame */
+        left: 50pt; width: 512pt; top: 250pt;
+        }
+        @frame customeraddress_frame {
+            /* Another static Frame */
+        -pdf-frame-content:client;
+        left: 35pt; width: 512pt; top: 135pt; height: 100pt;
+        }
+        @frame invoice_frame {
+            /* Another static Frame */
+        -pdf-frame-content:invoice;
+        right: 35pt; width: 512pt; top: 135pt; height: 100pt;
+        }
+        }
+
+
         body {
             font-weight: 200;
             font-size: 14px;
@@ -81,13 +112,12 @@
         }
 
 
-
         #client .to {
             color: #777777;
         }
 
         #client {
-            padding-left: 30px;
+            padding-left: 15px;
         }
 
         div.name {
@@ -106,6 +136,7 @@
             color: #0087C3;
             margin: 0;
         }
+
         #invoice h2 {
             color: #00577f;
             font-size: 1.1rem;
@@ -159,7 +190,7 @@
 <body>
 
 <header class="clearfix">
-    <div id="logo">
+    <div id="logo" style="top:10px; left: 10px">
         <img src="{{ invoice_settings.logo.url }}"
              alt="..."
         /></div>
@@ -192,10 +223,10 @@
                     <-DRAFT->
                 {% endif %}
             </h1>
-            <div >{% trans 'Order Nr' %} {{order_detail.unique_nr}}</div>
-            <div >{% trans 'Customer Nr' %} {{contact.customer_nr}}</div>
+            <div>{% trans 'Order Nr' %} {{ order_detail.unique_nr }}</div>
+            <div>{% trans 'Customer Nr' %} {{ contact.customer_nr }}</div>
             <div class="date">{% trans 'Invoice Date' %} {{ order_detail.date_bill|date:"d.m.Y" }}</div>
-            <div class="date">{% trans 'Due Date' %} {{order_detail.date_due|date:"d.m.Y"}}</div>
+            <div class="date">{% trans 'Due Date' %} {{ order_detail.date_due|date:"d.m.Y" }}</div>
         </div>
     </div>
     <table id="overview" border="0" cellspacing="0" cellpadding="0">
@@ -208,17 +239,19 @@
             <th style="width:30%; text-align: left" class="total">{% trans 'Total' %}</th>
         </tr>
         </thead>
-        <tbody >
+        <tbody>
         {% for item in order_items %}
             <tr style="border-top: 1px solid #004f72; padding-top: 5px">
                 <td valign="top">{{ forloop.counter }}</td>
                 <td valign="top">{{ item.product.name }}</td>
                 <td valign="top">
-                    {{ item.price|floatformat:2 }} €</td>
+                    {{ item.price|floatformat:2 }} €
+                </td>
                 <td valign="top">{{ item.count }}</td>
                 <td>{{ item.total_wt|floatformat:2 }} € <small>({% trans 'incl. VAT' %} {{ item.tax_rate }} %)</small>
                     {% if item.applied_discount %}<br>
-                        <small class="mt-1">- {{ item.total_discount_wt|floatformat:2 }} &euro; ({{ item.order_detail.discount_code }})</small>
+                        <small class="mt-1">- {{ item.total_discount_wt|floatformat:2 }} &euro;
+                            ({{ item.order_detail.discount_code }})</small>
                         <br> <b>{{ item.total_discounted_wt|floatformat:2 }} &euro;</b>
                     {% endif %}
                 </td>
@@ -233,19 +266,22 @@
                         {{ sub_item.product.name }}
                     </td>
                     <td valign="top">
-                        {{ sub_item.price|floatformat:2 }} €</td>
+                        {{ sub_item.price|floatformat:2 }} €
+                    </td>
                     <td valign="top"></td>
                     <td>
                     </td>
                 </tr>
             {% endfor %}
             {% if item.period_of_performance_start %}
-            <tr style="padding-bottom: 5px">
-                <td valign="top"></td>
-                <td colspan="3" style="padding-left: 10px; font-size: small" valign="top";>{% trans 'Period of performance' %}:
-                    {{ item.period_of_performance_start|date:"d.m.Y" }} - {{ item.period_of_performance_end|date:"d.m.Y" }}
-                </td>
-            </tr>
+                <tr style="padding-bottom: 5px">
+                    <td valign="top"></td>
+                    <td colspan="3" style="padding-left: 10px; font-size: small" valign="top"
+                        ;>{% trans 'Period of performance' %}:
+                        {{ item.period_of_performance_start|date:"d.m.Y" }}
+                        - {{ item.period_of_performance_end|date:"d.m.Y" }}
+                    </td>
+                </tr>
             {% endif %}
         {% endfor %}
         </tbody>
@@ -255,17 +291,17 @@
             <td valign="bottom" colspan="2">
                 {% if order_detail.discount_code %}
 
-                {% trans 'Subtotal' %}<br>
-                <small>{% trans 'Discount' %}</small><br>
+                    {% trans 'Subtotal' %}<br>
+                    <small>{% trans 'Discount' %}</small><br>
                 {% endif %}
                 {% trans 'Grand Total' %}
             </td>
             <td>{{ order_detail.total_wt|floatformat:2 }} €<br>
                 {% if order_detail.discount_code %}
-                <small>- {{ order_detail.total_discount_wt|floatformat:2 }} &euro; ({{ order_detail.discount_code }}
+                    <small>- {{ order_detail.total_discount_wt|floatformat:2 }} &euro; ({{ order_detail.discount_code }}
 
-                    {{ order_detail.discount_str }})</small>
-                <br> <b>{{ order_detail.total_discounted_wt|floatformat:2 }} &euro;</b>
+                        {{ order_detail.discount_str }})</small>
+                    <br> <b>{{ order_detail.total_discounted_wt|floatformat:2 }} &euro;</b>
                 {% endif %}
 
             </td>
@@ -273,7 +309,7 @@
         <tr>
             <td colspan="2"></td>
             <td colspan="2">{% trans 'Included VAT' %} </td>
-            <td>{{tax|floatformat:2}} €</td>
+            <td>{{ tax|floatformat:2 }} €</td>
         </tr>
 
         </tfoot>
@@ -281,7 +317,8 @@
     <div id="thanks">{% trans 'Thank you for your order' %}!</div>
     <div id="notices" style="{ -pdf-keep-with-next: true; }">
         {% if payment_detail.method.name == 'Bill' or  payment_detail.method.name == 'Prepayment' %}
-            <div>{% trans 'Notice' %}:<br>{% trans 'Please send the aforementioned invoice total to the following account' %}</div>
+            <div>{% trans 'Notice' %}:<br>{% trans 'Please send the aforementioned invoice total to the following account' %}
+            </div>
             <div class="notice">
                 {{ invoice_settings.account_holder }}<br>
                 IBAN: {{ invoice_settings.iban }}<br>
