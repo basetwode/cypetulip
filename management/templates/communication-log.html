@@ -2,6 +2,7 @@
 {% load static %}
 {% load bootstrap4 %}
 {% load recurse %}
+{% load l10n %}
 
 {% load i18n %}
 {% block head %}
@@ -34,7 +35,7 @@
                     <div class="card-title h4">{% trans 'Filter' %}</div>
                     <form action="" method="get">
 
-{#                        {% bootstrap_form filter.form %}#}
+                        {#                        {% bootstrap_form filter.form %}#}
                         <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
 
                     </form>
@@ -57,43 +58,62 @@
                     </div>
                 </div>
             {% endif %}
-            <div class="list-group">
-                {% for comm in tasks%}
-
-                    <a href="#"
-                       class="list-group-item list-group-item-action">
-                        <div class="row">
-                            <div class="col-md-3" style="text-align: left; ">
-                                {{ comm.uuid }}
-                            </div>
-                            <div class="col-md-43" style="text-align: left; ">
-                                {{ comm.name }}<br>
-                            </div>
-                            <div class="col-md-3" style="text-align: left; ">
-                                {{ comm.args }}
-                        </div>
-                        <div class="col-md-2" style="text-align: left; ">
-
-                        </div>
-                    </div>
-                    </a>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for comm in tasks %}
+                    <tr><th>
+                        <td><a href="{% url 'management_communication_detail_view' comm.uuid %}" >{{ comm.uuid }}</a></td>
+                        <td>{{ comm.name }}</td>
+                        <td>{{ comm.get_received_date|localize }}</td>
+                        <td>{{ comm.get_started_date }}</td>
+                        <td>  <span
+                                    class="badge badge-pill {% if comm.state == 'SUCCESS' %}badge-success{% else %}badge-error{% endif %}">{{ comm.state }}
+                                                        </span></td>
+                        <td></td></th>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            {% for arg in comm.get_args %}
+                                {{ arg }},
+                            {% empty %}
+                                <small>{% trans 'No args' %}</small>
+                            {% endfor %}
+                        <br><p class="pt-2">{% trans 'Result: ' %}{{ comm.result }}</p>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
                 {% endfor %}
+                </tbody>
+            </table>
 
-        </div>
 
-        <div class="pt-3 pagination text-xs-center justify-content-center"
-             style="align-content: center; text-align: center"><nav aria-label="Page navigation example">
-            <ul class="pagination">
-                <li class="page-item {% if previous_page == curr_page %} disabled {% endif %} "><a class="page-link"
-                                                                                                   href="?page={{ previous_page }}">Previous</a>
-                </li>
-                <li class="page-item  {% if next_page == curr_page %} disabled {% endif %}"><a class="page-link "
-                                                                                               href="?page={{ next_page }}">Next</a>
-                </li>
-            </ul>
-        </nav>
+            <div class="pt-3 pagination text-xs-center justify-content-center"
+                 style="align-content: center; text-align: center">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item {% if previous_page == curr_page %} disabled {% endif %} "><a
+                                class="page-link"
+                                href="?page={{ previous_page }}">Previous</a>
+                        </li>
+                        <li class="page-item  {% if next_page == curr_page %} disabled {% endif %}"><a
+                                class="page-link "
+                                href="?page={{ next_page }}">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
-    </div>
     </div>
 
 

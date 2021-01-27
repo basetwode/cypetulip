@@ -69,15 +69,8 @@ class EmailMixin:
         # Serialize objects in context
         context.pop('form') if 'form' in context else None
         context.pop('view') if 'view' in context else None
-        for k, v in context.items():
-            if hasattr(v, '_meta'):
-                serialized = {'type': v._meta.object_name, 'id': v.id,
-                              'app': v._meta.app_label
-                              }
-                context[k] = serialized
-            if k == 'files':
-                for kfile, vfile in v.items():
-                    context['files'][kfile] = vfile.path
+
+        ObjectSerializer.deserialize(context)
 
         if dsettings.CELERY_BROKER_URL:
             send_mail_celery.delay(receiver_user.email, content, subject, context, self.get_template(), email_to)
@@ -191,3 +184,17 @@ class APIMixin(ContextMixin):
         current_app = resolve(self.request.path)
         config = apps.get_app_config(current_app.app_name)
         return {'api_config': config.api[current_app.app_name]}
+
+
+class ObjectSerializer():
+    @staticmethod
+    def deserialize(dict):
+        for k, v in dict.items():
+            if hasattr(v, '_meta'):
+                serialized = {'type': v._meta.object_name, 'id': v.id,
+                              'app': v._meta.app_label
+                              }
+                dict[k] = serialized
+            if k == 'files':
+                for kfile, vfile in v.items():
+                    dict['files'][kfile] = vfile.path

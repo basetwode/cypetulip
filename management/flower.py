@@ -1,4 +1,5 @@
 import ast
+import datetime
 import json
 
 import requests
@@ -54,12 +55,21 @@ class Task:
     def get_args(self):
         return ast.literal_eval("[" + self.args[1:-1] + "]")
 
+    def get_started_date(self):
+        return datetime.datetime.utcfromtimestamp(float(self.started))
+
+    def get_received_date(self):
+        return datetime.datetime.utcfromtimestamp(float(self.received))
+
+    def get_succeeded_date(self):
+        return datetime.datetime.utcfromtimestamp(float(self.succeeded))
+
 
 class FlowerView:
     server_uri = ''
 
-    def __init__(self, uri=None):  # =settings.FLOWER_URL
-        self.server_uri =  settings.FLOWER_URL
+    def __init__(self):  # =settings.FLOWER_URL
+        self.server_uri = settings.FLOWER_URL
 
     def get_tasks(self, page=0, num_items=20):
         offset = num_items*page
@@ -82,11 +92,3 @@ class FlowerView:
                              json={"args": task.get_args() or [] if len(task.get_args()) == 0 else task.get_args()})
         return 200 <= resp.status_code < 400
 
-
-# flower = FlowerView(uri='http://localhost:8888/')
-# tasks = flower.get_tasks()
-# task_info = flower.get_task_info('16af9b6b-edb8-47fd-a307-3d3a2e92ae35')
-# rest_task = flower.restart_task('16af9b6b-edb8-47fd-a307-3d3a2e92ae35')
-#
-# print(tasks)
-# print(task_info)
