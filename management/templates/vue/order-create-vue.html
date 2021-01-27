@@ -1,4 +1,3 @@
-
 {% extends 'generic-create.html' %}
 {% load bootstrap4 %}
 {% load i18n %}
@@ -6,7 +5,8 @@
 
 {% block body %}
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
-    </script><script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type='text/javascript'>
         var managementURL = "{% url 'management_index' %}";
         var csrfmiddlewaretoken = '{{ csrf_token }}';
@@ -44,376 +44,423 @@
                             <input type="text" name="filter"
                                    v-model="contactFilter"
                                    class="form-control"
-                                       placeholder="{% trans 'Filter' %}"
-                                       title=""
-                                       required="" id="id_filter">
-                                <select @change="onContactSelected($event)" v-model="selectedContact" class="form-control mt-2" :size="calcContactSelectSize" id="customerSelect">
-                                    <option v-for="contact in contactsFiltered" v-bind:value="contact.id">
-                                        [[ contact.username ]] ([[contact.company.name]])
-                                    </option>
-                                </select>
-                            </div>
+                                   placeholder="{% trans 'Filter' %}"
+                                   title=""
+                                   id="id_filter">
+                            <select @change="onContactSelected($event)" v-model="selectedContact" required
+                                    class="form-control mt-2" :size="calcContactSelectSize" id="customerSelect">
+                                <option v-for="contact in contactsFiltered" v-bind:value="contact.id">
+                                    [[ contact.username ]] ([[contact.company.name]])
+                                </option>
+                            </select>
                         </div>
-                        <div v-if="selectedContact" class="form-group row">
-                            <label class="col-md-3" for="shippingSelect">{% trans 'Select shipping address' %}</label>
-                            <div class="col-md-6">
-                                <select @change="onShippingSelected($event)" v-model="selectedShippingAddress" class="form-control" id="shippingSelect">
-                                    <option v-for="address in addresses" v-bind:value="address.id">
-                                        [[ address.name]] | [[ address.street]] [[ address.number]], [[ address.zipcode]] [[ address.city]]
-                                    </option>
-                                </select>
-                            </div>
-                            <label class="col-md-2" for="billingAddressEqualShipping">{% trans 'Billing address equals shipping' %}</label>
-                            <div class="col-md-1">
-                                <input v-model="billingAddressEqualShipping" id="billingAddressEqualShipping" type="checkbox">
-                            </div>
+                    </div>
+                    <div v-if="selectedContact" class="form-group row mt-2">
+                        <label class="col-md-3" for="shippingSelect">{% trans 'Select shipping address' %}</label>
+                        <div class="col-md-6">
+                            <select @change="onShippingSelected($event)" v-model="selectedShippingAddress"
+                                    class="form-control" id="shippingSelect" required>
+                                <option v-for="address in addresses" v-bind:value="address.id">
+                                    [[ address.name]] | [[ address.street]] [[ address.number]], [[ address.zipcode]] [[
+                                    address.city]]
+                                </option>
+                            </select>
                         </div>
-                        <div v-if="selectedShippingAddress && !billingAddressEqualShipping" class="form-group row">
-                            <label class="col-md-3" for="billingSelect">{% trans 'Select billing address' %}</label>
-                            <div class="col-md-9">
-                                <select @change="onBillingSelected($event)" v-model="selectedBillingAddress" class="form-control" id="billingSelect">
-                                    <option v-for="address in addresses" v-bind:value="address.id">
-                                        [[ address.name]] | [[ address.street]] [[ address.number]], [[ address.zipcode]] [[ address.city]]
-                                    </option>
-                                </select>
-                            </div>
+                        <label class="col-md-2"
+                               for="billingAddressEqualShipping">{% trans 'Billing address equals shipping' %}</label>
+                        <div class="col-md-1">
+                            <input v-model="billingAddressEqualShipping" id="billingAddressEqualShipping"
+                                   type="checkbox">
+                        </div>
+                    </div>
+                    <div v-if="selectedShippingAddress && !billingAddressEqualShipping" class="form-group row">
+                        <label class="col-md-3" for="billingSelect">{% trans 'Select billing address' %}</label>
+                        <div class="col-md-9">
+                            <select @change="onBillingSelected($event)" v-model="selectedBillingAddress"
+                                    class="form-control" id="billingSelect">
+                                <option v-for="address in addresses" v-bind:value="address.id">
+                                    [[ address.name]] | [[ address.street]] [[ address.number]], [[ address.zipcode]] [[
+                                    address.city]]
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div v-if="selectedBillingAddress" class="row pt-3 table-responsive">
+                        <div class="col-12 pb-3">
+                            {% trans 'Total' %}: [[orderDetails.total]]
+                            ([[orderDetails.total_wt]] {% trans 'incl. Tax' %})
+                        </div>
+                        <div class="col-12">
+                            <h4>{% trans 'Items' %}</h4>
                         </div>
 
 
-                        <div v-if="selectedBillingAddress" class="row pt-3">
-                            <div class="col-12 pb-3">
-                                {% trans 'Total' %}: [[orderDetails.total]] ([[orderDetails.total_wt]] {% trans 'incl. Tax' %})
-                            </div>
-                            <div class="col-12">
-                                <h4>{% trans 'Items' %}</h4>
-                            </div>
+                        <table class="table table-hover editable-table" id="overview" border="0" cellspacing="0"
+                               cellpadding="0">
+                            <thead>
+                            <tr style="border-bottom: 1px solid #004f72; padding-top: 5px">
+                                <th style="width:5%; text-align: left" class="no">#</th>
+                                <th style="width:30%; text-align: left" class="desc">{% trans 'Description' %}</th>
+                                <th style="width:15%; text-align: left" class="unit">{% trans 'Unit price' %}</th>
+                                <th style="width:10%; text-align: left" class="qty">{% trans 'Quantity' %}</th>
+                                <th style="width:22%; text-align: left" class="total">{% trans 'Total' %}</th>
+                                <th style="width:18%; text-align: left" class="total"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
 
-
-                            <table class="table table-hover editable-table" id="overview" border="0" cellspacing="0" cellpadding="0">
-                                <thead>
-                                <tr style="border-bottom: 1px solid #004f72; padding-top: 5px">
-                                    <th style="width:5%; text-align: left" class="no">#</th>
-                                    <th style="width:30%; text-align: left" class="desc">{% trans 'Description' %}</th>
-                                    <th style="width:20%; text-align: left" class="unit">{% trans 'Unit price' %}</th>
-                                    <th style="width:10%; text-align: left" class="qty">{% trans 'Quantity' %}</th>
-                                    <th style="width:25%; text-align: left" class="total">{% trans 'Total' %}</th>
-                                    <th style="width:10%; text-align: left" class="total"></th>
-                                </tr>
-                                </thead>
-                                <tbody >
-
-                                <template v-for="(item, index) in orderItems" >
-                                    <tr :class="{'table-warning': item.edit}" style="border-top: 1px solid #004f72; padding-top: 5px;">
-                                        <td valign="top">[[index]]</td>
-                                        <td valign="top">
-                                            <template v-if="item.edit && !item.id">
-                                                <select @change="onProductSelected(item)"
-                                                        v-model="item.product.id"
-                                                        class="form-control"
-                                                        id="productSelect">
-                                                    <option v-for="product in products"
-                                                            v-bind:value="product.id">
-                                                        [[ product.name]]
-                                                    </option>
-                                                </select>
-                                            </template>
-                                            <template v-else="">
-                                                [[ item.product.name ]]
-                                            </template>
-                                        </td>
-                                        <td valign="top">
-                                            <template v-if="item.edit">
-                                                <div class="input-group ">
-                                                    <input type="number" name="price"
-                                                           v-model="item.price"
-                                                           :readonly="!isPriceEditable(item)"
-                                                           class="form-control"
-                                                           placeholder="{% trans 'Price' %}"
-                                                           title=""
-                                                           required="" id="id_count">
-                                                    <div class="input-group-append">
-                                                        <span class="input-group-text">€</span>
-                                                    </div>
-                                                </div>
-                                            </template>
-                                            <template v-else="!item.edit">
-                                                [[item.price]] €
-                                            </template>
-                                        </td>
-                                        <td valign="top">
-                                            <template v-if="item.edit">
-                                                <input type="number" name="count"
-                                                       v-model="item.count"
+                            <template v-for="(item, index) in orderItems">
+                                <tr :class="{'table-warning': item.edit}"
+                                    style="border-top: 1px solid #004f72; padding-top: 5px;">
+                                    <td valign="top">[[index]]</td>
+                                    <td valign="top">
+                                        <template v-if="item.edit && !item.id">
+                                            <select @change="onProductSelected(item)"
+                                                    v-model="item.product.id"
+                                                    class="form-control"
+                                                    id="productSelect">
+                                                <option v-for="product in products"
+                                                        v-bind:value="product.id">
+                                                    [[ product.name]]
+                                                </option>
+                                            </select>
+                                        </template>
+                                        <template v-else="">
+                                            [[ item.product.name ]]
+                                        </template>
+                                    </td>
+                                    <td valign="top">
+                                        <template v-if="item.edit">
+                                            <div class="input-group ">
+                                                <input type="number" name="price"
+                                                       v-model="item.price"
+                                                       :readonly="!isPriceEditable(item)"
                                                        class="form-control"
-                                                       placeholder="{% trans 'Count' %}"
+                                                       placeholder="{% trans 'Price' %}"
                                                        title=""
                                                        required="" id="id_count">
-                                            </template>
-                                            <template v-else="!item.edit">
-                                                [[item.count]]
-                                            </template>
-                                        </td>
-                                        <td>[[ item.total_wt ]] € <small>({% trans 'incl. VAT' %} [[ item.tax_rate ]] %)</small>
-                                            <div v-if="item.applied_discount">
-                                                <small class="mt-1">- [[ item.total_discount_wt ]] &euro; ([[  orderDetails.discount_code ]])</small>
-                                                <br> <b>[[  item.total_discounted_wt ]] &euro;</b>
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">€</span>
+                                                </div>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <template v-if="!item.edit">
-                                                <button @click="deleteOrderItem(index)" type="button" class="close "
-                                                        style="position: relative;">
+                                        </template>
+                                        <template v-else="!item.edit">
+                                            [[item.price]] €
+                                        </template>
+                                    </td>
+                                    <td valign="top">
+                                        <template v-if="item.edit">
+                                            <input type="number" name="count"
+                                                   v-model="item.count"
+                                                   class="form-control"
+                                                   placeholder="{% trans 'Count' %}"
+                                                   title=""
+                                                   required="" id="id_count">
+                                        </template>
+                                        <template v-else="!item.edit">
+                                            [[item.count]]
+                                        </template>
+                                    </td>
+                                    <td>[[ item.total_wt ]] € <small>({% trans 'incl. VAT' %} [[ item.tax_rate ]]
+                                        %)</small>
+                                        <div v-if="item.applied_discount">
+                                            <small class="mt-1">- [[ item.total_discount_wt ]] &euro; ([[
+                                                orderDetails.discount_code ]])</small>
+                                            <br> <b>[[ item.total_discounted_wt ]] &euro;</b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <template v-if="!item.edit">
+                                            <button @click="deleteOrderItem(index)" type="button"
+                                                    class="btn btn-sm btn-secondary rounded-0"
+                                            >
                                                     <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i
                                                             class="fa fa-xs fa-trash"></i></span>
-                                                </button>
-                                                <button @click="item.edit = 'true'" type="button" class="close "
-                                                        style="position: relative; right:7px; ">
+                                            </button>
+                                            <button @click="item.edit = 'true'" type="button"
+                                                    class="btn btn-sm btn-secondary rounded-0"
+                                            >
                                                     <span style="font-size: 1.3rem; color:blue" aria-hidden="true"><i
                                                             class="fa fa-xs fa-edit"></i></span>
-                                                </button>
-                                                <button @click="editOrderItemPeriodOfPerformance(item)" type="button"
-                                                        class="close " style="position: relative; right:9px; ">
+                                            </button>
+                                            <button @click="editOrderItemPeriodOfPerformance(item)" type="button"
+                                                    class="btn btn-sm btn-secondary rounded-0">
                                                     <span style="font-size: 1.3rem; color:blue" aria-hidden="true"><i
                                                             class="fa fa-xs fa-business-time"></i></span>
-                                                </button>
-                                                <button type="button" class="close " data-bs-toggle="dropdown"
-                                                        style="position: relative; right:13px; top:1px ">
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-secondary rounded-0"
+                                                    data-bs-toggle="dropdown"
+                                            >
                                                     <span style="font-size: 1.3rem; color:blue"><i
                                                             class="fa fa-xs fa-plus-square"></i></span>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                    <a @click="addOrderItem" class="dropdown-item" href="#"><span><i
-                                                            class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new item' %}</span></a>
-                                                    <a @click="addSubOrderItem(item)" class="dropdown-item" href="#"><span><i class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new subitem' %}</span></a>
-                                                </div>
-                                            </template>
-                                            <template v-if="item.edit">
-                                                <button style="display: inline-block; position: relative;" @click="discardItemChanges(item, index)" type="button" class="close ">
-                                                    <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i class="fa fa-xs fa-times-circle"></i></span>
-                                                </button>
-                                                <button style="display: inline-block;position: relative; right:7px;" @click="saveItemChanges(item)" type="button" class="close" >
-                                                    <span style="font-size: 1.3rem; color:green" aria-hidden="true"><i class="fa fa-xs fa-save"></i></span>
-                                                </button>
-                                            </template>
-                                        </td>
-                                    </tr>
-                                    <tr :class="{'table-warning': item.edit}" v-if="item.edit_pop" style="padding-bottom: 5px">
-                                        <td valign="top"></td>
-                                        <td colspan="5" style="padding-left: 10px; font-size: small" valign="top">{% trans 'Period of performance' %}:
-                                            <div class="form-group row pt-2">
-                                                <div class="col-md-5"><input type="date"
-                                                                             name="period_of_performance_start"
-                                                                             v-model="item.period_of_performance_start"
-                                                                             class="form-control"
-                                                                             placeholder="{% trans 'Start' %}"
-                                                                             title=""
-                                                                             required=""></div>
-                                                <div class="col-md-5"><input type="date"
-                                                                             name="period_of_performance_end"
-                                                                             v-model="item.period_of_performance_end"
-                                                                             class="form-control"
-                                                                             placeholder="{% trans 'End' %}"
-                                                                             title=""
-                                                                             required=""></div>
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a @click="addOrderItem" class="dropdown-item" href="#"><span><i
+                                                        class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new item' %}</span></a>
+                                                <a @click="addSubOrderItem(item)" class="dropdown-item"
+                                                   href="#"><span><i
+                                                        class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new subitem' %}</span></a>
                                             </div>
-                                        </td>
-                                    </tr>
-                                        <tr v-for="(sub_item, index) in item.order_items" :class="{'table-warning': sub_item.edit}" style="padding-bottom: 5px">
-                                            <td valign="top">
-                                                <template v-if="sub_item.edit">
-                                                    <div class="input-group">
-                                                        <div class="form-check ">
-                                                            <label class="form-check-label">
-                                                                <input class=" form-check-input" type="checkbox" style="margin-top: 2px;"
-                                                                       v-model="sub_item.allowable"
-                                                                ></label>
+                                        </template>
+                                        <template v-if="item.edit">
+                                            <button @click="discardItemChanges(item, index)" type="button"
+                                                    class="btn btn-sm btn-secondary rounded-0">
+                                                <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i
+                                                        class="fa fa-xs fa-times-circle"></i></span>
+                                            </button>
+                                            <button @click="saveItemChanges(item)" type="button"
+                                                    class="btn btn-sm btn-secondary rounded-0">
+                                                <span style="font-size: 1.3rem; color:green" aria-hidden="true"><i
+                                                        class="fa fa-xs fa-save"></i></span>
+                                            </button>
+                                        </template>
+                                    </td>
+                                </tr>
+                                <tr :class="{'table-warning': item.edit}" v-if="item.edit_pop"
+                                    style="padding-bottom: 5px">
+                                    <td valign="top"></td>
+                                    <td colspan="5" style="padding-left: 10px; font-size: small"
+                                        valign="top">{% trans 'Period of performance' %}:
+                                        <div class="form-group row pt-2">
+                                            <div class="col-md-5"><input type="date"
+                                                                         name="period_of_performance_start"
+                                                                         v-model="item.period_of_performance_start"
+                                                                         class="form-control"
+                                                                         placeholder="{% trans 'Start' %}"
+                                                                         title=""
+                                                                         required=""></div>
+                                            <div class="col-md-5"><input type="date"
+                                                                         name="period_of_performance_end"
+                                                                         v-model="item.period_of_performance_end"
+                                                                         class="form-control"
+                                                                         placeholder="{% trans 'End' %}"
+                                                                         title=""
+                                                                         required=""></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr v-for="(sub_item, index) in item.order_items"
+                                    :class="{'table-warning': sub_item.edit}" style="padding-bottom: 5px">
+                                    <td valign="top">
+                                        <template v-if="sub_item.edit">
+                                            <div class="input-group">
+                                                <div class="form-check ">
+                                                    <label class="form-check-label">
+                                                        <input class=" form-check-input" type="checkbox"
+                                                               style="margin-top: 2px;"
+                                                               v-model="sub_item.allowable"
+                                                        ></label>
 
-                                                        </div>
-                                                    </div>
-                                                </template>
-                                                <template v-else="">
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template v-else="">
 
-                                                </template>
+                                        </template>
 
-                                            </td>
-                                            <td style="padding-left: 30px" valign="top">
-                                                <template v-if="sub_item.edit && !sub_item.id">
-                                                    <select @change="onSubProductSelected(item, sub_item)"
-                                                            v-model="sub_item.product.id"
-                                                            class="form-control"
-                                                            id="productSelect">
-                                                        <option v-for="product in item.product.product.assigned_sub_products"
-                                                                v-bind:value="product.id">
-                                                            [[ product.name]]
-                                                        </option>
-                                                    </select>
-                                                </template>
-                                                <template v-else="">
-                                                    [[ sub_item.product.name ]]
-                                                </template>
+                                    </td>
+                                    <td style="padding-left: 30px" valign="top">
+                                        <template v-if="sub_item.edit && !sub_item.id">
+                                            <select @change="onSubProductSelected(item, sub_item)"
+                                                    v-model="sub_item.product.id"
+                                                    class="form-control"
+                                                    id="productSelect">
+                                                <option v-for="product in item.product.product.assigned_sub_products"
+                                                        v-bind:value="product.id">
+                                                    [[ product.name]]
+                                                </option>
+                                            </select>
+                                        </template>
+                                        <template v-else="">
+                                            [[ sub_item.product.name ]]
+                                        </template>
 
-                                            </td>
-                                            <td valign="top" >
-                                                <template v-if="sub_item.edit">
-                                                    <div class="input-group ">
-                                                        <input type="number" name="price"
-                                                               v-model="sub_item.price"
-                                                               :readonly="!isPriceEditable(item, sub_item)"
-                                                               class="form-control"
-                                                               placeholder="{% trans 'Price' %}"
-                                                               title=""
-                                                               required="" id="id_count">
-                                                        <div class="input-group-append">
-                                                            <span class="input-group-text">€</span>
-                                                        </div>
-                                                    </div>
-                                                </template>
-                                                <template v-else="!sub_item.edit">
-                                                    [[sub_item.price]] €
-                                                </template>
-                                            </td>
-                                            <td colspan="2">
-                                                <template v-if="sub_item.product.id && getSubProduct(item,sub_item).filesubitem && sub_item.edit">
-                                                    <div class="input-group">
-                                                        <input
-                                                                type="file"
-                                                                @change="onFileSelected(sub_item, $event)"
-                                                                :class="{'custom-file-input':true, 'form-control':true,}"
-                                                                :id="'inputGroupFile-'+sub_item.randID"
-                                                                :ref="'file-'+sub_item.randID"
-                                                                aria-describedby="inputGroupFileAddon01">
-                                                        <label :class="{'custom-file-label':true}"
-                                                               :for="'inputGroupFile-'+sub_item.randID">[[sub_item.fileorderitem.file_name]]</label>
-                                                    </div>
+                                    </td>
+                                    <td valign="top">
+                                        <template v-if="sub_item.edit">
+                                            <div class="input-group ">
+                                                <input type="number" name="price"
+                                                       v-model="sub_item.price"
+                                                       :readonly="!isPriceEditable(item, sub_item)"
+                                                       class="form-control"
+                                                       placeholder="{% trans 'Price' %}"
+                                                       title=""
+                                                       required="" id="id_count">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">€</span>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template v-else="!sub_item.edit">
+                                            [[sub_item.price]] €
+                                        </template>
+                                    </td>
+                                    <td colspan="2">
+                                        <template
+                                                v-if="sub_item.product.id && getSubProduct(item,sub_item).filesubitem && sub_item.edit">
+                                            <div class="input-group">
+                                                <input
+                                                        type="file"
+                                                        @change="onFileSelected(sub_item, $event)"
+                                                        :class="{'custom-file-input':true, 'form-control':true,}"
+                                                        :id="'inputGroupFile-'+sub_item.randID"
+                                                        :ref="'file-'+sub_item.randID"
+                                                        aria-describedby="inputGroupFileAddon01">
+                                                <label :class="{'custom-file-label':true}"
+                                                       :for="'inputGroupFile-'+sub_item.randID">[[sub_item.fileorderitem.file_name]]</label>
+                                            </div>
 
-                                                </template>
-                                                <template v-if="sub_item.product.id && getSubProduct(item,sub_item).checkboxsubitem && sub_item.edit">
-                                                    <div class="input-group">
-                                                    <div class="form-check ">
-                                                        <label class="form-check-label">
-                                                        <input class=" form-check-input" type="checkbox" style="margin-top: 2px;"
+                                        </template>
+                                        <template
+                                                v-if="sub_item.product.id && getSubProduct(item,sub_item).checkboxsubitem && sub_item.edit">
+                                            <div class="input-group">
+                                                <div class="form-check ">
+                                                    <label class="form-check-label">
+                                                        <input class=" form-check-input" type="checkbox"
+                                                               style="margin-top: 2px;"
                                                                v-model="sub_item.checkboxorderitem.is_checked"
                                                         >[[ getSubProduct(item,sub_item).checkboxsubitem.name]]</label>
 
-                                                    </div></div>
-
-                                                </template>
-                                                <template v-if="sub_item.product.id && getSubProduct(item,sub_item).selectsubitem && sub_item.edit">
-                                                <div class="input-group">
-                                                    <div class="form-group w-100">
-                                                        <select v-model="sub_item.selectorderitem.selected_item.id"
-{#                                                                @change="sub_item.price = $event.target.value"#}
-                                                                class="form-control">
-                                                            <option v-for="option in getSubProduct(item,sub_item).selectsubitem.options"
-                                                                    :value="option.id">
-                                                                [[option.name]] ([[option.price_wt]] €)
-                                                            </option>
-                                                        </select>
-                                                    </div>
                                                 </div>
+                                            </div>
 
-                                                </template>
-                                                    <template v-if="sub_item.product.id && getSubProduct(item,sub_item).numbersubitem && sub_item.edit">
-                                                        <div class="input-group">
-                                                            <div class="form-group w-100">
+                                        </template>
+                                        <template
+                                                v-if="sub_item.product.id && getSubProduct(item,sub_item).selectsubitem && sub_item.edit">
+                                            <div class="input-group">
+                                                <div class="form-group w-100">
+                                                    <select v-model="sub_item.selectorderitem.selected_item.id"
+                                                            {#                                                                @change="sub_item.price = $event.target.value"#}
+                                                            class="form-control">
+                                                        <option v-for="option in getSubProduct(item,sub_item).selectsubitem.options"
+                                                                :value="option.id">
+                                                            [[option.name]] ([[option.price_wt]] €)
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
 
-                                                                <input type="number"
-                                                                       class="form-control"
-                                                                       v-model="sub_item.numberorderitem.number">
-                                                            </div>
-                                                        </div>
+                                        </template>
+                                        <template
+                                                v-if="sub_item.product.id && getSubProduct(item,sub_item).numbersubitem && sub_item.edit">
+                                            <div class="input-group">
+                                                <div class="form-group w-100">
 
-                                            </template>
-                                            </td>
-                                            <td >
+                                                    <input type="number"
+                                                           class="form-control"
+                                                           v-model="sub_item.numberorderitem.number">
+                                                </div>
+                                            </div>
 
-                                                <template v-if="!sub_item.edit">
-                                                    <button @click="deleteSubOrderItem(item, index)" type="button" class="close " style="position: relative;">
-                                                        <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i class="fa fa-xs fa-trash"></i></span>
-                                                    </button>
-                                                    <button @click="sub_item.edit = 'true'" type="button" class="close " style="position: relative; right:7px; ">
-                                                        <span style="font-size: 1.3rem; color:blue" aria-hidden="true"><i class="fa fa-xs fa-edit"></i></span>
-                                                    </button>
-                                                    <button @click="addSubOrderItem(item)" type="button" class="close "  style="position: relative; right:13px; top:1px " >
-                                                        <span style="font-size: 1.3rem; color:blue"><i class="fa fa-xs fa-plus-square"></i></span>
-                                                    </button>
-                                                </template>
-                                                <template v-if="sub_item.edit">
-                                                    <button style="display: inline-block; position: relative;" @click="discardSubItemChanges(item, sub_item, index)" type="button" class="close ">
-                                                        <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i class="fa fa-xs fa-times-circle"></i></span>
-                                                    </button>
-                                                    <button style="display: inline-block;position: relative; right:7px;" @click="saveItemChanges(sub_item, item)" type="button" class="close" >
-                                                        <span style="font-size: 1.3rem; color:green" aria-hidden="true"><i class="fa fa-xs fa-save"></i></span>
-                                                    </button>
-                                                </template>
-
-                                            </td>
-                                        </tr>
-
-                                </template>
-                                <tr><td colspan="6"><a @click="addOrderItem" class="dropdown-item" href="#"><span><i class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new item' %}</span></a></td></tr>
-
-                                </tbody>
-                                <tfoot>
-                                <tr style="padding-top: 10px; border-top: 3px dashed #004f72;">
-                                    <td colspan="2"></td>
-                                    <td valign="bottom" colspan="2">
-                                        <div v-if="orderDetails.discount_code">
-                                            {% trans 'Subtotal' %}<br>
-                                            <small>{% trans 'Discount' %}</small><br>
-                                        </div>
-                                        {% trans 'Grand Total' %}
+                                        </template>
                                     </td>
-                                    <td>[[ orderDetails.total_wt]] €<br>
-                                        <div v-if="orderDetails.discount_code">
-                                            <small>- [[ orderDetails.total_discount_wt ]] &euro; ([[ orderDetails.discount_code ]]
+                                    <td>
 
-                                                [[ orderDetails.discount_str ]])</small>
-                                            <br> <b>[[ orderDetails.total_discounted_wt ]] &euro;</b>
-                                        </div>
+                                        <template v-if="!sub_item.edit">
+                                            <button @click="deleteSubOrderItem(item, index)" type="button"
+                                                    class="btn btn-sm btn-secondary">
+                                                <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i
+                                                        class="fa fa-xs fa-trash"></i></span>
+                                            </button>
+                                            <button @click="sub_item.edit = 'true'" type="button"
+                                                    class="btn btn-sm btn-secondary">
+                                                <span style="font-size: 1.3rem; color:blue" aria-hidden="true"><i
+                                                        class="fa fa-xs fa-edit"></i></span>
+                                            </button>
+                                            <button @click="addSubOrderItem(item)" type="button"
+                                                    class="btn btn-sm btn-secondary">
+                                                <span style="font-size: 1.3rem; color:blue"><i
+                                                        class="fa fa-xs fa-plus-square"></i></span>
+                                            </button>
+                                        </template>
+                                        <template v-if="sub_item.edit">
+                                            <button @click="discardSubItemChanges(item, sub_item, index)" type="button"
+                                                    class="btn btn-sm btn-secondary">
+                                                <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i
+                                                        class="fa fa-xs fa-times-circle"></i></span>
+                                            </button>
+                                            <button @click="saveItemChanges(sub_item, item)" type="button"
+                                                    class="btn btn-sm btn-secondary">
+                                                <span style="font-size: 1.3rem; color:green" aria-hidden="true"><i
+                                                        class="fa fa-xs fa-save"></i></span>
+                                            </button>
+                                        </template>
 
                                     </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2"></td>
-                                    <td colspan="2">{% trans 'Included VAT' %} </td>
-                                    <td>tax €</td>
-                                    <td></td>
                                 </tr>
 
-                                </tfoot>
-                            </table>
+                            </template>
+                            <tr>
+                                <td colspan="6"><a @click="addOrderItem" class="dropdown-item" href="#"><span><i
+                                        class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new item' %}</span></a>
+                                </td>
+                            </tr>
 
-
-
-                            <div id="billPreview" class="preview-overlay preview-overlay-hidden">
-                                <div class="row">
-                                    <div class="col-1">
-                                        <button class="btn" type="button" @click="hideBill"><span><i class="fa fa-2x fa-window-close"></i></span></button>
+                            </tbody>
+                            <tfoot>
+                            <tr style="padding-top: 10px; border-top: 3px dashed #004f72;">
+                                <td colspan="2"></td>
+                                <td valign="bottom" colspan="2">
+                                    <div v-if="orderDetails.discount_code">
+                                        {% trans 'Subtotal' %}<br>
+                                        <small>{% trans 'Discount' %}</small><br>
                                     </div>
-                                    <div v-html="billPreview" class="col-11">
+                                    {% trans 'Grand Total' %}
+                                </td>
+                                <td>[[ orderDetails.total_wt]] €<br>
+                                    <div v-if="orderDetails.discount_code">
+                                        <small>- [[ orderDetails.total_discount_wt ]] &euro; ([[
+                                            orderDetails.discount_code ]]
 
+                                            [[ orderDetails.discount_str ]])</small>
+                                        <br> <b>[[ orderDetails.total_discounted_wt ]] &euro;</b>
                                     </div>
+
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td colspan="2">{% trans 'Included VAT' %} </td>
+                                <td>tax €</td>
+                                <td></td>
+                            </tr>
+
+                            </tfoot>
+                        </table>
+
+
+                        <div id="billPreview" class="preview-overlay preview-overlay-hidden">
+                            <div class="row">
+                                <div class="col-1">
+                                    <button class="btn" type="button" @click="hideBill"><span><i
+                                            class="fa fa-2x fa-window-close"></i></span></button>
+                                </div>
+                                <div v-html="billPreview" class="col-11">
+
                                 </div>
                             </div>
                         </div>
-
                     </div>
-                    <div class="card-footer ">
-                        <div class="row">
+
+                </div>
+                <div class="card-footer ">
+                    <div class="row">
                         <div class="col-6">
-                            <form v-if="selectedOrderHash"  method="post" :action="managementURL+'orders/'+selectedOrderHash+'/delete/'">
+                            <form v-if="selectedOrderHash" method="post"
+                                  :action="managementURL+'orders/'+selectedOrderHash+'/delete/'">
                                 {% csrf_token %}
                                 <input type="submit" class="btn-danger btn " value="{% trans 'Delete' %}"><br>
                             </form>
                         </div>
-                            <div class="col-6">
-                                <a class="btn btn-primary float-end"
-                                   :href="managementURL+'orders/'+selectedOrderHash">{% trans 'Continue' %}</a>
-                    </div></div>
+                        <div class="col-6">
+                            <a id="continue-with-order" class="btn btn-primary float-end" type="submit"
+                               :href="managementURL+'orders/'+selectedOrderHash">{% trans 'Continue' %}</a>
+                        </div>
                     </div>
                 </div>
+            </div>
         </div>
 
     </div>
@@ -446,18 +493,18 @@
                 orderStates: []
             },
             computed: {
-                calcContactSelectSize(){
-                    if(this.contactsFiltered.length > 10)
+                calcContactSelectSize() {
+                    if (this.contactsFiltered.length > 10)
                         return 6;
-                    else if(this.contactsFiltered.length> 4)
+                    else if (this.contactsFiltered.length > 4)
                         return 4;
                     else return 3;
                 },
-                contactsFiltered(){
-                    if(this.contactFilter.length===0)
+                contactsFiltered() {
+                    if (this.contactFilter.length === 0)
                         return this.contacts;
                     return this.contacts.filter((contact) => {
-                        return (contact.first_name+contact.last_name+contact.email+contact.company.name)
+                        return (contact.first_name + contact.last_name + contact.email + contact.company.name)
                             .toLowerCase().indexOf(this.contactFilter) >= 0;
                     });
 
@@ -465,10 +512,10 @@
             },
             mounted() {
                 this.selectedOrderHash = selectedOrder;
-                axios.all([this.loadInitialData(), this.loadData()]).finally(v=>loadingSpinner.addClass('overlay-hidden'))
+                axios.all([this.loadInitialData(), this.loadData()]).finally(v => loadingSpinner.addClass('overlay-hidden'))
             },
             methods: {
-                loadInitialData: function(){
+                loadInitialData: function () {
                     let paymentMethods = axios.get('/api/v1/adm/paymentmethod')
                         .then(response => {
                             this.paymentMethods = response.data
@@ -487,10 +534,10 @@
                         });
                     return [contactsPromise, productsPromise, paymentMethods, orderStates];
                 },
-                reloadData: function(){
-                    axios.all([this.loadData()]).finally(v=>loadingSpinner.addClass('overlay-hidden'))
+                reloadData: function () {
+                    axios.all([this.loadData()]).finally(v => loadingSpinner.addClass('overlay-hidden'))
                 },
-                loadData: function(){
+                loadData: function () {
 
                     loadingSpinner = $('#loading-spinner');
                     loadingSpinner.removeClass('overlay-hidden');
@@ -499,25 +546,28 @@
                     var orderdetailsPromise = null;
                     var billPreview = null;
 
-                    if(this.selectedOrderHash){
-                        orderPromise = axios.get('/api/v1/order/'+this.selectedOrderHash)
+                    if (this.selectedOrderHash) {
+                        orderPromise = axios.get('/api/v1/order/' + this.selectedOrderHash)
                             .then(response => {
-                                response.data.order_items.forEach(item => {item.edit=''; item.edit_pop=''});
+                                response.data.order_items.forEach(item => {
+                                    item.edit = '';
+                                    item.edit_pop = ''
+                                });
                                 response.data.order_items.forEach(item => item.order_items.forEach(sub_item => {
-                                    sub_item.edit=''
+                                    sub_item.edit = ''
                                 }));
                                 this.selectedOrder = response.data;
                                 this.orderItems = this.selectedOrder.order_items
 
                             });
-                        orderdetailsPromise = axios.get('/api/v1/adm/orderdetails/'+this.selectedOrderHash)
+                        orderdetailsPromise = axios.get('/api/v1/adm/orderdetails/' + this.selectedOrderHash)
                             .then(response => {
                                 this.orderDetails = response.data[0];
                                 this.selectedContact = this.orderDetails.contact
                                 this.selectedShippingAddress = this.orderDetails.shipment_address;
                                 this.selectedBillingAddress = this.orderDetails.billing_address;
                                 this.billingAddressEqualShipping = this.selectedBillingAddress === this.selectedShippingAddress;
-                                axios.get('/api/v1/adm/contacts/'+this.selectedContact+'/addresses/')
+                                axios.get('/api/v1/adm/contacts/' + this.selectedContact + '/addresses/')
                                     .then(response => {
                                         this.addresses = response.data
                                     });
@@ -528,149 +578,154 @@
                     return [orderdetailsPromise, orderPromise, billPreview];
 
                 },
-                showPreview: function(){
+                showPreview: function () {
                     billPreview = $('#billPreview');
                     billPreview.removeClass('preview-overlay-hidden');
                 },
-                hideBill: function(){
+                hideBill: function () {
                     billPreview = $('#billPreview');
                     billPreview.addClass('preview-overlay-hidden');
                 },
-                getBillPreview: function(){
-                    axios.get('/billing/bill_pr/'+this.selectedOrderHash+'')
+                getBillPreview: function () {
+                    axios.get('/billing/bill_pr/' + this.selectedOrderHash + '')
                         .then(response => {
                             this.billPreview = response.data
                         });
                 },
-                onShippingSelected: function(event){
-                    if(this.billingAddressEqualShipping){
+                onShippingSelected: function (event) {
+                    if (this.billingAddressEqualShipping) {
                         this.selectedBillingAddress = this.selectedShippingAddress;
                     }
                     this.saveOrderDetail();
                 },
-                onBillingSelected: function(){
+                onBillingSelected: function () {
                     this.saveOrderDetail();
                 },
-                onContactSelected: function(event){
-
-                    axios.get('/api/v1/adm/contacts/'+this.selectedContact+'/addresses/')
+                onContactSelected: function (event) {
+                    axios.get('/api/v1/adm/contacts/' + this.selectedContact + '/addresses/')
                         .then(response => {
                             this.addresses = response.data
                         });
                     this.saveOrder();
                 },
-                onProductSelected: function(item){
+                onProductSelected: function (item) {
                     var product = this.products.filter(product => {
                         return product.id === item.product.id
                     });
                     item.price = product[0].price;
                 },
-                onSubProductSelected: function(item, subitem){
+                onSubProductSelected: function (item, subitem) {
                     let product = item.product.product.assigned_sub_products.filter(product => {
                         return product.id === subitem.product.id
                     });
                     subitem.price = product[0].price;
                 },
-                onFileSelected: function(subitem, event){
-                    subitem.fileorderitem.file_name=event.target.files[0].name;
+                onFileSelected: function (subitem, event) {
+                    subitem.fileorderitem.file_name = event.target.files[0].name;
                     subitem.fileChanged = true;
                 },
-                getSubProduct: function(item, subitem){
+                getSubProduct: function (item, subitem) {
                     return item.product.product.assigned_sub_products.filter(product => {
                         return product.id === subitem.product.id
                     })[0]
                 },
-                isPriceEditable: function(item, subitem) {
+                isPriceEditable: function (item, subitem) {
                     return true;
                     var product = this.products.filter(product => {
                         return product.id === item.product.id
                     });
-                    if(product.length===0&&!subitem) return false;
-                    if(product.length===0 ){
+                    if (product.length === 0 && !subitem) return false;
+                    if (product.length === 0) {
                         product = this.getSubProduct(item, subitem);
                     } else {
                         product = product[0]
                     }
                     return product.price_on_request;
                 },
-                discardSubItemChanges: function(item, sub_item, index) {
-                    sub_item.edit='';
-                    sub_item.edit_pop='';
-                    if(!sub_item.id){
+                discardSubItemChanges: function (item, sub_item, index) {
+                    sub_item.edit = '';
+                    sub_item.edit_pop = '';
+                    if (!sub_item.id) {
                         this.deleteSubOrderItem(item, index);
                     }
                 },
-                discardItemChanges: function(item, index){
-                    item.edit='';
-                    item.edit_pop='';
-                    if(!item.id){
+                discardItemChanges: function (item, index) {
+                    item.edit = '';
+                    item.edit_pop = '';
+                    if (!item.id) {
                         this.deleteOrderItem(index)
                     }
                 },
-                transformItem(item, parent_item, uri){
+                transformItem(item, parent_item, uri) {
                     let formData = new FormData();
-                    formData.append("id",item.id);
+                    formData.append("id", item.id);
                     formData.append("product", item.product.id);
                     formData.append("order", this.selectedOrder.order.id);
                     formData.append("order_detail", this.orderDetails.id);
                     formData.append("allowable", item.allowable);
                     formData.append("price", item.price);
-                    formData.append("price_wt",0);
-                    formData.append("count",item.count);
+                    formData.append("price_wt", 0);
+                    formData.append("count", item.count);
 
-                    if(item.period_of_performance_start){
-                        formData.append("period_of_performance_start",item.period_of_performance_start);
-                        formData.append("period_of_performance_end",item.period_of_performance_end);
+                    if (item.period_of_performance_start) {
+                        formData.append("period_of_performance_start", item.period_of_performance_start);
+                        formData.append("period_of_performance_end", item.period_of_performance_end);
                     }
-                    if(parent_item){
+                    if (parent_item) {
                         formData.append("order_item", parent_item.id);
                     }
-                    if(uri === 'fileorderitem' && item.fileChanged){
-                        formData.append("file",this.$refs['file-' + item.randID][0].files[0]);
-                    } else if(uri === 'numberorderitem'){
-                        formData.append("number",  item.numberorderitem.number);
-                    } else if(uri === 'checkboxorderitem'){
-                        formData.append("is_checked",  item.checkboxorderitem.is_checked);
-                    } else if(uri === 'selectorderitem'){
-                        formData.append("selected_item",  item.selectorderitem.selected_item.id);
+                    if (uri === 'fileorderitem' && item.fileChanged) {
+                        formData.append("file", this.$refs['file-' + item.randID][0].files[0]);
+                    } else if (uri === 'numberorderitem') {
+                        formData.append("number", item.numberorderitem.number);
+                    } else if (uri === 'checkboxorderitem') {
+                        formData.append("is_checked", item.checkboxorderitem.is_checked);
+                    } else if (uri === 'selectorderitem') {
+                        formData.append("selected_item", item.selectorderitem.selected_item.id);
                     }
                     return formData
                 },
-                getURI(item){
-                    if(item.fileorderitem && item.fileorderitem.file_name) return 'fileorderitem';
-                    if(item.numberorderitem && item.numberorderitem.number) return 'numberorderitem';
-                    if(item.checkboxorderitem && item.checkboxorderitem.is_checked !== '') return 'checkboxorderitem';
-                    if(item.selectorderitem && item.selectorderitem.selected_item.id) return 'selectorderitem';
+                getURI(item) {
+                    if (item.fileorderitem && item.fileorderitem.file_name) return 'fileorderitem';
+                    if (item.numberorderitem && item.numberorderitem.number) return 'numberorderitem';
+                    if (item.checkboxorderitem && item.checkboxorderitem.is_checked !== '') return 'checkboxorderitem';
+                    if (item.selectorderitem && item.selectorderitem.selected_item.id) return 'selectorderitem';
                     return 'orderitem';
                 },
-                saveOrder: function() {
+                saveOrder: function () {
                     let instance = this;
-                    if(!this.selectedOrderHash){
-                        axios.post('/api/v1/adm/order/', {'company':this.contacts.filter(c=>c.id===this.selectedContact)[0].company.id})
+                    if (!this.selectedOrderHash) {
+                        axios.post('/api/v1/adm/order/', {'company': this.contacts.filter(c => c.id === this.selectedContact)[0].company.id})
                             .then(response => {
                                 instance.selectedOrderHash = response.data.order_hash;
                                 this.selectedOrder = response.data;
-                            })
+                            }).catch(() => {
+                            loadingSpinner = $('#loading-spinner');
+                            loadingSpinner.addClass('overlay-hidden');
+                        })
                     } else {
-                        axios.put('/api/v1/adm/order/'+this.selectedOrder.order.id+'/', {'company':this.contacts.filter(c=>c.id===this.selectedContact)[0].company.id})
+                        axios.put('/api/v1/adm/order/' + this.selectedOrder.order.id + '/', {'company': this.contacts.filter(c => c.id === this.selectedContact)[0].company.id})
                     }
 
                 },
-                saveOrderDetail: function(){
-                    if(this.orderDetails) {
-                        axios.put('/api/v1/adm/orderdetails/' + this.selectedOrderHash + '/'+this.orderDetails.id+'/', {
+                saveOrderDetail: function () {
+                    if (this.orderDetails) {
+                        axios.put('/api/v1/adm/orderdetails/' + this.selectedOrderHash + '/' + this.orderDetails.id + '/', {
                             'shipment_address': this.selectedShippingAddress,
                             'billing_address': this.selectedBillingAddress,
-                            'order_number':this.selectedOrderHash,
-                            'order':this.selectedOrder.order.id,
+                            'order_number': this.selectedOrderHash,
+                            'order': this.selectedOrder.order.id,
                             'contact': this.selectedContact
+                        }).catch(() => {
+                            loadingSpinner = $('#loading-spinner');
+                            loadingSpinner.addClass('overlay-hidden');
                         })
                     } else {
                         axios.post('/api/v1/adm/orderdetails/', {
-                            'order_number':this.selectedOrderHash,
+                            'order_number': this.selectedOrderHash,
                             // in this case we do't need order.id since the data came from a different rest api (see saveOrder)
-                            'order':this.selectedOrder.id,
-                            'state': this.orderStates.filter(state=>state.initial===true)[0].id,
+                            'order': this.selectedOrder.id,
+                            'state': this.orderStates.filter(state => state.initial === true)[0].id,
                             'shipment_address': this.selectedShippingAddress,
                             'billing_address': this.selectedBillingAddress,
                             'contact': this.selectedContact
@@ -680,12 +735,18 @@
                                 'method': this.paymentMethods.filter(method => method.name === 'Bill')[0].id,
                                 'user': this.selectedContact
                             }).then(response => {
-                                    this.reloadData();
+                                this.reloadData();
+                            }).catch(() => {
+                                loadingSpinner = $('#loading-spinner');
+                                loadingSpinner.addClass('overlay-hidden');
                             })
+                        }).catch(() => {
+                            loadingSpinner = $('#loading-spinner');
+                            loadingSpinner.addClass('overlay-hidden');
                         })
                     }
                 },
-                saveItemChanges: function(item, parent_item){
+                saveItemChanges: function (item, parent_item) {
 
                     loadingSpinner = $('#loading-spinner');
                     loadingSpinner.removeClass('overlay-hidden');
@@ -703,7 +764,10 @@
                             })
                             .then(response => {
                                 instance.reloadData();
-                            })
+                            }).catch(() => {
+                            loadingSpinner = $('#loading-spinner');
+                            loadingSpinner.addClass('overlay-hidden');
+                        })
                     } else {
                         axios.post('/api/v1/adm/' + uri + '/', orderItem,
                             {
@@ -714,28 +778,38 @@
                             })
                             .then(response => {
                                 instance.reloadData();
-                            })
+                            }).catch(() => {
+                            loadingSpinner = $('#loading-spinner');
+                            loadingSpinner.addClass('overlay-hidden');
+                        })
                     }
 
                 },
-                editOrderItemPeriodOfPerformance: function(item){
-                    item.edit_pop='true';
-                    item.edit='true';
+                editOrderItemPeriodOfPerformance: function (item) {
+                    item.edit_pop = 'true';
+                    item.edit = 'true';
                 },
-                addSubOrderItem: function(item){
-                    item.order_items.push({"product":{"id":''},"count":1,"price":'','edit':'true', 'allowable':'true',
-                        'checkboxorderitem':{'is_checked':''},
-                        'numberorderitem':{'number':''},
-                        'selectorderitem':{'selected_item':{'id':''}},
-                        'fileorderitem':{'file_name':''}
+                addSubOrderItem: function (item) {
+                    item.order_items.push({
+                        "product": {"id": ''}, "count": 1, "price": '', 'edit': 'true', 'allowable': 'true',
+                        'checkboxorderitem': {'is_checked': ''},
+                        'numberorderitem': {'number': ''},
+                        'selectorderitem': {'selected_item': {'id': ''}},
+                        'fileorderitem': {'file_name': ''}
                     });
                 },
-                addOrderItem: function(event){
-                    this.orderItems.push({"product":{"id":''},"count":1,"price":'','edit':'true', 'allowable':'true'});
+                addOrderItem: function (event) {
+                    this.orderItems.push({
+                        "product": {"id": ''},
+                        "count": 1,
+                        "price": '',
+                        'edit': 'true',
+                        'allowable': 'true'
+                    });
                 },
-                deleteSubOrderItem:  function(item, index){
+                deleteSubOrderItem: function (item, index) {
                     let sub_item = item.order_items[index];
-                    if(!sub_item.id){
+                    if (!sub_item.id) {
                         item.order_items.splice(index, 1);
                     } else {
                         let instance = this;
@@ -745,13 +819,13 @@
                             })
                     }
                 },
-                deleteOrderItem:  function(index){
+                deleteOrderItem: function (index) {
                     let item = this.orderItems[index];
-                    if(!item.id){
+                    if (!item.id) {
                         this.orderItems.splice(index, 1);
                     } else {
                         let instance = this;
-                        axios.delete('/api/v1/adm/orderitem/'+item.id)
+                        axios.delete('/api/v1/adm/orderitem/' + item.id)
                             .then(response => {
                                 instance.reloadData();
                             })
