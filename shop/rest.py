@@ -169,7 +169,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = ['product', 'price', 'price_wt', 'count', 'id', 'fileorderitem', 'valid', 'applied_discount', 'allowable',
                   'price_discounted', 'price_discounted_wt', 'total_wt', 'period_of_performance_start','period_of_performance_end',
-                  'numberorderitem', 'selectorderitem', 'checkboxorderitem', 'randID', 'errors']
+                  'numberorderitem', 'selectorderitem', 'checkboxorderitem', 'randID', 'errors', 'additional_text']
         depth = 4
 
     def get_fields(self):
