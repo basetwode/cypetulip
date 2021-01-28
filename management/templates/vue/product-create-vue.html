@@ -7,7 +7,7 @@
 
 {% block form %}
 
-    {% bootstrap_form form exclude="attributes" layout='horizontal' %}
+    {% bootstrap_form form exclude="attributes" form_group_class="m-1" layout='horizontal' %}
 
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
         </script><script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -16,19 +16,19 @@
             var selProductId = {% if object %}{{ object.id }}{% else %}""{% endif %};
         </script>
 
-        <div id="app">
+    <div id="app">
 
-            <div class="form-group row"><label class="col-md-3 col-form-label"
+        <div class="form-group m-1 row"><label class="col-md-3 col-form-label"
                                                for="id_selectedAttributes">Attributes</label>
-                <div class="col-md-8"><select size="10" v-model="selectedAttributes" name="attributes"
-                                              class="form-control"
-                                              title="" id="id_selectedAttributes"
-                                              multiple="">
-                    <option v-for="option in productAttributeTypeInstances" v-bind:value="option.id">
-                        [[ getTypeName(option.type) ]] | [[ option.value ]]
-                    </option>
+            <div class="col-md-8"><select size="10" v-model="selectedAttributes" name="attributes"
+                                          class="form-control"
+                                          title="" id="id_selectedAttributes"
+                                          multiple="">
+                <option v-for="option in productAttributeTypeInstances" v-bind:value="option.id">
+                    [[ getTypeName(option.type) ]] | [[ option.value ]]
+                </option>
 
-                </select></div>
+            </select></div>
                 <div class="col-md-1">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#product-attribute-create">
@@ -48,8 +48,8 @@
                         </div>
                         <div class="modal-body">
 
-                            <div class="form-group row"><label class="col-md-3 col-form-label"
-                                                               for="id_attributes">{% trans 'Attribute Type' %}</label>
+                            <div class="form-group m-1 row"><label class="col-md-3 col-form-label"
+                                                                   for="id_attributes">{% trans 'Attribute Type' %}</label>
                                 <div class="col-md-9"><select v-model="selectedType" name="attributesModal"
                                                               class="form-control" title=""
                                                               id="id_attributetypes"
@@ -62,7 +62,7 @@
 
 
                             </div>
-                            <div class="form-group row">
+                            <div class="form-group m-1 row">
                                 <label class="offset-1 col-md-3 col-form-label"
                                        for="id_attributes">{% trans 'Add new attribute type' %}</label>
                                 <div class="col-md-7"><input type="text" v-model="newTypeName" maxlength="300" class="form-control"

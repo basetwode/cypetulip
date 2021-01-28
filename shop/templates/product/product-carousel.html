@@ -1,22 +1,25 @@
-
 {% load i18n %}
 
-<div id="productcarousel-{{name}}"
+<div id="productcarousel-{{ name }}"
      class="products-list card-group mt-3 mt-md-0 scrolling-wrapper-flexbox p-3 products-horizontal carousel slide"
-     data-ride="carousel" data-interval="100000">
+     data-bs-ride="carousel" data-bs-interval="100000">
 
-    <a class="control-prev" href="#productcarousel-{{name}}" data-slide="prev"><span><i
+    <a class="control-prev" href="#productcarousel-{{ name }}" data-bs-slide="prev"><span><i
             class="text-black-50 fas fa-chevron-left"></i>
                 </span></a>
     <div class="carousel-inner row w-100 mx-auto" role="listbox">
         {% for product in product_list|slice:":50" %}
             {% if forloop.first %}
-                <div class="product-card col-lg-3 col-md-4 col-12 p-2 carousel-item active">
-                    {% include 'product/product-card.html' with product=product %}
+                <div class="product-card col-lg-3 col-md-4 col-12 p-2">
+                    <div class="carousel-item active">
+                        {% include 'product/product-card.html' with product=product %}
+                    </div>
                 </div>
             {% else %}
-                <div class="product-card col-lg-3 col-md-4 col-12 p-2 carousel-item">
-                    {% include 'product/product-card.html' with product=product %}
+                <div class="product-card col-lg-3 col-md-4 col-12 p-2">
+                    <div class="carousel-item ">
+                        {% include 'product/product-card.html' with product=product %}
+                    </div>
                 </div>
 
             {% endif %}
@@ -24,7 +27,7 @@
             <h5 class="ps-3 text-center w-100">{% trans 'Nothing found' %}</h5>
         {% endfor %}
     </div>
-    <a class="control-next" href="#productcarousel-{{ name }}" data-slide="next"><span><i
+    <a class="control-next" href="#productcarousel-{{ name }}" data-bs-slide="next"><span><i
             class="text fas fa-chevron-right"></i>
                 </span></a>
 </div>

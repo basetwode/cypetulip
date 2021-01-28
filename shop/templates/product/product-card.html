@@ -21,7 +21,7 @@
         <div class="card-body product-text">
             <div class="d-flex justify-content-between">
                 <a class="text-center font-weight-bold"
-                   href="/shop/product/{{ product.name }}">{{ product.name }}</a>
+                   href="{% url 'shop:product_detail' category_path product.name %}">{{ product.name }}</a>
                 {% if product.price_on_request %}
                     <span data-bs-toggle="modal" data-bs-target="#price_on_request"
                           class="badge rounded-pill bg-success bg-primary badge-price-on-request">{% trans 'Price on request' %}

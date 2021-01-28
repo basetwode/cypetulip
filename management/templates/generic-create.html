@@ -37,7 +37,7 @@
                     </div>
                     <div class="card-body">
                         {% block form %}
-                            {% bootstrap_form form exclude=excluded_fields layout='horizontal' %}
+                            {% bootstrap_form form exclude=excluded_fields form_group_class="m-1" layout='horizontal' %}
                         {% endblock %}
                     </div>
                 </div>

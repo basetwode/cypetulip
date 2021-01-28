@@ -96,6 +96,7 @@
                         </div>
 
 
+
                         <table class="table table-hover editable-table" id="overview" border="0" cellspacing="0"
                                cellpadding="0">
                             <thead>
@@ -173,23 +174,23 @@
                                     <td>
                                         <template v-if="!item.edit">
                                             <button @click="deleteOrderItem(index)" type="button"
-                                                    class="btn btn-sm btn-secondary rounded-0"
+                                                    class="close m-1"
                                             >
                                                     <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i
                                                             class="fa fa-xs fa-trash"></i></span>
                                             </button>
                                             <button @click="item.edit = 'true'" type="button"
-                                                    class="btn btn-sm btn-secondary rounded-0"
+                                                    class="close m-1"
                                             >
                                                     <span style="font-size: 1.3rem; color:blue" aria-hidden="true"><i
                                                             class="fa fa-xs fa-edit"></i></span>
                                             </button>
                                             <button @click="editOrderItemPeriodOfPerformance(item)" type="button"
-                                                    class="btn btn-sm btn-secondary rounded-0">
+                                                    class="close m-1">
                                                     <span style="font-size: 1.3rem; color:blue" aria-hidden="true"><i
                                                             class="fa fa-xs fa-business-time"></i></span>
                                             </button>
-                                            <button type="button" class="btn btn-sm btn-secondary rounded-0"
+                                            <button type="button" class="close m-1"
                                                     data-bs-toggle="dropdown"
                                             >
                                                     <span style="font-size: 1.3rem; color:blue"><i
@@ -205,12 +206,12 @@
                                         </template>
                                         <template v-if="item.edit">
                                             <button @click="discardItemChanges(item, index)" type="button"
-                                                    class="btn btn-sm btn-secondary rounded-0">
+                                                    class="close m-1">
                                                 <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i
                                                         class="fa fa-xs fa-times-circle"></i></span>
                                             </button>
                                             <button @click="saveItemChanges(item)" type="button"
-                                                    class="btn btn-sm btn-secondary rounded-0">
+                                                    class="close m-1">
                                                 <span style="font-size: 1.3rem; color:green" aria-hidden="true"><i
                                                         class="fa fa-xs fa-save"></i></span>
                                             </button>

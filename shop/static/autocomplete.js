@@ -42,9 +42,8 @@ $(function () {
                     a = [];
                     for (i = 0; i < data.length; i++) {
                         a.push({
-                            label: data[i].fields.first_name + ' '
-                                + data[i].fields.last_name,
-                            value: data[i].pk
+                            label: data[i].fields.user_ptr[0],
+                            value: data[i].fields.company
                         });
                     }
                     response(a);
@@ -54,7 +53,7 @@ $(function () {
         minLength: 1,
         select: function (event, ui) {
             var id = ui.item.value;
-            location.href = '/management/contacts/' + id;
+            location.href = '/management/contact/create/' + id + '/' + id;
         },
         html: true, // optional (jquery.ui.autocomplete.html.js required)
         // optional (if other layers overlap autocomplete list)

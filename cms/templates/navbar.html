@@ -120,7 +120,7 @@
                     <a class="dropdown-item" href="/shop/logout">{% trans 'Logout' %}</a>
                 {% else %}
                     <div class="btn btn-primary nav-item">
-                        <a href="/shop/login">{% trans 'Login' %}</a>
+                        <a class="dropdown-item" href="/shop/login">{% trans 'Login' %}</a>
                     </div>
                 {% endif %}
             </ul>
@@ -132,7 +132,7 @@
     <nav class="row flex-nowrap overflow-auto" aria-label="Secondary navigation">
         {% for page in sites_nav %}
             {% if page.page_id == 'products' %}
-                <div class="col-5 dropdown">
+                <div class="col-5 pr-0 dropdown">
                     <a role="button" class="btn"
                        href="{% if page.link %}{{ page.link }}{% else %}/cms/{{ page.page_name }}/{% endif %}">
                         {% trans page.page_name as page_name %}{{ page_name | upper }}</a>
@@ -143,7 +143,7 @@
                     </a>
                 </div>
             {% else %}
-                <div class="col">
+                <div class="col p-0">
                     <a class="btn"
                        href="{% if page.link %}{{ page.link }}{% else %}/cms/{{ page.page_name }}/{% endif %}">
                         {% trans page.page_name as page_name %}{{ page_name | upper }}</a>

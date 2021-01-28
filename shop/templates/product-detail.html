@@ -46,11 +46,12 @@
 
                         {% for image in product.productimage_set.all %}
                             {% if forloop.first %}
-                                <li data-bs-target="#image-{{ forloop.counter }}" data-slide-to="{{ forloop.counter }}"
+                                <li data-bs-target="#image-{{ forloop.counter }}"
+                                    data-bs-slide-to="{{ forloop.counter }}"
                                     class="active"></li>
                             {% else %}
                                 <li data-bs-target="#image-{{ forloop.counter }}"
-                                    data-slide-to="{{ forloop.counter }}"></li>
+                                    data-bs-slide-to="{{ forloop.counter }}"></li>
                             {% endif %}
 
                         {% endfor %}
@@ -78,13 +79,13 @@
                     </div>
 
                     <!-- Left and right controls -->
-                    <a class="carousel-control-prev"  href="#product" data-slide="prev">
+                    <a class="carousel-control-prev" href="#product" databs--slide="prev">
                         <span><i class="text-black-50 fas fa-chevron-left"></i></span>
                     </a>
-                    <a class="carousel-control-next"  href="#product" data-slide="next">
+                    <a class="carousel-control-next" href="#product" data-bs-slide="next">
                         <span><i class="text-black-50 fas fa-chevron-right"></i></span>
                     </a>
-            </div>
+                </div>
 
             {% else %}
                 <i style=" width: 100%; height: auto; max-width: 25vw;"

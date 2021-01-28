@@ -7,9 +7,9 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView, DetailView
 from django_filters.views import FilterView
-from django.utils.translation import ugettext_lazy as _
 
 from billing.utils import calculate_sum
 from permissions.error_handler import raise_401
@@ -20,7 +20,6 @@ from shop.my_account.forms import CompanyForm, ContactForm
 from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
 from utils.mixins import PaginatedFilterViews, APIMixin
-from utils.views import CreateUpdateView
 
 
 class OrderDetailView(PermissionOwnsObjectMixin, APIMixin, DetailView):
@@ -166,9 +165,9 @@ class SearchCustomers(View):
     def get(self, request):
         if 'search' in request.GET and request.user.is_staff:
             search = request.GET.get('search')
-            _customers = Contact.objects.filter(Q(user__email__contains=search) |
+            _customers = Contact.objects.filter(Q(email__contains=search) |
                                                 Q(company__name__icontains=search) |
-                                                Q(user__username__icontains=search) |
+                                                Q(username__icontains=search) |
                                                 Q(first_name__icontains=search) |
                                                 Q(last_name__icontains=search)).distinct()
             _json = json.loads(
