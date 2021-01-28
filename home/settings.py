@@ -377,7 +377,7 @@ STATICFILES_FINDERS = (
 )
 
 COMPRESS_ENABLED = True
-COMPRESS_FILTERS = {'css': ['compressor.filters.cssmin.CSSCompressorFilter'], 'js': ['compressor.filters.jsmin.JSMinFilter']}
+COMPRESS_FILTERS = {'css': ['cms.compressor.CSSMinFilter'], 'js': ['compressor.filters.jsmin.JSMinFilter']}
 COMPRESS_PRECOMPILERS = (
     #('text/x-scss', 'sass.bat {infile} {outfile}'), # windows / development
     ('text/x-scss', 'sass.bat {infile} {outfile}'),
