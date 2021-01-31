@@ -3,7 +3,6 @@
 {% load static %}
 {% load bootstrap4 %}
 {% load i18n %}
-{% bootstrap_messages %}
 {% block head %}
     <title>{% trans "management" %}</title>
     <link href="{% static 'jquery/css/jquery-ui.min.css' %}" rel="stylesheet">
@@ -15,7 +14,6 @@
 {% endblock %}
 
 {% block body %}
-    {% bootstrap_messages %}
     <div>
         <h1>
             <strong>{% trans "management" %}</strong>

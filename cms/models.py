@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 # Create your models here.
-from tinymce import HTMLField
+from tinymce.models import HTMLField
 
 from mediaserver.upload import fs, public_files_upload_handler
 

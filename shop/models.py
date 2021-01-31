@@ -8,7 +8,7 @@ from django.db.models import Sum, Q
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
 from django.utils.translation import gettext_lazy as _
-from tinymce import HTMLField
+from tinymce.models import HTMLField
 
 from billing.utils import calculate_sum, calculate_sum_order
 from mediaserver.upload import (company_files_upload_handler, fs, order_files_upload_handler,
@@ -84,6 +84,7 @@ class Contact(DjangoUser):
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
 
+
 class Address(models.Model):
     name = models.CharField(max_length=100)
     street = models.CharField(max_length=40, default=None, verbose_name=_('Street'))
@@ -145,8 +146,8 @@ class ProductSubItem(models.Model):
     price_on_request = models.BooleanField(default=False, blank=True, null=True, verbose_name=_('Price on request'))
     tax = models.FloatField(default=0.19, blank=False, null=False, verbose_name=_('Tax'))
     name = models.CharField(max_length=30)
-    description = HTMLField(_('Description'))
-    details = HTMLField(_('Details'))
+    description = HTMLField(_('Description'), blank=True, null=True)
+    details = HTMLField(_('Details'), blank=True, null=True)
     requires_file_upload = models.BooleanField(default=False, verbose_name=_('Requires file upload'))
     is_required = models.BooleanField(default=False, verbose_name=_('Is required'))
     is_multiple_per_item = models.BooleanField(default=False, verbose_name=_('Is multiple per item'))

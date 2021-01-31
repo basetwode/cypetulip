@@ -373,29 +373,29 @@
 
                                         <template v-if="!sub_item.edit">
                                             <button @click="deleteSubOrderItem(item, index)" type="button"
-                                                    class="btn btn-sm btn-secondary">
+                                                    class="close">
                                                 <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i
                                                         class="fa fa-xs fa-trash"></i></span>
                                             </button>
                                             <button @click="sub_item.edit = 'true'" type="button"
-                                                    class="btn btn-sm btn-secondary">
+                                                    class="close">
                                                 <span style="font-size: 1.3rem; color:blue" aria-hidden="true"><i
                                                         class="fa fa-xs fa-edit"></i></span>
                                             </button>
                                             <button @click="addSubOrderItem(item)" type="button"
-                                                    class="btn btn-sm btn-secondary">
+                                                    class="close">
                                                 <span style="font-size: 1.3rem; color:blue"><i
                                                         class="fa fa-xs fa-plus-square"></i></span>
                                             </button>
                                         </template>
                                         <template v-if="sub_item.edit">
                                             <button @click="discardSubItemChanges(item, sub_item, index)" type="button"
-                                                    class="btn btn-sm btn-secondary">
+                                                    class="close">
                                                 <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i
                                                         class="fa fa-xs fa-times-circle"></i></span>
                                             </button>
                                             <button @click="saveItemChanges(sub_item, item)" type="button"
-                                                    class="btn btn-sm btn-secondary">
+                                                    class="close">
                                                 <span style="font-size: 1.3rem; color:green" aria-hidden="true"><i
                                                         class="fa fa-xs fa-save"></i></span>
                                             </button>
@@ -465,7 +465,7 @@
                             <form v-if="selectedOrderHash" method="post"
                                   :action="managementURL+'orders/'+selectedOrderHash+'/delete/'">
                                 {% csrf_token %}
-                                <input type="submit" class="btn-danger btn " value="{% trans 'Delete' %}"><br>
+                                <input type="submit" class="btn-danger btn" value="{% trans 'Delete' %}"><br>
                             </form>
                         </div>
                         <div class="col-6">

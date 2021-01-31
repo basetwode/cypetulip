@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from cms.models import Section, Page
 from management.models import Header, Footer
-from shipping.models import Package
+from shipping.models import Package, Shipment
 from shop.models import OrderDetail, Product, Contact, ProductCategory, FileSubItem, ProductSubItem
 
 
@@ -14,7 +14,7 @@ class OrderDetailFilter(django_filters.FilterSet):
 
     class Meta:
         model = OrderDetail
-        fields = ['state', ]
+        fields = ['state']
 
     def custom_field_filter(self, queryset, name, value):
         if value.isdigit():
@@ -36,7 +36,7 @@ class ProductFilter(django_filters.FilterSet):
 class ProductSubItemFilter(django_filters.FilterSet):
     class Meta:
         model = ProductSubItem
-        fields = []
+        fields = ['id', 'name', 'price']
 
 
 class FileSubItemFilter(django_filters.FilterSet):
@@ -105,3 +105,9 @@ class FooterFilter(django_filters.FilterSet):
     class Meta:
         model = Footer
         fields = ['is_enabled', 'layout']
+
+
+class ShipmentFilter(django_filters.FilterSet):
+    class Meta:
+        model = Shipment
+        fields = []

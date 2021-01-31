@@ -4,12 +4,11 @@ from datetime import datetime
 
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.sessions.models import Session
 from django.core import management
 from django.core.files import File
-from django.db.transaction import commit
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -21,18 +20,17 @@ from django_filters.views import FilterView
 from billing.utils import calculate_sum
 from billing.views import GeneratePDFFile
 from cms.models import Page, Section
-from home import settings
-from management.filters import OrderDetailFilter, DiscountFilter
+from management.filters import OrderDetailFilter
 from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm, ProductForm, \
     ContactUserForm, ContactUserIncludingPasswordForm, ContactUserUpdatePasswordForm, MergeAccountsForm, ClearCacheForm, \
     CustomerImportForm
 from management.mixins import NotifyNewCustomerAccountView
 from management.models import LdapSetting, MailSetting, LegalSetting, ShopSetting, Header, Footer, CacheSetting
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME, PaymentProvider
-from permissions.mixins import LoginRequiredMixin, PermissionPostGetRequiredMixin
+from permissions.mixins import LoginRequiredMixin
 from shipping.models import Shipment
 from shop.filters import ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
-    PageFilter, ShipmentPackageFilter, FileSubItemFilter, FooterFilter, HeaderFilter, ProductSubItemFilter
+    PageFilter, FooterFilter, HeaderFilter, ProductSubItemFilter, ShipmentFilter
 from shop.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
     FileSubItem, IndividualOffer, ProductSubItem, NumberSubItem, CheckBoxSubItem, SelectSubItem, SelectItem, Address, \
@@ -43,27 +41,19 @@ from utils.mixins import EmailMixin, PaginatedFilterViews
 from utils.views import CreateUpdateView
 
 
-class ManagementView(LoginRequiredMixin, View):
+class ManagementView(LoginRequiredMixin, TemplateView):
     permission_get_required = ['management.view_management']
     template_name = 'management.html'
 
-    def get(self, request):
-        contact = Contact.objects.filter(user_ptr=request.user)
+    def get_context_data(self, **kwargs):
+        contact = Contact.objects.filter(user_ptr=self.request.user)
         active_sessions = Session.objects.filter(expire_date__gte=timezone.now())
-        user_id_list = [data.get_decoded().get('_auth_user_id',None) for data in active_sessions]
+        user_id_list = [data.get_decoded().get('_auth_user_id', None) for data in active_sessions]
         users = User.objects.filter(id__in=user_id_list)
 
-        mail_settings = MailSetting.objects.all()
-        try:
-            company = contact[0].company
-            mail_settings = mail_settings[0]
-        except IndexError:
-            pass
-        return render(request, self.template_name, {'contact': contact, 'users': users,
-                                                    'active_sessions':Session.objects.filter(expire_date__gte=timezone.now())})
-
-    def post(self, request):
-        pass
+        return {**super(ManagementView, self).get_context_data(), **{'contact': contact, 'users': users,
+                                                                     'active_sessions': Session.objects.filter(
+                                                                         expire_date__gte=timezone.now())}}
 
 
 class ManagementOrderOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView):
@@ -72,10 +62,6 @@ class ManagementOrderOverviewView(LoginRequiredMixin, PaginatedFilterViews, Filt
     paginate_by = 20
     filterset_class = OrderDetailFilter
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(ManagementOrderOverviewView, self).get_context_data(**kwargs)
-        return {**context, **{'employees': Employee.objects.all()}}
-
     def get_queryset(self):
         return super(ManagementOrderOverviewView, self).get_queryset().filter(state__isnull=False) \
             .order_by('-date_added')
@@ -83,97 +69,89 @@ class ManagementOrderOverviewView(LoginRequiredMixin, PaginatedFilterViews, Filt
 
 class ManagementOrderDetailView(LoginRequiredMixin, DetailView):
     template_name = 'order-details.html'
+    model = Order
     slug_url_kwarg = 'order'
     slug_field = 'order_hash'
 
-    def get(self, request, order):
+    def get_context_data(self, **kwargs):
         employees = Employee.objects.all()
-        if not request.user.is_staff:
-            contact = Contact.objects.get(user_ptr=request.user)
-            company = contact.company
-        else:
-            contact = {}
-        _order = Order.objects.get(order_hash=order)
+        _order_detail = OrderDetail.objects.get(order=self.object.order_id)
         _payment_details = None
         _payment = None
         try:
-            _payment_details = PaymentDetail.objects.get(order=_order)
+            _payment_details = PaymentDetail.objects.get(order=self.object)
             _payment = Payment.objects.get(details=_payment_details)
         except:
             pass
         _states = OrderState.objects.all()
-        if _order:
-            order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True,
-                                                   product__in=Product.objects.all())
+        order_items = OrderItem.objects.filter(order=self.object, order_item__isnull=True,
+                                               product__in=Product.objects.all())
 
-            total = calculate_sum(order_items)
-            return render(request, self.template_name,
-                          {'order_details': _order, 'order': _order, 'contact': contact, 'total': total,
-                           'order_items': order_items, 'employees': employees,
-                           'order_items_once_only': get_orderitems_once_only(_order), 'payment': _payment,
-                           'payment_details': _payment_details, 'states': _states})
-
-    def post(self, request):
-        pass
+        total = calculate_sum(order_items)
+        return {**super(ManagementOrderDetailView, self).get_context_data(**kwargs), **
+        {'order_details': _order_detail, 'order': self.object, 'contact': _order_detail.contact, 'total': total,
+         'order_items': order_items, 'employees': employees,
+         'order_items_once_only': get_orderitems_once_only(self.object), 'payment': _payment,
+         'payment_details': _payment_details, 'states': _states}}
 
 
-class MailSettingsDetailView(LoginRequiredMixin, CreateUpdateView):
+class MailSettingsDetailView(SuccessMessageMixin, LoginRequiredMixin, CreateUpdateView):
     template_name = 'settings-details.html'
     mail_settings_id = None
     slug_field = 'id'
     slug_url_kwarg = 'mail_settings_id'
     model = MailSetting
     fields = '__all__'
+    success_message = _("Mailsettings updated successfully")
 
     def get_success_url(self):
         return reverse_lazy('mail_settings_details', kwargs={'mail_settings_id': self.object.id})
 
 
-class ShopSettingsDetailView(LoginRequiredMixin, CreateUpdateView):
+class ShopSettingsDetailView(SuccessMessageMixin, LoginRequiredMixin, CreateUpdateView):
     template_name = 'settings-details.html'
     shop_settings_id = None
     slug_field = 'id'
     slug_url_kwarg = 'shop_settings_id'
     model = ShopSetting
     fields = '__all__'
+    success_message = _("Shopsettings updated successfully")
 
     def get_success_url(self):
         return reverse_lazy('shop_settings_details', kwargs={'shop_settings_id': self.object.id})
 
 
-class LdapSettingsDetailView(LoginRequiredMixin, CreateUpdateView):
+class LdapSettingsDetailView(SuccessMessageMixin, LoginRequiredMixin, CreateUpdateView):
     template_name = 'settings-details.html'
     ldap_settings_id = None
     slug_field = 'id'
     slug_url_kwarg = 'ldap_settings_id'
     model = LdapSetting
     fields = '__all__'
+    success_message = _("Ldapsettings updated successfully")
 
     def get_success_url(self):
         return reverse_lazy('ldap_settings_details', kwargs={'ldap_settings_id': self.object.id})
 
 
-class LegalSettingsDetailView(LoginRequiredMixin, CreateUpdateView):
+class LegalSettingsDetailView(SuccessMessageMixin, LoginRequiredMixin, CreateUpdateView):
     template_name = 'settings-details.html'
     ldap_settings_id = None
     slug_field = 'id'
     slug_url_kwarg = 'legal_settings_id'
     model = LegalSetting
     fields = '__all__'
+    success_message = _("Ldapsettings updated successfully")
 
     def get_success_url(self):
         return reverse_lazy('legal_settings_details', kwargs={'legal_settings_id': self.object.id})
 
 
-class CategoriesOverviewView(LoginRequiredMixin, ListView):
+class CategoriesOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView):
     template_name = 'categories-overview.html'
     context_object_name = 'categories'
     model = ProductCategory
-
-    def get(self, request, *args, **kwargs):
-        filter = ProductCategoryFilter(request.GET, queryset=ProductCategory.objects.all())
-        return render(request, self.template_name,
-                      {'filter': filter})
+    filterset_class = ProductCategoryFilter
 
 
 class ProductsOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView):
@@ -184,31 +162,24 @@ class ProductsOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView)
     ordering = 'id'
     filterset_class = ProductFilter
 
-    # def get(self, request, *args, **kwargs):
-    #     filter = ProductFilter(request.GET, queryset=Product.objects.all())
-    #     return render(request, self.template_name,
-    #                   {'filter': filter})
 
-
-class SubItemOverviewView(LoginRequiredMixin, ListView):
+class SubItemOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView):
     template_name = 'subitems-overview.html'
     context_object_name = 'filesubitem'
+    paginate_by = 40
     model = ProductSubItem
+    filterset_class = ProductSubItemFilter
 
-    def get(self, request, *args, **kwargs):
-        filter = ProductSubItemFilter(request.GET, queryset=ProductSubItem.objects.filter(product=None))
-        return render(request, self.template_name,
-                      {'filter': filter})
+    def get_queryset(self):
+        return super(SubItemOverviewView, self).get_queryset().filter(product=None)
 
 
-class CustomersOverviewView(LoginRequiredMixin,  PaginatedFilterViews, FilterView):
+class CustomersOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView):
     template_name = 'customers-overview.html'
     model = Contact
     paginate_by = 20
     ordering = ['company__customer_nr', 'company_customer_nr']
     filterset_class = ContactFilter
-
-
 
 
 class EmployeeOverviewView(LoginRequiredMixin, ListView):
@@ -217,7 +188,7 @@ class EmployeeOverviewView(LoginRequiredMixin, ListView):
     model = Employee
 
 
-class EmployeeCreationView(LoginRequiredMixin, CreateView):
+class EmployeeCreationView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     template_name = 'generic-create.html'
     context_object_name = 'employee'
     model = Employee
@@ -227,114 +198,115 @@ class EmployeeCreationView(LoginRequiredMixin, CreateView):
         return reverse_lazy('employee_overview')
 
 
-class ProductCreationView(LoginRequiredMixin, CreateView):
+class ProductCreationView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     template_name = 'vue/product-create-vue.html'
     context_object_name = 'products'
     model = Product
     form_class = ProductForm
-
+    success_message = _("Product created successfully")
 
     def get_success_url(self):
-        return reverse_lazy('products_overview')
+        return reverse_lazy('product_edit', kwargs={'product_id': self.object.id})
 
 
-
-class ProductEditView(LoginRequiredMixin, UpdateView):
+class ProductEditView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     template_name = 'vue/product-create-vue.html'
     context_object_name = 'products'
     form_class = ProductForm
     model = Product
-
     product_id = None
     slug_field = 'id'
     slug_url_kwarg = 'product_id'
+    success_message = _("Product updated successfully")
 
     def get_success_url(self):
-        return reverse_lazy('products_overview')
+        return reverse_lazy('product_edit', kwargs={'product_id': self.object.id})
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Product
     slug_field = 'id'
     slug_url_kwarg = "url_param"
     template = ''
+    success_message = _("Product deleted successfully")
 
     def get_success_url(self):
+        messages.success(self.request, self.success_message)
         return reverse_lazy('products_overview')
 
 
-
-class CheckboxSubItemCreateUpdateView(LoginRequiredMixin, CreateUpdateView):
+class CheckboxSubItemCreateUpdateView(SuccessMessageMixin, LoginRequiredMixin, CreateUpdateView):
     template_name = 'generic-create.html'
     context_object_name = 'subitem'
     slug_field = 'id'
     slug_url_kwarg = 'subitem_id'
     model = CheckBoxSubItem
-    fields = ['price','tax', 'price_on_request', 'name','description', 'details',
-              'is_required', 'is_multiple_per_item','is_once_per_order'
+    fields = ['price', 'tax', 'price_on_request', 'name', 'description', 'details',
+              'is_required', 'is_multiple_per_item', 'is_once_per_order'
               ]
+    success_message = _("Subitem updated successfully")
 
     def get_success_url(self):
-        return reverse_lazy('subitem_overview')
+        return reverse_lazy('checkboxsubitem_create', kwargs={'subitem_id': self.object.id})
 
 
-class NumberSubItemCreateUpdateView(LoginRequiredMixin, CreateUpdateView):
+class NumberSubItemCreateUpdateView(SuccessMessageMixin, LoginRequiredMixin, CreateUpdateView):
     template_name = 'generic-create.html'
     context_object_name = 'subitem'
     slug_field = 'id'
     slug_url_kwarg = 'subitem_id'
     model = NumberSubItem
-    fields = ['price','tax','price_on_request', 'name','description', 'details',
+    fields = ['price', 'tax', 'price_on_request', 'name', 'description', 'details',
               'is_required', 'is_multiple_per_item', 'is_once_per_order'
               ]
+    success_message = _("Subitem updated successfully")
 
     def get_success_url(self):
-        return reverse_lazy('subitem_overview')
+        return reverse_lazy('numbersubitem_create', kwargs={'subitem_id': self.object.id})
 
 
-class FileSubItemCreationView(LoginRequiredMixin, CreateUpdateView):
+class FileSubItemCreationView(SuccessMessageMixin, LoginRequiredMixin, CreateUpdateView):
     template_name = 'generic-create.html'
     context_object_name = 'subitem'
     slug_field = 'id'
     slug_url_kwarg = 'subitem_id'
     model = FileSubItem
-    fields = ['price','tax', 'price_on_request', 'name','description', 'details',
+    fields = ['price', 'tax', 'price_on_request', 'name', 'description', 'details',
               'is_required', 'is_multiple_per_item', 'is_once_per_order',
               'extensions']
+    success_message = _("Subitem updated successfully")
 
     def get_success_url(self):
-        return reverse_lazy('subitem_overview')
+        return reverse_lazy('filesubitem_create', kwargs={'subitem_id': self.object.id})
 
 
-class SelectSubItemCreationView(LoginRequiredMixin, WizardView):
+class SelectSubItemCreationView(SuccessMessageMixin, LoginRequiredMixin, WizardView):
     page_title = _('Create Selectsubitem')
     context_object_name = 'subitem'
     slug_field = 'id'
     slug_url_kwarg = 'subitem_id'
     model = SelectSubItem
-    fields = ['price','tax', 'price_on_request', 'name','description', 'details',
+    fields = ['price', 'tax', 'price_on_request', 'name', 'description', 'details',
               'is_required', 'is_multiple_per_item', 'is_once_per_order',
               ]
-
-    def get_back_url(self):
-        return reverse_lazy('subitem_overview')
+    success_message = _("Subitem updated successfully")
 
     def get_success_url(self):
-        return reverse_lazy('selectitem_create', kwargs={'id': '', 'parent_id': self.object.id })
+        return reverse_lazy('selectsubitem_create', kwargs={'subitem_id': self.object.id})
 
 
-class SelectItemCreationView(LoginRequiredMixin, RepeatableWizardView):
+class SelectItemCreationView(SuccessMessageMixin, LoginRequiredMixin, RepeatableWizardView):
     page_title = _('Create new select item')
     context_object_name = 'subitem'
     slug_field = 'id'
     slug_url_kwarg = 'subitem_id'
     model = SelectItem
-    fields = ['name','price','tax']
+    fields = ['name', 'price', 'tax']
     pk_url_kwarg = 'id'
     parent_key = 'select'
     self_url = 'selectitem_create'
     delete_url = 'selectitem_delete'
-
+    success_message = _("Selectitem updated successfully")
 
     def get_back_url(self):
         return reverse_lazy('selectsubitem_create', kwargs={'subitem_id': self.get_parent_id()})
@@ -351,37 +323,42 @@ class SelectItemCreationView(LoginRequiredMixin, RepeatableWizardView):
         return super(SelectItemCreationView, self).form_valid(form)
 
 
-class SelectItemDeleteView(LoginRequiredMixin, DeleteView):
+class SelectItemDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = SelectItem
     slug_field = 'id'
     pk_url_kwarg = 'id'
     template = ''
+    success_message = _("Select Item deleted successfully")
 
     def get_success_url(self):
+        messages.success(self.request, self.success_message)
         return reverse_lazy('subitem_overview')
 
 
-class SubItemDeleteView(LoginRequiredMixin, DeleteView):
+class SubItemDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = ProductSubItem
     slug_field = 'id'
     slug_url_kwarg = "url_param"
     template = ''
+    success_message = _("Subitem deleted successfully")
 
     def get_success_url(self):
+        messages.success(self.request, self.success_message)
         return reverse_lazy('subitem_overview')
 
 
-class CategoryCreationView(LoginRequiredMixin, CreateView):
+class CategoryCreationView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     template_name = 'generic-create.html'
     context_object_name = 'categories'
     model = ProductCategory
     fields = '__all__'
+    success_message = _("Category created successfully")
 
     def get_success_url(self):
-        return reverse_lazy('categories_overview')
+        return reverse_lazy('category_edit', kwargs={'category_id': self.object.id})
 
 
-class CategoryEditView(LoginRequiredMixin, UpdateView):
+class CategoryEditView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     template_name = 'generic-edit.html'
     context_object_name = 'categories'
     model = ProductCategory
@@ -390,51 +367,43 @@ class CategoryEditView(LoginRequiredMixin, UpdateView):
     product_id = None
     slug_field = 'id'
     slug_url_kwarg = 'category_id'
+    success_message = _("Category updated successfully")
 
     def get_success_url(self):
-        return reverse_lazy('categories_overview')
+        return reverse_lazy('category_edit', kwargs={'category_id': self.object.id})
 
 
-class CategoryDeleteView(LoginRequiredMixin, DeleteView):
+class CategoryDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = ProductCategory
     slug_field = 'id'
     slug_url_kwarg = "url_param"
     template = ''
+    success_message = _("Category deleted successfully")
 
     def get_success_url(self):
+        messages.success(self.request, self.success_message)
         return reverse_lazy('categories_overview')
 
 
-class PagesOverviewView(LoginRequiredMixin, ListView):
+class PagesOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView):
     template_name = 'pages/pages-overview.html'
     context_object_name = 'pages'
     model = Page
-
-    def get(self, request, *args, **kwargs):
-        filter = PageFilter(request.GET, queryset=Page.objects.all())
-        return render(request, self.template_name,
-                      {'filter': filter})
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(PagesOverviewView, self).get_context_data(**kwargs)
+    filterset_class = PageFilter
 
 
-class PageCreateView(LoginRequiredMixin, CreateView):
+class PageCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     template_name = 'generic-create.html'
     context_object_name = 'page'
     model = Page
     fields = '__all__'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data()
-        context['sections'] = Section.objects.all()
-        return context
+    success_message = _("Page created successfully")
 
     def get_success_url(self):
-        return reverse_lazy('pages')
+        return reverse_lazy('page_edit', kwargs={'page_id': self.object.id})
 
 
-class PageEditView(LoginRequiredMixin, UpdateView):
+class PageEditView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     template_name = 'generic-edit.html'
     context_object_name = 'pages'
     model = Page
@@ -443,37 +412,37 @@ class PageEditView(LoginRequiredMixin, UpdateView):
     product_id = None
     slug_field = 'id'
     slug_url_kwarg = 'page_id'
+    success_message = _("Page updated successfully")
 
     def get_success_url(self):
-        return reverse_lazy('pages')
+        return reverse_lazy('page_edit', kwargs={'page_id': self.object.id})
 
 
-class PageDeleteView(LoginRequiredMixin, DeleteView):
+class PageDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Page
     slug_field = 'id'
     slug_url_kwarg = "url_param"
     template = ''
+    success_message = _("Page deleted successfully")
 
     def get_success_url(self):
+        messages.success(self.request, self.success_message)
         return reverse_lazy('pages')
 
 
-class SectionsOverviewView(LoginRequiredMixin, ListView):
+class SectionsOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView):
     template_name = 'pages/sections-overview.html'
     context_object_name = 'sections'
     model = Section
-
-    def get(self, request, *args, **kwargs):
-        filter = SectionFilter(request.GET, queryset=Section.objects.all())
-        return render(request, self.template_name,
-                      {'filter': filter})
+    filterset_class = SectionFilter
 
 
-class SectionCreateView(LoginRequiredMixin, CreateView):
+class SectionCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     template_name = 'generic-create.html'
     context_object_name = 'sections'
     model = Section
     fields = '__all__'
+    success_message = _("Section created successfully")
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
@@ -481,30 +450,33 @@ class SectionCreateView(LoginRequiredMixin, CreateView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('sections')
+        return reverse_lazy('section_edit', kwargs={'section_id': self.object.id})
 
 
-class SectionEditView(LoginRequiredMixin, UpdateView):
+class SectionEditView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     template_name = 'generic-edit.html'
     context_object_name = 'sections'
     model = Section
     fields = '__all__'
+    success_message = _("Section updated successfully")
 
     product_id = None
     slug_field = 'id'
     slug_url_kwarg = 'section_id'
 
     def get_success_url(self):
-        return reverse_lazy('sections')
+        return reverse_lazy('section_edit', kwargs={'section_id': self.object.id})
 
 
-class SectionDeleteView(LoginRequiredMixin, DeleteView):
+class SectionDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Section
     slug_field = 'id'
     slug_url_kwarg = "url_param"
     template = ''
+    success_message = _("Section deleted successfully")
 
     def get_success_url(self):
+        messages.success(self.request, self.success_message)
         return reverse_lazy('sections')
 
 
@@ -590,31 +562,28 @@ class OrderAcceptInvoiceView(View, EmailMixin):
                 if OrderDetail.objects.filter(bill_number__isnull=False).exists() else 1
             _order.save()
         pdf = GeneratePDFFile().generate(_order.order)
-        _order.bill_file = File(pdf,f"I_{_order.unique_bill_nr()}.pdf")
+        _order.bill_file = File(pdf, f"I_{_order.unique_bill_nr()}.pdf")
         _order.save()
         total = calculate_sum(_order.order.orderitem_set, True)
-        self.send_mail(_order.contact, _('Your Invoice ') + _order.unique_bill_nr(), '', {'object': _order.order,
-                                                                                     'contact': _order.contact,
-                                                                                     'total': total,
-                                                                                     'order': _order.order,
-                                                                                     'order_detail':_order,
-                                                                                     'files': {_(
-                                                                                         'Invoice') + "_" + _order.unique_bill_nr() +
-                                                                                               ".pdf": pdf.getvalue()},
-                                                                                     'host': self.request.META[
-                                                                                         'HTTP_HOST']},
+        self.send_mail(_order.contact, _('Your Invoice ') + _order.unique_bill_nr(), '',
+                       {'object': _order.order,
+                        'contact': _order.contact,
+                        'total': total,
+                        'order': _order.order,
+                        'order_detail': _order,
+                        'files': {_(
+                            'Invoice') + "_" + _order.unique_bill_nr() +
+                                  ".pdf": pdf.getvalue()},
+                        'host': self.request.META[
+                            'HTTP_HOST']},
                        _order.contact.billing_mail)
 
 
-class ShipmentOverviewView(LoginRequiredMixin, ListView):
+class ShipmentOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView):
     template_name = 'shipment-overview.html'
     context_object_name = 'shipment'
     model = Shipment
-
-    def get(self, request, *args, **kwargs):
-        filter = ShipmentPackageFilter(request.GET, queryset=Shipment.objects.all())
-        return render(request, self.template_name,
-                      {'filter': filter})
+    filterset_class = ShipmentFilter
 
 
 class IndividualOfferRequestOverview(LoginRequiredMixin, ListView):
@@ -657,7 +626,7 @@ class DeleteOrder(LoginRequiredMixin, DeleteView):
         return super(DeleteOrder, self).delete(request, *args, **kwargs)
 
 
-class CreateOrderView(LoginRequiredMixin, WizardView):
+class CreateOrderView(SuccessMessageMixin, LoginRequiredMixin, WizardView):
     page_title = _('Select customer')
     template_name = 'generic-create-form.html'
     order_id = None
@@ -665,6 +634,7 @@ class CreateOrderView(LoginRequiredMixin, WizardView):
     slug_url_kwarg = 'id'
     model = Order
     form_class = OrderForm
+    success_message = _('Order created successfully')
 
     def get_initial(self):
         initial = super(CreateOrderView, self).get_initial()
@@ -694,7 +664,7 @@ class CreateOrderView(LoginRequiredMixin, WizardView):
         return reverse_lazy('create_order_detail', kwargs={'parent_id': self.object.id, 'id': order_detail.id})
 
 
-class CreateOrderDetailView(LoginRequiredMixin, WizardView):
+class CreateOrderDetailView(SuccessMessageMixin, LoginRequiredMixin, WizardView):
     page_title = _('Define order details')
     model = OrderDetail
     pk_url_kwarg = 'id'
@@ -736,9 +706,9 @@ class CreateOrderSubItem(LoginRequiredMixin, WizardView):
     fields = []
 
     def get_back_url(self):
-        return reverse_lazy('create_order_item', kwargs={'id':'',
-                                                           'parent_id': OrderDetail.objects.get(
-                                                               id=self.get_parent_id()).id})
+        return reverse_lazy('create_order_item', kwargs={'id': '',
+                                                         'parent_id': OrderDetail.objects.get(
+                                                             id=self.get_parent_id()).id})
 
     def get_success_url(self):
         return reverse_lazy('management_detail_order',
@@ -774,7 +744,7 @@ class CreateOrderItem(LoginRequiredMixin, RepeatableWizardView):
 
     def get_next_url(self):
         return reverse_lazy('create_order_subitem',
-                            kwargs={'parent_id':self.get_parent_id()})
+                            kwargs={'parent_id': self.get_parent_id()})
 
     def get_success_url(self):
         return reverse_lazy('create_order_item', kwargs={'id': '', 'parent_id': self.get_parent_id()})
@@ -785,21 +755,24 @@ class CreateOrderItem(LoginRequiredMixin, RepeatableWizardView):
             id=self.get_parent_id()).order}}
 
 
-class DeleteOrderItem(LoginRequiredMixin, DeleteView):
+class DeleteOrderItem(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = OrderItem
     template_name = 'generic-create-form.html'
     pk_url_kwarg = 'id'
+    success_message = _('Order item deleted successfully')
 
     def get_success_url(self):
+        messages.success(self.request, self.success_message)
         return reverse_lazy('create_order_item', kwargs={'id': '',
                                                          'parent_id': OrderDetail.objects.get(
                                                              id=self.kwargs['parent_id']).id})
 
 
-class PaymentProviderSettings(LoginRequiredMixin, FormView):
+class PaymentProviderSettings(SuccessMessageMixin, LoginRequiredMixin, FormView):
     template_name = 'payment-settings.html'
     form_class = PaymentProviderForm
     success_url = reverse_lazy('payment_settings_details')
+    success_message = _("Payment settings saved!")
 
     def form_valid(self, form):
         paypal_provider = PaymentProvider.objects.get(api="PayPal")
@@ -823,7 +796,6 @@ class PaymentProviderSettings(LoginRequiredMixin, FormView):
         prepayment_method.save()
         paypal_method.save()
         paypal_provider.save()
-        messages.success(self.request, _("Payment settings saved!"))
         return super(PaymentProviderSettings, self).form_valid(form)
 
     def get_initial(self):
@@ -848,33 +820,25 @@ class PaymentProviderSettings(LoginRequiredMixin, FormView):
         return initial
 
 
-class HeadersOverviewView(LoginRequiredMixin, ListView):
+class HeadersOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView):
     template_name = 'pages/headers-overview.html'
     context_object_name = 'headers'
     model = Header
-
-    def get(self, request, *args, **kwargs):
-        filter = HeaderFilter(request.GET, queryset=Header.objects.all())
-        return render(request, self.template_name,
-                      {'filter': filter})
+    filterset_class = HeaderFilter
 
 
-class HeaderCreateView(LoginRequiredMixin, CreateView):
+class HeaderCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     template_name = 'generic-create.html'
     context_object_name = 'header'
     model = Header
     fields = '__all__'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data()
-        context['header'] = Header.objects.all()
-        return context
+    success_message = _("Header created successfully")
 
     def get_success_url(self):
-        return reverse_lazy('headers_overview')
+        return reverse_lazy('header_edit', kwargs={'header_id': self.object.id})
 
 
-class HeaderEditView(LoginRequiredMixin, UpdateView):
+class HeaderEditView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     template_name = 'generic-edit.html'
     context_object_name = 'header'
     model = Header
@@ -882,30 +846,29 @@ class HeaderEditView(LoginRequiredMixin, UpdateView):
 
     slug_field = 'id'
     slug_url_kwarg = 'header_id'
+    success_message = _("Header updated successfully")
 
     def get_success_url(self):
-        return reverse_lazy('headers_overview')
+        return reverse_lazy('header_edit', kwargs={'header_id': self.object.id})
 
 
-class HeaderDeleteView(LoginRequiredMixin, DeleteView):
+class HeaderDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Header
     slug_field = 'id'
     slug_url_kwarg = "url_param"
     template = ''
+    success_message = _("Header deleted successfully")
 
     def get_success_url(self):
+        messages.success(self.request, self.success_message)
         return reverse_lazy('headers_overview')
 
 
-class FootersOverviewView(LoginRequiredMixin, ListView):
+class FootersOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView):
     template_name = 'pages/footers-overview.html'
     context_object_name = 'footers'
     model = Footer
-
-    def get(self, request, *args, **kwargs):
-        filter = FooterFilter(request.GET, queryset=Footer.objects.all())
-        return render(request, self.template_name,
-                      {'filter': filter})
+    filterset_class = FooterFilter
 
 
 class FooterCreateView(LoginRequiredMixin, CreateView):
@@ -913,17 +876,13 @@ class FooterCreateView(LoginRequiredMixin, CreateView):
     context_object_name = 'footer'
     model = Footer
     fields = '__all__'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data()
-        context['footer'] = Footer.objects.all()
-        return context
+    success_message = _("Footer created successfully")
 
     def get_success_url(self):
-        return reverse_lazy('footers_overview')
+        return reverse_lazy('footer_edit', kwargs={'footer_id': self.object.id})
 
 
-class FooterEditView(LoginRequiredMixin, UpdateView):
+class FooterEditView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     template_name = 'generic-edit.html'
     context_object_name = 'footer'
     model = Footer
@@ -931,28 +890,32 @@ class FooterEditView(LoginRequiredMixin, UpdateView):
 
     slug_field = 'id'
     slug_url_kwarg = 'footer_id'
+    success_message = _("Footer updated successfully")
 
     def get_success_url(self):
-        return reverse_lazy('footers_overview')
+        return reverse_lazy('footer_edit', kwargs={'footer_id': self.object.id})
 
 
-class FooterDeleteView(LoginRequiredMixin, DeleteView):
+class FooterDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Footer
     slug_field = 'id'
     slug_url_kwarg = "url_param"
     template = ''
+    success_message = _("Footer deleted successfully")
 
     def get_success_url(self):
+        messages.success(self.request, self.success_message)
         return reverse_lazy('footers_overview')
 
 
-class CompanyCreationView(LoginRequiredMixin, WizardView):
+class CompanyCreationView(SuccessMessageMixin, LoginRequiredMixin, WizardView):
     page_title = _('Create Company')
     context_object_name = 'subitem'
     slug_field = 'id'
     slug_url_kwarg = 'id'
     model = Company
     fields = '__all__'
+    success_message = _("Company created successfully")
 
     def get_back_url(self):
         return reverse_lazy('management_index')
@@ -961,17 +924,19 @@ class CompanyCreationView(LoginRequiredMixin, WizardView):
         return reverse_lazy('contact_create', kwargs={'id': '', 'parent_id': self.object.id})
 
 
-class CompanyDeleteView(LoginRequiredMixin, DeleteView):
+class CompanyDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Company
     slug_field = 'id'
     slug_url_kwarg = "url_param"
     template = ''
+    success_message = _("Company deleted successfully")
 
     def get_success_url(self):
+        messages.success(self.request, self.success_message)
         return reverse_lazy('customers_overview')
 
 
-class ContactCreationView(LoginRequiredMixin, RepeatableWizardView, NotifyNewCustomerAccountView):
+class ContactCreationView(SuccessMessageMixin, LoginRequiredMixin, RepeatableWizardView, NotifyNewCustomerAccountView):
     page_title = _('Create new contact')
     context_object_name = 'subitem'
     slug_field = 'id'
@@ -1001,14 +966,13 @@ class ContactCreationView(LoginRequiredMixin, RepeatableWizardView, NotifyNewCus
         else:
             return ContactUserIncludingPasswordForm
 
-
     def form_valid(self, form):
         contact = form.save(commit=False)
         contact.company = Company.objects.get(id=self.get_parent_id())
         contact.username = contact.email
         contact.save()
         if 'notify_customer' in form.cleaned_data and form.cleaned_data['notify_customer']:
-            self.notify_client(_("Your account at ")+LegalSetting.objects.first().company_name , contact,
+            self.notify_client(_("Your account at ") + LegalSetting.objects.first().company_name, contact,
                                form.cleaned_data['new_password1'])
 
         group = Group.objects.get(name="client")
@@ -1022,7 +986,6 @@ class ContactCreationView(LoginRequiredMixin, RepeatableWizardView, NotifyNewCus
 
         return super(ContactCreationView, self).form_valid(form)
 
-
     def get_initial(self):
         initial = super(ContactCreationView, self).get_initial()
         initial['is_client_supervisor'] = self.object.groups.filter(name='client supervisor').exists() \
@@ -1034,7 +997,7 @@ class ContactCreationView(LoginRequiredMixin, RepeatableWizardView, NotifyNewCus
         return initial
 
 
-class ContactResetPwdView(LoginRequiredMixin, UpdateView, NotifyNewCustomerAccountView):
+class ContactResetPwdView(SuccessMessageMixin, LoginRequiredMixin, UpdateView, NotifyNewCustomerAccountView):
     template_name = 'generic-edit.html'
     model = Contact
     form_class = ContactUserUpdatePasswordForm
@@ -1053,28 +1016,31 @@ class ContactResetPwdView(LoginRequiredMixin, UpdateView, NotifyNewCustomerAccou
 
     def form_valid(self, form):
         if 'notify_customer' in form.cleaned_data and form.cleaned_data['notify_customer']:
-            self.notify_client(_("Your account at ")+LegalSetting.objects.first().company_name , self.get_object(),
+            self.notify_client(_("Your account at ") + LegalSetting.objects.first().company_name, self.get_object(),
                                form.cleaned_data['new_password1'])
         return super(ContactResetPwdView, self).form_valid(form)
 
 
-class ContactDeleteView(LoginRequiredMixin, DeleteView):
+class ContactDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Contact
     slug_field = 'id'
     pk_url_kwarg = 'id'
     template = ''
+    success_message = _("Contact deleted successfully")
 
     def get_success_url(self):
+        messages.success(self.request, self.success_message)
+
         return reverse_lazy('contact_create')
 
 
-class AddressCreationView(LoginRequiredMixin, RepeatableWizardView):
+class AddressCreationView(SuccessMessageMixin, LoginRequiredMixin, RepeatableWizardView):
     page_title = _('Create new address')
     context_object_name = 'subitem'
     slug_field = 'id'
     slug_url_kwarg = 'id'
     model = Address
-    fields = ['name','street','number','zipcode','city']
+    fields = ['name', 'street', 'number', 'zipcode', 'city']
     pk_url_kwarg = 'id'
     parent_key = 'contact'
     self_url = 'address_create'
@@ -1082,13 +1048,13 @@ class AddressCreationView(LoginRequiredMixin, RepeatableWizardView):
     text_add_item = _("Add address")
     text_select_item = _("Select an address to edit")
 
-
     def get_back_url(self):
         return reverse_lazy('contact_create', kwargs={'id': Contact.objects.get(id=self.get_parent_id()).id,
-                                                    'parent_id': Contact.objects.get(id=self.get_parent_id()).company.id})
+                                                      'parent_id': Contact.objects.get(
+                                                          id=self.get_parent_id()).company.id})
 
     def get_next_url(self):
-        return reverse_lazy('management_index' )
+        return reverse_lazy('management_index')
 
     def get_success_url(self):
         return reverse_lazy('address_create', kwargs={'id': '', 'parent_id': self.get_parent_id()})
@@ -1100,51 +1066,50 @@ class AddressCreationView(LoginRequiredMixin, RepeatableWizardView):
         return super(AddressCreationView, self).form_valid(form)
 
 
-class AddressDeleteView(LoginRequiredMixin, DeleteView):
+class AddressDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Address
     slug_field = 'id'
     pk_url_kwarg = 'id'
     template = ''
+    success_message = _("Address deleted successfully")
 
     def get_success_url(self):
+        messages.success(self.request, self.success_message)
         return reverse_lazy('address_create')
 
 
-class PercentageDiscountEditView(LoginRequiredMixin, CreateUpdateView):
+class PercentageDiscountEditView(SuccessMessageMixin, LoginRequiredMixin, CreateUpdateView):
     template_name = 'generic-edit.html'
     model = PercentageDiscount
     fields = '__all__'
     slug_field = 'id'
     slug_url_kwarg = 'id'
+    success_message = _("Discount updated successfully")
 
     def get_success_url(self):
-        return reverse_lazy('discount_overview')
+        return reverse_lazy('percentage_discount_edit', kwargs={'id': self.object.id})
 
 
-class FixedAmountDiscountEditView(LoginRequiredMixin, CreateUpdateView):
+class FixedAmountDiscountEditView(SuccessMessageMixin, LoginRequiredMixin, CreateUpdateView):
     template_name = 'generic-edit.html'
     model = FixedAmountDiscount
     fields = '__all__'
     slug_field = 'id'
     slug_url_kwarg = 'id'
+    success_message = _("Discount updated successfully")
 
     def get_success_url(self):
-        return reverse_lazy('discount_overview')
+        return reverse_lazy('fixed_discount_edit', kwargs={'id': self.object.id})
 
 
-class DiscountOverview(LoginRequiredMixin, ListView):
+class DiscountOverview(LoginRequiredMixin, PaginatedFilterViews, FilterView):
     template_name = 'discount-overview.html'
     model = Discount
     paginate_by = 50
     ordering = ['-date_added']
 
-    def get(self, request, *args, **kwargs):
-        filter = DiscountFilter(request.GET, queryset=Discount.objects.all())
-        return render(request, self.template_name,
-                      {'filter': filter})
 
-
-class MergeAccounts(LoginRequiredMixin, FormView, NotifyNewCustomerAccountView):
+class MergeAccounts(SuccessMessageMixin, LoginRequiredMixin, FormView, NotifyNewCustomerAccountView):
     form_class = MergeAccountsForm
     template_name = 'generic-edit.html'
     success_url = reverse_lazy('customers_overview')
@@ -1173,7 +1138,7 @@ class MergeAccounts(LoginRequiredMixin, FormView, NotifyNewCustomerAccountView):
             password = secrets.token_urlsafe(10)
             contact_to_merge_to.set_password(password)
             contact_to_merge_to.save()
-            self.notify_client(_("Your account at ")+LegalSetting.objects.first().company_name , contact_to_merge_to,
+            self.notify_client(_("Your account at ") + LegalSetting.objects.first().company_name, contact_to_merge_to,
                                password)
 
             group = Group.objects.get(name="client")
@@ -1193,16 +1158,17 @@ class MergeAccounts(LoginRequiredMixin, FormView, NotifyNewCustomerAccountView):
         return {**form_kwargs, **{'contact': Contact.objects.get(id=self.kwargs['id'])}}
 
 
-class OrderCreateView(LoginRequiredMixin, CreateUpdateView):
+class OrderCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateUpdateView):
     model = Order
     slug_field = 'order_hash'
     slug_url_kwarg = 'order_hash'
     template_name = 'vue/order-create-vue.html'
     fields = '__all__'
     context_object_name = 'order'
+    success_message = _('Order created successfully')
 
 
-class CacheManagementView(LoginRequiredMixin, FormView):
+class CacheManagementView(SuccessMessageMixin, LoginRequiredMixin, FormView):
     template_name = 'cache-management.html'
     form_class = ClearCacheForm
     success_url = reverse_lazy('cache_management_view')
@@ -1218,7 +1184,7 @@ class CacheManagementView(LoginRequiredMixin, FormView):
                 management.call_command('compress', verbosity=0)
                 messages.success(self.request, _("JS/CSS successfully recompiled"))
             except:
-                messages.error(self.request,_("Offline compression not enabled. CSS/JS are generated on-the-fly"))
+                messages.error(self.request, _("Offline compression not enabled. CSS/JS are generated on-the-fly"))
 
             cache_setting = CacheSetting.objects.first()
             cache_setting.cache_clear_required = False
@@ -1230,7 +1196,7 @@ class CacheManagementView(LoginRequiredMixin, FormView):
         cache.clear()
 
 
-class CustomerImportView(LoginRequiredMixin, FormView):
+class CustomerImportView(SuccessMessageMixin, LoginRequiredMixin, FormView):
     template_name = 'customer-import.html'
     form_class = CustomerImportForm
     success_url = reverse_lazy('customers_overview')
@@ -1259,13 +1225,13 @@ class CustomerImportView(LoginRequiredMixin, FormView):
                     group.user_set.add(contact)
                     sgroup = Group.objects.get(name='client supervisor')
                     sgroup.user_set.add(contact)
-                    count_successful_imports+=1
+                    count_successful_imports += 1
                 else:
-                    errors.append(_("User with mail %(mail)s already exists") % {'mail':row['email']})
+                    errors.append(_("User with mail %(mail)s already exists") % {'mail': row['email']})
             except Exception as e:
                 errors.append(str(e))
         messages.success(self.request, _("Successfully imported %(total_success)s of %(total)s") %
-                         {'total_success':str(count_successful_imports), 'total':csv_reader.line_num-1})
-        if len(errors)>0:
+                         {'total_success': str(count_successful_imports), 'total': csv_reader.line_num - 1})
+        if len(errors) > 0:
             messages.error(self.request, ", ".join(errors))
         return super(CustomerImportView, self).form_valid(form)
