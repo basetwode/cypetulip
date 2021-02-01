@@ -37,7 +37,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = (
-    'bootstrap4',
+    'bootstrap5',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -226,7 +226,7 @@ print(VERSION)
 load_settings()
 
 # Default settings
-BOOTSTRAP4 = {
+BOOTSTRAP5 = {
     # The complete URL to the Bootstrap CSS file
     # Note that a URL can be either a string,
     # e.g. "https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css",
@@ -254,9 +254,6 @@ BOOTSTRAP4 = {
     },
     # Put JavaScript in the HEAD section of the HTML document (only relevant if you use bootstrap4.html)
     'javascript_in_head': False,
-    # Include jQuery with Bootstrap JavaScript False|falsy|slim|full (default=False)
-    # False - means tag bootstrap_javascript use default value - `falsy` and does not include jQuery)
-    'include_jquery': "full",
     # Label class to use in horizontal forms
     'horizontal_label_class': 'col-md-3',
     # Field class to use in horizontal forms

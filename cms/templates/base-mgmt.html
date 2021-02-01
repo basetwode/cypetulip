@@ -1,6 +1,6 @@
 {% load static %}
 {% load i18n %}
-{% load bootstrap4 %}
+{% load bootstrap5 %}
 {% load compress %}
 {% get_current_language as language %}
 {% spaceless %}
@@ -24,8 +24,9 @@
                 }</style>
         {% endcompress %}
 
-        {% bootstrap_javascript jquery='full' %}
+        {% bootstrap_javascript %}
         {% compress js file thirdparty %}
+            <script src="{% static 'jquery/js/jquery.min.js' %}"></script>
             <script src="{% static 'cms/js/functions.js' %}"></script>
             <script src="{% static 'cms/js/site-loader.js' %}"></script>
             <script defer src="{% static 'fontawesome-free/js/fontawesome.min.js' %}"></script>
