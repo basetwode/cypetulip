@@ -22,7 +22,7 @@
                 <td>
                     <div class="row">
                         <div class="col-5 col-md-2">
-                            <select class="form-select" required
+                            <select required
                                     v-model="order_item.count" @change="orderItemCountChanged(order_item)">
                                 <option v-for="index in order_item.product.product.max_items_per_order"
                                         :value="index">[[index]]

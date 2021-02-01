@@ -13,21 +13,23 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf.urls import include, url
-from django.contrib.auth import views as auth_views
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
+from django.urls import path
 from django.views.generic import RedirectView
+from drf_spectacular.views import SpectacularSwaggerView, SpectacularRedocView, SpectacularAPIView
 
+from accounting import urls as accounting_urls
 from billing import urls as billing_urls
 from cms import urls as cms_urls
-from management import urls as admin_urls, rest
+from management import urls as admin_urls
+from management.api.viewsets import rest
 from mediaserver import urls as media_urls
 from payment import urls as payment_urls
 from permissions import urls as perm_urls
-from shop import urls as shop_urls
-from accounting import urls as accounting_urls
-from shipping import urls as shipping_urls
 from rma import urls as rma_urls
-
+from shipping import urls as shipping_urls
+from shop import urls as shop_urls
 # from Accounting import urls as accounting_urls
 # from home import settings
 from shop.authentification.views import PasswordResetViewSmtp, LoginView
@@ -45,6 +47,9 @@ site.storage = default_storage
 urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls')),
     url(r'^api/v1/', include(rest.router.urls)),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     url(r'^admin/filebrowser/', site.urls),
     url(r'^$', RedirectView.as_view(url='/cms/home/')),
     url(r'^admin/', admin.site.urls),

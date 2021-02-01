@@ -31,6 +31,7 @@ django-toolbelt==0.0.1
 django-uwsgi==0.2.2
 djangorestframework==3.11.0
 djangorestframework-oauth==1.1.0
+drf_spectacular==0.13.1
 filebrowser-safe==0.5.0
 future==0.18.2
 gunicorn==20.0.4

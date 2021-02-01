@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django_extensions',
     'rest_framework',
+    'drf_spectacular',
     'shop',
     'management',
     'billing',
@@ -307,7 +308,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
@@ -317,8 +317,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         'management.authentication.CsrfExemptSessionAuthentication',
-    ),'DATETIME_FORMAT': '%Y-%m-%d',
-
+    ), 'DATETIME_FORMAT': '%Y-%m-%d',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 COOKIEBANNER = {
@@ -374,7 +375,7 @@ COOKIEBANNER = {
 }
 CACHE_MIDDLEWARE_SECONDS = 0
 
-#SESSION_COOKIE_AGE = 60
+# SESSION_COOKIE_AGE = 60
 
 RECAPTCHA_PUBLIC_KEY = 'MyRecaptchaKey123'
 RECAPTCHA_PRIVATE_KEY = 'MyRecaptchaPrivateKey456'
@@ -389,10 +390,9 @@ STATICFILES_FINDERS = (
 COMPRESS_ENABLED = True
 COMPRESS_FILTERS = {'css': ['cms.compressor.CSSMinFilter'], 'js': ['compressor.filters.jsmin.JSMinFilter']}
 COMPRESS_PRECOMPILERS = (
-    #('text/x-scss', 'sass.bat {infile} {outfile}'), # windows / development
+    # ('text/x-scss', 'sass.bat {infile} {outfile}'), # windows / development
     ('text/x-scss', 'sass.bat {infile} {outfile}'),
 )
-
 
 import sys
 

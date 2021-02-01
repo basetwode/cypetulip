@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load bootstrap5 %}
 {% load fb_versions %}
-<div class="card card-hover ">
+<div class="card h-100 card-hover ">
     {% with product.category.path as category_path %}
         <a href="{% url 'shop:product_detail' category_path product.name %}">
             {% with product.productimage_set.all.0 as product_image %}

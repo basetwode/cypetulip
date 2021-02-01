@@ -7,6 +7,8 @@
 
 {% block head %}
     <title> {{ product.name }} - {{ product.category }} - {{ title }}</title>
+    <link rel="stylesheet" href="{% static 'swiper/swiper-bundle.min.css' %}"/>
+    <script src="{% static 'swiper/swiper-bundle.min.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -79,7 +81,7 @@
                     </div>
 
                     <!-- Left and right controls -->
-                    <a class="carousel-control-prev" href="#product" databs--slide="prev">
+                    <a class="carousel-control-prev" href="#product" data-bs-slide="prev">
                         <span><i class="text-black-50 fas fa-chevron-left"></i></span>
                     </a>
                     <a class="carousel-control-next" href="#product" data-bs-slide="next">
