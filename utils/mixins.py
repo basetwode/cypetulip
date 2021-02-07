@@ -2,6 +2,7 @@ import threading
 import time
 from email.mime.image import MIMEImage
 
+from celery import shared_task
 from django.apps import apps
 from django.core import mail
 from django.core.checks import translation
@@ -15,7 +16,9 @@ from django.views.generic.base import ContextMixin
 from home import settings
 from management.models import LegalSetting, MailSetting
 from shipping.models import OnlineShipment
-from shop.models import Order
+from shop.celery import celery_app
+from shop.models import Order, Contact
+from django.conf import settings as dsettings
 
 
 class EmailLogMixin:
@@ -27,6 +30,11 @@ class EmailLogMixin:
         #     kwargs
         # )
 
+@shared_task
+def send_mail_celery(receiver_user, content, subject, context, email_template):
+    mail_thread = EmailThread(receiver_user, content, subject, context, email_template)
+    mail_thread.create_mail()
+    mail_thread.email.send()
 
 class EmailMixin:
     email_template = ''
@@ -54,21 +62,33 @@ class EmailMixin:
             use_tls=settings.EMAIL_USE_TLS
         )
 
+
     def send_mail(self, receiver_user, subject, content, context, email_to=None):
-        mail_thread = EmailThread(receiver_user, content, subject, context, self.get_template(), self.connection(), email_to)
-        mail_thread.create_mail()
-        mail_thread.start()
+        print(dsettings.CELERY_BROKER_URL)
+
+        # Serialize objects in context
+        context.pop('form') if 'form' in context else None
+        context.pop('view') if 'view' in context else None
+
+        ObjectSerializer.deserialize(context)
+
+        if dsettings.CELERY_BROKER_URL:
+            send_mail_celery.delay(receiver_user.email, content, subject, context, self.get_template(), email_to)
+        if not dsettings.CELERY_BROKER_URL:
+            mail_thread = EmailThread(receiver_user.email, content, subject, context, self.get_template(), self.connection(), email_to)
+            mail_thread.create_mail()
+            mail_thread.start()
 
 
 class EmailThread(threading.Thread):
-    def __init__(self, receiver_user, content, subject, context, email_template, connection, email_to=None):
+    def __init__(self, receiver_user, content, subject, context, email_template, connection=None, email_to=None):
         super(EmailThread, self).__init__()
         self.subject = subject
         self.context = context
         self.content = content
         self.email_template = email_template
         self.receiver_user = receiver_user
-        self.connection = connection
+        self.connection = connection or EmailMixin().connection()
         self.email = None
         self.email_to = email_to
 
@@ -77,7 +97,7 @@ class EmailThread(threading.Thread):
         tries = 0
         # while (result is None or result is not 1) and tries < 5:
 
-        print("Sending new email to " + self.receiver_user.email)
+        print("Sending new email to " + self.receiver_user)
         legal = LegalSetting.objects.first()
         self.context['content'] = self.content
         self.context['legal'] = legal
@@ -89,37 +109,48 @@ class EmailThread(threading.Thread):
         email.mixed_subtype = 'related'
         email.content_subtype = 'html'
         email.attach_alternative(html_content, "text/html")
-        email.to = [self.receiver_user.email]
+
+        email.to = [self.receiver_user]
         if self.email_to:
             email.to.append(self.email_to)
 
 
-        logo_file = legal.logo.open("rb")
         try:
+            logo_file = legal.logo.open("rb")
             logo = MIMEImage(logo_file.read())
             logo.add_header('Content-ID', '<{}>'.format(legal.logo.name))
             email.attach(logo)
-        finally:
             logo_file.close()
+        except:
+            pass
+        # Fill context with objects from database
+        for k, v in self.context.items():
+            if hasattr(v,'__len__') and 'type' in v:
+                clazz = apps.get_model(app_label=v['app'], model_name=v['type'])
+                i = clazz.objects.get(id=v['id'])
+                self.context[k] = i
+
 
         if 'files' in self.context and self.context['files']:
             for file_name, file in self.context['files'].items():
-                email.attach(file_name, file, )
+                email.attach(file_name, open(file,'rb').read(), )
 
-        if 'object' in self.context and isinstance(self.context['object'], OnlineShipment):
+        if 'object' in self.context and isinstance(self.context['object'],OnlineShipment):
             email.attach_file(self.context['object'].file.path)
 
         if 'object' in self.context and isinstance(self.context['object'], Order):
-            for order_item in self.context['object'].orderitem_set.all():
+            for order_item in self.context['object'].orderitem_set.filter(orderitem__isnull=True):
                 if hasattr(order_item.product, 'product') and order_item.product.product.product_picture():
-                    product_file = order_item.product.product.product_picture().open("rb")
+
                     try:
+                        product_file = order_item.product.product.product_picture().open("rb")
                         product_img = MIMEImage(product_file.read())
                         product_img.add_header('Content-ID', '<{}>'
                                                .format(order_item.product.product.product_picture().name))
                         email.attach(product_img)
-                    finally:
                         product_file.close()
+                    except:
+                        pass
 
         print("from " + email.from_email)
         print("Sending mail")
@@ -153,3 +184,17 @@ class APIMixin(ContextMixin):
         current_app = resolve(self.request.path)
         config = apps.get_app_config(current_app.app_name)
         return {'api_config': config.api[current_app.app_name]}
+
+
+class ObjectSerializer():
+    @staticmethod
+    def deserialize(dict):
+        for k, v in dict.items():
+            if hasattr(v, '_meta'):
+                serialized = {'type': v._meta.object_name, 'id': v.id,
+                              'app': v._meta.app_label
+                              }
+                dict[k] = serialized
+            if k == 'files':
+                for kfile, vfile in v.items():
+                    dict['files'][kfile] = vfile.path

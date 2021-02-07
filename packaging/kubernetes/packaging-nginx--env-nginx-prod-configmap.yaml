@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  NGINX_HOST: localhost
+  NGINX_PORT: "80"
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: nginx-packaging-nginx--env-nginx-prod
+  name: packaging-nginx--env-nginx-prod

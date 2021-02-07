@@ -1,0 +1,72 @@
+
+version: '3.7'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./packaging/cypetulip/Dockerfile
+    working_dir: /opt/cypetulip
+    command:  daphne -b 0.0.0.0 -p 8000 home.asgi:application
+    volumes:
+      - .:/opt/cypetulip
+      - media_volume:/var/cypetulip/
+    expose:
+      - 8000
+    env_file:
+      - ./packaging/cypetulip/.env.cypetulip.prod
+    depends_on:
+      - redis
+    links:
+      - redis
+  nginx:
+    build:
+      context: ./packaging/nginx
+      dockerfile: Dockerfile
+    env_file:
+      - ./packaging/nginx/.env.nginx.prod
+    volumes:
+      - media_volume:/var/cypetulip/
+    ports:
+      - 80:80
+    depends_on:
+      - web
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-volume:/data
+  celery-beat:
+    build:
+      context: .
+      dockerfile: ./packaging/cypetulip/Dockerfile
+    command: celery -A home beat -l INFO
+    volumes:
+      - .:/opt/cypetulip
+    env_file:
+      - ./packaging/cypetulip/.env.cypetulip.prod
+    depends_on:
+      - web
+      - redis
+  celery-worker:
+    build:
+      context: .
+      dockerfile: ./packaging/cypetulip/Dockerfile
+    command: celery -A home worker -l INFO
+    volumes:
+      - .:/opt/cypetulip
+      - media_volume:/var/cypetulip/
+    env_file:
+      - ./packaging/cypetulip/.env.cypetulip.prod
+    depends_on:
+      - web
+      - redis
+  flower:
+    image: mher/flower
+    env_file:
+      - ./packaging/cypetulip/.env.cypetulip.prod
+    ports:
+      - 8888:8888
+volumes:
+  media_volume:

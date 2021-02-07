@@ -23,8 +23,10 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               SelectItemCreationView, SelectItemDeleteView, CompanyCreationView, ContactCreationView,
                               ContactDeleteView, AddressCreationView, AddressDeleteView, ContactResetPwdView,
                               CompanyDeleteView, PercentageDiscountEditView, DiscountOverview,
-                              FixedAmountDiscountEditView, MergeAccounts, OrderCreateView,
-                              CacheManagementView, CustomerImportView)
+                              FixedAmountDiscountEditView, CreateOrderSubItem, MergeAccounts, OrderCreateView,
+                              CacheManagementView, CustomerImportView, CommmunicationView, CommmunicationRetryView,
+                              CommmunicationDetailView)
+
 from shop.my_account.views import SearchOrders, SearchCustomers
 
 __author__ = ''
@@ -51,6 +53,12 @@ urlpatterns = [
         name='payment_settings_details'),
     url(r"^settings/cache/$",CacheManagementView.as_view(),
         name='cache_management_view'),
+    url(r"^communication/$", CommmunicationView.as_view(),
+        name='management_communication_view'),
+    url(r"^communication/(?P<uuid>[a-zA-Z0-9\\s\-_ ]*)/$", CommmunicationDetailView.as_view(),
+        name='management_communication_detail_view'),
+    url(r"^communication/(?P<uuid>[a-zA-Z0-9\\s\-_ ]*)/$", CommmunicationRetryView.as_view(),
+        name='management_communication_retry_view'),
 
     url(r'orders/search/', SearchOrders.as_view(), name="search_orders"),
     url(r'^orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)$', ManagementOrderDetailView.as_view(),

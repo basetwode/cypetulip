@@ -394,6 +394,10 @@ COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'sass.bat {infile} {outfile}'),
 )
 
+CELERY_BROKER_URL = None
+CELERY_RESULT_BACKEND = None
+FLOWER_URL = None #'http://localhost:8888/'
+
 import sys
 
 sys.path.append('/etc/cypetulip/')

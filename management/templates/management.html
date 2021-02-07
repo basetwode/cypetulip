@@ -104,6 +104,10 @@
                                                               style="font-size: 90%;">{{ users.count }}</span>
                             <span class="sr-only">unread messages</span>
                         </button>
+                        <div class="btn-group mt-1">
+                            <a href="{% url 'management_communication_view' %}"
+                               class="btn btn-primary mr-1">{% trans 'Communication Log' %}</a>
+                        </div>
                     </div>
                     <hr>
                     <div class="btn-group">

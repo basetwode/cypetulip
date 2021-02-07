@@ -1,5 +1,6 @@
 import csv
 import secrets
+import traceback
 from datetime import datetime
 
 from django.contrib import messages
@@ -8,7 +9,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.sessions.models import Session
 from django.core import management
 from django.core.files import File
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -20,7 +21,9 @@ from django_filters.views import FilterView
 from billing.utils import calculate_sum
 from billing.views import GeneratePDFFile
 from cms.models import Page, Section
-from management.filters import OrderDetailFilter
+
+from management.filters import OrderDetailFilter, DiscountFilter
+from management.flower import FlowerView
 from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm, ProductForm, \
     ContactUserForm, ContactUserIncludingPasswordForm, ContactUserUpdatePasswordForm, MergeAccountsForm, ClearCacheForm, \
     CustomerImportForm
@@ -30,7 +33,7 @@ from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_
 from permissions.mixins import LoginRequiredMixin
 from shipping.models import Shipment
 from shop.filters import ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
-    PageFilter, FooterFilter, HeaderFilter, ProductSubItemFilter, ShipmentFilter
+    PageFilter, ShipmentFilter, FooterFilter, HeaderFilter, ProductSubItemFilter
 from shop.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
     FileSubItem, IndividualOffer, ProductSubItem, NumberSubItem, CheckBoxSubItem, SelectSubItem, SelectItem, Address, \
@@ -39,6 +42,7 @@ from shop.order.utils import get_orderitems_once_only
 from shop.utils import json_response
 from utils.mixins import EmailMixin, PaginatedFilterViews
 from utils.views import CreateUpdateView
+from celery.events.state import Task
 
 
 class ManagementView(LoginRequiredMixin, TemplateView):
@@ -552,11 +556,13 @@ class OrderAcceptInvoiceView(View, EmailMixin):
             messages.success(request, _("Invoice sent"))
             return redirect(request.META.get('HTTP_REFERER'))
         except Exception as e:
+            traceback.print_last()
             messages.error(request, _("Something went wrong"))
             return redirect(request.META.get('HTTP_REFERER'))
 
     def send_invoice(self, _order, ):
         if not _order.bill_number:
+            _order.date_bill = datetime.now()
             _order.bill_number = (OrderDetail.objects.filter(bill_number__isnull=False).order_by(
                 'bill_number').last().bill_number + 1) \
                 if OrderDetail.objects.filter(bill_number__isnull=False).exists() else 1
@@ -565,17 +571,16 @@ class OrderAcceptInvoiceView(View, EmailMixin):
         _order.bill_file = File(pdf, f"I_{_order.unique_bill_nr()}.pdf")
         _order.save()
         total = calculate_sum(_order.order.orderitem_set, True)
-        self.send_mail(_order.contact, _('Your Invoice ') + _order.unique_bill_nr(), '',
-                       {'object': _order.order,
-                        'contact': _order.contact,
-                        'total': total,
-                        'order': _order.order,
-                        'order_detail': _order,
-                        'files': {_(
-                            'Invoice') + "_" + _order.unique_bill_nr() +
-                                  ".pdf": pdf.getvalue()},
-                        'host': self.request.META[
-                            'HTTP_HOST']},
+        self.send_mail(_order.contact, _('Your Invoice ') + _order.unique_bill_nr(), '', {'object': _order.order,
+                                                                                     'contact': _order.contact,
+                                                                                     'total': total,
+                                                                                     'order': _order.order,
+                                                                                     'order_detail':_order,
+                                                                                     'files': {_(
+                                                                                         'Invoice') + "_" + _order.unique_bill_nr() +
+                                                                                               ".pdf": _order.bill_file},
+                                                                                     'host': self.request.META[
+                                                                                         'HTTP_HOST']},
                        _order.contact.billing_mail)
 
 
@@ -1235,3 +1240,42 @@ class CustomerImportView(SuccessMessageMixin, LoginRequiredMixin, FormView):
         if len(errors) > 0:
             messages.error(self.request, ", ".join(errors))
         return super(CustomerImportView, self).form_valid(form)
+
+
+class CommmunicationView(TemplateView, FlowerView):
+    template_name = 'communication-log.html'
+    paginate_by = 20
+
+    # todo: detail views with buttons and edit data
+    # todo: retry view
+    # todo: results
+    def get_context_data(self, **kwargs):
+        page = int(self.request.GET['page']) if 'page' in self.request.GET else 0
+        tasks = self.get_tasks(page, self.paginate_by)
+
+        return {**{
+            "tasks": tasks,
+            "previous_page": page -1 if page > 0 else 0,
+            "curr_page": page,
+            "next_page": page +1 if len(tasks) > 0 and len(tasks)>=self.paginate_by else page,
+        },**super(CommmunicationView, self).get_context_data(**kwargs)}
+
+
+class CommmunicationDetailView(FlowerView, TemplateView):
+    template_name = 'communication-log-detail.html'
+
+    def __init__(self):
+        super(CommmunicationDetailView, self).__init__()
+
+    def get_context_data(self, **kwargs):
+        page = int(self.request.GET['page']) if 'page' in self.request.GET else 0
+        task = self.get_task_info(kwargs['uuid'])
+
+        return {**{
+            "task": task,
+        },**super(CommmunicationDetailView, self).get_context_data(**kwargs)}
+
+
+class CommmunicationRetryView(FormView, FlowerView):
+    template_name = 'communication-log.html'
+
