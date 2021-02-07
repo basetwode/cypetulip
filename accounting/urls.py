@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 __author__ = ''
 
-from accounting.views import AccountingView, AccountingViewExportCSV, AccountingFullExport
+from accounting.views.views import AccountingView, AccountingViewExportCSV, AccountingFullExport
 
 app_name = "accounting"
 

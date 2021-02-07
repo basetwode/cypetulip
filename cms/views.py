@@ -5,12 +5,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import View, TemplateView, FormView, UpdateView
+from django.views.generic import View, TemplateView, FormView
 
 from cms.forms import ContactForm, CSSSettingForm
 from cms.models import Page, Section
 from home.settings import STATIC_ROOT
-from management.models import MailSetting, LegalSetting, CacheSetting
+from management.models.models import MailSetting, LegalSetting, CacheSetting
 from permissions.error_handler import raise_404
 # Create your views here.
 from permissions.mixins import LoginRequiredMixin

@@ -5,8 +5,8 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from management.models import ShopSetting
-from shop.models import ProductAttributeType, IndividualOffer, Contact
+from management.models.models import ShopSetting
+from shop.models import ProductAttributeType, IndividualOffer
 
 
 class ProductAttributeForm(ModelForm):

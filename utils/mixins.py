@@ -1,24 +1,19 @@
 import threading
-import time
 from email.mime.image import MIMEImage
 
 from celery import shared_task
 from django.apps import apps
-from django.core import mail
-from django.core.checks import translation
+from django.conf import settings as dsettings
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template.loader import render_to_string
 from django.urls import resolve
 from django.views import View
-from django.db import connections
 from django.views.generic.base import ContextMixin
 
 from home import settings
-from management.models import LegalSetting, MailSetting
+from management.models.models import LegalSetting, MailSetting
 from shipping.models import OnlineShipment
-from shop.celery import celery_app
-from shop.models import Order, Contact
-from django.conf import settings as dsettings
+from shop.models import Order
 
 
 class EmailLogMixin:

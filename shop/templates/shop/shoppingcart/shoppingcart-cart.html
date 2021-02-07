@@ -261,7 +261,7 @@
                    class="btn btn-success float-end">{% trans 'Delivery' %} <i
                         class="fa fa-angle-right"></i></a>
             </div>
-            <form id="next-step-form" action="/shop/delivery/{{ order_details.order_hash }}" method="get">
+            <form id="next-step-form" action="{% url "shop:delivery_order" order_details.order_hash %}" method="get">
             </form>
         </div>
         <button type="button" class="btn btn-primary" ref="showModal" style="display: none" data-bs-toggle="modal"

@@ -1,0 +1,86 @@
+{% extends 'base-mgmt.html' %}
+{% load static %}
+{% load recurse %}
+{% load fb_versions %}
+{% load bootstrap5 %}
+
+{% load i18n %}
+{% block head %}
+    <script src="{% static 'onchange.js' %}"></script>
+    <script src="{% static 'utils.js' %}"></script>
+
+    <title>Products</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class=" col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4><strong>{% trans "Menu" %}</strong></h4>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12">
+                        <p>{% trans 'Manage orders' %}</p>
+                        <a href="{% url 'management_communication_view' %}"
+                           class="btn btn-fw btn-primary">{% trans 'Go back to all communication logs' %}</a>
+                        <a href="{% url 'management_index' %}"
+                           class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+
+                    <div class="row">
+                        <div class="col-md-2">
+                            <b>{% trans 'UUID' %}</b>
+                        </div>
+                        <div class="col-md-8">
+                            {{ task.uuid }}
+                        </div>
+                        <div class="col-md-2">
+                            <span
+                                    class="badge badge-pill {% if task.state == 'SUCCESS' %}badge-success{% else %}badge-error{% endif %}">{{ task.state }}
+                                                        </span>
+                        </div>
+                        <div class="col-md-2">
+                            <b>{% trans 'Task name' %}</b>
+                        </div>
+                        <div class="col-md-10">
+                            {{ task.name }}
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-body row">
+                <div class="col-lg-9 col-md-12 col-sm-12">
+                    <p><b>{% trans 'Date received' %}:</b> {{ task.get_received_date }}</p>
+                    <p><b>{% trans 'Date started' %}:</b> {{ task.get_started_date }}</p>
+                    <p><b>{% trans 'Date succeeded' %}:</b> {{ task.get_succeeded_date }}</p>
+                    <p><b>{% trans 'Runtime' %}:</b> {{ task.runtime }}</p>
+                    <p><b>{% trans 'Retries' %}:</b> {{ task.retries }}</p>
+                    <p><b>{% trans 'Result' %}:</b> {{ task.result }}</p>
+                    <p><b>{% trans 'Arguments' %}:</b> {% for arg in task.get_args %}
+                        {{ arg }},
+                    {% empty %}
+                        <small>{% trans 'No args' %}</small>
+                    {% endfor %}</p>
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12 text-center">
+                    <h5 class="h-bold">{% trans 'Options' %}</h5>
+                    <a href="{% url 'management_communication_retry_view' task.uuid %}"
+                       class="btn btn-fw btn-danger">{% trans 'Run again' %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

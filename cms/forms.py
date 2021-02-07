@@ -5,11 +5,10 @@ from django.forms import BooleanField, CharField, EmailField
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from management.models import ShopSetting
+from management.models.models import ShopSetting
 
 
 class ContactForm(forms.Form):
-
     name = CharField()
     email = EmailField()
     phone = CharField()
@@ -29,6 +28,7 @@ class ContactForm(forms.Form):
         self.fields['captcha'] = ReCaptchaField(widget=ReCaptchaV2Checkbox,
                                                 public_key=settings.google_recaptcha_publickey,
                                                 private_key=settings.google_recaptcha_privatekey)
+
 
 class CSSSettingForm(forms.Form):
     pass

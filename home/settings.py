@@ -241,20 +241,11 @@ BOOTSTRAP5 = {
     },
     # The complete URL to the Bootstrap CSS file (None means no theme)
     "theme_url": None,
-    # The URL to the jQuery JavaScript file (full)
-    "jquery_url": {
-        "url": "/static/jquery/js/jquery.min.js",
-    },
-    # The URL to the jQuery JavaScript file (slim)
-    "jquery_slim_url": {
-        "url": "/static/jquery/js/jquery-3.5.1.slim.min.js",
-    },
     # The URL to the Popper.js JavaScript file (slim)
     "popper_url": {
         "url": "/static/jquery/js/popper.min.js",
     },
-    # Put JavaScript in the HEAD section of the HTML document (only relevant if you use bootstrap4.html)
-    'javascript_in_head': False,
+
     # Label class to use in horizontal forms
     'horizontal_label_class': 'col-md-3',
     # Field class to use in horizontal forms
@@ -316,7 +307,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
-        'management.authentication.CsrfExemptSessionAuthentication',
+        'management.api.authentication.CsrfExemptSessionAuthentication',
     ), 'DATETIME_FORMAT': '%Y-%m-%d',
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],

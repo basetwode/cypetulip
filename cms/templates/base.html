@@ -16,9 +16,14 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <link rel="icon" href="/favicon.ico">
-
-        <link rel="preload" href="{% static 'fonts/raleway-v14-latin-regular.woff2' %}" as="font" type="font/woff2" crossorigin>
-        <link rel="preload" href="{% static 'fontawesome-free/webfonts/fa-solid-900.woff2' %}" as="font" type="font/woff2" crossorigin>
+        {% compress js file thirdparty %}
+            <script src="{% static 'jquery/js/jquery.min.js' %}"></script>
+        {% endcompress %}
+        {% bootstrap_javascript %}
+        <link rel="preload" href="{% static 'fonts/raleway-v14-latin-regular.woff2' %}" as="font" type="font/woff2"
+              crossorigin>
+        <link rel="preload" href="{% static 'fontawesome-free/webfonts/fa-solid-900.woff2' %}" as="font"
+              type="font/woff2" crossorigin>
 
         {% compress css inline %}
             <link rel="stylesheet" href={% static 'base.scss' %} type="text/x-scss" charset="utf-8">
@@ -50,6 +55,7 @@
 
         <div class="container">
             {% include 'notify-modal.html' %}
+            {% bootstrap_messages %}
 
             {% block body %}
             {% endblock %}
@@ -60,9 +66,7 @@
 
     {% include 'footer.html' %}
 
-    {% bootstrap_javascript %}
     {% compress js file thirdparty %}
-        <script src="{% static 'jquery/js/jquery.min.js' %}"></script>
         <script src="{% static 'cms/js/functions.js' %}"></script>
         <script src="{% static 'cms/js/site-loader.js' %}"></script>
         <script defer src="{% static 'fontawesome-free/js/fontawesome.min.js' %}"></script>

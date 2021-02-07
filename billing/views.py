@@ -13,9 +13,9 @@ from xhtml2pdf import pisa
 
 from billing.utils import calculate_sum, Round
 from home import settings
-from management.models import LegalSetting
+from management.models.models import LegalSetting
 from payment.models import PaymentDetail
-from permissions.mixins import LoginRequiredMixin, PermissionOwnsObjectMixin
+from permissions.mixins import PermissionOwnsObjectMixin
 from shop.models import Order, OrderDetail, OrderItem
 
 
