@@ -816,7 +816,7 @@ msgstr "Bitte wählen Sie den Mitarbeiter aus"
 
 #: .\management\templates\assign-employee.html:37
 #: .\management\templates\change-state.html:35
-#: .\management\templates\delete-modal.html:22
+#: .\management\templates\generic-modal-delete.html:22
 #: .\management\templates\vue\product-create-vue.html:45
 #: .\management\templates\vue\product-create-vue.html:101
 #: .\shipping\templates\create-shipment.html:16
@@ -880,8 +880,8 @@ msgid "Edit"
 msgstr "Bearbeiten"
 
 #: .\management\templates\categories-overview.html:64
-#: .\management\templates\delete-modal.html:7
-#: .\management\templates\delete-modal.html:23
+#: .\management\templates\generic-modal-delete.html:7
+#: .\management\templates\generic-modal-delete.html:23
 #: .\management\templates\individualoffer.html:111
 #: .\management\templates\order-details.html:400
 #: .\management\templates\order-details.html:489
@@ -969,7 +969,7 @@ msgstr "Kontakt löschen"
 msgid "Delete Company"
 msgstr "Unternehmen löschen"
 
-#: .\management\templates\delete-modal.html:19
+#: .\management\templates\generic-modal-delete.html:19
 msgid "Are you sure you want to delete?"
 msgstr "Wollen Sie wirklich löschen?"
 

@@ -1,0 +1,18 @@
+{% extends 'mail/base.html' %}
+{% load i18n %}
+
+{% block body %}
+    {% url 'shop:my_account' as overview %}
+
+    <p style="font-size:17px;color:#434144;"></p>
+
+    <p style="font-size:14px;color:#434144;">
+    <h5>{% trans 'Your Account at' %} {{ legal.company_name }}</h5>
+    {% trans 'Your account is ready!' %}<br><p></p>
+    <p style="padding-top:6px;padding-bottom: 6px ">{% trans 'You can now login at' %}
+        <a href="http://{{ host }}{{ overview }}">{% trans 'here' %}</a> <br>
+    </p>
+    <p>{% trans 'Your login credentials' %}: </p>
+    <p><p><b>{% trans 'E-Mail' %}:</b> {{ contact.username }}</p>
+    <p><b>{% trans 'Password' %}:</b> {{ password }}</p>
+{% endblock %}

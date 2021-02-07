@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
 from cms.models import Section, Page
-from management.models import Header, Footer
+from management.models.models import Header, Footer
 from shipping.models import Package, Shipment
 from shop.models import OrderDetail, Product, Contact, ProductCategory, FileSubItem, ProductSubItem
 

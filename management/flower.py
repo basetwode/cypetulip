@@ -3,7 +3,6 @@ import datetime
 import json
 
 import requests
-
 # from django.conf import settings
 from django.conf import settings
 
@@ -72,8 +71,8 @@ class FlowerView:
         self.server_uri = settings.FLOWER_URL
 
     def get_tasks(self, page=0, num_items=20):
-        offset = num_items*page
-        resp = requests.get(settings.FLOWER_URL + TASKS_PATH+"?offset="+str(offset)+"&limit="+str(num_items))
+        offset = num_items * page
+        resp = requests.get(settings.FLOWER_URL + TASKS_PATH + "?offset=" + str(offset) + "&limit=" + str(num_items))
         if 200 <= resp.status_code < 400:
             return [Task(**v) for k, v in json.loads(resp.content).items()]
         else:
@@ -91,4 +90,3 @@ class FlowerView:
         resp = requests.post(self.server_uri + TASKS_EXEC_PATH + task.name,
                              json={"args": task.get_args() or [] if len(task.get_args()) == 0 else task.get_args()})
         return 200 <= resp.status_code < 400
-

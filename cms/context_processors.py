@@ -1,6 +1,6 @@
 from cms.models import Page
 from home import settings
-from management.models import LegalSetting, CacheSetting
+from management.models.models import LegalSetting, CacheSetting
 
 __author__ = ''
 

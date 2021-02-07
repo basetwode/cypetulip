@@ -1,13 +1,10 @@
-from django.contrib.auth.models import User
-from django.db.models import When, FloatField, Case, Count, F
-from django.db.models.functions import Cast
+from django.db.models import When, FloatField, Case, F
 from django.utils import translation
-from django.views import View
-from django.views.generic import CreateView
 from django.utils.translation import ugettext_lazy as _
+from django.views import View
 
 from billing.utils import calculate_sum, Round
-from management.models import MailSetting, LegalSetting
+from management.models.models import MailSetting
 from shop.models import Contact, OrderDetail, OrderItem
 from utils.mixins import EmailMixin
 from utils.views import CreateUpdateView

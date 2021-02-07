@@ -1,11 +1,9 @@
-from functools import reduce
-
 from django.shortcuts import redirect, render
 from django.template.defaultfilters import lower
 from django.urls import reverse, reverse_lazy
 from django.views.generic import View, CreateView
 
-from payment.models import PaymentDetail, PaymentMethod, Payment
+from payment.models import PaymentDetail, PaymentMethod
 from shop.errors import (FieldError,
                          JsonResponse)
 from shop.models import Contact, Order, OrderDetail
@@ -61,7 +59,7 @@ class PaymentConfirmationView(View):
 
 
 class PaymentCreationView(CreateView):
-    template_name = 'generic-create.html'
+    template_name = 'management/generic/generic-create.html'
     context_object_name = PaymentDetail
     model = PaymentDetail
     fields = '__all__'

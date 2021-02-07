@@ -1,0 +1,18 @@
+{% extends 'mail/base.html' %}
+{% load i18n %}
+
+{% block body %}
+    {% url 'shop:detail_order' order.order.order_hash as overview %}
+
+    <p style="font-size:17px;color:#434144;"></p>
+
+    <p style="font-size:14px;color:#434144;">
+    <h5>{% trans 'Your Order' %} {{ order.unique_nr }}</h5>
+    {% trans 'Your order has been shipped!' %}<br><p></p>
+    <p style="padding-top:6px;padding-bottom: 6px ">
+        {% if object.file_name %}{% trans 'You can download your odered product in your account' %}{% else %}
+            {% trans 'Track your package' %}: {{ object.tracking_code }}{% endif %}</p>
+    {% trans 'Thank you for your order! Stay up to date by following its status' %}
+    <a href="http://{{ host }}{{ overview }}">{% trans 'here' %}</a> <br>
+    </p>
+{% endblock %}

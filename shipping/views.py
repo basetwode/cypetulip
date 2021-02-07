@@ -1,13 +1,12 @@
 # Create your views here.
 from django.contrib import messages
-from django.http import Http404
 from django.shortcuts import get_object_or_404
-from django.urls import  reverse
-from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.views.generic import UpdateView, DeleteView
 
 from cms.mixins import GenericCreateView
-from management.mixins import NotifyCustomerCreateView, NotifyCustomerUpdateView
+from management.views.mixins import NotifyCustomerCreateView, NotifyCustomerUpdateView
 from permissions.mixins import PermissionPostGetRequiredMixin
 from shipping.forms import OnlineShipmentForm, PackageForm
 from shipping.models import OnlineShipment, PackageShipment, Package, Shipment
@@ -17,7 +16,7 @@ from shop.models import OrderDetail, OrderState
 class CreateOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateView, GenericCreateView):
     model = OnlineShipment
     form_class = OnlineShipmentForm
-    template_name = 'settings-details.html'
+    template_name = 'management/settings/settings-details.html'
     permission_get_required = ['shipping.view_onlineshipment']
     permission_post_required = ['shipping.add_onlineshipment']
     page_name = _("Ship order (Digital)")
@@ -27,7 +26,7 @@ class CreateOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateV
     order_object = None
 
     def get_success_url(self):
-        return reverse('management_detail_order', kwargs={'order': self.object.order.order.order_hash})
+        return reverse('management_order_detail_view', kwargs={'order': self.object.order.order.order_hash})
 
     def form_valid(self, form):
         order: OrderDetail = self.get_order()
@@ -54,13 +53,13 @@ class CreatePackageShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreate
     form_class = PackageForm
     permission_get_required = ['shipping.view_packagehipment']
     permission_post_required = ['shipping.add_packageshipment']
-    template_name = 'settings-details.html'
+    template_name = 'management/settings/settings-details.html'
     page_name = _("Ship order")
     page_info = _("This will create a shipment and notify the customer that the item's been shipped")
     order_object = None
 
     def get_success_url(self):
-        return reverse('management_detail_order', kwargs={'order': self.kwargs['order']})
+        return reverse('management_order_detail_view', kwargs={'order': self.kwargs['order']})
 
     def form_valid(self, form):
         order: OrderDetail = self.get_order()
@@ -89,7 +88,7 @@ class CreatePackageShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreate
 
 class ShowOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerUpdateView, UpdateView):
     model = OnlineShipment
-    template_name = 'settings-details.html'
+    template_name = 'management/settings/settings-details.html'
     slug_field = 'id'
     slug_url_kwarg = 'id'
     fields = ['file']
@@ -104,7 +103,7 @@ class ShowOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerUpdateVie
                 **super().get_context_data()}
 
     def get_success_url(self):
-        return reverse('management_detail_order', kwargs={'order': self.object.order.order.order_hash})
+        return reverse('management_order_detail_view', kwargs={'order': self.object.order.order.order_hash})
 
     def form_valid(self, form):
         self.contact = self.object.order.contact
@@ -114,7 +113,7 @@ class ShowOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerUpdateVie
 
 class ShowPackageShipment(PermissionPostGetRequiredMixin, UpdateView):
     model = Package
-    template_name = 'settings-details.html'
+    template_name = 'management/settings/settings-details.html'
     slug_field = 'id'
     slug_url_kwarg = 'id'
     fields = '__all__'
@@ -124,7 +123,7 @@ class ShowPackageShipment(PermissionPostGetRequiredMixin, UpdateView):
     page_info = _("Update shipment")
 
     def get_success_url(self):
-        return reverse('management_detail_order', kwargs={'order': self.get_order().order.order_hash})
+        return reverse('management_order_detail_view', kwargs={'order': self.get_order().order.order_hash})
 
     def get_context_data(self, **kwargs):
         return {**{"page_name": f"{self.page_name} - "
@@ -147,5 +146,4 @@ class DeleteShipment(PermissionPostGetRequiredMixin, DeleteView):
     template = ''
 
     def get_success_url(self):
-        return reverse('management_detail_order', kwargs={'order': self.kwargs['order']})
-
+        return reverse('management_order_detail_view', kwargs={'order': self.kwargs['order']})

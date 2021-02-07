@@ -1,0 +1,55 @@
+{% extends 'base-mgmt.html' %}
+{% load static %}
+{% load recurse %}
+{% load bootstrap5 %}
+
+{% load i18n %}
+{% block head %}
+    <title>Products</title>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <script src="{% static 'jquery/js/jquery-ui.min.js' %}"></script>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'employee_create_view' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Add Employee' %}</a>
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9 mt-2 mt-md-0 table-responsive-sm">
+            <table class="table table-hover table-striped">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">{% trans 'Firstname' %}</th>
+                    <th scope="col">{% trans 'Lastname' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for employee in employees %}
+                    <tr>
+                        <td>{{ employee.id }}</td>
+                        <td>{{ employee.first_name }}</td>
+
+                        <td>{{ employee.last_name }}</td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base-mgmt.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% load recurse %}
+
+{% load i18n %}
+{% block head %}
+    <title>Admin - All orders</title>
+    <link href="{% static 'management.css' %}" rel="stylesheet">
+    <script src="{% static 'onchange.js' %}"></script>
+    <link href="{% static 'jquery/css/jquery-ui.min.css' %}" rel="stylesheet">
+    <link href="{% static 'jquery/css/jquery-ui.structure.min.css' %}" rel="stylesheet">
+    <link href="{% static 'jquery/css/jquery-ui.theme.min.css' %}" rel="stylesheet">
+    <script src="{% static 'jquery/js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'autocomplete.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'bootstrap-select/css/bootstrap-select.min.css' %}">
+    <script src="{% static 'bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-12"><h1>{% trans 'All Orders' %}</h1></div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="h-bold">{% trans "Menu" %}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="card-title h4">{% trans 'Filter' %}</div>
+                    <form action="" method="get">
+
+                        {% bootstrap_form filter.form %}
+                        <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
+
+                    </form>
+                    <hr>
+                    <a href="{% url 'management_index' %}"
+                       class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9 mt-2 mt-md-0">
+
+
+            {% if  object_list.count == 0 %}
+                <div class="card">
+                    <div style="overflow: auto" class="card-header orders-overview">
+                        <div style="overflow: auto" class="row">
+                            {% trans 'Nothing found' %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="list-group">
+                {% for order_detail in object_list %}
+
+                    <a href="{% url 'management_order_detail_view' order_detail.order.order_hash %}"
+                       class="list-group-item list-group-item-action">
+                        <div class="row">
+                            <div class="col-md-3" style="text-align: left; ">
+                                {{ order_detail.contact.first_name }} {{ order_detail.contact.last_name }}
+                                {% if order_detail.contact.company.name %}
+                                    <br><small><b>{{ order_detail.contact.company.name }}</b></small>
+
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3" style="text-align: left; ">
+                                <strong> {% trans 'Orderdate' %}</strong>
+                                <br>
+                                {{ order_detail.date_added }}
+                            </div>
+                            <div class="col-md-3" style="text-align: left; ">
+                                <strong> {% trans 'State' %}</strong>
+                                <br>
+                                <div class="progress">
+                                    <div class="progress-bar
+                                {% if order_detail.state.initial %}
+                                        bg-danger" aria-valuenow="20" style="width:20%"
+                                    {% endif %}{% if order_detail.state.is_paid_state %}
+                                         bg-warning" aria-valuenow="50" style="width:50%"
+                                    {% endif %}{% if order_detail.state.is_sent_state %}
+                                        bg-success" aria-valuenow="100" style="width:100%"
+                                    {% elif order_detail.state.next_state %}
+                                        bg-warning" aria-valuenow="50" style="width:50%"
+                                    {% else %}
+                                        bg-warning" aria-valuenow="100" style="width:100%"
+                                        role="progressbar"
+                                        aria-valuemin="0" aria-valuemax="100"
+                                    {% endif %}
+                                    >
+                                    {{ order_detail.state.name }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" style="text-align: left; ">
+                            <strong> Ordernr.:
+                                <small>{{ order_detail.unique_nr }}</small></strong>
+                        </div>
+                    </div>
+                    </a>
+                {% endfor %}
+
+        </div>
+
+        <div class="pt-3 pagination text-xs-center justify-content-center"
+             style="align-content: center; text-align: center">
+            {% bootstrap_pagination page_obj extra=request.GET.urlencode %}
+        </div>
+    </div>
+    </div>
+
+
+{% endblock %}
