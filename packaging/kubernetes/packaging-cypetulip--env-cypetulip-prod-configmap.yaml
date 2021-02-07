@@ -1,0 +1,18 @@
+apiVersion: v1
+data:
+  CACHE_MIDDLEWARE_SECONDS: "600"
+  CELERY_BACKEND: redis://redis:6379/0
+  CELERY_BROKER: redis://redis:6379/0
+  CELERY_BROKER_URL: redis://redis:6379/0
+  DEBUG: "1"
+  DJANGO_ALLOWED_HOSTS: localhost 127.0.0.1 [::1]
+  FLOWER_PORT: "8888"
+  REDIS_HOST: redis
+  SECRET_KEY: foo
+  SESSION_COOKIE_AGE: "604800"
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: celery-beat-packaging-cypetulip--env-cypetulip-prod
+  name: packaging-cypetulip--env-cypetulip-prod

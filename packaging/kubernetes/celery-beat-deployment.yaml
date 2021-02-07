@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Program Files\dart-sass\kompose.exe convert
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: celery-beat
+  name: celery-beat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: celery-beat
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Program Files\dart-sass\kompose.exe convert
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: celery-beat
+    spec:
+      containers:
+      - args:
+        - celery
+        - -A
+        - home
+        - beat
+        - -l
+        - INFO
+        env:
+        - name: CACHE_MIDDLEWARE_SECONDS
+          valueFrom:
+            configMapKeyRef:
+              key: CACHE_MIDDLEWARE_SECONDS
+              name: packaging-cypetulip--env-cypetulip-prod
+        - name: CELERY_BACKEND
+          valueFrom:
+            configMapKeyRef:
+              key: CELERY_BACKEND
+              name: packaging-cypetulip--env-cypetulip-prod
+        - name: CELERY_BROKER
+          valueFrom:
+            configMapKeyRef:
+              key: CELERY_BROKER
+              name: packaging-cypetulip--env-cypetulip-prod
+        - name: CELERY_BROKER_URL
+          valueFrom:
+            configMapKeyRef:
+              key: CELERY_BROKER_URL
+              name: packaging-cypetulip--env-cypetulip-prod
+        - name: DEBUG
+          valueFrom:
+            configMapKeyRef:
+              key: DEBUG
+              name: packaging-cypetulip--env-cypetulip-prod
+        - name: DJANGO_ALLOWED_HOSTS
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_ALLOWED_HOSTS
+              name: packaging-cypetulip--env-cypetulip-prod
+        - name: FLOWER_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: FLOWER_PORT
+              name: packaging-cypetulip--env-cypetulip-prod
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: REDIS_HOST
+              name: packaging-cypetulip--env-cypetulip-prod
+        - name: SECRET_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: SECRET_KEY
+              name: packaging-cypetulip--env-cypetulip-prod
+        - name: SESSION_COOKIE_AGE
+          valueFrom:
+            configMapKeyRef:
+              key: SESSION_COOKIE_AGE
+              name: packaging-cypetulip--env-cypetulip-prod
+        image: celery-beat
+        imagePullPolicy: ""
+        name: celery-beat
+        resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}
