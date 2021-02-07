@@ -26,12 +26,11 @@ from management.views import (CategoriesOverviewView, CategoryCreationView,
                               FixedAmountDiscountEditView, CreateOrderSubItem, MergeAccounts, OrderCreateView,
                               CacheManagementView, CustomerImportView, CommmunicationView, CommmunicationRetryView,
                               CommmunicationDetailView)
-
-from shop.my_account.views import SearchOrders, SearchCustomers
+from shop.views.account_views import SearchCustomers, SearchOrders
+from shop.views.product_views import OrderCancelView
 
 __author__ = ''
 
-from shop.views import OrderCancelView
 
 urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),

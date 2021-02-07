@@ -37,7 +37,7 @@
                         <h2>{{ page_title }}</h2>
                     </div>
                     <div class="card-body">
-                        {% include 'order/shopping-cart-vue.html' %}
+                        {% include 'shop/shoppingcart/shoppingcart-component-vue.html' %}
                     </div>
                     <div class="card-footer">
                         <a href="{{ return_url }}" class="btn btn-primary"> {% trans 'Back' %}</a>
@@ -74,5 +74,5 @@
         </div>
     </div>
 
-    {% include 'order/shopping-cart-vue-js.html' %}
+    {% include 'shop/shoppingcart/shoppingcart-component-cart.html' %}
 {% endblock %}

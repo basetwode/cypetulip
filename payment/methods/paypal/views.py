@@ -7,9 +7,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View
 from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest
 
-from billing.utils import calculate_sum
 from payment.models import Payment, PaymentDetail
-from shop.mixins import EmailConfirmView
+from shop.views.mixins import EmailConfirmView
 from shop.models import Order, OrderItem, OrderDetail, Product, OrderState
 from shop.utils import create_hash
 

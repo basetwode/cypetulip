@@ -9,7 +9,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.sessions.models import Session
 from django.core import management
 from django.core.files import File
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -22,7 +22,7 @@ from billing.utils import calculate_sum
 from billing.views import GeneratePDFFile
 from cms.models import Page, Section
 
-from management.filters import OrderDetailFilter, DiscountFilter
+from management.filters import OrderDetailFilter
 from management.flower import FlowerView
 from management.forms import OrderDetailForm, OrderForm, OrderItemForm, PaymentProviderForm, ProductForm, \
     ContactUserForm, ContactUserIncludingPasswordForm, ContactUserUpdatePasswordForm, MergeAccountsForm, ClearCacheForm, \
@@ -32,17 +32,16 @@ from management.models import LdapSetting, MailSetting, LegalSetting, ShopSettin
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME, PaymentProvider
 from permissions.mixins import LoginRequiredMixin
 from shipping.models import Shipment
-from shop.filters import ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
+from shop.filters.filters import ProductFilter, ContactFilter, ProductCategoryFilter, SectionFilter, \
     PageFilter, ShipmentFilter, FooterFilter, HeaderFilter, ProductSubItemFilter
-from shop.mixins import WizardView, RepeatableWizardView
+from shop.views.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, ProductCategory, Company, Employee, OrderDetail, OrderState, \
     FileSubItem, IndividualOffer, ProductSubItem, NumberSubItem, CheckBoxSubItem, SelectSubItem, SelectItem, Address, \
     Discount, PercentageDiscount, FixedAmountDiscount
-from shop.order.utils import get_orderitems_once_only
+from shop.utils import get_orderitems_once_only
 from shop.utils import json_response
 from utils.mixins import EmailMixin, PaginatedFilterViews
 from utils.views import CreateUpdateView
-from celery.events.state import Task
 
 
 class ManagementView(LoginRequiredMixin, TemplateView):
@@ -618,7 +617,7 @@ class DeleteIndividualOfferRequest(LoginRequiredMixin, DeleteView):
 
 class DeleteOrder(LoginRequiredMixin, DeleteView):
     model = Order
-    template_name = 'generic-create-form.html'
+    template_name = 'shop/account/../shop/templates/shop/generic/gemeroc-component-create-form.html'
     slug_url_kwarg = 'order_hash'
     slug_field = 'order_hash'
 
@@ -633,7 +632,7 @@ class DeleteOrder(LoginRequiredMixin, DeleteView):
 
 class CreateOrderView(SuccessMessageMixin, LoginRequiredMixin, WizardView):
     page_title = _('Select customer')
-    template_name = 'generic-create-form.html'
+    template_name = 'shop/account/../shop/templates/shop/generic/gemeroc-component-create-form.html'
     order_id = None
     slug_field = 'id'
     slug_url_kwarg = 'id'
@@ -762,7 +761,7 @@ class CreateOrderItem(LoginRequiredMixin, RepeatableWizardView):
 
 class DeleteOrderItem(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = OrderItem
-    template_name = 'generic-create-form.html'
+    template_name = 'shop/account/../shop/templates/shop/generic/gemeroc-component-create-form.html'
     pk_url_kwarg = 'id'
     success_message = _('Order item deleted successfully')
 

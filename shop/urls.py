@@ -3,14 +3,10 @@ from django.views.decorators.cache import cache_page
 from django.views.generic import RedirectView
 
 from home.settings import CACHE_MIDDLEWARE_SECONDS
-from shop.authentification.views import (CompanyView, LoginView, LogoutView,
-                                         RegisterView)
-from shop.my_account.views import (AccountSettingsView, CompanySettingsView,
-                                   MyAccountView, OrderDetailView, OrdersView,
-                                   SearchOrders, AddressCreationView, AddressEditView, AddressDeleteView,
-                                   AddressOverviewView, PasswordChangeViewCustomer)
-from shop.order.views import ShoppingCartDetailView, ShoppingCartView, DeliveryView
-from shop.views import *
+from shop.views.authentication_views import *
+from shop.views.product_views import *
+from shop.views.shoppingcart_views import *
+from shop.views.account_views import *
 
 __author__ = ''
 app_name = 'shop'
@@ -31,7 +27,7 @@ urlpatterns = [
     url(r'^delivery/(?P<order>[\S0-9_.-\\s\- ]*)$', DeliveryView.as_view(), name="delivery_order"),
     url(r'^confirmed/(?P<order>[a-zA-Z0-9\\s\-_ ]+)$', OrderConfirmedView.as_view(), name="confirmed_order"),
 
-    url(r'^products/$', ProductView.as_view(), name="products"),
+    url(r'^products/$', ProductView.as_view(), name="products"), # ProductsOverview und name dann prodcuts_overview
     url(r'^products/(?P<category>[\S0-9_.-\\s\- ]*)$', ProductView.as_view(), name="products"),
     url(r"^product/(?P<category>[\S0-9_.-\\s\- ]*)/(?P<product>[\S0-9_.-\\s\- ]+)$",
         cache_page(CACHE_MIDDLEWARE_SECONDS)(ProductDetailView.as_view()),name='product_detail'),

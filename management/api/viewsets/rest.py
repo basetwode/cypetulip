@@ -9,7 +9,7 @@ from management.api.serializers.rest import OrderSerializer, OrderDetailSerializ
     SelectOrderItemSerializer, NumberOrderItemSerializer, CheckboxOrderItemSerializer, OrderStateSerializer, \
     PaymentDetailSerializer, PaymentMethodSerializer
 from payment.models import PaymentDetail, PaymentMethod, Payment
-from shop.api.viewsets.rest import AddressViewSet, GuestViewSet, ContactViewSet, DeliveryViewSet, OrderViewSet, \
+from shop.api.v1.viewsets import AddressViewSet, GuestViewSet, ContactViewSet, DeliveryViewSet, OrderViewSet, \
     OrderItemViewSet, \
     CheckboxOrderItemViewSet, NumberOrderItemViewSet, SelectOrderItemViewSet, FileOrderItemViewSet, ApplyVoucherViewSet, \
     ContactSerializer, AddressSerializer

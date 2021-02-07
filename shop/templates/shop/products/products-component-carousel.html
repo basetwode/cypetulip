@@ -1,0 +1,24 @@
+{% load i18n %}
+
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+        {% for product in product_list|slice:":50" %}
+            <div class="swiper-slide">
+                {% include 'shop/products/products-component-card.html' with product=product %}</div>
+        {% empty %}
+            <h5 class="ps-3 text-center w-100">{% trans 'Nothing found' %}</h5>
+        {% endfor %}
+    </div>
+    <!-- Add Pagination -->
+    <div class="swiper-pagination"></div>
+</div>
+<script>
+    var swiper = new Swiper('.swiper-container', {
+        slidesPerView: 4,
+        spaceBetween: 30,
+        centeredSlides: true,
+    });
+</script>
+
+
+

@@ -2,10 +2,9 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import View
 
-from management.mixins import NotifyCustomerCreateView
 from payment.models import Payment, PaymentDetail
-from shop.mixins import EmailConfirmView
-from shop.models import Contact, Order, OrderItem, Product, OrderDetail
+from shop.views.mixins import EmailConfirmView
+from shop.models import Order, OrderItem, Product, OrderDetail
 from shop.utils import create_hash
 
 __author__ = 'Anselm'

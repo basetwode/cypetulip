@@ -32,7 +32,7 @@ from shipping import urls as shipping_urls
 from shop import urls as shop_urls
 # from Accounting import urls as accounting_urls
 # from home import settings
-from shop.authentification.views import PasswordResetViewSmtp, LoginView
+from shop.views.authentication_views import PasswordResetViewSmtp, LoginView
 
 admin.autodiscover()
 

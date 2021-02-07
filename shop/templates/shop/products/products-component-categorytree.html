@@ -1,0 +1,29 @@
+{% for category in categories %}
+<li class="list-group-item" id="v_hm">
+    <div class="heading">
+        <div class="arrowImage"></div>
+        <a class="link"
+           {{ selected_category }}
+           {% if category.id == selected_category.id %}
+               style="font-weight: bolder; color: #8300ff"
+           {% elif last_items == 1%}
+                style="font-weight: bolder;"
+            {% endif %}
+
+           href="/shop/products/{{ category.path }}?">{{ category.name }}</a>
+    </div>
+
+    {% if category.productcategory_set.count > 0 %}
+        {% if category.name in selected_category.path %}
+        <ul class="list-group sub">
+        {% if category.id == selected_category.id %}
+            {% include "shop/products/products-component-categorytree.html" with categories=category.productcategory_set.all last_items=1 %}
+        {% else %}
+            {% include "shop/products/products-component-categorytree.html" with categories=category.productcategory_set.all  %}
+        {% endif %}
+        </ul>
+
+        {% endif %}
+    {% endif %}
+</li>
+{% endfor %}
