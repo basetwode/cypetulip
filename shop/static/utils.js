@@ -1,6 +1,6 @@
-function addToCart(product) {
+function addToCart(url) {
     $.ajax({
-        url: '/shop/cart/add/' + product,
+        url: url ,
         method: 'post',
         data: $('#add-cart-form').serialize(),
 

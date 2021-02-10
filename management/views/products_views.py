@@ -8,8 +8,8 @@ from django_filters.views import FilterView
 
 from management.forms.forms import ProductForm
 from permissions.mixins import LoginRequiredMixin
-from shop.filters import ProductFilter, ProductSubItemFilter
-from shop.mixins import WizardView, RepeatableWizardView
+from shop.filters.filters import ProductFilter, ProductSubItemFilter
+from shop.views.mixins import WizardView, RepeatableWizardView
 from shop.models import Product, FileSubItem, ProductSubItem, NumberSubItem, CheckBoxSubItem, SelectSubItem, SelectItem
 from utils.mixins import PaginatedFilterViews
 from utils.views import CreateUpdateView

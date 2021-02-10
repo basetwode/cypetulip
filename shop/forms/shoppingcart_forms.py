@@ -97,3 +97,9 @@ class ContactForm(ModelForm):
     class Meta:
         model = Contact
         fields = ('first_name', 'last_name', 'gender', 'telephone', 'email')
+
+
+class OrderItemForm(ModelForm):
+    class Meta:
+        model = OrderItem
+        fields = []

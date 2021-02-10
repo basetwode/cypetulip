@@ -20,18 +20,20 @@ urlpatterns = [
     url(r'^companies/create', CompanyView.create, name='create-company'),
     url(r'^logout/', LogoutView.as_view()),
 
-    url(r'^cart/add/(?P<product>[\S0-9_.-\\s\- ]*)$', ShoppingCartView.as_view()),
-    url(r'^cart/remove/([0-9]*)$', ShoppingCartDetailView.as_view(), name="remove_order_item_from_shoppingcart"),
-    url(r'^cart/$', ShoppingCartDetailView.as_view(), name="shopping_cart"),
-    url(r'^delivery/remove/([0-9]*)$', DeliveryView.as_view(), name="remove_order_item_from_delivery"),
-    url(r'^delivery/(?P<order>[\S0-9_.-\\s\- ]*)$', DeliveryView.as_view(), name="delivery_order"),
-    url(r'^confirmed/(?P<order>[a-zA-Z0-9\\s\-_ ]+)$', OrderConfirmedView.as_view(), name="confirmed_order"),
+    # todo: use uuid ?
+    url(r'^cart/$', ShoppingCartDetailView.as_view(), name="shoppingcart_cart"),
+    # todo: must include category path
+    url(r'^cart/(?P<path>[\S0-9_.-\\s\- ]*)/(?P<name>[\S0-9_.-\\s\- ]*)/add/$', ShoppingCartAddItemView.as_view(), name="shoppingcart_add"),
+    # todo: whats the second one for?
+    url(r'^cart/delivery/(?P<uuid>[a-zA-Z0-9\\s\-_ ]+)/$', DeliveryView.as_view(), name="delivery_order"),
+    url(r'^cart/confirmed/(?P<uuid>[a-zA-Z0-9\\s\-_ ]+)/$', OrderConfirmedView.as_view(), name="confirmed_order"),
+
 
     url(r'^products/$', ProductView.as_view(), name="products"), # ProductsOverview und name dann prodcuts_overview
     url(r'^products/(?P<category>[\S0-9_.-\\s\- ]*)$', ProductView.as_view(), name="products"),
-    url(r"^product/(?P<category>[\S0-9_.-\\s\- ]*)/(?P<product>[\S0-9_.-\\s\- ]+)$",
+    url(r"^products/(?P<category>[\S0-9_.-\\s\- ]*)/(?P<product>[\S0-9_.-\\s\- ]+)$",
         cache_page(CACHE_MIDDLEWARE_SECONDS)(ProductDetailView.as_view()),name='product_detail'),
-    url(r"^product/(?P<product>[\S0-9_.-\\s\- ]+)/order/(?P<order_step>[0-9]+)$", OrderView.as_view()),
+    url(r"^products/(?P<product>[\S0-9_.-\\s\- ]+)/order/(?P<order_step>[0-9]+)$", OrderView.as_view()),
 
     url(r'^myaccount/$', MyAccountView.as_view(), name="my_account"),
     url(r'^myaccount/password_change/$', PasswordChangeViewCustomer.as_view(), name="password_change"),
