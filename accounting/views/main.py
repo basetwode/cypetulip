@@ -10,7 +10,7 @@ from django_filters.views import FilterView
 from six import BytesIO
 
 from accounting.filters.filters import OrderDetailFilter
-from billing.views import GeneratePDFFile
+from billing.views.main import GeneratePDFFile
 from payment.models import Payment
 from permissions.mixins import LoginRequiredMixin
 from shop.models import OrderState, OrderDetail, Product

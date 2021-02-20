@@ -529,15 +529,15 @@
             },
             methods: {
                 loadInitialData: function () {
-                    let paymentMethods = axios.get('/api/v1/adm/paymentmethod')
+                    let paymentMethods = axios.get('/api/v1/paymentmethod')
                         .then(response => {
                             this.paymentMethods = response.data
                         });
-                    let orderStates = axios.get('/api/v1/adm/orderstate')
+                    let orderStates = axios.get('/api/v1/orderstate')
                         .then(response => {
                             this.orderStates = response.data
                         });
-                    let contactsPromise = axios.get('/api/v1/adm/contacts')
+                    let contactsPromise = axios.get('/api/v1/contacts')
                         .then(response => {
                             this.contacts = response.data
                         });
@@ -573,14 +573,14 @@
                                 this.orderItems = this.selectedOrder.order_items
 
                             });
-                        orderdetailsPromise = axios.get('/api/v1/adm/orderdetails/' + this.selectedOrderHash)
+                        orderdetailsPromise = axios.get('/api/v1/orderdetails?orderHash=' + this.selectedOrderHash)
                             .then(response => {
                                 this.orderDetails = response.data[0];
                                 this.selectedContact = this.orderDetails.contact
                                 this.selectedShippingAddress = this.orderDetails.shipment_address;
                                 this.selectedBillingAddress = this.orderDetails.billing_address;
                                 this.billingAddressEqualShipping = this.selectedBillingAddress === this.selectedShippingAddress;
-                                axios.get('/api/v1/adm/contacts/' + this.selectedContact + '/addresses/')
+                                axios.get('/api/v1/contacts/' + this.selectedContact + '/addresses/')
                                     .then(response => {
                                         this.addresses = response.data
                                     });
@@ -615,7 +615,7 @@
                     this.saveOrderDetail();
                 },
                 onContactSelected: function (event) {
-                    axios.get('/api/v1/adm/contacts/' + this.selectedContact + '/addresses/')
+                    axios.get('/api/v1/contacts/' + this.selectedContact + '/addresses/')
                         .then(response => {
                             this.addresses = response.data
                         });
@@ -724,7 +724,7 @@
                 },
                 saveOrderDetail: function () {
                     if (this.orderDetails) {
-                        axios.put('/api/v1/adm/orderdetails/' + this.selectedOrderHash + '/' + this.orderDetails.id + '/', {
+                        axios.put('/api/v1/orderdetails?orderHash=' + this.selectedOrderHash + '/' + this.orderDetails.id + '/', {
                             'shipment_address': this.selectedShippingAddress,
                             'billing_address': this.selectedBillingAddress,
                             'order_number': this.selectedOrderHash,
@@ -735,7 +735,7 @@
                             loadingSpinner.addClass('overlay-hidden');
                         })
                     } else {
-                        axios.post('/api/v1/adm/orderdetails/', {
+                        axios.post('/api/v1/orderdetails/', {
                             'order_number': this.selectedOrderHash,
                             // in this case we do't need order.id since the data came from a different rest api (see saveOrder)
                             'order': this.selectedOrder.id,
@@ -744,7 +744,7 @@
                             'billing_address': this.selectedBillingAddress,
                             'contact': this.selectedContact
                         }).then(response => {
-                            axios.post('/api/v1/adm/paymentdetail/', {
+                            axios.post('/api/v1/paymentdetail/', {
                                 'order': this.selectedOrder.id,
                                 'method': this.paymentMethods.filter(method => method.name === 'Bill')[0].id,
                                 'user': this.selectedContact
@@ -769,7 +769,7 @@
                     let orderItem = this.transformItem(item, parent_item, uri);
 
                     if (item.id) {
-                        axios.put('/api/v1/adm/' + uri + '/' + item.id + '/', orderItem,
+                        axios.put('/api/v1/' + uri + '/' + item.id + '/', orderItem,
                             {
                                 headers: {
                                     'Content-Type': 'multipart/form-data',
@@ -783,7 +783,7 @@
                             loadingSpinner.addClass('overlay-hidden');
                         })
                     } else {
-                        axios.post('/api/v1/adm/' + uri + '/', orderItem,
+                        axios.post('/api/v1/' + uri + '/', orderItem,
                             {
                                 headers: {
                                     'Content-Type': 'multipart/form-data',
@@ -827,7 +827,7 @@
                         item.order_items.splice(index, 1);
                     } else {
                         let instance = this;
-                        axios.delete('/api/v1/adm/orderitem/' + sub_item.id)
+                        axios.delete('/api/v1/orderitem/' + sub_item.id)
                             .then(response => {
                                 instance.reloadData();
                             })
@@ -839,7 +839,7 @@
                         this.orderItems.splice(index, 1);
                     } else {
                         let instance = this;
-                        axios.delete('/api/v1/adm/orderitem/' + item.id)
+                        axios.delete('/api/v1/orderitem/' + item.id)
                             .then(response => {
                                 instance.reloadData();
                             })

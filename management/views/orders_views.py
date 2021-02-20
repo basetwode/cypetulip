@@ -11,17 +11,17 @@ from django.views.generic import DetailView, View, DeleteView
 from django_filters.views import FilterView
 
 from billing.utils import calculate_sum
-from billing.views import GeneratePDFFile
+from billing.views.main import GeneratePDFFile
 from management.filters.filters import OrderDetailFilter
 from management.forms.forms import OrderDetailForm, OrderForm, OrderItemForm
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME
 from permissions.mixins import LoginRequiredMixin
 from shipping.models import Shipment
-from shop.views.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, Employee, OrderDetail, OrderState, \
     IndividualOffer
 from shop.utils import get_orderitems_once_only
 from shop.utils import json_response
+from shop.views.mixins import WizardView, RepeatableWizardView
 from utils.mixins import EmailMixin, PaginatedFilterViews
 from utils.views import CreateUpdateView
 

@@ -4,16 +4,13 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext as _
-from django.views import View
 from django.views.generic import View, TemplateView, DetailView, FormView
 
-from shop.errors import Error, FieldError
-from shop.errors import JsonResponse
-from shop.models import Contact, Order, OrderItem, Product, ProductSubItem, OrderDetail, OrderState
 from shop.forms.shoppingcart_forms import ItemBuilder, SubItemForm, OrderDetail, OrderItemForm
-from shop.utils import json_response
+from shop.models import Contact, Order, OrderItem, Product, ProductSubItem, OrderState
 
 __author__ = 'Anselm'
+
 
 class ShoppingCartDetailView(DetailView):
     template_name = 'shop/shoppingcart/shoppingcart-cart.html'
@@ -22,8 +19,8 @@ class ShoppingCartDetailView(DetailView):
 
     def get_object(self, queryset=None):
         return Order.objects.get(orderdetail__state__isnull=True,
-                                    company=Contact.objects.get(
-                                        user_ptr=self.request.user).company) if self.request.user.is_authenticated \
+                                 company=Contact.objects.get(
+                                     user_ptr=self.request.user).company) if self.request.user.is_authenticated \
             else Order.objects.get(is_send=False, session=self.request.session.session_key)
 
 

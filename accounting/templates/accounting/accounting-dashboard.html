@@ -1,4 +1,4 @@
-{% extends 'base-mgmt.html' %}
+{% extends 'cms/base-mgmt.html' %}
 {% load recurse %}
 {% load static %}
 {% load bootstrap5 %}
@@ -279,12 +279,13 @@
             },
             methods: {
                 getYearForOrdersPerMonthChart: function () {
-                    return '2020'
+                    return '2021'
                 },
                 loadData: function () {
-                    return axios.get(`/api/v1/accounting/orders/${this.getYearForOrdersPerMonthChart()}`)
+                    return axios.get(`/api/v1/orderdetails/?orderYear=${this.getYearForOrdersPerMonthChart()}`)
                         .then(response => {
                             response.data.forEach(entry => {
+
                                 this.ordersPerMonth[entry.date_bill__month - 1] = entry.counted_orders
                             })
                             ordersPerMonthChart.update();

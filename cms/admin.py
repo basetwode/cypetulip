@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from cms.models import *
+from cms.models.models import *
 
 # Register your models here.
 

@@ -57,7 +57,7 @@ class HTMLPreview(PermissionOwnsObjectMixin, View):
             'invoice_settings': legal_settings,
         }
 
-        return render(request, 'invoice.html', context)
+        return render(request, 'billing/invoice.html', context)
 
 
 
@@ -92,7 +92,7 @@ class GeneratePDFFile():
             'payment_detail': payment_detail,
             'invoice_settings': legal_settings,
         }
-        return self.render_to_pdf('invoice.html', context)
+        return self.render_to_pdf('billing/invoice.html', context)
 
     def render_to_pdf(self, template_src, context_dict=None):
         if context_dict is None:

@@ -87,7 +87,7 @@ class EmailConfirmView(EmailMixin, View):
 
 
 class WizardView(CreateUpdateView):
-    template_name = 'shop/account/../templates/shop/generic/gemeroc-component-create-form.html'
+    template_name = 'shop/generic/generic-component-create-form.html'
     page_title = ''
 
     def get_back_url(self):

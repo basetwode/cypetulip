@@ -2,6 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
+from management.api.v1.serializers import CompanySerializer
 from shop.models import Address, Contact, Company, OrderDetail, OrderItem, Product, ProductSubItem, FileSubItem, \
     SelectSubItem, CheckBoxSubItem, NumberSubItem, SelectItem, FileOrderItem, SelectOrderItem, NumberOrderItem, \
     CheckBoxOrderItem, Discount, ProductImage
@@ -77,7 +78,7 @@ class ProductSubItemSerializer(serializers.ModelSerializer):
         return True
 
 
-class OrderItemDeserializer(serializers.ModelSerializer):
+class BasicOrderItemSerializer(serializers.ModelSerializer):
     price = serializers.ReadOnlyField()
     total_wt = serializers.ReadOnlyField()
     allowable = serializers.HiddenField(default=True)
@@ -89,7 +90,7 @@ class OrderItemDeserializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FileOrderItemSerializer(serializers.ModelSerializer):
+class BasicFileOrderItemSerializer(serializers.ModelSerializer):
     price = serializers.ReadOnlyField()
     allowable = serializers.HiddenField(default=True)
 
@@ -110,7 +111,7 @@ class FileOrderItemSerializer(serializers.ModelSerializer):
                                                 filesubitem.extensions))
 
 
-class SelectOrderItemSerializer(serializers.ModelSerializer):
+class BasicSelectOrderItemSerializer(serializers.ModelSerializer):
     price = serializers.ReadOnlyField()
     allowable = serializers.HiddenField(default=True)
 
@@ -119,7 +120,7 @@ class SelectOrderItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class NumberOrderItemSerializer(serializers.ModelSerializer):
+class BasicNumberOrderItemSerializer(serializers.ModelSerializer):
     price = serializers.ReadOnlyField()
     allowable = serializers.HiddenField(default=True)
 
@@ -128,7 +129,7 @@ class NumberOrderItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CheckboxOrderItemSerializer(serializers.ModelSerializer):
+class BasicCheckboxOrderItemSerializer(serializers.ModelSerializer):
     price = serializers.ReadOnlyField()
     allowable = serializers.HiddenField(default=True)
 
@@ -178,7 +179,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         return True
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class BasicOrderSerializer(serializers.ModelSerializer):
     order_items = serializers.SerializerMethodField('get_order_items')
     voucher = SerializerMethodField()
 
@@ -196,16 +197,7 @@ class OrderSerializer(serializers.ModelSerializer):
         return object.discount.voucher_id if object.discount else ""
 
 
-class CompanySerializer(serializers.ModelSerializer):
-    def create(self, request):
-        return Company.objects.create(**request)
-
-    class Meta:
-        model = Company
-        fields = '__all__'
-
-
-class ContactSerializer(serializers.ModelSerializer):
+class BasicContactSerializer(serializers.ModelSerializer):
     company = CompanySerializer()
 
     def create(self, request):

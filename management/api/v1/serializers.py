@@ -53,12 +53,15 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class CompanySerializer(serializers.ModelSerializer):
+    def create(self, request):
+        return Company.objects.create(**request)
+
     class Meta:
         model = Company
         fields = '__all__'
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class FullOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__'
@@ -67,14 +70,13 @@ class OrderSerializer(serializers.ModelSerializer):
 class OrderDetailSerializer(serializers.ModelSerializer):
     total = serializers.ReadOnlyField()
     total_wt = serializers.ReadOnlyField()
-    date_bill__month_count = serializers.ReadOnlyField(source='date_bill__month.count')
 
     class Meta:
         model = OrderDetail
         fields = '__all__'
 
 
-class OrderItemSerializer(serializers.ModelSerializer):
+class FullOrderItemSerializer(serializers.ModelSerializer):
     total_wt = serializers.ReadOnlyField()
     period_of_performance_start = serializers.DateField(input_formats=['%Y-%m-%d', ], required=False)
     period_of_performance_end = serializers.DateField(input_formats=['%Y-%m-%d', ], required=False)
@@ -84,25 +86,25 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FileOrderItemSerializer(serializers.ModelSerializer):
+class FullFileOrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = FileOrderItem
         fields = '__all__'
 
 
-class SelectOrderItemSerializer(serializers.ModelSerializer):
+class FullSelectOrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = SelectOrderItem
         fields = '__all__'
 
 
-class NumberOrderItemSerializer(serializers.ModelSerializer):
+class FullNumberOrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = NumberOrderItem
         fields = '__all__'
 
 
-class CheckboxOrderItemSerializer(serializers.ModelSerializer):
+class FullCheckboxOrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CheckBoxOrderItem
         fields = '__all__'

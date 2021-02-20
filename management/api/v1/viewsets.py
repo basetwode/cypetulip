@@ -2,26 +2,14 @@ import django_filters
 from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissions, IsAdminUser
 
-from management.api.v1.serializers import OrderSerializer, OrderDetailSerializer, OrderItemSerializer, \
-    CompanySerializer, ProductSerializer, ProductCategorySerializer, ProductAttributeTypeSerializer, \
-    ProductAttributeTypeInstanceSerializer, ProductSubItemSerializer, ProductImageSerializer, FileOrderItemSerializer, \
-    SelectOrderItemSerializer, NumberOrderItemSerializer, CheckboxOrderItemSerializer, OrderStateSerializer, \
+from management.api.v1.serializers import OrderDetailSerializer, CompanySerializer, ProductSerializer, \
+    ProductCategorySerializer, ProductAttributeTypeSerializer, \
+    ProductAttributeTypeInstanceSerializer, ProductSubItemSerializer, ProductImageSerializer, OrderStateSerializer, \
     PaymentDetailSerializer, PaymentMethodSerializer
 from payment.models import PaymentDetail, PaymentMethod, Payment
-from shop.api.v1.viewsets import AddressViewSet, GuestViewSet, ContactViewSet, DeliveryViewSet, OrderViewSet, \
-    OrderItemViewSet, \
-    CheckboxOrderItemViewSet, NumberOrderItemViewSet, SelectOrderItemViewSet, FileOrderItemViewSet, ApplyVoucherViewSet, \
-    ContactSerializer, AddressSerializer
 from shop.models import Product, ProductCategory, ProductAttributeType, ProductAttributeTypeInstance, ProductSubItem, \
-    ProductImage, Company, Contact, Address, OrderDetail, OrderItem, CheckBoxOrderItem, NumberOrderItem, \
-    SelectOrderItem, FileOrderItem, Order, OrderState
+    ProductImage, Company, OrderDetail, OrderState
 from shop.utils import create_hash
-
-
-class OrderAdmViewSet(viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
 
 
 class OrderDetailAdmViewSet(viewsets.ModelViewSet):
@@ -31,35 +19,15 @@ class OrderDetailAdmViewSet(viewsets.ModelViewSet):
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
 
     def get_queryset(self):
-        if 'order_hash' in self.kwargs:
-            return OrderDetail.objects.filter(order__order_hash=self.kwargs['order_hash'])
+        queryset = OrderDetail.objects.all()
+        order_hash = self.request.query_params.get('orderHash', None)
+        order_year = self.request.query_params.get('orderYear', None)
+        if order_hash is not None:
+            return queryset.filter(order__order_hash=order_hash)
+        if order_year is not None:
+            return queryset.filter(date_bill__year=order_year)
         else:
             return super(OrderDetailAdmViewSet, self).get_queryset()
-
-
-class OrderItemAdmViewSet(viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = OrderItem.objects.all()
-    serializer_class = OrderItemSerializer
-
-
-class ContactAdmViewSet(viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = Contact.objects.all()
-    serializer_class = ContactSerializer
-
-
-class AddressAdmViewSet(viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = Address.objects.all()
-    serializer_class = AddressSerializer
-
-    def get_queryset(self):
-        if 'id' in self.kwargs:
-            contact = Contact.objects.get(id=self.kwargs['id'])
-            return Address.objects.filter(contact__in=contact.company.contact_set.all())
-        else:
-            return super(AddressAdmViewSet, self).get_queryset()
 
 
 class CompanyViewSet(viewsets.ModelViewSet):
@@ -110,31 +78,7 @@ class ProductImageViewSetForProduct(viewsets.ModelViewSet):
     serializer_class = ProductImageSerializer
 
     def get_queryset(self):
-        return super(ProductImageViewSetForProduct, self).get_queryset().filter(product=self.kwargs['productId'])
-
-
-class FileOrderItemAdmViewSet(viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = FileOrderItem.objects.all()
-    serializer_class = FileOrderItemSerializer
-
-
-class SelectOrderItemAdmViewSet(viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = SelectOrderItem.objects.all()
-    serializer_class = SelectOrderItemSerializer
-
-
-class NumberOrderItemAdmViewSet(viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = NumberOrderItem.objects.all()
-    serializer_class = NumberOrderItemSerializer
-
-
-class CheckboxOrderItemAdmViewSet(viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = CheckBoxOrderItem.objects.all()
-    serializer_class = CheckboxOrderItemSerializer
+        return super(ProductImageViewSetForProduct, self).get_queryset().filter(product=self.kwargs['id'])
 
 
 class OrderStateViewSet(viewsets.ModelViewSet):

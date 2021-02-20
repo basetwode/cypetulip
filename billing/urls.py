@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from billing.views import GeneratePDF, HTMLPreview
+from billing.views.main import GeneratePDF, HTMLPreview
 
 __author__ = ''
 app_name = 'billing'

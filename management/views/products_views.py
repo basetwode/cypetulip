@@ -9,8 +9,8 @@ from django_filters.views import FilterView
 from management.forms.forms import ProductForm
 from permissions.mixins import LoginRequiredMixin
 from shop.filters.filters import ProductFilter, ProductSubItemFilter
-from shop.views.mixins import WizardView, RepeatableWizardView
 from shop.models import Product, FileSubItem, ProductSubItem, NumberSubItem, CheckBoxSubItem, SelectSubItem, SelectItem
+from shop.views.mixins import WizardView, RepeatableWizardView
 from utils.mixins import PaginatedFilterViews
 from utils.views import CreateUpdateView
 
@@ -130,6 +130,10 @@ class SelectSubItemCreationView(SuccessMessageMixin, LoginRequiredMixin, WizardV
 
     def get_success_url(self):
         return reverse_lazy('selectsubitem_create_view', kwargs={'id': self.object.id})
+
+    def get_back_url(self):
+        if self.get_object():
+            return reverse_lazy('subitem_overview')
 
 
 class SelectItemCreationView(SuccessMessageMixin, LoginRequiredMixin, RepeatableWizardView):
