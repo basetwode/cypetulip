@@ -6,6 +6,7 @@ from shop.models import OrderDetail, Discount
 
 
 class OrderDetailFilter(django_filters.FilterSet):
+    date_added = django_filters.DateFromToRangeFilter(label='Date (Between)')
     free_field_filter = django_filters.CharFilter(field_name="free_field_filter", label=_('Search orders'),
                                                   method='custom_field_filter')
 

@@ -38,26 +38,16 @@ class AccountingView(LoginRequiredMixin, PaginatedFilterViews, FilterView, Multi
         counted_open_shipments = OrderDetail.objects.filter(state__is_paid_state=True).count()
         counted_open_payments = Payment.objects.filter(is_paid=False).count()
 
-        # related_orderitems = OrderItem.objects.filter(order_detail__in=OrderDetail.objects.filter(orderitem__product=self),
-        #                                               order_item__isnull=True).exclude(product=self).order_by('product')
-        #
-        # amount_per_month = OrderDetail.objects.all() \
-        #     .annotate(ocount=Count('orderitem', filter=Q(orderitem__in=related_orderitems))) \
-        #     .filter(ocount__gt=0) \
-        #     .order_by('-ocount')
-
         stock_list = Product.objects.filter(stock__lt=10).filter(stock__gte=0).order_by('stock')
         stock_paginator = Paginator(stock_list, 10)
         stock_page_number = self.request.GET.get('stock-page')
         stock_page_obj = stock_paginator.get_page(stock_page_number)
-        # TODO zurück zum accounting link im menü
         # TODO absprung für weitere analysen
         # analyse des kundenumsatzes
         # analyse gearbeitete stunden pro kunde
 
         return {**super(AccountingView, self).get_context_data(), **{'total_net': total_net, 'total_gross': total_gross,
                                                                      'counted_open_orders': counted_open_orders,
-                                                                     'filter': filter,
                                                                      'counted_open_payments': counted_open_payments,
                                                                      'counted_open_shipments': counted_open_shipments,
                                                                      'last_orders': last_orders,

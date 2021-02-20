@@ -29,7 +29,6 @@
                     <h4 class="h-bold">{% trans "Menu" %}</h4>
                 </div>
                 <div class="card-body">
-
                     <hr>
                     <a href="{% url 'management_index' %}"
                        class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
@@ -106,7 +105,9 @@
                     <div class="card">
                         <div class="card-header">
                             <span>{% trans 'Select a year to show data' %}</span><br/>
-                            <input type="text" id="yearpicker" class="yearpicker" value="">
+                            <div class="col-12 col-md-6">
+                                <input type="text" id="yearpicker" class="yearpicker form-control" value="">
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">
@@ -133,7 +134,7 @@
                                           {% endif %}
                                     ">
                                         <span>{{ product.name }}</span>
-                                        <span class="float-end text-bold badge rounded-pill bg-danger">{{ product.stock }}</span>
+                                        <span class="float-end text-bold badge rounded-pill bg-info">{{ product.stock }}</span>
                                     </li>
                                 {% endfor %}
 
@@ -146,126 +147,6 @@
                         <div class="card-footer">
                             {% trans 'Red: Stock is empty' %}<br/>
                             {% trans 'Orange: Stock is under 5 items' %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-3 mb-5">
-                <div class="col">
-                    <div class="card">
-                        <div class="card-header">
-                            <div>{% trans "Last Orders" %}</div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <form action="" method="get">
-                                        <div class="row">
-                                            {% bootstrap_form filter.form exclude='date_added' form_group_class='col-6' %}
-                                        </div>
-                                        <div class="form-group has-success ">
-                                            <div class="row">
-                                                <div class="col-6"><label
-                                                        for="startdate">{% trans "Startdate" %}</label></div>
-                                                <div class="col-6"><label for="enddate">{% trans "Enddate" %}</label>
-                                                </div>
-
-                                            </div>
-                                            <div class="row">
-                                                <div id="startdate" class="col-6"><input
-                                                        type="date" name="date_added_after"
-                                                        class="form-control has-success"
-                                                        value="{{ filter.form.data.date_added_after }}"
-                                                        placeholder="Date (Between)" title="" id="id_date_added_0">
-                                                </div>
-                                                <div id="enddate" class="col-6"><input type="date"
-                                                                                       name="date_added_before"
-                                                                                       class="form-control has-success"
-                                                                                       value="{{ filter.form.data.date_added_before }}"
-                                                                                       placeholder="Date (Between)"
-                                                                                       title="" id="id_date_added_1">
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <button class="btn btn-primary"
-                                                        type="submit">{% trans 'Go' %}</button>
-                                            </div>
-                                        </div>
-
-                                    </form>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <form class="mb-1" action="{% url 'accounting:export_csv' %}" method="get">
-                                        <div class="hidden">
-
-                                            {% bootstrap_form filter.form %}
-                                        </div>
-                                        <button class="btn btn-primary btn-fw"
-                                                type="submit">{% trans 'Export' %}</button>
-                                    </form>
-                                    <form class="mb-1" action="{% url 'accounting:export' %}" method="get">
-                                        <div class="hidden">
-
-                                            {% bootstrap_form filter.form %}
-                                        </div>
-                                        <button class="btn btn-secondary btn-fw"
-                                                type="submit">{% trans 'Export (incl. Invoice)' %}</button>
-                                    </form>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="card-body">
-                            <div class="list-group list-group-flush">
-                                {% for order in filter.qs %}
-                                    <a href="{% url 'management_order_detail_view' order.order.order_hash %}"
-                                       class="list-group-item list-group-item-action ">
-                                        <div class="row">
-                                            <div class="col-4 font-weight-bold overflow-auto">{% trans 'Ordernr' %}</div>
-                                            <div class="col-4 font-weight-bold overflow-auto">{% trans 'Orderdate' %}</div>
-                                            <div class="col-4 font-weight-bold overflow-auto">{% trans 'Billdate' %}</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-4">{{ order.unique_nr }}</div>
-                                            <div class="col-4">{{ order.date_added }}</div>
-                                            <div class="col-4">{{ order.date_bill }}</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <div class="progress">
-                                                    <div class="progress-bar
-                                        {% if order.state.initial %}
-                                        bg-danger" aria-valuenow="20" style="width:20%"
-                                                    {% endif %}{% if order.state.is_paid_state %}
-                                                         bg-warning" aria-valuenow="50" style="width:50%"
-                                                    {% endif %}{% if order.state.is_sent_state %}
-                                                        bg-success" aria-valuenow="100" style="width:100%"
-                                                    {% elif order.state.next_state %}
-                                                        bg-warning" aria-valuenow="50" style="width:50%"
-                                                    {% else %}
-                                                        bg-warning" aria-valuenow="100" style="width:100%"
-                                                        role="progressbar"
-                                                        aria-valuemin="0" aria-valuemax="100"
-                                                    {% endif %}
-                                                    >
-                                                    {{ order.state.name }}
-                                                    {% if not order.state %}
-                                                        {% trans 'Shoppingcart' %}
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        <div class="col-4">
-                                            {{ order.total }} €
-                                        </div>
-                                    </div>
-                                    </a>
-
-                                {% endfor %}
                         </div>
                     </div>
                 </div>

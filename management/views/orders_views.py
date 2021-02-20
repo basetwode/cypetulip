@@ -42,6 +42,7 @@ class ManagementOrderDetailView(LoginRequiredMixin, DetailView):
     model = Order
     slug_url_kwarg = 'order'
     slug_field = 'order_hash'
+    filterset_class = OrderDetailFilter
 
     def get_context_data(self, **kwargs):
         employees = Employee.objects.all()
