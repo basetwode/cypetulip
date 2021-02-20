@@ -16,7 +16,8 @@ from management.views.main import ManagementView
 from management.views.offers_views import IndividualOfferRequestOverview, IndividualOfferRequestView, \
     DeleteIndividualOfferRequest
 from management.views.orders_views import ManagementOrderOverview, ManagementOrderDetailView, OrderAssignEmployeeView, \
-    OrderCreateView, DeleteOrder, OrderPayView, OrderShipView, OrderChangeStateView, OrderAcceptInvoiceView
+    OrderCreateView, DeleteOrder, OrderPayView, OrderShipView, OrderChangeStateView, OrderAcceptInvoiceView, \
+    ManagementFullExport, ManagementOrderExportCSV
 from management.views.products_views import ProductCreationView, ProductEditView, ProductDeleteView, \
     ProductsOverview, FileSubItemCreationView, NumberSubItemCreateUpdateView, CheckboxSubItemCreateUpdateView, \
     SelectSubItemCreationView, SelectItemCreationView, SelectItemDeleteView, SubItemDeleteView, SubItemOverview
@@ -130,6 +131,9 @@ urlpatterns = [
         OrderChangeStateView.as_view(), name="order_change_state_view"),
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/accept$',
         OrderAcceptInvoiceView.as_view(), name="order_accept_view"),
+
+    url(r'^export/csv/$', ManagementOrderExportCSV.as_view(), name="export_csv"),
+    url(r'^export/full/$', ManagementFullExport.as_view(), name="export"),
 
     url(r'^offers/$', IndividualOfferRequestOverview.as_view(), name="individualoffers_overview"),
     url(r'^offers/(?P<id>[a-zA-Z0-9\\s\-_ ]+)/$', IndividualOfferRequestView.as_view(),

@@ -60,7 +60,7 @@
                     </form>
                     <hr>
                     <div class="col">
-                        <form class="mb-1" action="{% url 'accounting:export_csv' %}" method="get">
+                        <form class="mb-1" action="{% url 'export_csv' %}" method="get">
                             <div class="hidden">
 
                                 {% bootstrap_form filter.form %}
@@ -68,7 +68,7 @@
                             <button class="btn btn-primary btn-fw"
                                     type="submit">{% trans 'Export' %}</button>
                         </form>
-                        <form class="mb-1" action="{% url 'accounting:export' %}" method="get">
+                        <form class="mb-1" action="{% url 'export' %}" method="get">
                             <div class="hidden">
 
                                 {% bootstrap_form filter.form %}

@@ -1,16 +1,10 @@
-import zipfile
 from functools import reduce
 
-from django.core.files import File
-from django.core.paginator import Paginator
-from django.http import HttpResponse
 # Create your views here.
 from django.views.generic.list import MultipleObjectMixin
 from django_filters.views import FilterView
-from six import BytesIO
 
 from accounting.filters.filters import OrderDetailFilter
-from billing.views.main import GeneratePDFFile
 from payment.models import Payment
 from permissions.mixins import LoginRequiredMixin
 from shop.models import OrderState, OrderDetail, Product
@@ -54,46 +48,3 @@ class AccountingView(LoginRequiredMixin, PaginatedFilterViews, FilterView, Multi
                                                                      'open_order_state_id': open_order_state_id,
                                                                      'stock': stock_page_obj,
                                                                      'amount_per_month': ''}}
-
-
-class AccountingViewExportCSV(AccountingView):
-    template_name = "export/accounting.csv"
-    content_type = 'text/csv'
-
-    def get(self, request, *args, **kwargs):
-        response = super(AccountingViewExportCSV, self).get(request, *args, **kwargs)
-        filename = "accounting%s.csv" % ''
-        content = "attachment; filename=%s" % filename
-        response['Content-Disposition'] = content
-        return response
-
-
-class AccountingFullExport(AccountingViewExportCSV):
-    content_type = 'application/x-zip-compressed'
-
-    def get(self, request, *args, **kwargs):
-        response_csv = super(AccountingFullExport, self).get(request, *args, **kwargs)
-        response = HttpResponse(self.create_zip(response_csv))
-        filename = "accounting%s.zip" % ''
-        content = "attachment; filename=%s" % filename
-        response['Content-Disposition'] = content
-        return response
-
-    def create_zip(self, csv):
-        s = BytesIO()
-        # The zip compressor
-        zf = zipfile.ZipFile(s, "w")
-        for order_detail in self.get_context_data().get("filter").qs:
-            if order_detail.bill_file:
-                zf.write(order_detail.bill_file.path, f"{order_detail.unique_bill_nr()}.pdf")
-            else:
-                try:
-                    pdf = GeneratePDFFile().generate(order_detail.order)
-                    order_detail.bill_file = File(pdf, f"I_{order_detail.unique_bill_nr()}.pdf")
-                    order_detail.save()
-                    zf.write(order_detail.bill_file.path, f"{order_detail.unique_bill_nr()}.pdf")
-                except:
-                    pass
-        zf.writestr("accounting.csv", csv.rendered_content)
-        zf.close()
-        return s.getvalue()
