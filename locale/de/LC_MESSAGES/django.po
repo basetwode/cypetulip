@@ -212,76 +212,70 @@ msgstr "Einkaufswagen"
 #: .\accounting\templates\accounting-dashboard.html:301
 #: .\accounting\templates\accounting-dashboard.html:318
 msgid "January"
-msgstr ""
+msgstr "Januar"
 
 #: .\accounting\templates\accounting-dashboard.html:301
 #: .\accounting\templates\accounting-dashboard.html:318
 msgid "February"
-msgstr ""
+msgstr "Februar"
 
 #: .\accounting\templates\accounting-dashboard.html:301
 #: .\accounting\templates\accounting-dashboard.html:318
 msgid "March"
-msgstr ""
+msgstr "März"
 
 #: .\accounting\templates\accounting-dashboard.html:302
 #: .\accounting\templates\accounting-dashboard.html:319
 msgid "April"
-msgstr ""
+msgstr "April"
 
 #: .\accounting\templates\accounting-dashboard.html:302
 #: .\accounting\templates\accounting-dashboard.html:319
 msgid "May"
-msgstr ""
+msgstr "Mai"
 
 #: .\accounting\templates\accounting-dashboard.html:302
 #: .\accounting\templates\accounting-dashboard.html:319
 msgid "June"
-msgstr ""
+msgstr "Juni"
 
 #: .\accounting\templates\accounting-dashboard.html:303
 #: .\accounting\templates\accounting-dashboard.html:320
 msgid "July"
-msgstr ""
+msgstr "July"
 
 #: .\accounting\templates\accounting-dashboard.html:303
 #: .\accounting\templates\accounting-dashboard.html:320
 msgid "August"
-msgstr ""
+msgstr "August"
 
 #: .\accounting\templates\accounting-dashboard.html:303
 #: .\accounting\templates\accounting-dashboard.html:320
 msgid "September"
-msgstr ""
+msgstr "September"
 
 #: .\accounting\templates\accounting-dashboard.html:304
 #: .\accounting\templates\accounting-dashboard.html:321
 msgid "October"
-msgstr ""
+msgstr "Oktober"
 
 #: .\accounting\templates\accounting-dashboard.html:304
 #: .\accounting\templates\accounting-dashboard.html:321
-#, fuzzy
-#| msgid "Number"
 msgid "November"
-msgstr "Nummer"
+msgstr "November"
 
 #: .\accounting\templates\accounting-dashboard.html:304
 #: .\accounting\templates\accounting-dashboard.html:321
-#, fuzzy
-#| msgid " Remember me"
 msgid "December"
-msgstr " Angemeldet bleiben"
+msgstr "Dezember"
 
 #: .\accounting\templates\accounting-dashboard.html:306
-#, fuzzy
-#| msgid "Amount per month"
 msgid "Amount per Month"
 msgstr "Umsatz pro Monat"
 
 #: .\accounting\templates\accounting-dashboard.html:323
 msgid "Orders per Month"
-msgstr ""
+msgstr "Bestellungen pro Monat"
 
 #: .\billing\templates\invoice.html:202
 msgid "Taxnumber"
