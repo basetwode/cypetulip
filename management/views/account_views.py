@@ -149,10 +149,10 @@ class ContactDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     template = ''
     success_message = _("Contact deleted successfully")
 
-    def get_success_url(self):
+    def get_success_url(self, **kwargs):
         messages.success(self.request, self.success_message)
 
-        return reverse_lazy('contact_create_view')
+        return reverse_lazy('contact_create_view', kwargs={'id': '', 'parent_id': self.kwargs.get('parent_id')})
 
 
 class AddressCreationView(SuccessMessageMixin, LoginRequiredMixin, RepeatableWizardView):

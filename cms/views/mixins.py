@@ -1,6 +1,4 @@
-from django.views import View
-from django.views.generic import CreateView, UpdateView
-from django.views.generic.detail import SingleObjectMixin
+from django.views.generic import CreateView
 
 
 class GenericCreateView(CreateView):

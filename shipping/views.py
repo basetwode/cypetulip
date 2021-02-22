@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import UpdateView, DeleteView
 
-from cms.mixins import GenericCreateView
+from cms.views.mixins import GenericCreateView
 from management.views.mixins import NotifyCustomerCreateView, NotifyCustomerUpdateView
 from permissions.mixins import PermissionPostGetRequiredMixin
 from shipping.forms import OnlineShipmentForm, PackageForm

@@ -7,8 +7,8 @@ from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View, TemplateView, FormView
 
-from cms.forms import ContactForm, CSSSettingForm
-from cms.models import Page, Section
+from cms.forms.forms import ContactForm, CSSSettingForm
+from cms.models.models import Page, Section
 from home.settings import STATIC_ROOT
 from management.models.models import MailSetting, LegalSetting, CacheSetting
 from permissions.error_handler import raise_404
@@ -84,10 +84,12 @@ class GenericView(View):
             if page.is_enabled:
                 if page.link:
                     sections = Section.objects.filter(page=page)
-                    return render(request, 'index.html', {'page': page, 'sections': sections, 'all_pages': all_pages})
+                    return render(request, 'cms/index.html',
+                                  {'page': page, 'sections': sections, 'all_pages': all_pages})
                 else:
                     sections = Section.objects.filter(page=page)
-                    return render(request, 'index.html', {'page': page, 'sections': sections, 'all_pages': all_pages})
+                    return render(request, 'cms/index.html',
+                                  {'page': page, 'sections': sections, 'all_pages': all_pages})
 
         # <view logic>
         return raise_404(request)
@@ -98,11 +100,11 @@ class GenericView(View):
 
 
 class PermissionDeniedView(TemplateView):
-    template_name = 'permission_denied.html'
+    template_name = 'cms/permission_denied.html'
 
 
 class ContactView(FormView, EmailMixin):
-    template_name = 'contact.html'
+    template_name = 'cms/contact.html'
     email_template = "mail/new_contact_request.html"
     form_class = ContactForm
 
@@ -124,7 +126,7 @@ class ContactView(FormView, EmailMixin):
 
 
 class GBTView(TemplateView):
-    template_name = "predefined_page.html"
+    template_name = "cms/predefined_page.html"
 
     def get_context_data(self, **kwargs):
         context = super(GBTView, self).get_context_data(**kwargs)
@@ -135,7 +137,7 @@ class GBTView(TemplateView):
 
 
 class LegalView(TemplateView):
-    template_name = "legal.html"
+    template_name = "cms/legal.html"
 
     def get_context_data(self, **kwargs):
         context = super(LegalView, self).get_context_data(**kwargs)
@@ -146,7 +148,7 @@ class LegalView(TemplateView):
 
 
 class CancellationPolicyView(TemplateView):
-    template_name = "predefined_page.html"
+    template_name = "cms/predefined_page.html"
 
     def get_context_data(self, **kwargs):
         context = super(CancellationPolicyView, self).get_context_data(**kwargs)
@@ -157,7 +159,7 @@ class CancellationPolicyView(TemplateView):
 
 
 class PrivacyPolicyView(TemplateView):
-    template_name = "predefined_page.html"
+    template_name = "cms/predefined_page.html"
 
     def get_context_data(self, **kwargs):
         context = super(PrivacyPolicyView, self).get_context_data(**kwargs)

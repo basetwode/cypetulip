@@ -1,27 +1,30 @@
+import zipfile
 from datetime import datetime
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.files import File
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 # Create your views here.
 from django.views.generic import DetailView, View, DeleteView
 from django_filters.views import FilterView
+from six import BytesIO
 
 from billing.utils import calculate_sum
-from billing.views import GeneratePDFFile
+from billing.views.main import GeneratePDFFile
 from management.filters.filters import OrderDetailFilter
 from management.forms.forms import OrderDetailForm, OrderForm, OrderItemForm
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME
 from permissions.mixins import LoginRequiredMixin
 from shipping.models import Shipment
-from shop.views.mixins import WizardView, RepeatableWizardView
 from shop.models import Contact, Order, OrderItem, Product, Employee, OrderDetail, OrderState, \
     IndividualOffer
 from shop.utils import get_orderitems_once_only
 from shop.utils import json_response
+from shop.views.mixins import WizardView, RepeatableWizardView
 from utils.mixins import EmailMixin, PaginatedFilterViews
 from utils.views import CreateUpdateView
 
@@ -42,6 +45,7 @@ class ManagementOrderDetailView(LoginRequiredMixin, DetailView):
     model = Order
     slug_url_kwarg = 'order'
     slug_field = 'order_hash'
+    filterset_class = OrderDetailFilter
 
     def get_context_data(self, **kwargs):
         employees = Employee.objects.all()
@@ -318,7 +322,6 @@ class OrderCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateUpdateView)
 
 class DeleteOrder(LoginRequiredMixin, DeleteView):
     model = Order
-    template_name = 'generic-create-form.html'
     slug_url_kwarg = 'order_hash'
     slug_field = 'order_hash'
 
@@ -329,3 +332,46 @@ class DeleteOrder(LoginRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         Shipment.objects.filter(order=self.get_object().orderdetail_set.first()).delete()
         return super(DeleteOrder, self).delete(request, *args, **kwargs)
+
+
+class ManagementOrderExportCSV(ManagementOrderOverview):
+    template_name = "management/orders/export/orders.csv"
+    content_type = 'text/csv'
+
+    def get(self, request, *args, **kwargs):
+        response = super(ManagementOrderExportCSV, self).get(request, *args, **kwargs)
+        filename = "orders%s.csv" % ''
+        content = "attachment; filename=%s" % filename
+        response['Content-Disposition'] = content
+        return response
+
+
+class ManagementFullExport(ManagementOrderExportCSV):
+    content_type = 'application/x-zip-compressed'
+
+    def get(self, request, *args, **kwargs):
+        response_csv = super(ManagementFullExport, self).get(request, *args, **kwargs)
+        response = HttpResponse(self.create_zip(response_csv))
+        filename = "orders%s.zip" % ''
+        content = "attachment; filename=%s" % filename
+        response['Content-Disposition'] = content
+        return response
+
+    def create_zip(self, csv):
+        s = BytesIO()
+        # The zip compressor
+        zf = zipfile.ZipFile(s, "w")
+        for order_detail in self.filterset.qs:
+            if order_detail.bill_file:
+                zf.write(order_detail.bill_file.path, f"{order_detail.unique_bill_nr()}.pdf")
+            else:
+                try:
+                    pdf = GeneratePDFFile().generate(order_detail.order)
+                    order_detail.bill_file = File(pdf, f"I_{order_detail.unique_bill_nr()}.pdf")
+                    order_detail.save()
+                    zf.write(order_detail.bill_file.path, f"{order_detail.unique_bill_nr()}.pdf")
+                except:
+                    pass
+        zf.writestr("orders.csv", csv.rendered_content)
+        zf.close()
+        return s.getvalue()

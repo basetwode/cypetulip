@@ -1,4 +1,4 @@
-from cms.models import Page
+from cms.models.models import Page
 from home import settings
 from management.models.models import LegalSetting, CacheSetting
 

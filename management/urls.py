@@ -1,7 +1,6 @@
 from django.conf.urls import url
 from django.urls import include
 
-
 from management.views.account_views import CustomersOverview, MergeAccounts, CompanyCreationView, CompanyDeleteView, \
     AddressCreationView, AddressDeleteView, ContactCreationView, ContactDeleteView, ContactResetPwdView, \
     CustomerImportView
@@ -12,18 +11,19 @@ from management.views.cms_views import CategoriesOverview, PageCreateView, PageD
     FooterEditView
 from management.views.communication_views import CommmunicationView, CommmunicationDetailView, CommmunicationRetryView
 from management.views.discounts_views import PercentageDiscountEditView, FixedAmountDiscountEditView, DiscountOverview
-from management.views.employees import EmployeeOverviewView, EmployeeCreationView
+from management.views.employees_views import EmployeeOverviewView, EmployeeCreationView
+from management.views.main import ManagementView
 from management.views.offers_views import IndividualOfferRequestOverview, IndividualOfferRequestView, \
     DeleteIndividualOfferRequest
 from management.views.orders_views import ManagementOrderOverview, ManagementOrderDetailView, OrderAssignEmployeeView, \
-    OrderCreateView, DeleteOrder, OrderPayView, OrderShipView, OrderChangeStateView, OrderAcceptInvoiceView
+    OrderCreateView, DeleteOrder, OrderPayView, OrderShipView, OrderChangeStateView, OrderAcceptInvoiceView, \
+    ManagementFullExport, ManagementOrderExportCSV
 from management.views.products_views import ProductCreationView, ProductEditView, ProductDeleteView, \
     ProductsOverview, FileSubItemCreationView, NumberSubItemCreateUpdateView, CheckboxSubItemCreateUpdateView, \
     SelectSubItemCreationView, SelectItemCreationView, SelectItemDeleteView, SubItemDeleteView, SubItemOverview
 from management.views.settings_views import MailSettingsDetailView, LdapSettingsDetailView, LegalSettingsDetailView, \
     ShopSettingsDetailView, PaymentProviderSettings, CacheManagementView
 from management.views.shipments_views import ShipmentOverview
-from management.views.views import ManagementView
 from shop.views.account_views import SearchOrders, SearchCustomers
 from shop.views.product_views import OrderCancelView
 
@@ -132,6 +132,9 @@ urlpatterns = [
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/accept$',
         OrderAcceptInvoiceView.as_view(), name="order_accept_view"),
 
+    url(r'^export/csv/$', ManagementOrderExportCSV.as_view(), name="export_csv"),
+    url(r'^export/full/$', ManagementFullExport.as_view(), name="export"),
+
     url(r'^offers/$', IndividualOfferRequestOverview.as_view(), name="individualoffers_overview"),
     url(r'^offers/(?P<id>[a-zA-Z0-9\\s\-_ ]+)/$', IndividualOfferRequestView.as_view(),
         name="individualofferrequest_view"),
@@ -144,11 +147,11 @@ urlpatterns = [
         CompanyDeleteView.as_view(), name="company_delete_view"),
     url(r'^address/create/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
         AddressCreationView.as_view(), name="address_create_view"),
-    url(r'^address/delete(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+    url(r'^address/delete/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
         AddressDeleteView.as_view(), name="address_delete_view"),
     url(r'^contact/create/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
         ContactCreationView.as_view(), name="contact_create_view"),
-    url(r'^contact/delete(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
+    url(r'^contact/delete/(?P<parent_id>[0-9]+)/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
         ContactDeleteView.as_view(), name="contact_delete_view"),
     url(r'^contact/pwd/(?P<id>[a-zA-Z0-9\\s\-_ ]*)$',
         ContactResetPwdView.as_view(), name="contact_pwd_reset_view"),

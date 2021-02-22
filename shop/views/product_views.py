@@ -13,27 +13,15 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic import View, ListView, FormView
 
-from cms.models import Section
+from cms.models.models import Section
 from home.settings import CACHE_MIDDLEWARE_SECONDS
 from permissions.error_handler import raise_404
 from shop.forms.product_forms import ProductAttributeForm, IndividualOfferForm
-from shop.views.mixins import TaxView, EmailNotifyStaffView
 from shop.models import (OrderDetail, Product, ProductCategory, ProductAttributeType, ProductAttributeTypeInstance,
                          Contact, ProductImage)
 # Create your views here.
 from shop.utils import json_response
-
-
-class IndexView(View):
-    template_name = 'index.html'
-
-    def get(self, request):
-        # form = self.form_class(initial=self.initial)
-        return render(request, self.template_name)
-
-    def post(self, request):
-        # <view logic>
-        return HttpResponse('result')
+from shop.views.mixins import TaxView, EmailNotifyStaffView
 
 
 @method_decorator(vary_on_headers('User-Agent'), name='dispatch')

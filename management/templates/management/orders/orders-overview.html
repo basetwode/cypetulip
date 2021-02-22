@@ -1,4 +1,4 @@
-{% extends 'base-mgmt.html' %}
+{% extends 'cms/base-mgmt.html' %}
 {% load static %}
 {% load bootstrap5 %}
 {% load recurse %}
@@ -32,10 +32,51 @@
                     <div class="card-title h4">{% trans 'Filter' %}</div>
                     <form action="" method="get">
 
-                        {% bootstrap_form filter.form %}
+                        {% bootstrap_form filter.form exclude='date_added' %}
+                        <div class="form-group has-success ">
+                            <div class="col-12"><label
+                                    for="startdate">{% trans "Startdate" %}</label></div>
+
+
+                            <div id="startdate" class="col-12"><input
+                                    type="date" name="date_added_after"
+                                    class="form-control has-success"
+                                    value="{{ filter.form.data.date_added_after }}"
+                                    placeholder="Date (Between)" title="" id="id_date_added_0">
+                            </div>
+                            <div class="col-12"><label for="enddate">{% trans "Enddate" %}</label>
+                            </div>
+                            <div id="enddate" class="col-12"><input type="date"
+                                                                    name="date_added_before"
+                                                                    class="form-control has-success"
+                                                                    value="{{ filter.form.data.date_added_before }}"
+                                                                    placeholder="Date (Between)"
+                                                                    title="" id="id_date_added_1">
+                            </div>
+
+                        </div>
                         <button class="btn btn-fw btn-primary" type="submit">{% trans 'Go' %}</button>
 
                     </form>
+                    <hr>
+                    <div class="col">
+                        <form class="mb-1" action="{% url 'export_csv' %}" method="get">
+                            <div class="hidden">
+
+                                {% bootstrap_form filter.form %}
+                            </div>
+                            <button class="btn btn-primary btn-fw"
+                                    type="submit">{% trans 'Export' %}</button>
+                        </form>
+                        <form class="mb-1" action="{% url 'export' %}" method="get">
+                            <div class="hidden">
+
+                                {% bootstrap_form filter.form %}
+                            </div>
+                            <button class="btn btn-secondary btn-fw"
+                                    type="submit">{% trans 'Export (incl. Invoice)' %}</button>
+                        </form>
+                    </div>
                     <hr>
                     <a href="{% url 'management_index' %}"
                        class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>

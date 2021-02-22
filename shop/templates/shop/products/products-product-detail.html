@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'cms/base.html' %}
 {% load static %}
 {% load i18n %}
 {% load recurse %}
@@ -22,9 +22,10 @@
                         {% trans 'Products' %}
                     </a></li>
                     {% if product.category.mother_category %}
-                    <li class="breadcrumb-item"><a href="{% url 'shop:products' product.category.mother_category.path %}">
-                        {{ product.category.mother_category }}
-                    </a></li>
+                        <li class="breadcrumb-item"><a
+                                href="{% url 'shop:products' product.category.mother_category.path %}">
+                            {{ product.category.mother_category }}
+                        </a></li>
                     {% endif %}
                     <li class="breadcrumb-item"><a href="{% url 'shop:products' product.category.path %}">
                         {{ product.category }}
@@ -64,15 +65,17 @@
                             {% if forloop.first %}
                                 <div class="carousel-item active">
                                     <a data-fancybox rel="lightbox"
-                                                                         href="{{ image.product_picture.url }}">
-                                    <img class="img-fluid"  style="object-fit: cover;height: 25vh;" src="{% version image.product_picture 'large' %}">
+                                       href="{{ image.product_picture.url }}">
+                                        <img class="img-fluid" style="object-fit: cover;height: 25vh;"
+                                             src="{% version image.product_picture 'large' %}">
                                     </a>
                                 </div>
                             {% else %}
                                 <div class="carousel-item">
                                     <a data-fancybox rel="lightbox"
                                        href="{{ image.product_picture.url }}">
-                                        <img class="img-fluid"  style="object-fit: cover;height: 25vh;" src="{% version image.product_picture 'medium' %}"></a>
+                                        <img class="img-fluid" style="object-fit: cover;height: 25vh;"
+                                             src="{% version image.product_picture 'medium' %}"></a>
                                 </div>
                             {% endif %}
                         {% endfor %}
@@ -121,25 +124,29 @@
                                         {% endif %}
                                         {% if not product.price_on_request %}
                                             <br><p></p><small>({% trans 'incl. Tax' %})</small>{% endif %}
-                                        <div class="pt-2">
+                                    <div class="pt-2">
 
                                         {% if product.discount_set.count > 0 %}
                                             {% with product.discount_set.last as voucher %}
 
                                                 {% if voucher.show_in_products %}
-                                                <strong style="color: #da5200"
-                                                        class="font-weight-bold">
-                                                    </span><i class="fas fa-s fa-exclamation-circle"></i>
-                                                    {% if voucher.percentagediscount %}
-                                                        {% blocktranslate with percent=voucher.percentagediscount.discount_percentage_in_percent id=voucher.voucher_id %}Save up to {{ percent }} % with: {{ id }}{% endblocktranslate %}
-                                                    {% else %}
-                                                        {% blocktranslate with amount=voucher.fixedamountdiscount.amount id=voucher.voucher_id %}Save up to {{ amount }} € with: {{ id }}{% endblocktranslate %}
-                                                    {% endif %}
-                                                    &euro;</strong><br>
+                                                    <strong style="color: #da5200"
+                                                            class="font-weight-bold">
+                                                        </span><i class="fas fa-s fa-exclamation-circle"></i>
+                                                        {% if voucher.percentagediscount %}
+                                                            {% blocktranslate with percent=voucher.percentagediscount.discount_percentage_in_percent id=voucher.voucher_id %}
+                                                                Save up to {{ percent }} % with:
+                                                                {{ id }}{% endblocktranslate %}
+                                                        {% else %}
+                                                            {% blocktranslate with amount=voucher.fixedamountdiscount.amount id=voucher.voucher_id %}
+                                                                Save up to {{ amount }} € with:
+                                                                {{ id }}{% endblocktranslate %}
+                                                        {% endif %}
+                                                        &euro;</strong><br>
                                                 {% endif %}
                                             {% endwith %}
                                         {% endif %}
-                                        </div>
+                                    </div>
 
                                     </p>
                                     {% if product.stock <= 4 and product.stock > 0 %}
@@ -150,12 +157,14 @@
                                         {% csrf_token %}
                                         {% if product.price_on_request %}
                                             <a type="button"
-                                               class="btn btn-secondary btn-md" href="{% url 'shop:individual_offer' product.name %}">{% trans 'Request offer' %}</a>
+                                               class="btn btn-secondary btn-md"
+                                               href="{% url 'shop:individual_offer' product.name %}">{% trans 'Request offer' %}</a>
                                         {% elif product.stock > 0 or product.stock == -1 %}
                                             <button type="button" onclick="addToCart('{{ product.name }}')"
                                                     class="btn btn-secondary btn-md">{% trans 'Add to cart' %}</button>
                                         {% else %}
-                                            <button disabled class="btn btn-outline-dark">{% trans 'Not in stock' %}</button>
+                                            <button disabled
+                                                    class="btn btn-outline-dark">{% trans 'Not in stock' %}</button>
                                         {% endif %}
                                     </form>
                                     <p>
@@ -191,7 +200,7 @@
                 <div class="tab-content">
                     <div id="description" role="tabpanel"
                          class="tab-pane fade px-4 pt-5 show active">
-                        <p>{{ product.description|safe}}</p>
+                        <p>{{ product.description|safe }}</p>
                     </div>
                     <div id="details" role="tabpanel" class="tab-pane fade px-4 pt-5">
                         <p>{{ product.details|safe }}</p>
@@ -214,12 +223,16 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12"><hr></div>
+        <div class="col-md-12">
+            <hr>
+        </div>
         <div class="col-md-12 p-2 products">
             <h4>{% trans 'Customers who bought this, also bought' %}:</h4>
             {% include 'shop/products/products-component-carousel.html' with product_list=product.get_also_bought_products name="also-bought" %}
         </div>
-        <div class="col-md-12"><hr></div>
+        <div class="col-md-12">
+            <hr>
+        </div>
         <div class="col-md-12 p-2 products">
             <h4>{% trans "Similar products" %}:</h4>
             {% include 'shop/products/products-component-carousel.html' with product_list=product.get_related_products name="related-products" %}
@@ -232,9 +245,9 @@
 {% endblock %}
 
 {% block renderblocking %}
-<script src="{% static 'utils.js' %}"></script>
+    <script src="{% static 'utils.js' %}"></script>
 
-<script src="{% static 'jquery/js/jquery.fancybox.min.js' %}"></script>
+    <script src="{% static 'jquery/js/jquery.fancybox.min.js' %}"></script>
 
     <link rel="stylesheet" href="{% static 'jquery/css/jquery.fancybox.min.css' %}"
           media="screen">

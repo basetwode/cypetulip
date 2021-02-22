@@ -39,14 +39,14 @@
 
     <body role="document" class="mb-5">
     <!-- Modal -->
-    {% include 'loading-spinner.html' %}
+    {% include 'cms/loading-spinner.html' %}
     <!-- Fixed navbar -->
-    {% include 'navbar.html' %}
+    {% include 'cms/navbar.html' %}
 
     <main role="main" id="main" class="mb-5 mt-3">
 
         <div class="container">
-            {% include 'notify-modal.html' %}
+            {% include 'cms/notify-modal.html' %}
             {% bootstrap_messages %}
 
             {% block body %}

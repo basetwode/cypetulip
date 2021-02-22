@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'cms/base.html' %}
 {% load static %}
 {% load recurse %}
 {% load bootstrap5 %}
@@ -37,7 +37,7 @@
                         <hr>
                         <div class="col-12">
                             <p>{% trans 'Search your orders' %}</p>
-                            <form action="{% url 'search_orders' %}">
+                            <form action="{% url 'shop:search_orders' %}">
                                 <div class="input-group">
 
                                     <input id="order-search" type="text" class="form-control"

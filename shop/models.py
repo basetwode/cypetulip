@@ -9,6 +9,8 @@ from django.db.models import Sum, Q
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
 from tinymce.models import HTMLField
 
 from billing.utils import calculate_sum, calculate_sum_order
@@ -548,10 +550,12 @@ class OrderDetail(models.Model):
         return self.state != OrderState.objects.get(initial=True).cancel_order_state and \
                self.is_cancelled
 
+    @extend_schema_field(OpenApiTypes.DOUBLE)
     def total_wt(self, include_discount=False):
         return Decimal(f"{calculate_sum_order(self.orderitem_set, True, include_discount) or 0}") \
             .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
+    @extend_schema_field(OpenApiTypes.DOUBLE)
     def total(self, include_discount=False):
         return Decimal(f"{calculate_sum_order(self.orderitem_set, False, include_discount) or 0}") \
             .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
@@ -676,6 +680,7 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.count}x {self.product.name if self.product else ''} {self.price}"
 
+    @extend_schema_field(OpenApiTypes.DOUBLE)
     def total_wt(self, include_discount=False):
         if not self.allowable:
             return 0

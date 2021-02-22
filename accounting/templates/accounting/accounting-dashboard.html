@@ -1,12 +1,15 @@
-{% extends 'base-mgmt.html' %}
+{% extends 'cms/base-mgmt.html' %}
 {% load recurse %}
 {% load static %}
 {% load bootstrap5 %}
 {% load i18n %}
 {% block head %}
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script src="https://unpkg.com/vue@3.0.5/dist/vue.global.prod.js"></script>
+    <link href="{% static 'yearpicker/yearpicker.css' %}" rel="stylesheet">
+    <script src= {% static 'yearpicker/yearpicker.js' %}></script>
+
     <script type='text/javascript'>
         var csrfmiddlewaretoken = '{{ csrf_token }}';
     </script>
@@ -26,7 +29,6 @@
                     <h4 class="h-bold">{% trans "Menu" %}</h4>
                 </div>
                 <div class="card-body">
-
                     <hr>
                     <a href="{% url 'management_index' %}"
                        class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
@@ -98,9 +100,15 @@
                 </div>
 
             </div>
-            <div id="chartApp" class="row mt-3">
-                <div class="col-md-6">
+            <div class="row mt-3">
+                <div id="chartApp" class="col-md-6">
                     <div class="card">
+                        <div class="card-header">
+                            <span>{% trans 'Select a year to show data' %}</span><br/>
+                            <div class="col-12 col-md-6">
+                                <input type="text" id="yearpicker" class="yearpicker form-control" value="">
+                            </div>
+                        </div>
                         <div class="card-body">
                             <div class="chart-container">
                                 <canvas id="amountPerMonthChart"></canvas>
@@ -126,7 +134,7 @@
                                           {% endif %}
                                     ">
                                         <span>{{ product.name }}</span>
-                                        <span class="float-end text-bold badge rounded-pill bg-danger">{{ product.stock }}</span>
+                                        <span class="float-end text-bold badge rounded-pill bg-info">{{ product.stock }}</span>
                                     </li>
                                 {% endfor %}
 
@@ -143,167 +151,74 @@
                     </div>
                 </div>
             </div>
-            <div class="row mt-3 mb-5">
-                <div class="col">
-                    <div class="card">
-                        <div class="card-header">
-                            <div>{% trans "Last Orders" %}</div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <form action="" method="get">
-                                        <div class="row">
-                                            {% bootstrap_form filter.form exclude='date_added' form_group_class='col-6' %}
-                                        </div>
-                                        <div class="form-group has-success ">
-                                            <div class="row">
-                                                <div class="col-6"><label
-                                                        for="startdate">{% trans "Startdate" %}</label></div>
-                                                <div class="col-6"><label for="enddate">{% trans "Enddate" %}</label>
-                                                </div>
-
-                                            </div>
-                                            <div class="row">
-                                                <div id="startdate" class="col-6"><input
-                                                        type="date" name="date_added_after"
-                                                        class="form-control has-success"
-                                                        value="{{ filter.form.data.date_added_after }}"
-                                                        placeholder="Date (Between)" title="" id="id_date_added_0">
-                                                </div>
-                                                <div id="enddate" class="col-6"><input type="date"
-                                                                                       name="date_added_before"
-                                                                                       class="form-control has-success"
-                                                                                       value="{{ filter.form.data.date_added_before }}"
-                                                                                       placeholder="Date (Between)"
-                                                                                       title="" id="id_date_added_1">
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <button class="btn btn-primary"
-                                                        type="submit">{% trans 'Go' %}</button>
-                                            </div>
-                                        </div>
-
-                                    </form>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <form class="mb-1" action="{% url 'accounting:export_csv' %}" method="get">
-                                        <div class="hidden">
-
-                                            {% bootstrap_form filter.form %}
-                                        </div>
-                                        <button class="btn btn-primary btn-fw"
-                                                type="submit">{% trans 'Export' %}</button>
-                                    </form>
-                                    <form class="mb-1" action="{% url 'accounting:export' %}" method="get">
-                                        <div class="hidden">
-
-                                            {% bootstrap_form filter.form %}
-                                        </div>
-                                        <button class="btn btn-secondary btn-fw"
-                                                type="submit">{% trans 'Export (incl. Invoice)' %}</button>
-                                    </form>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="card-body">
-                            <div class="list-group list-group-flush">
-                                {% for order in filter.qs %}
-                                    <a href="{% url 'management_order_detail_view' order.order.order_hash %}"
-                                       class="list-group-item list-group-item-action ">
-                                        <div class="row">
-                                            <div class="col-4 font-weight-bold overflow-auto">{% trans 'Ordernr' %}</div>
-                                            <div class="col-4 font-weight-bold overflow-auto">{% trans 'Orderdate' %}</div>
-                                            <div class="col-4 font-weight-bold overflow-auto">{% trans 'Billdate' %}</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-4">{{ order.unique_nr }}</div>
-                                            <div class="col-4">{{ order.date_added }}</div>
-                                            <div class="col-4">{{ order.date_bill }}</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <div class="progress">
-                                                    <div class="progress-bar
-                                        {% if order.state.initial %}
-                                        bg-danger" aria-valuenow="20" style="width:20%"
-                                                    {% endif %}{% if order.state.is_paid_state %}
-                                                         bg-warning" aria-valuenow="50" style="width:50%"
-                                                    {% endif %}{% if order.state.is_sent_state %}
-                                                        bg-success" aria-valuenow="100" style="width:100%"
-                                                    {% elif order.state.next_state %}
-                                                        bg-warning" aria-valuenow="50" style="width:50%"
-                                                    {% else %}
-                                                        bg-warning" aria-valuenow="100" style="width:100%"
-                                                        role="progressbar"
-                                                        aria-valuemin="0" aria-valuemax="100"
-                                                    {% endif %}
-                                                    >
-                                                    {{ order.state.name }}
-                                                    {% if not order.state %}
-                                                        {% trans 'Shoppingcart' %}
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        <div class="col-4">
-                                            {{ order.total }} €
-                                        </div>
-                                    </div>
-                                    </a>
-
-                                {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
     <script>
-        const app = new Vue({
+        const app = Vue.createApp({
+
             delimiters: ['[[', ']]'],
             el: '#chartApp',
-            data: {
-                ordersPerMonth: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                csrfmiddlewaretoken: csrfmiddlewaretoken,
+            components: {},
+            data() {
+                return {
+                    ordersPerMonth: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    amountPerMonth: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    csrfmiddlewaretoken: csrfmiddlewaretoken
+                }
             },
             mounted() {
                 axios.all([this.loadData()])
             },
             methods: {
-                getYearForOrdersPerMonthChart: function () {
-                    return '2020'
-                },
-                loadData: function () {
-                    return axios.get(`/api/v1/accounting/orders/${this.getYearForOrdersPerMonthChart()}`)
-                        .then(response => {
-                            response.data.forEach(entry => {
-                                this.ordersPerMonth[entry.date_bill__month - 1] = entry.counted_orders
-                            })
-                            ordersPerMonthChart.update();
-                        });
+                loadData: function (year) {
+                    if (year) {
+                        const vm = this;
+                        return axios.get(`/api/v1/orderdetails/?orderYear=${year}`)
+                            .then(response => {
+                                vm.ordersPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                                vm.amountPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                                response.data.forEach(entry => {
+                                    const date = new Date(entry.date_bill);
+                                    const month = date.getMonth();
+                                    vm.ordersPerMonth[month] = vm.ordersPerMonth[month] + 1;
+                                    vm.amountPerMonth[month] = vm.amountPerMonth[month] + entry.total_wt;
+                                })
+                                ordersPerMonthChart.data.datasets.forEach((dataset) => {
+                                    dataset.data = vm.ordersPerMonth;
+                                });
+                                amountPerMonthChart.data.datasets.forEach((dataset) => {
+                                    dataset.data = vm.amountPerMonth;
+                                });
+                                ordersPerMonthChart.update();
+                                amountPerMonthChart.update();
+                            });
+                    }
+
                 },
             }
         });
+        const vm = app.mount('#chartApp')
+        $('#yearpicker').yearpicker({
+            onChange: function (value) {
+                vm.loadData(value);
+            }
 
+        })
+        const labels = function () {
+            return ["{% trans 'January' %}", "{% trans 'February' %}", "{% trans 'March' %}"
+                , "{% trans 'April' %}", "{% trans 'May' %}", "{% trans 'June' %}"
+                , "{% trans 'July' %}", "{% trans 'August' %}", "{% trans 'September' %}"
+                , "{% trans 'October' %}", "{% trans 'November' %}", "{% trans 'December' %}"]
+        }
         const amountPerMonthChartElement = document.getElementById('amountPerMonthChart');
         const amountPerMonthChart = new Chart(amountPerMonthChartElement, {
             type: 'bar',
             data: {
-                labels: ["{% trans 'January' %}", "{% trans 'February' %}", "{% trans 'March' %}"
-                    , "{% trans 'April' %}", "{% trans 'May' %}", "{% trans 'June' %}"
-                    , "{% trans 'July' %}", "{% trans 'August' %}", "{% trans 'September' %}"
-                    , "{% trans 'October' %}", "{% trans 'November' %}", "{% trans 'December' %}"],
+                labels: labels(),
                 datasets: [{
                     label: "{% trans 'Amount per Month' %}",
-                    data: [12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3],
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     borderWidth: 1,
                     backgroundColor: 'rgb(255, 238, 186)'
                 }]
@@ -314,13 +229,10 @@
         const ordersPerMonthChart = new Chart(ordersPerMonthChartElement, {
             type: 'bar',
             data: {
-                labels: ["{% trans 'January' %}", "{% trans 'February' %}", "{% trans 'March' %}"
-                    , "{% trans 'April' %}", "{% trans 'May' %}", "{% trans 'June' %}"
-                    , "{% trans 'July' %}", "{% trans 'August' %}", "{% trans 'September' %}"
-                    , "{% trans 'October' %}", "{% trans 'November' %}", "{% trans 'December' %}"],
+                labels: labels(),
                 datasets: [{
                     label: "{% trans 'Orders per Month' %}",
-                    data: app.ordersPerMonth,
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     borderWidth: 1,
                     backgroundColor: 'rgb(255, 238, 186)'
                 }],

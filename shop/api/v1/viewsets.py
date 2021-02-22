@@ -6,9 +6,12 @@ from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from shop.api.v1.serializers import AddressSerializer, ContactSerializer, OrderShipmentSerializer, \
-    VoucherSerializer, OrderSerializer, OrderItemDeserializer, FileOrderItemSerializer, SelectOrderItemSerializer, \
-    NumberOrderItemSerializer, CheckboxOrderItemSerializer
+from management.api.v1.serializers import FullOrderItemSerializer, FullFileOrderItemSerializer, \
+    FullCheckboxOrderItemSerializer, FullNumberOrderItemSerializer, FullSelectOrderItemSerializer, FullOrderSerializer
+from shop.api.v1.serializers import AddressSerializer, BasicContactSerializer, OrderShipmentSerializer, \
+    VoucherSerializer, BasicOrderSerializer, BasicOrderItemSerializer, BasicFileOrderItemSerializer, \
+    BasicSelectOrderItemSerializer, \
+    BasicNumberOrderItemSerializer, BasicCheckboxOrderItemSerializer
 from shop.models import Address, Contact, Company, Order, OrderDetail, OrderItem, FileOrderItem, SelectOrderItem, \
     NumberOrderItem, \
     CheckBoxOrderItem, Discount
@@ -35,7 +38,7 @@ class GuestViewSet(viewsets.ViewSet):
                     return Response(address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
                 address_serializer = AddressSerializer(data=request.data['address'])
-                contact_serializer = ContactSerializer(data={**request.data['contact'], **{
+                contact_serializer = BasicContactSerializer(data={**request.data['contact'], **{
                     'password': secrets.token_hex(32),
                     'username': request.data['contact']['email'] + "_" + secrets.token_hex(6),
                     'session': request.session.session_key,
@@ -64,6 +67,12 @@ class AddressViewSet(viewsets.ModelViewSet):
         This view should return a list of all addresses
         for the currently authenticated user.
         """
+        if self.request.user.is_staff:
+            if 'id' in self.kwargs:
+                contact = Contact.objects.get(id=self.kwargs['id'])
+                return Address.objects.filter(contact__in=contact.company.contact_set.all())
+            else:
+                return super(AddressViewSet, self).get_queryset()
         if self.request.user.is_authenticated:
             user = self.request.user
             contact = Contact.objects.get(user_ptr=user)
@@ -75,13 +84,14 @@ class AddressViewSet(viewsets.ModelViewSet):
 class ContactViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = Contact.objects.all()
-    serializer_class = ContactSerializer
+    serializer_class = BasicContactSerializer
 
     def get_queryset(self):
         """
-        This view should return a contact for the authenticated user
-        for the currently authenticated user.
+        This view should return a contact for the currently authenticated user
         """
+        if self.request.user.is_staff:
+            return super(ContactViewSet, self).get_queryset()
         if self.request.user.is_authenticated:
             user = self.request.user
             return Contact.objects.filter(user_ptr=user)
@@ -92,6 +102,7 @@ class ContactViewSet(viewsets.ModelViewSet):
 class DeliveryViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
     queryset = Order.objects.all()
+    serializer_class = OrderShipmentSerializer
 
     def create(self, request):
         order_serializer = OrderShipmentSerializer(data=request.data)
@@ -119,8 +130,13 @@ class DeliveryViewSet(viewsets.ViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = OrderDetail.objects.all()
-    serializer_class = OrderSerializer
+    serializer_class = BasicOrderSerializer
     lookup_field = 'order__order_hash'
+
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+            return FullOrderSerializer
+        return BasicOrderSerializer
 
     def get_queryset(self):
         """
@@ -129,6 +145,8 @@ class OrderViewSet(viewsets.ModelViewSet):
         """
         request = self.request
         result = None
+        if self.request.user.is_staff:
+            return super(OrderViewSet, self).get_queryset()
         if request.user.is_authenticated and request.user.is_staff:
             return OrderDetail.objects.all()
         if request.user.is_authenticated:
@@ -148,10 +166,17 @@ class OrderViewSet(viewsets.ModelViewSet):
 class OrderItemViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = OrderItem.objects.all()
-    serializer_class = OrderItemDeserializer
+    serializer_class = BasicOrderItemSerializer
+
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+            return FullOrderItemSerializer
+        return BasicOrderItemSerializer
 
     def get_queryset(self):
         queryset = super(OrderItemViewSet, self).get_queryset()
+        if self.request.user.is_staff:
+            return queryset
         if self.request.user.is_authenticated:
             queryset = queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
@@ -184,10 +209,17 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 class FileOrderItemViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = FileOrderItem.objects.all()
-    serializer_class = FileOrderItemSerializer
+    serializer_class = BasicFileOrderItemSerializer
+
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+            return FullFileOrderItemSerializer
+        return BasicFileOrderItemSerializer
 
     def get_queryset(self):
         queryset = super(FileOrderItemViewSet, self).get_queryset()
+        if self.request.user.is_staff:
+            return queryset
         if self.request.user.is_authenticated:
             queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
@@ -198,10 +230,17 @@ class FileOrderItemViewSet(viewsets.ModelViewSet):
 class SelectOrderItemViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = SelectOrderItem.objects.all()
-    serializer_class = SelectOrderItemSerializer
+    serializer_class = BasicSelectOrderItemSerializer
+
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+            return FullSelectOrderItemSerializer
+        return BasicSelectOrderItemSerializer
 
     def get_queryset(self):
         queryset = super(SelectOrderItemViewSet, self).get_queryset()
+        if self.request.user.is_staff:
+            return queryset
         if self.request.user.is_authenticated:
             queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
@@ -212,10 +251,17 @@ class SelectOrderItemViewSet(viewsets.ModelViewSet):
 class NumberOrderItemViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = NumberOrderItem.objects.all()
-    serializer_class = NumberOrderItemSerializer
+    serializer_class = BasicNumberOrderItemSerializer
+
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+            return FullNumberOrderItemSerializer
+        return BasicNumberOrderItemSerializer
 
     def get_queryset(self):
         queryset = super(NumberOrderItemViewSet, self).get_queryset()
+        if self.request.user.is_staff:
+            return queryset
         if self.request.user.is_authenticated:
             queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
@@ -226,10 +272,17 @@ class NumberOrderItemViewSet(viewsets.ModelViewSet):
 class CheckboxOrderItemViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = CheckBoxOrderItem.objects.all()
-    serializer_class = CheckboxOrderItemSerializer
+    serializer_class = BasicCheckboxOrderItemSerializer
+
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+            return FullCheckboxOrderItemSerializer
+        return BasicCheckboxOrderItemSerializer
 
     def get_queryset(self):
         queryset = super(CheckboxOrderItemViewSet, self).get_queryset()
+        if self.request.user.is_staff:
+            return queryset
         if self.request.user.is_authenticated:
             queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:

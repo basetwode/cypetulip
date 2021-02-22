@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'cms/base.html' %}
 {% load static %}
 {% load recurse %}
 {% load i18n %}
@@ -12,7 +12,7 @@
 
 {% block body %}
 
-    {%  if request|ismobile %}
+    {% if request|ismobile %}
         <div class="modal fade modal-fullscreen" id="filterModal" tabindex="-1" role="dialog"
              aria-labelledby="exampleModalLabel"
              aria-hidden="true">
@@ -44,13 +44,15 @@
                         {% trans 'Products' %}
                     </a></li>
                     {% if selected_category.mother_category %}
-                        <li class="breadcrumb-item"><a href="{% url 'shop:products' selected_category.mother_category.path %}">
+                        <li class="breadcrumb-item"><a
+                                href="{% url 'shop:products' selected_category.mother_category.path %}">
                             {{ selected_category.mother_category }}
                         </a></li>
                     {% endif %}
                     {% if selected_category %}
-                        <li class="breadcrumb-item {% if selected_category %} active{% endif %} " aria-current="page"><a
-                                href="{% url 'shop:products' selected_category.path%}">
+                        <li class="breadcrumb-item {% if selected_category %} active{% endif %} "
+                            aria-current="page"><a
+                                href="{% url 'shop:products' selected_category.path %}">
                             {{ selected_category }}
                         </a>
                         </li>
@@ -62,7 +64,7 @@
         </div>
         <div class="col-md-3 categories ">
 
-            {%  if not request|ismobile %}
+            {% if not request|ismobile %}
                 <div class="position-sticky">
                 <div class="categories-list d-none d-sm-block" id="accordionCategories">
                     <div class="card border-0">
@@ -79,10 +81,11 @@
                         </div>
                     </div>
                 </div>
-                {%  else %}
+            {% else %}
                 <div class="d-block d-sm-none ">
-                    {% if selected_category %}<span><a href="{% url 'shop:products' selected_category.mother_category.path %}"> <i
-                            class="fa fa-arrow-left" style="font-size: 1.4rem"></i></a></span><br>{% endif %}
+                    {% if selected_category %}
+                        <span><a href="{% url 'shop:products' selected_category.mother_category.path %}"> <i
+                                class="fa fa-arrow-left" style="font-size: 1.4rem"></i></a></span><br>{% endif %}
                     <div class="scrolling-wrapper-flexbox">
                         {% if not selected_category %}
                             {% for category in categories %}
@@ -96,7 +99,8 @@
                             {% for category in selected_category.productcategory_set.all %}
                                 <div class="card m-2 ">
                                     <div class="card-header border-0"><a class="text"
-                                            href="{% url 'shop:products' category.path %}"> {{ category }}</a></div>
+                                                                         href="{% url 'shop:products' category.path %}"> {{ category }}</a>
+                                    </div>
                                 </div>
                             {% endfor %} {% endif %}</div>
                 </div>
@@ -116,7 +120,8 @@
             <div class="products-list card-group mt-3 mt-md-0">
                 <div class="row w-100">
                     <div class="col-10 ps-4">
-                        <h1>{% if selected_category %} {{ selected_category }}{% else %}{% trans 'Products' %}{% endif %}</h1>
+                        <h1>{% if selected_category %} {{ selected_category }}{% else %}
+                            {% trans 'Products' %}{% endif %}</h1>
                     </div>
                     <div class="col-2">
                         <div class="attributes  d-block d-sm-none categories-list">
@@ -155,6 +160,7 @@
         </div>
     </div>
 {% endblock %}
+
 {% block renderblocking %}
 
 

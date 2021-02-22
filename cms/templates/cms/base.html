@@ -4,6 +4,7 @@
 {% load inline_static_tags %}
 {% load cookiebanner %}
 {% load compress %}
+{% load cache %}
 {% get_current_language as language %}
 {% spaceless %}
     <!DOCTYPE html>
@@ -38,23 +39,25 @@
     </head>
 
     <body role="document" class="d-flex flex-column h-100">
-    {% if not 'localhost' in request.META.HTTP_HOST  %}
-    {% cookiebanner_modal %}
+    {% if not 'localhost' in request.META.HTTP_HOST %}
+        {% cookiebanner_modal %}
     {% endif %}
     <!-- Modal -->
-    {% include 'loading-spinner.html' %}
+    {% include 'cms/loading-spinner.html' %}
 
     <!-- Header  -->
-    {% include 'header.html' %}
+    {% include 'cms/header.html' %}
 
     <!-- Fixed navbar -->
-    {% include 'navbar.html' %}
+    {% cache 0 navbar %}
+        {% include 'cms/navbar.html' %}
+    {% endcache %}
 
     <main role="main" id="main" class="flex-shrink-0 mt-3 mb-3">
         {#        {% include 'toastr.html' %}#}
 
         <div class="container">
-            {% include 'notify-modal.html' %}
+            {% include 'cms/notify-modal.html' %}
             {% bootstrap_messages %}
 
             {% block body %}
@@ -64,7 +67,7 @@
 
     </main>
 
-    {% include 'footer.html' %}
+    {% include 'cms/footer.html' %}
 
     {% compress js file thirdparty %}
         <script src="{% static 'cms/js/functions.js' %}"></script>

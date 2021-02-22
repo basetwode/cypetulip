@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.views.decorators.cache import cache_page
 
-from cms.views import *
+from cms.views.views import *
 from home.settings import CACHE_MIDDLEWARE_SECONDS
 
 __author__ = ''
