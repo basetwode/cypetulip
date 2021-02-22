@@ -1,4 +1,5 @@
 import math
+import uuid
 from datetime import datetime
 
 from _decimal import ROUND_HALF_UP, Decimal
@@ -390,6 +391,7 @@ class PercentageDiscount(Discount):
 
 
 class Order(models.Model):
+    uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, null=True, blank=True)
     order_id = models.IntegerField(null=True, blank=True)
     order_hash = models.CharField(max_length=30, null=True, blank=True)
     is_send = models.BooleanField(default=False)
@@ -401,8 +403,6 @@ class Order(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        if self.order_hash is None or len(self.order_hash) == 0:
-            self.order_hash = rand_key(12)
         if self.order_id is None:
             orders = self.__class__.objects.all().order_by("-order_id")
             if orders:
@@ -427,19 +427,20 @@ class Order(models.Model):
             company = request.user.contact.company
             order = Order(is_send=False, company=company)
             order.save()
-            order_detail = OrderDetail(order=order, order_number=order.order_hash,
+            order_detail = OrderDetail(order=order, uuid=order.uuid,
                                        contact=request.user.contact)
             order_detail.save()
             return order, order_detail
         else:
             order = Order(is_send=False, session=request.session.session_key)
             order.save()
-            order_detail = OrderDetail(order=order, order_number=order.order_hash)
+            order_detail = OrderDetail(order=order, uuid=order.uuid)
             order_detail.save()
             return order, order_detail
 
 
 class OrderDetail(models.Model):
+    uuid = models.UUIDField(primary_key=False, default=None, null=True, blank=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     order_number = models.CharField(max_length=30)
     date_added = models.DateTimeField(auto_now_add=True)
