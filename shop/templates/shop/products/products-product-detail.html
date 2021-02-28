@@ -160,7 +160,8 @@
                                                class="btn btn-secondary btn-md"
                                                href="{% url 'shop:individual_offer' product.name %}">{% trans 'Request offer' %}</a>
                                         {% elif product.stock > 0 or product.stock == -1 %}
-                                            <button type="button" onclick="addToCart('{{ product.name }}')"
+                                            <button type="button"
+                                                    onclick="addToCart('{% url 'shop:shoppingcart_add' product.category.path product.name %}')"
                                                     class="btn btn-secondary btn-md">{% trans 'Add to cart' %}</button>
                                         {% else %}
                                             <button disabled

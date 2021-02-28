@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div aria-live="polite" aria-atomic="true" class="position-relative ">
+<div aria-live="polite" aria-atomic="true" class="position-relative">
     <!-- Position it: -->
     <!-- - `.toast-container` for spacing between toasts -->
     <!-- - `.position-absolute`, `top-0` & `end-0` to position the toasts in the upper right corner -->
@@ -8,21 +8,32 @@
     <div class="toast-container position-absolute top-0 end-0 p-3">
 
         <!-- Then put toasts within -->
-        <div class="toast d-flex align-items-center fade bg-success hidden" role="alert" aria-live="assertive"
+        <div id="toastr-success" class="toast d-flex align-items-center fade bg-success" role="alert"
+             aria-live="assertive"
              aria-atomic="true">
             <div class="toast-body">
                 {% trans 'Sent successfully' %}
             </div>
             <button type="button" class="btn-close ms-auto me-2" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-        <div class="toast d-flex align-items-center fade bg-warning hidden" role="alert" aria-live="assertive"
+        <div id="toastr-cart-success" class="toast d-flex align-items-center fade bg-success" role="alert"
+             aria-live="assertive"
+             aria-atomic="true">
+            <div class="toast-body">
+                {% trans 'Product added' %}
+            </div>
+            <button type="button" class="btn-close ms-auto me-2" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div id="toastr-alert" class="toast d-flex align-items-center fade bg-warning" role="alert"
+             aria-live="assertive"
              aria-atomic="true">
             <div class="toast-body">
                 {% trans 'Looks like you have missed some fields' %}
             </div>
             <button type="button" class="btn-close ms-auto me-2" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-        <div class="toast d-flex align-items-center fade bg-danger hidden" role="alert" aria-live="assertive"
+        <div id="toastr-danger" class="toast d-flex align-items-center fade bg-danger" role="alert"
+             aria-live="assertive"
              aria-atomic="true">
             <div class="toast-body">
                 {% trans 'Ups, something went wrong. Please try again later or contact an administrator.' %}

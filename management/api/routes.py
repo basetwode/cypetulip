@@ -1,17 +1,17 @@
 from rest_framework import routers
 
 from management.api.v1.viewsets import CompanyViewSet, OrderStateViewSet, \
-    OrderDetailAdmViewSet, PaymentDetailAdmViewSet, PaymentMethodAdmViewSet, \
+    PaymentDetailAdmViewSet, PaymentMethodAdmViewSet, \
     ProductViewSet, ProductCategoryViewSet, ProductAttributeTypeViewSet, ProductAttributeTypeInstanceViewSet, \
-    ProductSubItemViewSet, ProductImageViewSet, ProductImageViewSetForProduct
-from shop.api.v1.viewsets import GuestViewSet, AddressViewSet, ContactViewSet, DeliveryViewSet, OrderViewSet, \
+    ProductSubItemViewSet, ProductImageViewSet, ProductImageViewSetForProduct, OrderViewSet
+from shop.api.v1.viewsets import GuestViewSet, AddressViewSet, ContactViewSet, DeliveryViewSet, \
     ApplyVoucherViewSet, OrderItemViewSet, FileOrderItemViewSet, SelectOrderItemViewSet, NumberOrderItemViewSet, \
-    CheckboxOrderItemViewSet
+    CheckboxOrderItemViewSet, OrderDetailViewSet
 
 router = routers.DefaultRouter()
 router.register(r'companies', CompanyViewSet)
 router.register(r'orderstate', OrderStateViewSet)
-router.register(r'orderdetails', OrderDetailAdmViewSet)
+router.register(r'orderdetails', OrderDetailViewSet)
 router.register(r'paymentdetail', PaymentDetailAdmViewSet)
 router.register(r'paymentmethod', PaymentMethodAdmViewSet)
 router.register(r'products', ProductViewSet)

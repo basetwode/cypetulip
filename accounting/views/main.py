@@ -1,6 +1,7 @@
 from functools import reduce
 
 # Create your views here.
+from django.core.paginator import Paginator
 from django.views.generic.list import MultipleObjectMixin
 from django_filters.views import FilterView
 

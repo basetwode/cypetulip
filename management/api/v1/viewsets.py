@@ -2,32 +2,21 @@ import django_filters
 from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissions, IsAdminUser
 
-from management.api.v1.serializers import OrderDetailSerializer, CompanySerializer, ProductSerializer, \
+from management.api.v1.serializers import CompanySerializer, ProductSerializer, \
     ProductCategorySerializer, ProductAttributeTypeSerializer, \
     ProductAttributeTypeInstanceSerializer, ProductSubItemSerializer, ProductImageSerializer, OrderStateSerializer, \
-    PaymentDetailSerializer, PaymentMethodSerializer
+    PaymentDetailSerializer, PaymentMethodSerializer, OrderSerializer
 from payment.models import PaymentDetail, PaymentMethod, Payment
 from shop.models import Product, ProductCategory, ProductAttributeType, ProductAttributeTypeInstance, ProductSubItem, \
-    ProductImage, Company, OrderDetail, OrderState
+    ProductImage, Company, OrderState, Order
 from shop.utils import create_hash
 
 
-class OrderDetailAdmViewSet(viewsets.ModelViewSet):
+class OrderViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = OrderDetail.objects.all()
-    serializer_class = OrderDetailSerializer
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
-
-    def get_queryset(self):
-        queryset = OrderDetail.objects.all()
-        order_hash = self.request.query_params.get('orderHash', None)
-        order_year = self.request.query_params.get('orderYear', None)
-        if order_hash is not None:
-            return queryset.filter(order__order_hash=order_hash)
-        if order_year is not None:
-            return queryset.filter(date_bill__year=order_year)
-        else:
-            return super(OrderDetailAdmViewSet, self).get_queryset()
 
 
 class CompanyViewSet(viewsets.ModelViewSet):

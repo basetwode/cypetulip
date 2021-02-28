@@ -47,7 +47,7 @@
                 {% csrf_token %}
                 <div>
                     {% csrf_token %}
-                    <table id="cart" class="table table-hover table-striped table-responsive-md">
+                    <table id="cart" class="table table-hover table-responsive-md">
                         <thead>
                         <tr>
                             <th style="width:40%">{% trans 'Product' %}</th>
@@ -349,7 +349,7 @@
             methods: {
                 reloadData: function () {
                     let instance = this
-                    axios.get('/api/v1/order/' + this.order_hash)
+                    axios.get('/api/v1/orderdetails?orderHash=' + this.order_hash)
                         .then(response => {
                             if (Array.isArray(response.data)) {
 

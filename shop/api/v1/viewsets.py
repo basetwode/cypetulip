@@ -7,11 +7,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from management.api.v1.serializers import FullOrderItemSerializer, FullFileOrderItemSerializer, \
-    FullCheckboxOrderItemSerializer, FullNumberOrderItemSerializer, FullSelectOrderItemSerializer, FullOrderSerializer
+    FullCheckboxOrderItemSerializer, FullNumberOrderItemSerializer, FullSelectOrderItemSerializer
 from shop.api.v1.serializers import AddressSerializer, BasicContactSerializer, OrderShipmentSerializer, \
-    VoucherSerializer, BasicOrderSerializer, BasicOrderItemSerializer, BasicFileOrderItemSerializer, \
+    VoucherSerializer, BasicOrderItemSerializer, BasicFileOrderItemSerializer, \
     BasicSelectOrderItemSerializer, \
-    BasicNumberOrderItemSerializer, BasicCheckboxOrderItemSerializer
+    BasicNumberOrderItemSerializer, BasicCheckboxOrderItemSerializer, OrderDetailSerializer, FullOrderDetailSerializer
 from shop.models import Address, Contact, Company, Order, OrderDetail, OrderItem, FileOrderItem, SelectOrderItem, \
     NumberOrderItem, \
     CheckBoxOrderItem, Discount
@@ -55,6 +55,41 @@ class GuestViewSet(viewsets.ViewSet):
                     errors = {**address_serializer.errors, **contact_serializer.errors}
                     errors.pop("company", None)
                     return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OrderDetailViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
+    queryset = OrderDetail.objects.all()
+    serializer_class = OrderDetailSerializer
+
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+            return FullOrderDetailSerializer
+        return OrderDetailSerializer
+
+    def get_queryset(self):
+        queryset = OrderDetail.objects.all()
+        request = self.request
+        result = None
+        if request.user.is_authenticated and request.user.is_staff:
+            order_hash = self.request.query_params.get('orderHash', None)
+            order_year = self.request.query_params.get('orderYear', None)
+            if order_hash is not None:
+                return queryset.filter(order__order_hash=order_hash)
+            if order_year is not None:
+                return queryset.filter(date_bill__year=order_year)
+        if request.user.is_authenticated:
+            contact = Contact.objects.filter(user_ptr=request.user)
+            if contact:
+                company = contact[0].company
+                result = OrderDetail.objects.filter(state__isnull=True, order__company=company)
+        else:
+            result = OrderDetail.objects.filter(state__isnull=True, order__session=request.session.session_key)
+        if result:
+            return result
+        else:
+            order, order_detail = Order.create_new_order(request)
+            return OrderDetail.objects.filter(id=order_detail.id)
 
 
 class AddressViewSet(viewsets.ModelViewSet):
@@ -126,41 +161,6 @@ class DeliveryViewSet(viewsets.ViewSet):
         else:
             return Response(order_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class OrderViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowAny]
-    queryset = OrderDetail.objects.all()
-    serializer_class = BasicOrderSerializer
-    lookup_field = 'order__order_hash'
-
-    def get_serializer_class(self):
-        if self.request.user.is_staff:
-            return FullOrderSerializer
-        return BasicOrderSerializer
-
-    def get_queryset(self):
-        """
-        This view should return a list of all addresses
-        for the currently authenticated user.
-        """
-        request = self.request
-        result = None
-        if self.request.user.is_staff:
-            return super(OrderViewSet, self).get_queryset()
-        if request.user.is_authenticated and request.user.is_staff:
-            return OrderDetail.objects.all()
-        if request.user.is_authenticated:
-            contact = Contact.objects.filter(user_ptr=request.user)
-            if contact:
-                company = contact[0].company
-                result = OrderDetail.objects.filter(state__isnull=True, order__company=company)
-        else:
-            result = OrderDetail.objects.filter(state__isnull=True, order__session=request.session.session_key)
-        if result:
-            return result
-        else:
-            order, order_detail = Order.create_new_order(request)
-            return OrderDetail.objects.filter(id=order_detail.id)
 
 
 class OrderItemViewSet(viewsets.ModelViewSet):
