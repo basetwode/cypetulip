@@ -12,7 +12,6 @@
 {% endblock %}
 
 {% block body %}
-
     {% include 'shop/products/products-modal-priceonrequest.html' with product=product %}
     <div class="row">
         <div class="col-md-12 path">
@@ -40,7 +39,7 @@
         </div>
         <div class="col-md-4">
             {% if product.productimage_set.first %}
-                <div id="product" class="carousel slide" data-ride="carousel">
+                <div id="product" class="carousel slide" data-bs-ride="carousel">
 
                     <!-- Indicators -->
                     <ul class="carousel-indicators">

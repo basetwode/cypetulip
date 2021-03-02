@@ -35,6 +35,8 @@ class CreateOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateV
         shipment.order = order
         self.contact = self.get_order().contact
         order.state = OrderState.objects.get(is_sent_state=True)
+        order.order.is_send = True
+        order.order.save()
         order.save()
         messages.success(self.request, _("Shipment created"))
         return super().form_valid(form)

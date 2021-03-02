@@ -525,14 +525,15 @@
                     nextForm.submit();
                 },
                 deleteItem: function (uri, id) {
-                    loadingSpinner = $('#loading-spinner');
+                    loadingSpinner = $('#loading-spinner').removeClass('overlay-hidden');
                     axios.delete('/api/v1/' + uri + id + "/", {
                         headers: {
                             'X-CSRFToken': this.csrfmiddlewaretoken
                         }
                     })
                         .then(response => {
-                            loadingSpinner.addClass('overlay-hidden');
+                            loadingSpinner.addClass('overlay-hidden').removeClass('overlay-hidden');
+                            //TODO add new shoppingcart item on navbar header
                         })
                         .catch(error => {
                             loadingSpinner.addClass('overlay-hidden');
@@ -540,7 +541,7 @@
                 },
                 postItem: function (formData, uri, subItem) {
                     let instance = this;
-                    loadingSpinner = $('#loading-spinner');
+                    loadingSpinner = $('#loading-spinner').removeClass('overlay-hidden');
                     return axios.post('/api/v1/' + uri, formData, {
                         headers: {
                             'X-CSRFToken': this.csrfmiddlewaretoken
@@ -560,7 +561,7 @@
                 },
                 putItem: function (formData, uri, id, subItem, callback) {
                     let instance = this;
-                    loadingSpinner = $('#loading-spinner');
+                    loadingSpinner = $('#loading-spinner').removeClass('overlay-hidden');
                     return axios.put('/api/v1/' + uri + id + "/", formData, {
                         headers: {
                             'X-CSRFToken': this.csrfmiddlewaretoken

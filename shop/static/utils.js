@@ -1,18 +1,25 @@
 function addToCart(url) {
+    const loadingSpinner = $('#loading-spinner');
+    loadingSpinner.removeClass('overlay-hidden');
     $.ajax({
-        url: url ,
+        url: url,
         method: 'post',
         data: $('#add-cart-form').serialize(),
 
         success: function (data) {
             $('#alert-success').show();
-            $('#toastr-cart-success').show();
             $('#shopping-cart').html(data);
+            loadingSpinner.addClass('overlay-hidden');
         },
         error: function (response) {
-            const message = response.responseJSON;
-            let nextUrl = message.next_url;
-            window.location.replace(nextUrl);
+            loadingSpinner.addClass('overlay-hidden');
+            $('#alert-danger').show();
+            setTimeout(() => {
+                const message = response.responseJSON;
+                let nextUrl = message.next_url;
+                window.location.replace(nextUrl);
+            }, 1000)
+
         }
     });
 }
