@@ -115,13 +115,15 @@
                 <div class="row">
 
                     <div v-for="img in productImages" class="col-lg-3 col-md-4 col-6">
-                        <div class="d-block mb-4 h-100">
+                        <div class="d-block mb-4 h-100" style="position: relative;">
                             <img class="img-fluid img-thumbnail" style="object-fit: cover;height: 20vw;"
                                  :src="img.product_picture" alt="">
-                            <button v-on:click="deleteProductImage(img)" style="position: absolute;right: 20px;"
+                            <button v-on:click="deleteProductImage(img)"
+                                    style="position: absolute; top: 5px; right: 10px;"
                                     type="button" class="close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
+                            o
                         </div>
                     </div>
                     <div class="col-12">

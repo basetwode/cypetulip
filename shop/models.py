@@ -31,8 +31,8 @@ class Company(models.Model):
                             upload_to=company_files_upload_handler, storage=fs)
 
     class Meta:
-        verbose_name_plural = "Companies"
-        verbose_name = "Company"
+        verbose_name_plural = _("Companies")
+        verbose_name = _("Company")
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):

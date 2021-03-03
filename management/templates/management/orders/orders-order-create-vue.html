@@ -10,7 +10,7 @@
     <script type='text/javascript'>
         var managementURL = "{% url 'management_index' %}";
         var csrfmiddlewaretoken = '{{ csrf_token }}';
-        var selectedOrder = {% if order %}"{{ order.order_hash }}"{% else %}""{% endif %};
+        var selectedOrder = {% if order %}"{{ order }}"{% else %}""{% endif %};
     </script>
 
     <div id="app" class="row">
@@ -120,6 +120,7 @@
                                                     v-model="item.product.id"
                                                     class="form-control"
                                                     id="productSelect">
+                                                <option v-if="!products">{% trans 'Items are loading' %}</option>
                                                 <option v-for="product in products"
                                                         v-bind:value="product.id">
                                                     [[ product.name]]
@@ -483,6 +484,7 @@
             el: '#app',
             data: {
                 selectedOrderHash: '',
+                selectedOrderId: '',
                 selectedOrder: '',
                 orderDetails: '',
                 companies: [],
@@ -524,7 +526,8 @@
                 }
             },
             mounted() {
-                this.selectedOrderHash = selectedOrder;
+                this.selectedOrderHash = selectedOrder.order_hash;
+                this.selectedOrderId = selectedOrder.id;
                 axios.all([this.loadInitialData(), this.loadData()]).finally(v => loadingSpinner.addClass('overlay-hidden'))
             },
             methods: {
@@ -560,16 +563,16 @@
                     var billPreview = null;
 
                     if (this.selectedOrderHash) {
-                        orderPromise = axios.get('/api/v1/order/' + this.selectedOrderHash)
+                        orderPromise = axios.get('/api/v1/orderdetails?orderHash=' + this.selectedOrderHash)
                             .then(response => {
-                                response.data.order_items.forEach(item => {
+                                response.data[0].order_items.forEach(item => {
                                     item.edit = '';
                                     item.edit_pop = ''
                                 });
-                                response.data.order_items.forEach(item => item.order_items.forEach(sub_item => {
+                                response.data[0].order_items.forEach(item => item.order_items.forEach(sub_item => {
                                     sub_item.edit = ''
                                 }));
-                                this.selectedOrder = response.data;
+                                this.selectedOrder = response.data[0];
                                 this.orderItems = this.selectedOrder.order_items
 
                             });
@@ -673,7 +676,7 @@
                     let formData = new FormData();
                     formData.append("id", item.id);
                     formData.append("product", item.product.id);
-                    formData.append("order", this.selectedOrder.order.id);
+                    formData.append("order", this.selectedOrder.id);
                     formData.append("order_detail", this.orderDetails.id);
                     formData.append("allowable", item.allowable);
                     formData.append("price", item.price);
@@ -709,26 +712,27 @@
                 saveOrder: function () {
                     let instance = this;
                     if (!this.selectedOrderHash) {
-                        axios.post('/api/v1/adm/order/', {'company': this.contacts.filter(c => c.id === this.selectedContact)[0].company.id})
+                        axios.post('/api/v1/order/', {'company': this.contacts.filter(c => c.id === this.selectedContact)[0].company.id})
                             .then(response => {
                                 instance.selectedOrderHash = response.data.order_hash;
+                                instance.selectedOrderId = response.data.id
                                 this.selectedOrder = response.data;
                             }).catch(() => {
                             loadingSpinner = $('#loading-spinner');
                             loadingSpinner.addClass('overlay-hidden');
                         })
                     } else {
-                        axios.put('/api/v1/adm/order/' + this.selectedOrder.order.id + '/', {'company': this.contacts.filter(c => c.id === this.selectedContact)[0].company.id})
+                        axios.put('/api/v1/order/' + this.selectedOrder.id + '/', {'company': this.contacts.filter(c => c.id === this.selectedContact)[0].company.id})
                     }
 
                 },
                 saveOrderDetail: function () {
                     if (this.orderDetails) {
-                        axios.put('/api/v1/orderdetails?orderHash=' + this.selectedOrderHash + '/' + this.orderDetails.id + '/', {
+                        axios.put('/api/v1/orderdetails/' + this.orderDetails.id + '/', {
                             'shipment_address': this.selectedShippingAddress,
                             'billing_address': this.selectedBillingAddress,
                             'order_number': this.selectedOrderHash,
-                            'order': this.selectedOrder.order.id,
+                            'order': this.selectedOrder.id,
                             'contact': this.selectedContact
                         }).catch(() => {
                             loadingSpinner = $('#loading-spinner');

@@ -35,7 +35,7 @@ class CompanyCreationView(SuccessMessageMixin, LoginRequiredMixin, WizardView):
     slug_field = 'id'
     slug_url_kwarg = 'id'
     model = Company
-    fields = '__all__'
+    fields = ['name', 'term_of_payment', 'street', 'number', 'zipcode', 'city', 'logo']
     success_message = _("Company created successfully")
 
     def get_back_url(self):

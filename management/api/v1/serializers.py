@@ -1,9 +1,10 @@
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
 from payment.models import PaymentDetail, PaymentMethod
 from shop.models import Product, ProductCategory, ProductAttributeType, ProductAttributeTypeInstance, ProductSubItem, \
-    ProductImage, Company, OrderDetail, OrderItem, CheckBoxOrderItem, NumberOrderItem, \
-    SelectOrderItem, FileOrderItem, Order, OrderState
+    ProductImage, Company, OrderItem, CheckBoxOrderItem, NumberOrderItem, \
+    SelectOrderItem, FileOrderItem, OrderState, Order
 
 
 class ProductAttributeTypeSerializer(serializers.HyperlinkedModelSerializer):
@@ -61,18 +62,9 @@ class CompanySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FullOrderSerializer(serializers.ModelSerializer):
+class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = '__all__'
-
-
-class OrderDetailSerializer(serializers.ModelSerializer):
-    total = serializers.ReadOnlyField()
-    total_wt = serializers.ReadOnlyField()
-
-    class Meta:
-        model = OrderDetail
         fields = '__all__'
 
 

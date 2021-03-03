@@ -14,7 +14,7 @@
 
     {% if request|ismobile %}
         <div class="modal fade modal-fullscreen" id="filterModal" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalLabel"
+             aria-labelledby="productFilterModal"
              aria-hidden="true">
             <div class="modal-dialog" style="height: 100%; max-width: none; width: 100vw; margin:0" role="document">
                 <div class="modal-content" style="height: 100%;">
@@ -125,9 +125,10 @@
                     </div>
                     <div class="col-2">
                         <div class="attributes  d-block d-sm-none categories-list">
-                            <span data-bs-toggle="modal" data-bs-target="#filterModal">
+                            <button class="btn btn-outline-secondary" data-bs-toggle="modal"
+                                    data-bs-target="#filterModal">
                                 Filter
-                            </span>
+                            </button>
                         </div>
                     </div>
 

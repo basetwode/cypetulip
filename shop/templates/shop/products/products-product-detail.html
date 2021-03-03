@@ -12,7 +12,6 @@
 {% endblock %}
 
 {% block body %}
-
     {% include 'shop/products/products-modal-priceonrequest.html' with product=product %}
     <div class="row">
         <div class="col-md-12 path">
@@ -40,7 +39,7 @@
         </div>
         <div class="col-md-4">
             {% if product.productimage_set.first %}
-                <div id="product" class="carousel slide" data-ride="carousel">
+                <div id="product" class="carousel slide" data-bs-ride="carousel">
 
                     <!-- Indicators -->
                     <ul class="carousel-indicators">
@@ -160,7 +159,8 @@
                                                class="btn btn-secondary btn-md"
                                                href="{% url 'shop:individual_offer' product.name %}">{% trans 'Request offer' %}</a>
                                         {% elif product.stock > 0 or product.stock == -1 %}
-                                            <button type="button" onclick="addToCart('{{ product.name }}')"
+                                            <button type="button"
+                                                    onclick="addToCart('{% url 'shop:shoppingcart_add' product.category.path product.name %}')"
                                                     class="btn btn-secondary btn-md">{% trans 'Add to cart' %}</button>
                                         {% else %}
                                             <button disabled

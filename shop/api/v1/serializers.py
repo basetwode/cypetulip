@@ -146,6 +146,32 @@ class BasicCheckboxOrderItemSerializer(serializers.ModelSerializer):
             return value
 
 
+class OrderDetailSerializer(serializers.ModelSerializer):
+    total = serializers.ReadOnlyField()
+    total_wt = serializers.ReadOnlyField()
+    order_items = serializers.SerializerMethodField('get_order_items')
+    voucher = SerializerMethodField()
+
+    class Meta:
+        model = OrderDetail
+        fields = ['order_number', 'order', 'order_items', 'id', 'voucher', 'total_wt', 'total', 'date_bill']
+        depth = 4
+
+    def get_order_items(self, order):
+        qs = OrderItem.objects.filter(order_detail=order, order_item__isnull=True)
+        serializer = OrderItemSerializer(instance=qs, many=True)
+        return serializer.data
+
+    def get_voucher(self, object):
+        return object.discount.voucher_id if object.discount else ""
+
+
+class FullOrderDetailSerializer(OrderDetailSerializer):
+    class Meta:
+        model = OrderDetail
+        fields = '__all__'
+
+
 class OrderItemSerializer(serializers.ModelSerializer):
     price = serializers.ReadOnlyField()
     product = ProductSubItemSerializer()
@@ -177,24 +203,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     def get_valid(self, object):
         return True
-
-
-class BasicOrderSerializer(serializers.ModelSerializer):
-    order_items = serializers.SerializerMethodField('get_order_items')
-    voucher = SerializerMethodField()
-
-    class Meta:
-        model = OrderDetail
-        fields = ['order_number', 'order', 'order_items', 'id', 'voucher']
-        depth = 4
-
-    def get_order_items(self, order):
-        qs = OrderItem.objects.filter(order_detail=order, order_item__isnull=True)
-        serializer = OrderItemSerializer(instance=qs, many=True)
-        return serializer.data
-
-    def get_voucher(self, object):
-        return object.discount.voucher_id if object.discount else ""
 
 
 class BasicContactSerializer(serializers.ModelSerializer):

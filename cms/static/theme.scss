@@ -48,6 +48,7 @@ body {
     background-color: lighten($navbar-bg, 5%);
     color: $navbar-color;
   }
+
   .dropdown-item {
     color: $navbar-color;
   }
@@ -969,6 +970,7 @@ h1 {
 .no-bg {
   border: none;
   background-color: transparent;
+
   .list-group-item {
     background-color: transparent;
 
@@ -995,6 +997,20 @@ body {
 .bg-purple {
   background-color: #6f42c1;
 }
+
+
+@media (min-width: 1200px) {
+  .alert-middle {
+    left: 43vw;
+  }
+}
+
+@media (max-width: 1199px) {
+  .alert-middle {
+    left: 25vw;
+  }
+}
+
 
 @import "custom/bs4-close.scss";
 @import "custom/navbar.scss";
