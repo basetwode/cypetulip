@@ -72,9 +72,9 @@ def get_orderitems_once_only(order):
     return order_items
 
 
-def get_order_for_hash_and_contact(contact, order_hash):
+def get_order_for_hash_and_contact(contact, uuid):
     company = contact[0].company
-    order = Order.objects.filter(order_hash=order_hash, is_send=False, company=company)
+    order = Order.objects.filter(uuid=uuid, is_send=False, company=company)
     if order.count() > 0:
         order = order[0]
         return order

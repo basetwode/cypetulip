@@ -188,7 +188,7 @@
             </div>
         </div>
 
-        <div class="col-lg-9 col-md-12 col-sm-12">
+        <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="card-body row">
                 <div class="col-lg-9 col-md-12 col-sm-12 table-responsive-sm">
 
@@ -360,25 +360,25 @@
 
                 <div class="col-lg-3 col-md-12 col-sm-12 text-center">
                     <h5 class="h-bold">{% trans 'Options' %}</h5>
-                    <a href="{% url 'order_update_view' order.order_hash %}"
+                    <a href="{% url 'order_update_view' order.uuid %}"
                        class="btn btn-fw btn-warning">{% trans 'Edit order' %}</a>
-                    <a href="{% url 'invoice_pdf' order.order_hash %}" target="_blank"
+                    <a href="{% url 'invoice_pdf' order.uuid %}" target="_blank"
                        class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
                     <a class="btn btn-fw btn-secondary" data-bs-toggle="modal" style="color: #fff"
                        data-bs-target="#assign-employee-modal">{% trans 'Assign' %}</a>
-                    {% include 'management/orders/orders-orderdetail-modal-assignemployee.html' with employees=employees order_hash=order.order_hash %}
+                    {% include 'management/orders/orders-orderdetail-modal-assignemployee.html' with employees=employees uuid=order.uuid %}
                     <a class="btn btn-fw btn-secondary" data-bs-toggle="modal" style="color: #fff"
                        data-bs-target="#change-state-modal">{% trans 'Set State' %}</a>
-                    {% include 'management/orders/orders-order-changestate.html' with states=states order_hash=order.order_hash %}
+                    {% include 'management/orders/orders-order-changestate.html' with states=states uuid=order.uuid %}
                     {% for order_detail in order.orderdetail_set.all %}
-                        <form action="{% url 'shop:detail_order_cancel_order' order.order_hash %}" method="post">
+                        <form action="{% url 'shop:detail_order_cancel_order' order.uuid %}" method="post">
                             {% csrf_token %}
                             <button type="submit"
                                     {% if order_detail.state == order_detail.state.cancel_order_state %}disabled{% endif %}
                                     class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
                         </form>
                     {% endfor %}
-                    <form action="{% url 'order_accept_view' order.order_hash %}" method="post">
+                    <form action="{% url 'order_accept_view' order.uuid %}" method="post">
                         {% csrf_token %}
                         <button type="submit"
                                 class="btn btn-fw btn-secondary">{% trans 'Send Invoice' %}</button>
@@ -388,7 +388,7 @@
                             {% endif %}
                         {% endfor %}
                     </form>
-                    <form action="{% url 'order_pay_view' order.order_hash %}" method="post">
+                    <form action="{% url 'order_pay_view' order.uuid %}" method="post">
                         {% csrf_token %}
                         <button type="submit" {% if payment.is_paid %}disabled{% endif %}
                                 class="btn btn-fw btn-secondary">{% trans 'Paid' %}</button>
@@ -396,8 +396,8 @@
                     <button href="#" class="btn btn-fw btn-secondary" data-bs-toggle="modal"
                             {% if order.is_send %}{% endif %}
                             data-bs-target="#create-modal">{% trans 'Ship' %}</button>
-                    {% include 'create-shipment.html' with order_hash=order.order_hash %}
-                    <form method="post" action="{% url 'order_delete_view' order.order_hash %}">
+                    {% include 'create-shipment.html' with uuid=order.uuid %}
+                    <form method="post" action="{% url 'order_delete_view' order.uuid %}">
                         {% csrf_token %}
                         <input type="submit" class="btn-danger btn btn-fw" value="{% trans 'Delete' %}"><br>
                     </form>
@@ -493,7 +493,7 @@
 
                                         <a href="#" class="btn btn-outline-dark" data-bs-toggle="modal"
                                            data-bs-target="#delete-modal-{{ shipment.id }}">{% trans 'Delete' %}</a>
-                                        {% include 'management/generic/generic-modal-delete.html' with id=shipment.id order_hash=order.order_hash url='shipping:shipment_delete' url_param='subitem_delete_id' %}
+                                        {% include 'management/generic/generic-modal-delete.html' with id=shipment.id uuid=order.uuid url='shipping:shipment_delete' url_param='subitem_delete_id' %}
                                     </td>
                                 </tr>
                             {% empty %}

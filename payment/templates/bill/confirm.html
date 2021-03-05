@@ -25,7 +25,7 @@
                             <p><small>{% trans 'Shoppingcart' %}</small></p>
                         </div>
                         <div class="stepwizard-step">
-                            <form action="{% url 'shop:delivery_order' order_items.order_hash %}" method="get">
+                            <form action="{% url 'shop:delivery_order' order_items.uuid %}" method="get">
                                 <a onclick="$(this).parent().submit()" type="button"
                                    class="btn btn-outline-success btn-circle"><i
                                         class="fas fa-truck"></i></a>
@@ -244,7 +244,7 @@
             </div>
             <form id="next-step-form" action="confirm/" method="post">
                 {% csrf_token %}
-                <input id="next-step-token" type="hidden" name="token" value="{{ order_details.order_hash }}">
+                <input id="next-step-token" type="hidden" name="token" value="{{ order_details.uuid }}">
             </form>
         </div>
 

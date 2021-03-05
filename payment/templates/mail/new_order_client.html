@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block body %}
-    {% url 'shop:detail_order' order.order_hash as overview %}
+    {% url 'shop:detail_order' order.uuid as overview %}
 
     <p style="font-size:17px;color:#434144;"></p>
 

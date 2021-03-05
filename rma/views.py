@@ -13,7 +13,7 @@ from utils.views import CreateUpdateView
 class RMAInitView(LoginRequiredMixin, CreateUpdateView):
     template_name = 'myaccount/rma-init.html'
     model = ReturnMerchandiseAuthorization
-    slug_url_kwarg = 'order_hash'
+    slug_url_kwarg = 'uuid'
     slug_field = 'order'
     fields = ['shipper']
     # todo make sure that this view is protected and that others can not create rmas for any orders

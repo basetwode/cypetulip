@@ -460,11 +460,11 @@
                 </div>
             </form>
 
-            <form id="next-step-form" action="/payment/{{ order_details.order_hash }}" method="get">
+            <form id="next-step-form" action="/payment/{{ order_details.uuid }}" method="get">
             </form>
             <script type='text/javascript'>
                 var csrfmiddlewaretoken = '{{ csrf_token }}';
-                var order = '{{ order_details.order_hash }}';
+                var order = '{{ order_details.uuid }}';
                 var discount = '{{ order_details.orderdetail_set.first.discount.voucher_id }}';
             </script>
             <script>
@@ -512,7 +512,7 @@
                         },
                         applyVoucher: function() {
                             let instance = this;
-                            axios.post('/api/v1/voucher/', {'order_hash':this.order,'voucher':this.voucher},  {
+                            axios.post('/api/v1/voucher/', {'uuid':this.order,'voucher':this.voucher},  {
                                 headers: {
                                     'X-CSRFToken': this.csrfmiddlewaretoken
                                 }})

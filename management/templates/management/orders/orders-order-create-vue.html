@@ -10,7 +10,7 @@
     <script type='text/javascript'>
         var managementURL = "{% url 'management_index' %}";
         var csrfmiddlewaretoken = '{{ csrf_token }}';
-        var selectedOrder = {% if order %}"{{ order }}"{% else %}""{% endif %};
+        var selectedOrder = {% if order %}"{{ order.uuid }}"{% else %}""{% endif %};
     </script>
 
     <div id="app" class="row">
@@ -526,8 +526,8 @@
                 }
             },
             mounted() {
-                this.selectedOrderHash = selectedOrder.order_hash;
-                this.selectedOrderId = selectedOrder.id;
+                this.selectedOrderHash = selectedOrder;
+                //this.selectedOrderId = selectedOrder.id;
                 axios.all([this.loadInitialData(), this.loadData()]).finally(v => loadingSpinner.addClass('overlay-hidden'))
             },
             methods: {
@@ -563,7 +563,7 @@
                     var billPreview = null;
 
                     if (this.selectedOrderHash) {
-                        orderPromise = axios.get('/api/v1/orderdetails?orderHash=' + this.selectedOrderHash)
+                        orderPromise = axios.get('/api/v1/orderdetails?uuid=' + this.selectedOrderHash)
                             .then(response => {
                                 response.data[0].order_items.forEach(item => {
                                     item.edit = '';
@@ -573,13 +573,14 @@
                                     sub_item.edit = ''
                                 }));
                                 this.selectedOrder = response.data[0];
+                                this.selectedOrderId = this.selectedOrder.id;
                                 this.orderItems = this.selectedOrder.order_items
 
                             });
-                        orderdetailsPromise = axios.get('/api/v1/orderdetails?orderHash=' + this.selectedOrderHash)
+                        orderdetailsPromise = axios.get('/api/v1/orderdetails?uuid=' + this.selectedOrderHash)
                             .then(response => {
                                 this.orderDetails = response.data[0];
-                                this.selectedContact = this.orderDetails.contact
+                                this.selectedContact = this.orderDetails.contact;
                                 this.selectedShippingAddress = this.orderDetails.shipment_address;
                                 this.selectedBillingAddress = this.orderDetails.billing_address;
                                 this.billingAddressEqualShipping = this.selectedBillingAddress === this.selectedShippingAddress;
@@ -714,7 +715,7 @@
                     if (!this.selectedOrderHash) {
                         axios.post('/api/v1/order/', {'company': this.contacts.filter(c => c.id === this.selectedContact)[0].company.id})
                             .then(response => {
-                                instance.selectedOrderHash = response.data.order_hash;
+                                instance.selectedOrderHash = response.data.uuid;
                                 instance.selectedOrderId = response.data.id
                                 this.selectedOrder = response.data;
                             }).catch(() => {
@@ -731,7 +732,7 @@
                         axios.put('/api/v1/orderdetails/' + this.orderDetails.id + '/', {
                             'shipment_address': this.selectedShippingAddress,
                             'billing_address': this.selectedBillingAddress,
-                            'order_number': this.selectedOrderHash,
+                            'uuid': this.selectedOrderHash,
                             'order': this.selectedOrder.id,
                             'contact': this.selectedContact
                         }).catch(() => {
@@ -740,7 +741,7 @@
                         })
                     } else {
                         axios.post('/api/v1/orderdetails/', {
-                            'order_number': this.selectedOrderHash,
+                            'uuid': this.selectedOrderHash,
                             // in this case we do't need order.id since the data came from a different rest api (see saveOrder)
                             'order': this.selectedOrder.id,
                             'state': this.orderStates.filter(state => state.initial === true)[0].id,

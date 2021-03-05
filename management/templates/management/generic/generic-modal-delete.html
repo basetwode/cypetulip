@@ -9,8 +9,8 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            {% if order_hash %}
-                <form action="{% url url url_param=id order=order_hash %}" method="post">
+            {% if uuid %}
+                <form action="{% url url url_param=id order=uuid %}" method="post">
             {% else %}
                 <form action="{% url url url_param=id %}" method="post">
             {% endif %}

@@ -55,7 +55,7 @@ urlpatterns = [
         name='management_communication_retry_view'),
 
     url(r'orders/search/', SearchOrders.as_view(), name="orders_search"),
-    url(r'^orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)$', ManagementOrderDetailView.as_view(),
+    url(r'^orders/(?P<uuid>[a-zA-Z0-9\\s\-_ ]+)$', ManagementOrderDetailView.as_view(),
         name="management_order_detail_view"),
 
     url(r'^categories/create/$', CategoryCreationView.as_view(), name="category_create_view"),
@@ -113,14 +113,14 @@ urlpatterns = [
 
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/assign/$',
         OrderAssignEmployeeView.as_view(), name="order_assign_employee_view"),
-    url(r'^orders/create/(?P<order_hash>[a-zA-Z0-9\\s\-_ ]*)/$', OrderCreateView.as_view(),
+    url(r'^orders/create/(?P<uuid>[a-zA-Z0-9\\s\-_ ]*)/$', OrderCreateView.as_view(),
         name="order_update_view"),
     url(r'^orders/create/$', OrderCreateView.as_view(),
         name="order_create_view"),
 
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/cancel/$',
         OrderCancelView.as_view(), name="order_cancel_view"),
-    url(r'^orders/(?P<order_hash>[a-zA-Z0-9\\s\-_ ]+)/delete/$',
+    url(r'^orders/(?P<uuid>[a-zA-Z0-9\\s\-_ ]+)/delete/$',
         DeleteOrder.as_view(), name="order_delete_view"),
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/pay/$',
         OrderPayView.as_view(), name="order_pay_view"),

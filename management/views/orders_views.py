@@ -44,13 +44,13 @@ class ManagementOrderOverview(LoginRequiredMixin, PaginatedFilterViews, FilterVi
 class ManagementOrderDetailView(LoginRequiredMixin, DetailView):
     template_name = 'management/orders/orders-order-detail.html'
     model = Order
-    slug_url_kwarg = 'order'
-    slug_field = 'order_hash'
+    slug_url_kwarg = 'uuid'
+    slug_field = 'uuid'
     filterset_class = OrderDetailFilter
 
     def get_context_data(self, **kwargs):
         employees = Employee.objects.all()
-        _order_detail = OrderDetail.objects.get(order=self.object.order_id)
+        _order_detail = OrderDetail.objects.get(order=self.object)
         _payment_details = None
         _payment = None
         try:
@@ -71,8 +71,8 @@ class ManagementOrderDetailView(LoginRequiredMixin, DetailView):
 
 
 class OrderAssignEmployeeView(LoginRequiredMixin, View):
-    def post(self, request, order_hash):
-        _order = OrderDetail.objects.get(order_number=order_hash)
+    def post(self, request, uuid):
+        _order = OrderDetail.objects.get(uuid=uuid)
         _employee = Employee.objects.get(id=request.POST['id'])
         _order.assigned_employee = _employee
         try:
@@ -83,12 +83,12 @@ class OrderAssignEmployeeView(LoginRequiredMixin, View):
 
 
 class OrderPayView(View):
-    def post(self, request, order_hash):
-        _order = Order.objects.get(order_hash=order_hash)
+    def post(self, request, uuid):
+        _order = Order.objects.get(uuid=uuid)
         _payment_detail = PaymentDetail.objects.get(order=_order)
         _payment = Payment.objects.get(details=_payment_detail)
         _payment.is_paid = True
-        _order_detail = OrderDetail.objects.get(order_number=order_hash)
+        _order_detail = OrderDetail.objects.get(uuid=uuid)
         _order_detail.state = OrderState.objects.get(is_paid_state=True)
         _order_detail.save()
         try:
@@ -100,8 +100,8 @@ class OrderPayView(View):
 
 
 class OrderShipView(View):
-    def post(self, request, order_hash):
-        _order = Order.objects.get(order_hash=order_hash)
+    def post(self, request, uuid):
+        _order = Order.objects.get(uuid=uuid)
         _order.is_send = True
         try:
             _order.save()
@@ -111,8 +111,8 @@ class OrderShipView(View):
 
 
 class OrderChangeStateView(View):
-    def post(self, request, order_hash):
-        _order = OrderDetail.objects.get(order_number=order_hash)
+    def post(self, request, uuid):
+        _order = OrderDetail.objects.get(uuid=uuid)
         _next_state = OrderState.objects.get(id=request.POST['id'])
         _order.state = _next_state
         try:
@@ -125,8 +125,8 @@ class OrderChangeStateView(View):
 class OrderAcceptInvoiceView(View, EmailMixin):
     email_template = 'management/mail/mail-orderacceptedinvoice.html'
 
-    def post(self, request, order_hash):
-        _order = OrderDetail.objects.get(order_number=order_hash)
+    def post(self, request, uuid):
+        _order = OrderDetail.objects.get(uuid=uuid)
 
         if _order.state.initial:
             _order.state = _order.state.next_state
@@ -194,13 +194,13 @@ class CreateOrderView(SuccessMessageMixin, LoginRequiredMixin, WizardView):
     def get_back_url(self):
         if self.get_object():
             return reverse_lazy('management_order_detail_view',
-                                kwargs={'order': self.get_object().order_hash})
+                                kwargs={'order': self.get_object().uuid})
         else:
             return reverse_lazy('individualoffers_overview')
 
     def get_success_url(self):
         order_detail, created = OrderDetail.objects.get_or_create(order=self.object,
-                                                                  order_number=self.object.order_hash)
+                                                                  uuid=self.object.uuid)
         if not order_detail.state:
             order_detail.state = OrderState.objects.get(initial=True)
             order_detail.save()
@@ -255,7 +255,7 @@ class CreateOrderSubItem(LoginRequiredMixin, WizardView):
 
     def get_success_url(self):
         return reverse_lazy('management_order_detail_view',
-                            kwargs={'order': OrderDetail.objects.get(id=self.get_parent_id()).order.order_hash})
+                            kwargs={'order': OrderDetail.objects.get(id=self.get_parent_id()).order.uuid})
 
     def get_context_data(self, **kwargs):
         return {**super(CreateOrderSubItem, self).get_context_data(**kwargs),
@@ -313,8 +313,8 @@ class DeleteOrderItem(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
 
 class OrderCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateUpdateView):
     model = Order
-    slug_field = 'order_hash'
-    slug_url_kwarg = 'order_hash'
+    slug_field = 'uuid'
+    slug_url_kwarg = 'uuid'
     template_name = 'management/orders/orders-order-create-vue.html'
     fields = '__all__'
     context_object_name = 'order'
@@ -323,8 +323,8 @@ class OrderCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateUpdateView)
 
 class DeleteOrder(LoginRequiredMixin, DeleteView):
     model = Order
-    slug_url_kwarg = 'order_hash'
-    slug_field = 'order_hash'
+    slug_url_kwarg = 'uuid'
+    slug_field = 'uuid'
 
     def get_success_url(self):
         messages.success(self.request, _('Order deleted'))

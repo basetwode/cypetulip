@@ -43,7 +43,7 @@ def __check_order_access(user, order_id):
     #  return True
     contact = Contact.objects.filter(user=user.id)
     company = contact[0].company
-    _order = Order.objects.filter(order_hash=order_id, company=company)
+    _order = Order.objects.filter(uuid=order_id, company=company)
     if _order.count() > 0:
         return True
     return False

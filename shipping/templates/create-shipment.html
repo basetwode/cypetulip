@@ -14,9 +14,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <a href="{% url 'shipping:onlineshipment_create' order=order_hash %}"
+                <a href="{% url 'shipping:onlineshipment_create' order=uuid %}"
                    class="btn btn-primary">{% trans 'Online' %}</a>
-                <a href="{% url 'shipping:packageshipment_create' order=order_hash %}"
+                <a href="{% url 'shipping:packageshipment_create' order=uuid %}"
                    class="btn btn-primary">{% trans 'Package' %}</a>
             </div>
             </form>

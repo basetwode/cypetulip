@@ -21,12 +21,12 @@ from shop.models.orders import Order, OrderDetail, OrderItem
 
 class HTMLPreview(PermissionOwnsObjectMixin, View):
     model = OrderDetail
-    slug_field = "order__order_hash"
+    slug_field = "order__uuid"
     slug_url_kwarg = "order"
     field_name = "contact"
 
     def get(self, request, order):
-        _order = Order.objects.get(order_hash=order)
+        _order = Order.objects.get(uuid=order)
         order_detail = OrderDetail.objects.get(order=_order)
         contact = order_detail.contact
         company = _order.company
@@ -135,16 +135,16 @@ class GeneratePDFFile():
 
 class GeneratePDF(GeneratePDFFile,PermissionOwnsObjectMixin, View):
     model = OrderDetail
-    slug_field = "order__order_hash"
+    slug_field = "order__uuid"
     slug_url_kwarg = "order"
     field_name = "contact"
 
     def get(self, request, order):
-        _order = Order.objects.get(order_hash=order)
+        _order = Order.objects.get(uuid=order)
         pdf = HttpResponse(self.generate(_order).getvalue(), content_type='application/pdf')
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
-            filename = "Invoice_%s.pdf" % _order.order_hash
+            filename = "Invoice_%s.pdf" % _order.uuid
             content = "inline; filename='%s'" % filename
             download = request.GET.get("download")
             if download:

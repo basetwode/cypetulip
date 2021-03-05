@@ -20,20 +20,20 @@ def company_files_upload_handler(company, filename):
 
 def order_files_upload_handler(order, filename):
     order.file_name = filename
-    return "orders/{hash}/order/{file}".format(hash=order.order.order_hash, file=__create_hash(filename))
+    return "orders/{hash}/order/{file}".format(hash=order.order.uuid, file=__create_hash(filename))
 
 
 def invoice_files_upload_handler(order, filename):
-    return "orders/{hash}/invoice/Invoice_{file}.pdf".format(hash=order.order.order_hash, file=order.unique_bill_nr())
+    return "orders/{hash}/invoice/Invoice_{file}.pdf".format(hash=order.order.uuid, file=order.unique_bill_nr())
 
 
 def rma_files_upload_handler(rma, filename):
-    return "orders/{hash}/rma/RMA_{file}.pdf".format(hash=rma.order.order.order_hash, file=rma.number)
+    return "orders/{hash}/rma/RMA_{file}.pdf".format(hash=rma.order.order.uuid, file=rma.number)
 
 
 def shipment_files_upload_handler(shipment, filename):
     shipment.file_name = filename
-    return "orders/{hash}/shipping/{file}".format(hash=shipment.order.order.order_hash, file=__create_hash(filename))
+    return "orders/{hash}/shipping/{file}".format(hash=shipment.order.order.uuid, file=__create_hash(filename))
 
 
 def public_files_upload_handler(instance, filename):

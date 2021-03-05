@@ -261,7 +261,7 @@
                    class="btn btn-success float-end">{% trans 'Delivery' %} <i
                         class="fa fa-angle-right"></i></a>
             </div>
-            <form id="next-step-form" action="{% url "shop:delivery_order" order_details.order_hash %}" method="get">
+            <form id="next-step-form" action="{% url "shop:delivery_order" order_details.uuid %}" method="get">
             </form>
         </div>
         <button type="button" class="btn btn-primary" ref="showModal" style="display: none" data-bs-toggle="modal"
@@ -278,7 +278,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        {% url 'shop:delivery_order' order_details.order_hash as next_uri %}
+                        {% url 'shop:delivery_order' order_details.uuid as next_uri %}
                         {% include 'shop/authentication/authentication-component-loginform.html' with next_url=next_uri %}
                     </div>
                     <div class="modal-footer">
@@ -320,9 +320,9 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type='text/javascript'>
         var csrfmiddlewaretoken = '{{ csrf_token }}';
-        var order = '{{ order_details.order_hash }}';
+        var order = '{{ order_details.uuid }}';
         var is_authenticated = '{{ user.is_authenticated }}';
-        var next_url = '{% url "shop:delivery_order" order_details.order_hash %}';
+        var next_url = '{% url "shop:delivery_order" order_details.uuid %}';
     </script>
 
     <script>
@@ -333,7 +333,7 @@
                 csrfmiddlewaretoken: csrfmiddlewaretoken,
                 addresses: [],
                 shipment: "",
-                order_hash: order,
+                uuid: order,
                 nextUrl: next_url,
                 order: {},
                 was_validated: false,
@@ -349,7 +349,7 @@
             methods: {
                 reloadData: function () {
                     let instance = this
-                    axios.get('/api/v1/orderdetails?orderHash=' + this.order_hash)
+                    axios.get('/api/v1/orderdetails?orderHash=' + this.uuid)
                         .then(response => {
                             if (Array.isArray(response.data)) {
 

@@ -25,7 +25,7 @@
                             <p><small>{% trans 'Shoppingcart' %}</small></p>
                         </div>
                         <div class="stepwizard-step">
-                            <a href="/shop/delivery/{{ order_details.order_hash }}" type="button"
+                            <a href="/shop/delivery/{{ order_details.uuid }}" type="button"
                                class="btn btn-outline-success btn-circle"><i
                                     class="fas fa-truck"></i></a>
                             <p><small>{% trans "Delivery" %}</small></p>
@@ -50,7 +50,7 @@
                 <div class="col-12">
                     <h4>{% trans 'Payment' %}</h4>
                     <form id="payment-form" class="form-horizontal" method="get"
-                          action="/payment/create/{{ order_details.order_hash }}">
+                          action="/payment/create/{{ order_details.uuid }}">
                         {% csrf_token %}
                         <div id="method">
                             <p>
@@ -117,7 +117,7 @@
         <form id="next-step-form" action="confirm/" method="post">
             {% csrf_token %}
 
-            <input id="next-step-token" type="hidden" name="token" value="{{ order_details.order_hash }}">
+            <input id="next-step-token" type="hidden" name="token" value="{{ order_details.uuid }}">
         </form>
     </div>
 

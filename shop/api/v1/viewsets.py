@@ -72,10 +72,10 @@ class OrderDetailViewSet(viewsets.ModelViewSet):
         request = self.request
         result = None
         if request.user.is_authenticated and request.user.is_staff:
-            order_hash = self.request.query_params.get('orderHash', None)
+            uuid = self.request.query_params.get('uuid', None)
             order_year = self.request.query_params.get('orderYear', None)
-            if order_hash is not None:
-                return queryset.filter(order__order_hash=order_hash)
+            if uuid is not None:
+                return queryset.filter(order__uuid=uuid)
             if order_year is not None:
                 return queryset.filter(date_bill__year=order_year)
         if request.user.is_authenticated:
@@ -143,8 +143,8 @@ class DeliveryViewSet(viewsets.ViewSet):
         order_serializer = OrderShipmentSerializer(data=request.data)
         if order_serializer.is_valid():
             order = request.data['order']
-            _order = Order.objects.filter(order_hash=order, is_send=False)
-            order_details = OrderDetail.objects.get(order_number=order)
+            _order = Order.objects.filter(uuid=order, is_send=False)
+            order_details = OrderDetail.objects.get(uuid=order)
             if _order.count() > 0:
                 token = create_hash()
                 shipment_address = Address.objects.get(id=request.data['shipment'])

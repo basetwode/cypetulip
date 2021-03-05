@@ -113,11 +113,11 @@ function parseErrors(data) {
 }
 
 
-function assignEmployee(order_hash) {
+function assignEmployee(uuid) {
     var id = $('#employee-select').val();
     $.ajax(
         {
-            url: order_hash + '/assign/',
+            url: uuid + '/assign/',
             method: 'post',
             data: $('#assignEmployeeForm').serialize() + '&id=' + id,
             success: function () {
@@ -134,11 +134,11 @@ function assignEmployee(order_hash) {
     )
 }
 
-function changeState(order_hash) {
+function changeState(uuid) {
     var id = $('#change-state-select').val();
     $.ajax(
         {
-            url: order_hash + '/states/change',
+            url: uuid + '/states/change',
             method: 'post',
             data: $('#changeStateForm').serialize() + '&id=' + id,
             success: function () {

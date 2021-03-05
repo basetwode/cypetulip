@@ -36,8 +36,8 @@ class PaypalPaymentConfirmationView(View):
         self.client = apps.get_app_config("payment").paypal_client
 
     def get(self, request, order):
-        _order = Order.objects.filter(order_hash=order)
-        order_details = OrderDetail.objects.get(order_number=order)
+        _order = Order.objects.filter(uuid=order)
+        order_details = OrderDetail.objects.get(uuid=order)
         order_items = OrderItem.objects.filter(order=_order[0], order_item__isnull=True,
                                                product__in=Product.objects.all())
         payment_details = PaymentDetail.objects.get(order=_order[0])
@@ -56,7 +56,7 @@ class PaypalSubmitView(EmailConfirmView, View):
 
     # called when being redirect back to shop from paypal
     def get(self, request, order):
-        _order = Order.objects.get(order_hash=order)
+        _order = Order.objects.get(uuid=order)
         order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True,
                                                product__in=Product.objects.all())
         payment_details = PaymentDetail.objects.get(order=_order)
@@ -94,15 +94,15 @@ class PaypalSubmitView(EmailConfirmView, View):
             print(ioe.message)
             messages.error(self.request, _("Something went wrong while processing your payment:\n") + ioe.message)
             return HttpResponseRedirect(reverse("payment:paypal",
-                                                kwargs={"order": _order.order_hash}))
+                                                kwargs={"order": _order.uuid}))
         messages.error(self.request, _("Something went wrong while processing your payment"))
         return HttpResponseRedirect(reverse("payment:paypal",
-                                            kwargs={"order": _order.order_hash}))
+                                            kwargs={"order": _order.uuid}))
 
     # called by client when sending order (PayPalConfirmationView)
     def post(self, request, order):
         paypal_request = OrdersCreateRequest()
-        order_object = Order.objects.get(order_hash=order)
+        order_object = Order.objects.get(uuid=order)
         order_detail = OrderDetail.objects.get(order=order_object)
         order_items = OrderItem.objects.filter(order=order_object)
         total_with_tax = order_detail.total_discounted_wt()
@@ -113,10 +113,10 @@ class PaypalSubmitView(EmailConfirmView, View):
              "application_context": {
                  "return_url": "http://" + self.request.META['HTTP_HOST'] + reverse("payment:paypal_submit",
                                                                                     kwargs={
-                                                                                        "order": order_object.order_hash}),
+                                                                                        "order": order_object.uuid}),
                  "cancel_url": "http://" + self.request.META['HTTP_HOST'] + reverse("payment:payment",
                                                                                     kwargs={
-                                                                                        "order": order_object.order_hash})
+                                                                                        "order": order_object.uuid})
              },
              "purchase_units": [
                  {
@@ -151,6 +151,6 @@ class PaypalSubmitView(EmailConfirmView, View):
                 else:
                     messages.error(self.request, _("Something went wrong while processing your payment"))
                     return HttpResponseRedirect(reverse("payment:paypal",
-                                                        kwargs={"order": order_object.order_hash}))
+                                                        kwargs={"order": order_object.uuid}))
         except IOError as ioe:
             pass

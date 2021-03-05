@@ -90,7 +90,6 @@ class PercentageDiscount(Discount):
 class Order(models.Model):
     uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, null=True, blank=True)
     order_id = models.IntegerField(null=True, blank=True)
-    order_hash = models.CharField(max_length=30, null=True, blank=True)
     is_send = models.BooleanField(default=False)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Company'))
     token = models.CharField(max_length=25, blank=True, null=True)
@@ -100,6 +99,8 @@ class Order(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
+        if self.uuid is None:
+            self.uuid = uuid.uuid4()
         if self.order_id is None:
             orders = self.__class__.objects.all().order_by("-order_id")
             if orders:
@@ -139,7 +140,6 @@ class Order(models.Model):
 class OrderDetail(models.Model):
     uuid = models.UUIDField(primary_key=False, default=None, null=True, blank=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    order_number = models.CharField(max_length=30)
     date_added = models.DateTimeField(auto_now_add=True)
     assigned_employee = models.ForeignKey(
         Employee, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Assigned employee'))

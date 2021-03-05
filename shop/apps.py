@@ -21,7 +21,16 @@ class WebappConfig(BaseConfig):
                 admin_contact.save()
 
             from shop.models.orders import OrderState
-
+            from management.models.models import LegalSetting
+            legal_settings = LegalSetting.objects.all()
+            if legal_settings.count() ==0:
+                ls = LegalSetting(company_name="Shop", street="")
+                ls.save()
+            from management.models.models import CacheSetting
+            cache_settings = CacheSetting.objects.all()
+            if cache_settings.count() ==0:
+                cs = CacheSetting(css_js_cache_enabled=False, cache_clear_required=False)
+                cs.save()
             init_state = OrderState.objects.filter(initial=True)
             if init_state.count() == 0:
                 cancel_state = OrderState(name="Cancelled")
@@ -37,7 +46,7 @@ class WebappConfig(BaseConfig):
                                         next_state=in_work_state)
                 init_state.save()
 
-        except :
+        except Exception as e:
             print("DB not migrated")
         super(WebappConfig, self).ready()
 

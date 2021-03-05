@@ -156,7 +156,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderDetail
-        fields = ['order_number', 'order', 'order_items', 'id', 'voucher', 'total_wt', 'total', 'date_bill']
+        fields = ['uuid', 'order', 'order_items', 'id', 'voucher', 'total_wt', 'total', 'date_bill']
         depth = 4
 
     def get_order_items(self, order):
@@ -240,11 +240,11 @@ class OrderShipmentSerializer(serializers.Serializer):
 
 class VoucherSerializer(serializers.Serializer):
     voucher = serializers.CharField(max_length=20, required=False)
-    order_hash = serializers.CharField(max_length=40, required=False)
+    uuid = serializers.CharField(max_length=40, required=False)
 
     def validate_voucher(self, value):
 
-        order_detail = OrderDetail.objects.get(order__order_hash=self.initial_data['order_hash'])
+        order_detail = OrderDetail.objects.get(order__uuid=self.initial_data['uuid'])
         voucher = Discount.objects.filter(voucher_id=value)
         if not voucher.exists():
             raise serializers.ValidationError(_('Voucher code invalid'))

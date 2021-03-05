@@ -12,7 +12,7 @@ $(function () {
                 success: function (data) {
                     a = [];
                     for (i = 0; i < data.length; i++) {
-                        a.push({label: "Order " + data[i].fields.order_hash, value: data[i].fields.order_hash});
+                        a.push({label: "Order " + data[i].fields.uuid, value: data[i].fields.uuid});
                     }
                     response(a);
                 }

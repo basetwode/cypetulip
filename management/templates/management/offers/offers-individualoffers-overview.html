@@ -82,7 +82,7 @@
                     {% if offer.order_set.count > 0 %}
                         {% for order in offer.order_set.all %}
 
-                            <a href="{% url 'management_order_detail_view' order.order_hash %}"
+                            <a href="{% url 'management_order_detail_view' order.uuid %}"
                                class=" list-group-item list-group-item-action">
                                 <div class="ps-4 col-md-12">
                                     {% trans 'Order' %}:

@@ -32,14 +32,14 @@ class ShopSetting(models.Model):
 
 class LegalSetting(models.Model):
     company_name = models.CharField(max_length=100)
-    street = models.CharField(max_length=40, default=None)
-    number = models.CharField(max_length=5, default=None)
-    zipcode = models.CharField(max_length=5, default=None)
-    city = models.CharField(max_length=100, default=None)
-    phone = models.CharField(max_length=50, default=None)
+    street = models.CharField(max_length=40, default=None, null=True, blank=True)
+    number = models.CharField(max_length=5, default=None, null=True, blank=True)
+    zipcode = models.CharField(max_length=5, default=None, null=True, blank=True)
+    city = models.CharField(max_length=100, default=None, null=True, blank=True)
+    phone = models.CharField(max_length=50, default=None, null=True, blank=True)
     mail = models.EmailField(null=True, blank=True, default=None)
-    tax_number = models.CharField(max_length=50, default=None)
-    register_number = models.CharField(max_length=50, default=None)
+    tax_number = models.CharField(max_length=50, default=None, null=True, blank=True,)
+    register_number = models.CharField(max_length=50, default=None, null=True, blank=True,)
     logo = models.FileField(default=None, null=True, blank=True,
                             upload_to=public_files_upload_handler, storage=fs)
     iban = models.CharField(max_length=30, null=True, blank=True, default=None)

@@ -269,16 +269,16 @@
 
                     <div class="col-lg-3 col-md-12 col-sm-12">
                         <h5 class="h-bold">{% trans 'Options' %}</h5>
-                        <form action="{% url 'shop:detail_order_cancel_order' order.order_hash %}" method="post">
+                        <form action="{% url 'shop:detail_order_cancel_order' order.uuid %}" method="post">
                             {% csrf_token %}
                             <button type="submit" {% if not order_details.state.initial %}disabled{% endif %}
                                     class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
                         </form>
-                        <a href="{% url 'shop:detail_order_write_review' order.order_hash %}"
+                        <a href="{% url 'shop:detail_order_write_review' order.uuid %}"
                            class="btn btn-fw btn-secondary">{% trans 'Write review' %}</a>
                         {% if order_details.bill_sent %}
                             <a class="btn btn-fw btn-secondary"
-                               target="_blank" href="{% url 'invoice_pdf' order.order_hash %}"
+                               target="_blank" href="{% url 'invoice_pdf' order.uuid %}"
                             >{% trans 'Bill' %}</a>
                         {% else %}
                             <button class="btn btn-fw btn-secondary" disabled
@@ -286,8 +286,8 @@
                         {% with api_config|get_var:'myaccount.orders.order.buttons'  as apiconfig %}
                         {% for btn_key, button in apiconfig.items %}
 
-                            {% if button|is_available:order.order_hash %}
-                                <a href="{% url button.url order.order_hash %}"
+                            {% if button|is_available:order.uuid %}
+                                <a href="{% url button.url order.uuid %}"
                                    class="btn btn-fw btn-secondary">{{ button.text }}</a>
                             {% else %}
                                 <button class="btn btn-fw btn-secondary" disabled

@@ -15,8 +15,8 @@ class PrepaymentConfirmView(View):
     template_name = 'bill/confirm.html'
 
     def get(self, request, order):
-        _order = Order.objects.filter(order_hash=order)
-        order_details = OrderDetail.objects.get(order_number=order)
+        _order = Order.objects.filter(uuid=order)
+        order_details = OrderDetail.objects.get(uuid=order)
         order_items = OrderItem.objects.filter(order=_order[0], order_item__isnull=True,
                                                product__in=Product.objects.all())
         payment_details = PaymentDetail.objects.get(order=_order[0])
@@ -27,7 +27,7 @@ class PrepaymentConfirmView(View):
 class PrepaymentSubmitView(EmailConfirmView, View):
 
     def get(self, request, order):
-        _order = Order.objects.filter(order_hash=order)
+        _order = Order.objects.filter(uuid=order)
         order_items = OrderItem.objects.filter(order=_order[0], order_item__isnull=True,
                                                product__in=Product.objects.all())
         payment_details = PaymentDetail.objects.get(order=_order[0])
@@ -37,7 +37,7 @@ class PrepaymentSubmitView(EmailConfirmView, View):
 
     def post(self, request, order):
 
-        _order = Order.objects.filter(order_hash=order)
+        _order = Order.objects.filter(uuid=order)
         order_items = OrderItem.objects.filter(order=_order[0], order_item__isnull=True,
                                                product__in=Product.objects.all())
         payment_details = PaymentDetail.objects.get(order=_order[0])

@@ -44,7 +44,7 @@ class PaymentConfirmationView(View):
     def post(self, request, order):
         contact = Contact.objects.filter(user_ptr=request.user)
         company = contact[0].company
-        _order = Order.objects.get(order_hash=order, is_send=False, company=company)
+        _order = Order.objects.get(uuid=order, is_send=False, company=company)
         payment_details = PaymentDetail.objects.get(order=_order, user=contact)
         self.find_view_by_payment(payment_details)
         pass
@@ -70,7 +70,7 @@ class PaymentCreationView(CreateView):
 
     @check_params(required_arguments={'method': '[0-9]'}, message="Please select a payment method")
     def post(self, request, order):
-        _order = Order.objects.get(order_hash=order)
+        _order = Order.objects.get(uuid=order)
         order_details = OrderDetail.objects.get(order=_order)
         order_details.contact = order_details.shipment_address.contact
         order_details.save()

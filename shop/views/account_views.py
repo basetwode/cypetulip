@@ -26,7 +26,7 @@ from utils.mixins import PaginatedFilterViews, APIMixin
 
 class OrderDetailView(PermissionOwnsObjectMixin, APIMixin, DetailView):
     model = OrderDetail
-    slug_field = "order__order_hash"
+    slug_field = "order__uuid"
     slug_url_kwarg = "order"
     field_name = "contact"
     template_name = 'shop/account/account-order-detail.html'
@@ -160,9 +160,9 @@ class SearchOrders(View):
         search = None
         if 'search' in request.GET:
             search = request.GET.get('search')
-            _orders = _orders_copy.filter(Q(order_hash__icontains=search) |
+            _orders = _orders_copy.filter(Q(uuid__icontains=search) |
                                           Q(orderitem__product__name__icontains=search) |
-                                          Q(orderdetail__order_number__icontains=search)).distinct()
+                                          Q(orderdetail__uuid__icontains=search)).distinct()
             if search.isdigit():
                 _orders = _orders_copy.filter(Q(orderdetail__date_added__year=search) |
                                               Q(orderdetail__date_added__month=search))
@@ -240,12 +240,12 @@ class PasswordChangeViewCustomer(PasswordChangeView):
 class OrderCancelView(UpdateView):
     model = OrderDetail
     slug_url_kwarg = 'order'
-    slug_field = 'order_number'
+    slug_field = 'uuid'
     fields = []
 
     def get_success_url(self):
         messages.success(self.request, _("Order canceled!"))
-        return reverse_lazy('shop:detail_order', kwargs={'order': self.object.order.order_hash})
+        return reverse_lazy('shop:detail_order', kwargs={'order': self.object.order.uuid})
 
     def form_valid(self, form):
         resp = super(OrderCancelView, self).form_valid(form)

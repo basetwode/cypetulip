@@ -9,7 +9,7 @@ class CmsConfig(AppConfig):
 
     def ready(self):
         try:
-            from cms.models import  Page,PREDEFINED_PAGES
+            from cms.models.models import  Page,PREDEFINED_PAGES
 
             pages = list(map(lambda c: {'page_name': c[0], 'link': c[1]}, PREDEFINED_PAGES))
             for ppage in pages:

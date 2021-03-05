@@ -25,7 +25,7 @@ class OrderDetailFilter(django_filters.FilterSet):
         else:
             return queryset.filter(
                 Q(orderitem__product__name__icontains=value) |
-                Q(order__order_hash__icontains=value)
+                Q(order__uuid__icontains=value)
             )
 
 
