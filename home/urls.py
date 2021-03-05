@@ -30,7 +30,7 @@ from permissions import urls as perm_urls
 from rma import urls as rma_urls
 from shipping import urls as shipping_urls
 from shop import urls as shop_urls
-from shop.views.authentication_views import PasswordResetViewSmtp, LoginView
+from shop.views.authentication_views import PasswordResetViewSmtp, LoginAuthenticationView
 
 admin.autodiscover()
 
@@ -69,7 +69,7 @@ urlpatterns = [
     url(r'^reset/done/$', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     url(r'^password_change/$', auth_views.PasswordChangeView.as_view(), name='password_change'),
     url(r'^password_change/done/$', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
-    url(r'^login/$', LoginView.as_view(), name='login'),
+    url(r'^login/$', LoginAuthenticationView.as_view(), name='login'),
 ]
 
 # if settings.DEBUG:

@@ -2,12 +2,13 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.models import Group
-from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.views import PasswordResetView, LoginView
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from django.utils.http import is_safe_url
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import View, CreateView
+from django.views.generic import View, CreateView, RedirectView
 
 from shop.forms.authentication_forms import CompleteCompanyForm, SignUpForm, PasswordResetFormSMTP
 from shop.models.orders import Order
@@ -16,82 +17,47 @@ from shop.models.accounts import Company, Contact, Address
 __author__ = ''
 
 
-class LoginView(View):
+class LoginAuthenticationView(LoginView):
     template_name = 'shop/authentication/authentication-login.html'
+    redirect_field_name = 'next'
+    success_url = '/'
 
-    def get(self, request):
-        if request.user.is_authenticated:
-            return HttpResponseRedirect('/shop/home')
-        return render(request, self.template_name)
-
-    def post(self, request):
-        username = request.POST['username']
-        password = request.POST['password']
-        order_from_session = Order.objects.filter(session=request.session.session_key, orderdetail__state__isnull=True)
-        order_items_from_order_session = []
-        # Use Django's machinery to attempt to see if the username/password
-        # combination is valid - a User object is returned if it is.
-        user = authenticate(username=username, password=password)
-        if user:
-            # Is the account active? It could have been disabled.
-            if user.is_active:
-                # If the account is valid and active, we can log the user in.
-                # We'll send the user back to the homepage.
-                auth_login(request, user)
-                contact = Contact.objects.get(user_ptr=request.user)
-                if contact:
-                    order_from_contact = Order.objects.filter(company=contact.company, orderdetail__state__isnull=True)
-                    if order_from_contact.count() == 0:
-                        order_from_contact, order_detail = Order.create_new_order(request)
-                    else:
-                        order_from_contact = order_from_contact.first()
-                    if order_from_session.count() > 0:
-                        for item in order_from_session.first().orderitem_set.all():
-                            item.order = order_from_contact
-                            item.order_detail = order_from_contact.orderdetail_set.first()
-                            item.save()
-                    order_from_session.delete()
-                else:
-                    order_from_session.session = request.session.session_key
-                # language = contact[0].language
-                # request.LANGUAGE_CODE = language
-
-                if 'next' in request.POST:
-                    next_site = request.POST['next']
-                    return HttpResponseRedirect(next_site)
-                if 'next' in request.GET and len(request.GET['next']) > 0:
-                    next_site = request.GET['next']
-                    return HttpResponseRedirect(next_site)
-                return HttpResponseRedirect('/cms/home')
-            else:
-                # An inactive account was used - no logging in!
-                return HttpResponse("Your account is disabled.")
-
+    def get_success_url(self):
+        if not self.redirect_field_name in self.request.GET or len(self.request.GET[self.redirect_field_name])==0:
+            redirect_to = self.success_url
         else:
-            message = 'Ihr Benutzername und/oder Passwort sind falsch. Versuchen Sie es erneut.'
-            if message:
-                if 'next' in request.POST:
-                    next_site = request.POST['next']
-                    return render(request, 'shop/authentication/authentication-login.html', {'next': next_site, 'message': message})
-                else:
-                    return render(request, 'shop/authentication/authentication-login.html', {'message': message})
+            redirect_to = self.request.GET[self.redirect_field_name]
+        return redirect_to
+
+    def form_valid(self, form):
+        auth_login(self.request, form.get_user())
+        order_from_session = Order.objects.filter(session=self.request.session.session_key, orderdetail__state__isnull=True)
+        contact = Contact.objects.filter(user_ptr=self.request.user)
+        if contact.count()>0:
+            contact = contact.first()
+            order_from_contact = Order.objects.filter(company=contact.company, orderdetail__state__isnull=True)
+            if order_from_contact.count() == 0:
+                order_from_contact, order_detail = Order.create_new_order(self.request)
             else:
-                if 'next' in request.POST:
-                    next_site = request.POST['next']
-                    return render(request, 'shop/authentication/authentication-login.html', {'next': next_site})
-                return render(request, 'shop/authentication/authentication-login.html')
+                order_from_contact = order_from_contact.first()
+            if order_from_session.count() > 0:
+                for item in order_from_session.first().orderitem_set.all():
+                    item.order = order_from_contact
+                    item.order_detail = order_from_contact.orderdetail_set.first()
+                    item.save()
+            order_from_session.delete()
+        else:
+            order_from_session.session = self.request.session.session_key
+        return super(LoginAuthenticationView, self).form_valid(form)
 
 
-class LogoutView(View):
+class LogoutView(RedirectView):
+    url = reverse_lazy('login')
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             auth_logout(request)
-        return HttpResponseRedirect('/shop/login')
-
-    def post(self, request):
-        auth_logout(request)
-        return HttpResponseRedirect('/shop/login')
+        return super(LogoutView, self).get(request, *args, **kwargs)
 
 
 class RegisterView(CreateView):
