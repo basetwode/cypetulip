@@ -2,227 +2,18 @@ import math
 import uuid
 from datetime import datetime
 
-from _decimal import ROUND_HALF_UP, Decimal
-from django.contrib.auth.models import User as DjangoUser
+from _decimal import Decimal, ROUND_HALF_UP
 from django.db import models
-from django.db.models import Sum, Q
 from django.db.models.signals import pre_delete
-from django.dispatch.dispatcher import receiver
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
-from tinymce.models import HTMLField
 
-from billing.utils import calculate_sum, calculate_sum_order
-from mediaserver.upload import (company_files_upload_handler, fs, order_files_upload_handler,
-                                public_files_upload_handler, rand_key, invoice_files_upload_handler)
-
-
-class Company(models.Model):
-    name = models.CharField(max_length=100, blank=True, null=True)
-    company_id = models.CharField(max_length=100, blank=True, null=True)
-    customer_nr = models.IntegerField(blank=True, null=True, verbose_name=_('Customer Nr'))
-    term_of_payment = models.IntegerField(default=10, verbose_name=_('Term of payment'))
-    street = models.CharField(max_length=40, default=None, verbose_name=_('Street'))
-    number = models.CharField(max_length=5, default=None, verbose_name=_('Number'))
-    zipcode = models.CharField(max_length=5, default=None, verbose_name=_('Zipcode'))
-    city = models.CharField(max_length=30, default=None, verbose_name=_('City'))
-    logo = models.FileField(default=None, null=True, blank=True,
-                            upload_to=company_files_upload_handler, storage=fs)
-
-    class Meta:
-        verbose_name_plural = _("Companies")
-        verbose_name = _("Company")
-
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        if self.company_id is None or len(self.company_id) == 0:
-            self.company_id = rand_key(12)
-        if self.customer_nr is None:
-            nr = (Company.objects.filter(customer_nr__isnull=False).order_by('customer_nr').last().customer_nr + 1) \
-                if Company.objects.all().count() > 0 and Company.objects.filter(customer_nr__isnull=False).exists() else 1
-            self.customer_nr = nr
-        models.Model.save(self, force_insert, force_update,
-                          using, update_fields)
-
-    def __str__(self):
-        return self.name or ""
-
-
-class Contact(DjangoUser):
-    GENDER_CHOICES = (
-        ('M', _('Male')),
-        ('F', _('Female')),
-        ('D', _('Others')),
-    )
-    session = models.CharField(max_length=40, blank=True, null=True)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, verbose_name=_('Company'))
-    company_customer_nr = models.IntegerField(blank=True, null=True, verbose_name=_('Company Customer Nr'))
-    title = models.CharField(max_length=20, blank=True, null=True, verbose_name=_('Title'))
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, verbose_name=_('Gender'))
-    telephone = models.CharField(max_length=40, verbose_name=_('Telephone'))
-    language = models.CharField(max_length=2, default='en', verbose_name=_('Language'))
-    billing_mail = models.EmailField(default=None, blank=True, null=True)
-
-    def __str__(self):
-        return str(self.company) + ' - ' + self.last_name + ' ' + self.first_name + f" ({self.username})"
-
-    def is_registered(self):
-        return self.groups.filter(name="client").exists()
-
-    def customer_nr(self):
-        return "C" + str(self.company.customer_nr).rjust(7, "0") + str(self.company_customer_nr).rjust(3, "0")
-
-    class Meta:
-        verbose_name = _('Contact')
-
-    def save(self, force_insert=False, force_update=False, using=None,
-         update_fields=None):
-
-        if self.company_customer_nr is None:
-            nr = (Contact.objects.filter(company=self.company, company_customer_nr__isnull=False).order_by(
-                'company_customer_nr').last().company_customer_nr + 1) \
-                if Contact.objects.filter(company=self.company, company_customer_nr__isnull=False).exists() else 1
-            self.company_customer_nr = nr
-        models.Model.save(self, force_insert, force_update,
-                          using, update_fields)
-
-
-class Address(models.Model):
-    name = models.CharField(max_length=100)
-    street = models.CharField(max_length=40, default=None, verbose_name=_('Street'))
-    number = models.CharField(max_length=5, default=None, verbose_name=_('Number'))
-    zipcode = models.CharField(max_length=5, default=None, verbose_name=_('Zipcode'))
-    city = models.CharField(max_length=100, default=None, verbose_name=_('City'))
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, default=None, blank=True, null=True,
-                                verbose_name=_('Contact'))
-
-    class Meta:
-        verbose_name_plural = "Addresses"
-        verbose_name = _('Address')
-
-    def __str__(self):
-        return self.contact.__str__() + " | " + self.name
-
-
-class ProductCategory(models.Model):
-    path = models.CharField(max_length=300, verbose_name=_('Path'), null=True, blank=True, db_index=True)
-    description = models.CharField(max_length=300, verbose_name=_('Description'))
-    name = models.CharField(max_length=50, verbose_name=_('Name'))
-    mother_category = models.ForeignKey(
-        'self', on_delete=models.CASCADE, default=None, blank=True, null=True, verbose_name=_('Parent Category'))
-    child_categories = models.ManyToManyField('self', default=None, blank=True, symmetrical=False,
-                                              related_name='ChildCategories', verbose_name=_('Child Category'))
-    is_main_category = models.BooleanField(default=False, verbose_name=_('Is main category'))
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = _('Category')
-
-    def build_path(self, path=""):
-        return self.mother_category.build_path(self.name+("-"+path if path else "")) if self.mother_category else self.name+("-"+path if path else "")
-
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        self.path = self.build_path()
-        super(ProductCategory, self).save(force_insert, force_update, using, update_fields)
-
-
-class Employee(models.Model):
-    user = models.OneToOneField(DjangoUser, on_delete=models.CASCADE, default=None)
-    first_name = models.CharField(max_length=100, verbose_name=_('Firstname'))
-    last_name = models.CharField(max_length=100, verbose_name=_('Lastname'))
-
-    class Meta:
-        verbose_name = _('Employee')
-
-
-# This is an orderable item which shows up when ordering a product that is public.
-# like squaremeter notes on a plan
-
-
-class ProductSubItem(models.Model):
-    price = models.FloatField(verbose_name=_('Price'))
-    special_price = models.FloatField(default=False, blank=True, null=True, verbose_name=_('Special price'))
-    price_on_request = models.BooleanField(default=False, blank=True, null=True, verbose_name=_('Price on request'))
-    tax = models.FloatField(default=0.19, blank=False, null=False, verbose_name=_('Tax'))
-    name = models.CharField(max_length=30)
-    description = HTMLField(_('Description'), blank=True, null=True)
-    details = HTMLField(_('Details'), blank=True, null=True)
-    requires_file_upload = models.BooleanField(default=False, verbose_name=_('Requires file upload'))
-    is_required = models.BooleanField(default=False, verbose_name=_('Is required'))
-    is_multiple_per_item = models.BooleanField(default=False, verbose_name=_('Is multiple per item'))
-    is_once_per_order = models.BooleanField(default=False, verbose_name=_('Is once per order'))
-
-    def __str__(self):
-        if hasattr(self, 'product'):
-            return f"{self.product.category} | {self.name} ({self.product.get_stock()}) | {self.price} €"
-        else:
-            return f"{self.name} | {self.price}"
-
-    def calculate_tax(self, price):
-        return Decimal(f"{price * (1 + self.tax)}") \
-            .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-
-    def price_wt(self):
-        return self.calculate_tax(self.price)
-
-    def special_price_wt(self):
-        return self.calculate_tax(self.special_price) if self.special_price else None
-
-    def bprice_wt(self):
-        return self.special_price_wt() if self.special_price else self.price_wt()
-
-
-class FileSubItem(ProductSubItem):
-    # name = models.CharField(max_length=20)
-    extensions = models.CharField(max_length=200, null=True, blank=True, default="")
-    file = models.FileField(default=None, null=True, blank=True,
-                            upload_to=order_files_upload_handler, storage=fs)
-
-
-class FileExtensionItem(models.Model):
-    extension = models.CharField(max_length=30)
-    file = models.ForeignKey(FileSubItem, on_delete=models.CASCADE)
-
-
-# can be used for sizes for example
-class SelectSubItem(ProductSubItem):
-    pass
-    # name = models.CharField(max_length=20)
-
-
-# different options for sizes for example
-class SelectItem(models.Model):
-    name = models.CharField(max_length=40)
-    select = models.ForeignKey(SelectSubItem, on_delete=models.CASCADE)
-    price = models.FloatField(verbose_name=_('Price'),default=0)
-    tax = models.FloatField(default=0.19, blank=False, null=False, verbose_name=_('Tax'))
-
-    def __str__(self):
-        return self.name
-
-    def price_wt(self):
-        return Decimal(f"{self.price * (1 + self.tax)}")\
-            .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-
-
-# can be used for number of this item like 4 trousers
-class NumberSubItem(ProductSubItem):
-    pass
-    # name = models.CharField(max_length=20)
-
-
-# can be used for "as a present" or "moebliert" for example
-class CheckBoxSubItem(ProductSubItem):
-    pass
-
-
-'''
-    State of a single order item eg. sent, going to be send, delivered
-'''
+from billing.utils import calculate_sum_order, calculate_sum
+from mediaserver.upload import invoice_files_upload_handler, fs, order_files_upload_handler
+from shop.models.accounts import Company, Employee, Contact, Address
+from shop.models.products import Product, ProductCategory, IndividualOffer, ProductSubItem, SelectItem
 
 
 class OrderItemState(models.Model):
@@ -230,11 +21,6 @@ class OrderItemState(models.Model):
     next_state = models.ForeignKey(
         'self', on_delete=models.CASCADE, null=True, blank=True, related_name='previous_state',
         verbose_name=_('Next state'))
-
-
-'''
-    State of an order, eg. payment received, waiting for payment, ...
-'''
 
 
 class OrderState(models.Model):
@@ -263,97 +49,6 @@ class OrderState(models.Model):
                 return False
         else:
             return False
-
-
-class ProductAttributeType(models.Model):
-    name = models.CharField(max_length=100, db_index=True)
-
-    def __str__(self):
-        return self.name
-
-
-class ProductAttributeTypeInstance(models.Model):
-    type = models.ForeignKey(ProductAttributeType, on_delete=models.CASCADE)
-    value = models.CharField(max_length=100, db_index=True)
-
-    class Meta:
-        ordering = ['type']
-
-    def __str__(self):
-        return self.type.__str__() + " | " + self.value
-
-
-# A product can be whatever one needs, like a plan or a surcharge or hours worked..
-
-class Product(ProductSubItem):
-    stock = models.IntegerField(default=0, blank=True, null=True, verbose_name=_('Stock'))
-    max_items_per_order = models.IntegerField(default=10, verbose_name=_('Maximum number of items per order'))
-    category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
-    is_public = models.BooleanField()
-    assigned_sub_products = models.ManyToManyField(ProductSubItem, default=None, blank=True,
-                                                   symmetrical=False,
-                                                   related_name='sub_products', verbose_name=_('Assigned sub products'))
-    attributes = models.ManyToManyField(ProductAttributeTypeInstance, blank=True, verbose_name=_('Attributes'))
-
-    class Meta:
-        verbose_name = _('Product')
-
-
-    def decrease_stock(self, number_of_items=1):
-        self.stock = self.stock - number_of_items if self.stock > 0 else self.stock
-        self.save()
-
-    def increase_stock(self, number_of_items=1):
-        self.stock = self.stock + number_of_items if self.stock > -1 else self.stock
-        self.save()
-
-    def get_stock(self):
-        return f"{self.stock if self.stock > -1 else '~'}"
-
-    def is_stock_sufficient(self, order):
-        order_items_count_with_product = order.orderitem_set.filter(product=self)\
-            .aggregate(count=Sum('count'))['count'] or 0
-
-        return self.stock == -1 or (self.stock > order_items_count_with_product), self.stock - order_items_count_with_product
-
-    def product_picture(self):
-        return self.productimage_set.first().product_picture if self.productimage_set.count() > 0 else None
-
-    def get_also_bought_products(self):
-        from django.db.models import Count
-        related_orderitems = OrderItem.objects.filter(order_detail__in=OrderDetail.objects.filter(orderitem__product=self),
-                                                      order_item__isnull=True).exclude(product=self).order_by('product')
-        return Product.objects.all()\
-            .annotate(ocount=Count('orderitem', filter=Q(orderitem__in=related_orderitems)))\
-            .filter(ocount__gt=0)\
-            .order_by('-ocount')
-
-    def get_related_products(self):
-        return Product.objects.filter(category=self.category).order_by('id')
-
-
-class ProductImage(models.Model):
-    order = models.IntegerField(default=0, blank=True)
-    product_picture = models.ImageField(default=None, null=True, blank=True,
-                                        upload_to=public_files_upload_handler,
-                                        storage=fs, verbose_name=_('Product picture'))
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-
-
-class IndividualOffer(models.Model):
-    date_added = models.DateTimeField(auto_now=True, blank=True)
-    mail = models.EmailField()
-    message = models.CharField(max_length=1000)
-    contact = models.ForeignKey(Contact, null=True, blank=True, default=None, editable=False, on_delete=models.CASCADE,
-                                verbose_name=_('Contact'))
-    product = models.ForeignKey(Product, editable=False, null=True, on_delete=models.SET_NULL,
-                                verbose_name=_('Product'))
-
-    def is_new(self):
-        return (datetime.now().date() - self.date_added.date()).days < 3
-
-    class Meta:
-        verbose_name = _('Individual offer')
 
 
 class Discount(models.Model):
@@ -510,6 +205,8 @@ class OrderDetail(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
+        if not self.uuid:
+            self.uuid = self.order.uuid
         if self.__was_canceled():
             self.increase_stocks()
             self.is_cancelled = True
@@ -577,9 +274,6 @@ class OrderDetail(models.Model):
 
     def discount_str(self):
         return f"{int(self.discount_percentage * 100)} %" if self.discount_percentage else f"{self.discount_amount} €"
-
-
-# Like a surcharge or discount or product or whatever.
 
 
 class OrderItem(models.Model):
@@ -746,7 +440,6 @@ class OrderItem(models.Model):
                     (not self.price_wt or self.price_wt != self.calculate_tax(self.price))
 
 
-# Corresponding OrderItems for the subproducts
 class FileOrderItem(OrderItem):
     file = models.FileField(default=None, null=True,
                             upload_to=order_files_upload_handler,
@@ -784,11 +477,6 @@ class NumberOrderItem(OrderItem):
     number = models.IntegerField()
 
 
-class WorkingTime(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-
-
-# Delete files not only db object
 @receiver(pre_delete, sender=FileOrderItem)
 def fileorderitem_delete(sender, instance, **kwargs):
     # Pass false so FileField doesn't save the model.

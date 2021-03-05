@@ -16,7 +16,8 @@ from management.models.models import LegalSetting
 from management.views.mixins import NotifyNewCustomerAccountView
 from permissions.mixins import LoginRequiredMixin
 from shop.filters.filters import ContactFilter
-from shop.models import Contact, Order, Company, OrderDetail, Address
+from shop.models.orders import Order, OrderDetail
+from shop.models.accounts import Company, Contact, Address
 from shop.views.mixins import WizardView, RepeatableWizardView
 from utils.mixins import PaginatedFilterViews
 

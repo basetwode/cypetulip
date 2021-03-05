@@ -2,7 +2,7 @@ from django.forms import ModelForm, ModelMultipleChoiceField
 from django.utils.translation import ugettext_lazy as _
 
 from shipping.models import Shipment, OnlineShipment, PackageShipment, Package
-from shop.models import OrderItem
+from shop.models.orders import OrderItem
 
 
 class OnlineShipmentForm(ModelForm):

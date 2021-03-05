@@ -24,8 +24,7 @@ from management.views.products_views import ProductCreationView, ProductEditView
 from management.views.settings_views import MailSettingsDetailView, LdapSettingsDetailView, LegalSettingsDetailView, \
     ShopSettingsDetailView, PaymentProviderSettings, CacheManagementView
 from management.views.shipments_views import ShipmentOverview
-from shop.views.account_views import SearchOrders, SearchCustomers
-from shop.views.product_views import OrderCancelView
+from shop.views.account_views import SearchOrders, SearchCustomers, OrderCancelView
 
 urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),

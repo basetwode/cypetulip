@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from home import settings
 from management.models.models import MailSetting
-from shop.models import Company, Contact
+from shop.models.accounts import Company, Contact
 
 
 class SignUpForm(UserCreationForm):

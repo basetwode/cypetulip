@@ -3,9 +3,11 @@ from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
 from management.api.v1.serializers import CompanySerializer
-from shop.models import Address, Contact, Company, OrderDetail, OrderItem, Product, ProductSubItem, FileSubItem, \
-    SelectSubItem, CheckBoxSubItem, NumberSubItem, SelectItem, FileOrderItem, SelectOrderItem, NumberOrderItem, \
-    CheckBoxOrderItem, Discount, ProductImage
+from shop.models.orders import Discount, OrderDetail, OrderItem, FileOrderItem, SelectOrderItem, CheckBoxOrderItem, \
+    NumberOrderItem
+from shop.models.products import ProductSubItem, FileSubItem, SelectSubItem, SelectItem, NumberSubItem, CheckBoxSubItem, \
+    Product, ProductImage
+from shop.models.accounts import Company, Contact, Address
 
 
 class FileSubItemSerializer(serializers.ModelSerializer):

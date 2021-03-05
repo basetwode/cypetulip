@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.views.generic import TemplateView
 
 from permissions.mixins import LoginRequiredMixin
-from shop.models import Contact
+from shop.models.accounts import Contact
 
 
 class ManagementView(LoginRequiredMixin, TemplateView):

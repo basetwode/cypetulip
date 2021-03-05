@@ -2,9 +2,11 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
 from payment.models import PaymentDetail, PaymentMethod
-from shop.models import Product, ProductCategory, ProductAttributeType, ProductAttributeTypeInstance, ProductSubItem, \
-    ProductImage, Company, OrderItem, CheckBoxOrderItem, NumberOrderItem, \
-    SelectOrderItem, FileOrderItem, OrderState, Order
+from shop.models.orders import OrderState, Order, OrderItem, FileOrderItem, SelectOrderItem, CheckBoxOrderItem, \
+    NumberOrderItem
+from shop.models.products import ProductCategory, ProductSubItem, ProductAttributeType, ProductAttributeTypeInstance, \
+    Product, ProductImage
+from shop.models.accounts import Company
 
 
 class ProductAttributeTypeSerializer(serializers.HyperlinkedModelSerializer):

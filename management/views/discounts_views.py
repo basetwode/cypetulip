@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_filters.views import FilterView
 
 from permissions.mixins import LoginRequiredMixin
-from shop.models import Discount, PercentageDiscount, FixedAmountDiscount
+from shop.models.orders import Discount, FixedAmountDiscount, PercentageDiscount
 from utils.mixins import PaginatedFilterViews
 from utils.views import CreateUpdateView
 

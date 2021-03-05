@@ -5,7 +5,8 @@ from django.views import View
 
 from billing.utils import calculate_sum, Round
 from management.models.models import MailSetting
-from shop.models import Contact, OrderDetail, OrderItem
+from shop.models.orders import OrderDetail, OrderItem
+from shop.models.accounts import Contact
 from utils.mixins import EmailMixin
 from utils.views import CreateUpdateView
 
@@ -92,7 +93,6 @@ class WizardView(CreateUpdateView):
 
     def get_back_url(self):
         return None
-
 
     def get_success_url(self):
         super(WizardView, self).get_success_url()

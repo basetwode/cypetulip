@@ -10,7 +10,7 @@ from management.views.mixins import NotifyCustomerCreateView, NotifyCustomerUpda
 from permissions.mixins import PermissionPostGetRequiredMixin
 from shipping.forms import OnlineShipmentForm, PackageForm
 from shipping.models import OnlineShipment, PackageShipment, Package, Shipment
-from shop.models import OrderDetail, OrderState
+from shop.models.orders import OrderState, OrderDetail
 
 
 class CreateOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateView, GenericCreateView):

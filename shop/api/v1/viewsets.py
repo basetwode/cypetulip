@@ -12,9 +12,9 @@ from shop.api.v1.serializers import AddressSerializer, BasicContactSerializer, O
     VoucherSerializer, BasicOrderItemSerializer, BasicFileOrderItemSerializer, \
     BasicSelectOrderItemSerializer, \
     BasicNumberOrderItemSerializer, BasicCheckboxOrderItemSerializer, OrderDetailSerializer, FullOrderDetailSerializer
-from shop.models import Address, Contact, Company, Order, OrderDetail, OrderItem, FileOrderItem, SelectOrderItem, \
-    NumberOrderItem, \
-    CheckBoxOrderItem, Discount
+from shop.models.orders import Discount, Order, OrderDetail, OrderItem, FileOrderItem, SelectOrderItem, \
+    CheckBoxOrderItem, NumberOrderItem
+from shop.models.accounts import Company, Contact, Address
 from shop.utils import create_hash
 
 

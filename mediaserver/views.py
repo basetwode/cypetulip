@@ -7,7 +7,7 @@ from home import settings
 # Todo: check permissions and raise 401 AND check if file exists and if not raise 404 then
 from permissions.error_handler import raise_404
 from permissions.mixins import LoginRequiredMixin, PermissionOwnsObjectMixin
-from shop.models import OrderDetail
+from shop.models.orders import OrderDetail
 
 CONTENT_TYPES = {
     '.pdf': 'application/pdf', '.jpg': 'image/jpg', '.png': 'image/png',

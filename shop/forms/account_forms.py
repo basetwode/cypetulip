@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 
-from shop.models import Company, Contact
+from shop.models.accounts import Company, Contact
 
 
 class ContactForm(ModelForm):

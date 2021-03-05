@@ -9,7 +9,8 @@ from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest
 
 from payment.models import Payment, PaymentDetail
 from shop.views.mixins import EmailConfirmView
-from shop.models import Order, OrderItem, OrderDetail, Product, OrderState
+from shop.models.orders import OrderState, Order, OrderDetail, OrderItem
+from shop.models.products import Product
 from shop.utils import create_hash
 
 __author__ = 'Anselm'

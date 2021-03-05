@@ -11,7 +11,7 @@ from management.models.models import Header, Footer
 from permissions.mixins import LoginRequiredMixin
 from shop.filters.filters import ProductCategoryFilter, SectionFilter, \
     PageFilter, FooterFilter, HeaderFilter
-from shop.models import ProductCategory
+from shop.models.products import ProductCategory
 from utils.mixins import PaginatedFilterViews
 
 

@@ -6,7 +6,8 @@ from django.views.generic import View, CreateView
 from payment.models import PaymentDetail, PaymentMethod
 from shop.errors import (FieldError,
                          JsonResponse)
-from shop.models import Contact, Order, OrderDetail
+from shop.models.orders import Order, OrderDetail
+from shop.models.accounts import Contact
 from shop.utils import get_order_for_hash_and_contact
 from shop.utils import json_response, check_params
 from .methods.forms import PaymentFormFactory, get_all_payment_forms_as_dict, LegalForm

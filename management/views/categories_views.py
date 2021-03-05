@@ -6,7 +6,7 @@ from django.views.generic import DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 
 from permissions.mixins import LoginRequiredMixin
-from shop.models import ProductCategory
+from shop.models.products import ProductCategory
 
 
 class CategoryCreationView(SuccessMessageMixin, LoginRequiredMixin, CreateView):

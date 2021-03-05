@@ -4,7 +4,8 @@ from django.views.generic import View
 
 from payment.models import Payment, PaymentDetail
 from shop.views.mixins import EmailConfirmView
-from shop.models import Order, OrderItem, Product, OrderDetail
+from shop.models.orders import Order, OrderDetail, OrderItem
+from shop.models.products import Product
 from shop.utils import create_hash
 
 __author__ = 'Anselm'

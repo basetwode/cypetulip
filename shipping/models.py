@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from mediaserver.upload import fs, shipment_files_upload_handler
-from shop.models import OrderDetail, OrderItem
+from shop.models.orders import OrderDetail, OrderItem
 
 
 class Continent(models.Model):

@@ -5,7 +5,7 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.core.management import BaseCommand
 
-from shop.models import Product, ProductCategory, ProductImage, ProductAttributeTypeInstance
+from shop.models.products import ProductCategory, ProductAttributeTypeInstance, Product, ProductImage
 
 
 class Command(BaseCommand):

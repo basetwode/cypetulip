@@ -67,7 +67,9 @@ def install():
     print('####Creating a superuser account####')
     execute_from_command_line(['', 'createsuperuser'])
     from django.contrib.auth.models import User
-    from shop.models import Contact, Company, Address
+    from shop.models.accounts import Address
+    from shop.models.accounts import Contact
+    from shop.models.accounts import Company
     execute_from_command_line(['', 'migrate'])
     print('####Creating your company and first (admin) account####')
     name = input("Your company name: ")

@@ -5,7 +5,9 @@ from django.utils.translation import ugettext_lazy as _
 from cms.models.models import Section, Page
 from management.models.models import Header, Footer
 from shipping.models import Package, Shipment
-from shop.models import OrderDetail, Product, Contact, ProductCategory, FileSubItem, ProductSubItem
+from shop.models.orders import OrderDetail
+from shop.models.products import ProductCategory, ProductSubItem, FileSubItem, Product
+from shop.models.accounts import Contact
 
 
 class OrderDetailFilter(django_filters.FilterSet):

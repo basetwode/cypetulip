@@ -4,7 +4,8 @@ from tinymce.models import HTMLField
 
 from mediaserver.upload import rma_files_upload_handler, fs
 from shipping.models import Shipper, Shipment
-from shop.models import Contact, Order, OrderItem, Address, Employee
+from shop.models.orders import Order, OrderItem
+from shop.models.accounts import Contact, Address, Employee
 
 
 class ReturnMerchandiseAuthorizationConfig(models.Model):

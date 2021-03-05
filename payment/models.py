@@ -5,7 +5,9 @@ import datetime
 from django.core.validators import MaxValueValidator
 from django.db import models
 
-from shop.models import Contact, Order, Product
+from shop.models.orders import Order
+from shop.models.products import Product
+from shop.models.accounts import Contact
 
 # Create your models here.
 

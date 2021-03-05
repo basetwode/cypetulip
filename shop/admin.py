@@ -1,9 +1,12 @@
 from django.contrib import admin
 
-from shop.models import *
-
 # Register your models here.
-
+from shop.models.accounts import Address, Company, Employee, Contact
+from shop.models.orders import OrderItemState, OrderState, Discount, FixedAmountDiscount, PercentageDiscount, Order, \
+    OrderDetail, OrderItem, FileOrderItem, SelectOrderItem, CheckBoxOrderItem, NumberOrderItem
+from shop.models.products import ProductCategory, ProductSubItem, FileSubItem, FileExtensionItem, SelectSubItem, \
+    SelectItem, NumberSubItem, CheckBoxSubItem, ProductAttributeType, ProductAttributeTypeInstance, Product, \
+    ProductImage, IndividualOffer
 
 admin.site.register(Address)
 admin.site.register(Order)

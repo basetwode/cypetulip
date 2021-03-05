@@ -9,7 +9,8 @@ class WebappConfig(BaseConfig):
     def ready(self):
         try:
 
-            from shop.models import Contact,  Company
+            from shop.models.accounts import Contact
+            from shop.models.accounts import Company
             admin_company, created = Company.objects.get_or_create(name="Admin", street="Admin",
                                                          number="Admin",zipcode="Admin",city="Admin")
             admin_contact, created = Contact.objects.get_or_create(username="admin", company=admin_company)
@@ -19,7 +20,7 @@ class WebappConfig(BaseConfig):
                 admin_contact.is_staff = True
                 admin_contact.save()
 
-            from shop.models import OrderState
+            from shop.models.orders import OrderState
 
             init_state = OrderState.objects.filter(initial=True)
             if init_state.count() == 0:
@@ -35,6 +36,7 @@ class WebappConfig(BaseConfig):
                 init_state = OrderState(initial=True, name="Open", cancel_order_state=cancel_state,
                                         next_state=in_work_state)
                 init_state.save()
+
         except :
             print("DB not migrated")
         super(WebappConfig, self).ready()

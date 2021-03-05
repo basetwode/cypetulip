@@ -1,7 +1,8 @@
 from django.forms import ModelForm
 from requests.compat import basestring
 
-from shop.models import *
+from shop.models.accounts import Address, Contact
+from shop.models.orders import OrderItem, FileOrderItem, SelectOrderItem, CheckBoxOrderItem, NumberOrderItem
 
 __author__ = 'Anselm'
 

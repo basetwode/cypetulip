@@ -10,7 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import View, CreateView
 
 from shop.forms.authentication_forms import CompleteCompanyForm, SignUpForm, PasswordResetFormSMTP
-from shop.models import Contact, Order, Address, Company
+from shop.models.orders import Order
+from shop.models.accounts import Company, Contact, Address
 
 __author__ = ''
 

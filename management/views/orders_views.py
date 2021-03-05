@@ -20,8 +20,9 @@ from management.forms.forms import OrderDetailForm, OrderForm, OrderItemForm
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME
 from permissions.mixins import LoginRequiredMixin
 from shipping.models import Shipment
-from shop.models import Contact, Order, OrderItem, Product, Employee, OrderDetail, OrderState, \
-    IndividualOffer
+from shop.models.orders import OrderState, Order, OrderDetail, OrderItem
+from shop.models.products import Product, IndividualOffer
+from shop.models.accounts import Contact, Employee
 from shop.utils import get_orderitems_once_only
 from shop.utils import json_response
 from shop.views.mixins import WizardView, RepeatableWizardView

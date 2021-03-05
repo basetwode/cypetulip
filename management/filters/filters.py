@@ -2,7 +2,7 @@ import django_filters
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
-from shop.models import OrderDetail, Discount
+from shop.models.orders import Discount, OrderDetail
 
 
 class OrderDetailFilter(django_filters.FilterSet):

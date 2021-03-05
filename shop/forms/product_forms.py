@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from management.models.models import ShopSetting
-from shop.models import ProductAttributeType, IndividualOffer
+from shop.models.products import ProductAttributeType, IndividualOffer
 
 
 class ProductAttributeForm(ModelForm):

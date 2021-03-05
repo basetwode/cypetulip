@@ -8,14 +8,16 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView, DetailView, TemplateView
 from django_filters.views import FilterView
 
 from billing.utils import calculate_sum
 from permissions.error_handler import raise_401
 from permissions.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin, PermissionOwnsObjectMixin
 from shop.filters.filters import OrderDetailFilter
-from shop.models import Contact, Order, OrderItem, Product, OrderDetail, Address, Company
+from shop.models.orders import Order, OrderDetail, OrderItem
+from shop.models.products import Product
+from shop.models.accounts import Company, Contact, Address
 from shop.forms.account_forms import CompanyForm, ContactForm
 from shop.utils import get_orderitems_once_only
 from shop.utils import json_response
@@ -70,53 +72,9 @@ class OrdersView(LoginRequiredMixin, PermissionPostGetRequiredMixin,  PaginatedF
             .order_by('-date_added')
 
 
-class OrdersViewOld(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
-    permission_get_required = ['shop.view_orders']
-
-    template_name = 'shop/account/account-order-overview.html'
-
-    def get(self, request, page=1, **kwargs):
-        contact = Contact.objects.filter(user_ptr=request.user)
-        if contact:
-            _orders, search = SearchOrders.filter_orders(request, False)
-            number_of_orders = '5'
-            paginator = Paginator(_orders, number_of_orders)
-            # for order in _orders:
-            #     order_items = OrderItem.objects.filter(order=order, order_item__isnull=True,
-            #                                            product__in=Product.objects.all())
-            #     order.total_wt = calculate_sum(order_items,True)
-            try:
-                _orders = paginator.page(page)
-            except PageNotAnInteger:
-                # If page is not an integer, deliver first page.
-                _orders = paginator.page(1)
-            except EmptyPage:
-                # If page is out of range (e.g. 9999), deliver last page of results.
-                _orders = paginator.page(paginator.num_pages)
-            return render(request, self.template_name,
-                          {'orders': _orders, 'contact': contact, 'search': search})
-        else:
-            return redirect('/shop/register')
-
-    def post(self, request):
-        pass
-
-
-class MyAccountView(LoginRequiredMixin, PermissionPostGetRequiredMixin, View):
+class MyAccountView(LoginRequiredMixin, PermissionPostGetRequiredMixin, TemplateView):
     permission_get_required = ['shop.view_my_account']
-
     template_name = 'shop/account/account.html'
-
-    def get(self, request):
-
-        contact = Contact.objects.filter(user_ptr=request.user)
-        if contact:
-            return render(request, self.template_name, {'contact': contact})
-        else:
-            return redirect('/shop/register')
-
-    def post(self, request):
-        pass
 
 
 class AccountSettingsView(LoginRequiredMixin, PermissionPostGetRequiredMixin, UpdateView):
@@ -150,7 +108,6 @@ class CompanySettingsView(LoginRequiredMixin, PermissionPostGetRequiredMixin, Up
     context_object_name = 'company'
     success_url = reverse_lazy('shop:company_settings')
 
-
     def get_context_data(self, **kwargs):
         return {**{'title': 'Company Settings', 'contact': self.request.user.contact,
                    'next_url': 'shop:company_settings'},
@@ -161,7 +118,7 @@ class CompanySettingsView(LoginRequiredMixin, PermissionPostGetRequiredMixin, Up
 
 
 class SearchCustomers(View):
-
+    # todo refactor to rest view
     def get(self, request):
         if 'search' in request.GET and request.user.is_staff:
             search = request.GET.get('search')
@@ -178,7 +135,7 @@ class SearchCustomers(View):
 
 
 class SearchOrders(View):
-
+    # todo refactor to rest view
     def get(self, request):
         _orders, search = SearchOrders.filter_orders(request)
         _json = json.loads(
@@ -223,9 +180,6 @@ class AddressOverviewView(PermissionPostGetRequiredMixin, ListView):
     def get(self, request, *args, **kwargs):
         contact = Contact.objects.get(user_ptr=self.request.user)
         addresses = Address.objects.filter(contact__in=contact.company.contact_set.all())
-        _json = json.loads(
-            serializers.serialize('json', addresses.all(), use_natural_foreign_keys=True,
-                                  use_natural_primary_keys=True))
         return render(request, self.template_name, {'address': addresses, 'contact': contact})
 
 
@@ -281,3 +235,24 @@ class PasswordChangeViewCustomer(PasswordChangeView):
     def get_success_url(self):
         messages.success(self.request, _("Password changed!"))
         return reverse_lazy('shop:my_account')
+
+
+class OrderCancelView(UpdateView):
+    model = OrderDetail
+    slug_url_kwarg = 'order'
+    slug_field = 'order_number'
+    fields = []
+
+    def get_success_url(self):
+        messages.success(self.request, _("Order canceled!"))
+        return reverse_lazy('shop:detail_order', kwargs={'order': self.object.order.order_hash})
+
+    def form_valid(self, form):
+        resp = super(OrderCancelView, self).form_valid(form)
+        if self.object.state.initial:
+            self.object.state = self.object.state.cancel_order_state
+        else:
+            if self.request.user.is_staff and self.object.state != self.object.state.cancel_order_state:
+                self.object.state = self.object.state.cancel_order_state
+        self.object.save()
+        return resp

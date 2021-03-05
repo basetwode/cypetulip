@@ -7,8 +7,10 @@ from management.api.v1.serializers import CompanySerializer, ProductSerializer, 
     ProductAttributeTypeInstanceSerializer, ProductSubItemSerializer, ProductImageSerializer, OrderStateSerializer, \
     PaymentDetailSerializer, PaymentMethodSerializer, OrderSerializer
 from payment.models import PaymentDetail, PaymentMethod, Payment
-from shop.models import Product, ProductCategory, ProductAttributeType, ProductAttributeTypeInstance, ProductSubItem, \
-    ProductImage, Company, OrderState, Order
+from shop.models.orders import OrderState, Order
+from shop.models.products import ProductCategory, ProductSubItem, ProductAttributeType, ProductAttributeTypeInstance, \
+    Product, ProductImage
+from shop.models.accounts import Company
 from shop.utils import create_hash
 
 

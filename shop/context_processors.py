@@ -6,8 +6,9 @@ __author__ = 'Anselm'
 from cms.models.models import Page
 from management.models.models import Header, Footer, CacheSetting
 from payment.models import PaymentMethod
-from shop.models import (Contact, Order, OrderItem,
-                         Product, ProductCategory)
+from shop.models.orders import Order, OrderItem
+from shop.models.products import ProductCategory, Product
+from shop.models.accounts import Contact
 
 
 def get_open_orders(request):

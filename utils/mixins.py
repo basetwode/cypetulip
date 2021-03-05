@@ -13,7 +13,7 @@ from django.views.generic.base import ContextMixin
 from home import settings
 from management.models.models import LegalSetting, MailSetting
 from shipping.models import OnlineShipment
-from shop.models import Order
+from shop.models.orders import Order
 
 
 class EmailLogMixin:

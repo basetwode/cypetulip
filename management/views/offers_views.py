@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, ListView, DeleteView
 
 from permissions.mixins import LoginRequiredMixin
-from shop.models import IndividualOffer
+from shop.models.products import IndividualOffer
 
 
 class IndividualOfferRequestOverview(LoginRequiredMixin, ListView):

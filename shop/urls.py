@@ -17,12 +17,9 @@ urlpatterns = [
     url(r'^companies/create', CompanyView.create, name='create-company'),
     url(r'^logout/', LogoutView.as_view()),
 
-    # todo: use uuid ?
     url(r'^cart/$', ShoppingCartDetailView.as_view(), name="shoppingcart_cart"),
-    # todo: must include category path
     url(r'^cart/(?P<path>[\S0-9_.-\\s\- ]*)/(?P<name>[\S0-9_.-\\s\- ]*)/add/$', ShoppingCartAddItemView.as_view(),
         name="shoppingcart_add"),
-    # todo: whats the second one for?
     url(r'^cart/delivery/(?P<uuid>[a-zA-Z0-9\\s\-_ ]+)/$', DeliveryView.as_view(), name="delivery_order"),
     url(r'^cart/confirmed/(?P<uuid>[a-zA-Z0-9\\s\-_ ]+)/$', OrderConfirmedView.as_view(), name="confirmed_order"),
 
@@ -30,7 +27,6 @@ urlpatterns = [
     url(r"^products/(?P<category>[\S0-9_.-\\s\- ]*)/(?P<product>[\S0-9_.-\\s\- ]+)$",
         cache_page(CACHE_MIDDLEWARE_SECONDS)(ProductDetailView.as_view()), name='product_detail'),
     url(r'^products/(?P<category>[\S0-9_.-\\s\- ]*)$', ProductView.as_view(), name="products"),
-    url(r"^products/(?P<product>[\S0-9_.-\\s\- ]+)/order/(?P<order_step>[0-9]+)$", OrderView.as_view()),
 
     url(r'^myaccount/$', MyAccountView.as_view(), name="my_account"),
     url(r'^myaccount/password_change/$', PasswordChangeViewCustomer.as_view(), name="password_change"),
@@ -49,7 +45,7 @@ urlpatterns = [
     url(r'orders/search/', SearchOrders.as_view(), name="search_orders"),
 
     url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/$', OrderDetailView.as_view(), name="detail_order"),
-    url(r'^myaccount/orders/([a-zA-Z0-9\\s\-_ ]+)/cancel/$', OrderCancelView.as_view(),
+    url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/cancel/$', OrderCancelView.as_view(),
         name="detail_order_cancel_order"),
     url(r'^myaccount/orders/(?P<order>[a-zA-Z0-9\\s\-_ ]+)/bill/show$', OrderDetailView.as_view(),
         name="detail_order_show_bill"),

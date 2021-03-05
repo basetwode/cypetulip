@@ -16,7 +16,7 @@ from home import settings
 from management.models.models import LegalSetting
 from payment.models import PaymentDetail
 from permissions.mixins import PermissionOwnsObjectMixin
-from shop.models import Order, OrderDetail, OrderItem
+from shop.models.orders import Order, OrderDetail, OrderItem
 
 
 class HTMLPreview(PermissionOwnsObjectMixin, View):

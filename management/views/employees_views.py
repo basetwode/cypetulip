@@ -4,7 +4,7 @@ from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 
 from permissions.mixins import LoginRequiredMixin
-from shop.models import Employee
+from shop.models.accounts import Employee
 
 
 class EmployeeOverviewView(LoginRequiredMixin, ListView):
