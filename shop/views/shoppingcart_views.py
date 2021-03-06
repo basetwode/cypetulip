@@ -94,24 +94,11 @@ class DeliveryView(DetailView):
     context_object_name = 'order_detail'
 
 
-class OrderConfirmedView(UpdateView):
+class OrderConfirmedView(DetailView):
     model = OrderDetail
     slug_field = 'uuid'
     slug_url_kwarg = 'uuid'
-    template_name = 'shop/shoppingcart/shoppingcart-order-confirmed.html'
+    template_name = 'shop/shoppingcart/shoppingcart-orderconfirmed.html'
     context_object_name = 'order_detail'
     fields = []
 
-    def get_success_url(self):
-        return reverse_lazy('detail_order', kwargs={"order": self.object.order.uuid})
-
-    def form_valid(self, form):
-        if not self.object.state:
-            self.object.state = OrderState.objects.get(initial=True)
-        self.object.save()
-        if self.object.is_send:
-            return redirect(reverse("detail_order", args=[self.object.order.uuid]))
-        else:
-            self.object.is_send = True
-            self.object.save()
-        return super(OrderConfirmedView, self).form_valid(form)

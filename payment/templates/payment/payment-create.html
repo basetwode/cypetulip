@@ -49,8 +49,8 @@
 
                 <div class="col-12">
                     <h4>{% trans 'Payment' %}</h4>
-                    <form id="payment-form" class="form-horizontal" method="get"
-                          action="/payment/create/{{ order_details.uuid }}">
+                    <form id="payment-form" class="form-horizontal" method="post"
+                          action="/payment/{{ order_details.uuid }}/">
                         {% csrf_token %}
                         <div id="method">
                             <p>
@@ -88,7 +88,6 @@
                                          data-parent="#paymentFormInput">
                                         <div class="card-body">
                                             {{ payment_method.details }}<p></p>
-                                            {#                                            {% bootstrap_form payment_method.form %}#}
 
                                         </div>
                                     </div>
@@ -99,27 +98,15 @@
                             <div class="p-4 col-12">
 
                                 {% bootstrap_form legal_form %}
+                                <div class="align-right">
+                                <button class="btn btn-primary float-right" type="submit">{% trans 'Continue' %}</button></div>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="row mb-2 justify-content-end">
-            <div class="col">
-                <a onclick="submitForm('create/','payment-form')"
-                   class="btn btn-success float-end">{% trans 'Continue' %} <i
-                        class="fa fa-angle-right"></i></a>
-            </div>
-        </div>
 
-
-        <form id="next-step-form" action="confirm/" method="post">
-            {% csrf_token %}
-
-            <input id="next-step-token" type="hidden" name="token" value="{{ order_details.uuid }}">
-        </form>
-    </div>
 
     </div>
 

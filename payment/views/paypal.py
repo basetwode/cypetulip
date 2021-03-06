@@ -37,7 +37,7 @@ class PaypalPaymentConfirmationView(View):
 
     def get(self, request, order):
         _order = Order.objects.filter(uuid=order)
-        order_details = OrderDetail.objects.get(uuid=order)
+        order_details = OrderDetail.objects.get(order=_order[0])
         order_items = OrderItem.objects.filter(order=_order[0], order_item__isnull=True,
                                                product__in=Product.objects.all())
         payment_details = PaymentDetail.objects.get(order=_order[0])

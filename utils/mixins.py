@@ -122,8 +122,11 @@ class EmailThread(threading.Thread):
         for k, v in self.context.items():
             if hasattr(v,'__len__') and 'type' in v:
                 clazz = apps.get_model(app_label=v['app'], model_name=v['type'])
-                i = clazz.objects.get(id=v['id'])
-                self.context[k] = i
+                try:
+                    i = clazz.objects.get(id=v['id'])
+                    self.context[k] = i
+                except Exception as e:
+                    print("Unable to serialize")
 
 
         if 'files' in self.context and self.context['files']:

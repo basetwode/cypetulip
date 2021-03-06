@@ -33,8 +33,7 @@
                             </form>
                         </div>
                         <div class="stepwizard-step">
-                            <form action="{{ request.META.HTTP_REFERER }}" method="post">
-                                {% csrf_token %}
+                            <form action="{{ request.META.HTTP_REFERER }}" method="get">
                                 <a onclick="$(this).parent().submit()" class="btn btn-outline-success btn-circle"><i
                                         class="fas fa-credit-card"></i> </a>
                                 <p><small>{% trans "Payment" %}</small></p>
@@ -226,7 +225,7 @@
             </table>
             <div class="row mb-2">
                 <div class="col">
-                    <form action="{{ request.META.HTTP_REFERER }}" method="post">
+                    <form action="{{ request.META.HTTP_REFERER }}" method="get">
                         {% csrf_token %}
                         <a onclick="$(this).parent().submit()" class="btn btn-warning"><i
                                 class="fa fa-angle-left"></i> {% trans 'Payment' %}</a>

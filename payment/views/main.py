@@ -1,75 +1,43 @@
-from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.shortcuts import redirect
 from django.template.defaultfilters import lower
-from django.urls import reverse_lazy, reverse
-from django.views import View
-from django.views.generic import CreateView
+from django.urls import reverse, reverse_lazy
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import CreateView, DetailView
 
 from payment.forms.main import LegalForm, PaymentFormFactory, get_all_payment_forms_as_dict
-from payment.models.main import PaymentMethod, PaymentDetail
-from shop.errors import JsonResponse, FieldError
-from shop.models.accounts import Contact
-from shop.models.orders import Order, OrderDetail
-from shop.utils import get_order_for_hash_and_contact, check_params, json_response
+from payment.models.main import Payment, PaymentDetail
+from payment.models.main import PaymentMethod
+from shop.models.orders import Order, OrderDetail, OrderState
+from shop.models.orders import OrderItem
+from shop.models.products import Product
+from shop.views.mixins import EmailConfirmView
+
+'''
+Creates a new payment and deletes any old ones
+This is a shoppingcart view (Step 3)
+'''
 
 
-class PaymentView(View):
-    template_name = 'payment/payment-create.html'
-    context_object_name = 'payment_methods'
-    model = PaymentMethod
-
-    def get(self, request, order):
-        payment_methods = PaymentMethod.objects.filter(enabled=True)
-        payment_forms = get_all_payment_forms_as_dict()
-        for method in payment_methods:
-            method.form = PaymentFormFactory(method.provider.api)
-        return render(request, self.template_name, { 'payment_methods': payment_methods, 'forms': payment_forms, 'legal_form': LegalForm()})
-
-    def post(self, request, order):
-        payment_methods = PaymentMethod.objects.filter(enabled=True)
-        payment_forms = get_all_payment_forms_as_dict()
-        for method in payment_methods:
-            method.form = PaymentFormFactory(method.provider.api)
-        order_object = get_order_for_hash_and_contact(Contact.objects.filter(user_ptr=request.user), order)
-        return render(request, self.template_name,
-                      {'order_details': order_object, 'payment_methods': payment_methods, 'forms': payment_forms, 'legal_form': LegalForm()})
-
-
-class PaymentConfirmationView(View):
-    template_name = 'payment/payment-create.html'
-
-    def get(self, request, order):
-        return redirect('/shop/overview/' + order)
-
-    def post(self, request, order):
-        contact = Contact.objects.filter(user_ptr=request.user)
-        company = contact[0].company
-        _order = Order.objects.get(uuid=order, is_send=False, company=company)
-        payment_details = PaymentDetail.objects.get(order=_order, user=contact)
-        self.find_view_by_payment(payment_details)
-        pass
-
-    def paypal(self, request, order):
-        # create an paymentdetail object here and save it, then redirect to paypal view page
-        pass
-
-    def find_view_by_payment(self, payment_detail):
-        payment_method = payment_detail.method
-
-        print(payment_method)
-
-
-class PaymentCreationView(CreateView):
-    template_name = 'management/generic/generic-create.html'
-    context_object_name = PaymentDetail
+class PaymentCreateView(CreateView):
     model = PaymentDetail
-    fields = '__all__'
+    template_name = 'payment/payment-create.html'
+    slug_field = 'order__uuid'
+    slug_url_kwarg = 'order'
+    fields = []
 
-    def get_success_url(self):
-        return reverse_lazy('shop:address_overview')
+    def get_context_data(self, **kwargs):
+        payment_methods = PaymentMethod.objects.filter(enabled=True)
+        payment_forms = get_all_payment_forms_as_dict()
+        for method in payment_methods:
+            method.form = PaymentFormFactory(method.provider.api)
+        return {**super(PaymentCreateView, self).get_context_data(**kwargs),
+                **{'payment_methods': payment_methods, 'forms': payment_forms,
+                   'order_details': Order.objects.get(uuid=self.kwargs['order']),
+                   'legal_form': LegalForm()}}
 
-    @check_params(required_arguments={'method': '[0-9]'}, message="Please select a payment method")
-    def post(self, request, order):
-        _order = Order.objects.get(uuid=order)
+    def form_valid(self, form):
+        _order = Order.objects.get(uuid=self.kwargs['order'])
         order_details = OrderDetail.objects.get(order=_order)
         order_details.contact = order_details.shipment_address.contact
         order_details.save()
@@ -77,28 +45,67 @@ class PaymentCreationView(CreateView):
         payment_details = PaymentDetail.objects.filter(order=_order)
         payment_details.delete()
 
-        choosen_payment_method = PaymentMethod.objects.get(id=request.POST['method'])
-        form = PaymentFormFactory(choosen_payment_method.name, request.POST)
-        legal_form = LegalForm(request.POST)
+        if not 'method' in self.request.POST:
+            return self.form_invalid(form)
+        choosen_payment_method = PaymentMethod.objects.get(id=self.request.POST['method'])
+        form = PaymentFormFactory(choosen_payment_method.name, self.request.POST)
+        legal_form = LegalForm(self.request.POST)
         if form.is_valid() and legal_form.is_valid():
             payment_instance = form.save(commit=False)
             payment_instance.user = order_details.contact
             payment_instance.order = _order
-            payment_instance.method = PaymentMethod.objects.get(id=request.POST['method'])
+            payment_instance.method = PaymentMethod.objects.get(id=self.request.POST['method'])
             payment_instance.save()
-            result = json_response(code=200, x=JsonResponse(
-                next_url=reverse('payment:%s' % lower(payment_instance.method.name),
-                                 args=[order])).dump())
+            return redirect(
+                reverse('payment:%s' % lower(payment_instance.method.name), kwargs={'order': self.kwargs['order']}))
         else:
-            result = self.__form_is_not_valid(form, legal_form)
+            return self.form_invalid(form)
 
-        return result
+    def form_invalid(self, form):
+        messages.error(self.request, _("Please select a payment method"))
+        return super(PaymentCreateView, self).form_invalid(form)
 
-    def paypal(self, order, form):
-        pass
 
-    def __form_is_not_valid(self, form1, form2):
-        form_items = {**form1.errors, **form2.errors}
-        errors = [FieldError(field_name=k, message=v) for k, v in form_items.items()]
-        error_list = JsonResponse(errors=errors, success=False)
-        return json_response(code=400, x=error_list.dump())
+class PaymentConfirmView(DetailView):
+    template_name = 'payment/payment-confirm.html'
+    slug_url_kwarg = 'order'
+    slug_field = 'order__uuid'
+    model = PaymentDetail
+
+    def get_context_data(self, **kwargs):
+        order_items = OrderItem.objects.filter(order=self.object.order, order_item__isnull=True,
+                                               product__in=Product.objects.all())
+
+        return {**super(PaymentConfirmView, self).get_context_data(**kwargs),
+                **{'order_items': order_items, 'payment_details': self.object,
+                   'contact': self.object.order.orderdetail_set.first().contact,
+                   'order_detail': self.object.order.orderdetail_set.first(),
+                   'shipment': self.object.order.orderdetail_set.first().shipment_address}}
+
+
+class PaymentSubmitView(EmailConfirmView, CreateView):
+    model = Payment
+    fields = []
+
+    def get_success_url(self):
+        return reverse_lazy('shop:confirmed_order', kwargs={"uuid":self.kwargs['order']})
+
+    def get_context_data(self, **kwargs):
+        return {**super(PaymentSubmitView, self).get_context_data(**kwargs),
+                **{}}
+
+    def form_valid(self, form):
+        payment = form.save(commit=False)
+        payment_details = PaymentDetail.objects.get(order__uuid=self.kwargs['order'])
+        order_detail = payment_details.order.orderdetail_set.first()
+        payment.is_paid = False
+        payment.token = payment_details.order.uuid
+        payment.details = payment_details
+        if not order_detail.state:
+            order_detail.state = OrderState.objects.get(initial=True)
+            order_detail.save()
+        self.object = payment_details.order
+        payment.save()
+        self.notify_client(order_detail.contact)
+        self.notify_staff()
+        return super(PaymentSubmitView, self).form_valid(form)

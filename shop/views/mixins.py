@@ -63,7 +63,6 @@ class EmailConfirmView(EmailMixin, View):
                                                               'HTTP_HOST']})
 
     def notify_staff(self):
-        # todo: send mail upon bill
         mail_setting = MailSetting.objects.first()
         translation.activate('de')
         self.email_template = "mail/new_order_staff.html"
