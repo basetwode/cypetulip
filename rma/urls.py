@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from rma.views import RMAInitView
+from rma.views.main import RMAInitView
 
 __author__ = ''
 

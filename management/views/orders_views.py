@@ -17,7 +17,7 @@ from billing.utils import calculate_sum
 from billing.views.main import GeneratePDFFile
 from management.filters.filters import OrderDetailFilter
 from management.forms.forms import OrderDetailForm, OrderForm, OrderItemForm
-from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME
+from payment.models.main import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME
 from permissions.mixins import LoginRequiredMixin
 from shipping.models.main import Shipment
 from shop.models.orders import OrderState, Order, OrderDetail, OrderItem

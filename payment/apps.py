@@ -13,9 +13,8 @@ class PaymentConfig(AppConfig):
     def ready(self):
         try:
 
-
-            from payment.models import PaymentProvider
-            from payment.models import PaymentMethod
+            from payment.models.main import PaymentProvider
+            from payment.models.main import PaymentMethod
 
             prepayment, created = PaymentProvider.objects.get_or_create(api="Prepayment")
             bill, created = PaymentProvider.objects.get_or_create(api="Bill")

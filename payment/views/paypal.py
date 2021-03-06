@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View
 from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest
 
-from payment.models import Payment, PaymentDetail
+from payment.models.main import Payment, PaymentDetail
 from shop.views.mixins import EmailConfirmView
 from shop.models.orders import OrderState, Order, OrderDetail, OrderItem
 from shop.models.products import Product
@@ -26,7 +26,7 @@ class PaymentResponse:
 
 
 class PaypalPaymentConfirmationView(View):
-    template_name = 'bill/confirm.html'
+    template_name = 'payment/payment-confirm.html'
     model = Payment
     client = None
     fields = []

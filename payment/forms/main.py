@@ -1,12 +1,14 @@
 import six
 from django import forms
 from django.forms import BooleanField
+from django.utils.functional import lazy
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from payment.models import Bill, CreditCard, PayPal, Prepayment
-from django.utils.functional import lazy
+from payment.models.main import *
+
 mark_safe_lazy = lazy(mark_safe, six.text_type)
+
 
 class LegalForm(forms.Form):
     gdpr = BooleanField(required=True,
@@ -23,10 +25,9 @@ class LegalForm(forms.Form):
                                               "I've read the <a target='_blank' href='/cms/general-business-terms'>general business terms</a>")))
 
 
-
-
 class PaymentForm(forms.ModelForm):
     pass
+
 
 class CreditCardForm(PaymentForm):
     class Meta:

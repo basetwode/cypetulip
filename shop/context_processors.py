@@ -5,7 +5,7 @@ __author__ = 'Anselm'
 
 from cms.models.models import Page
 from management.models.models import Header, Footer, CacheSetting
-from payment.models import PaymentMethod
+from payment.models.main import PaymentMethod
 from shop.models.orders import Order, OrderItem
 from shop.models.products import ProductCategory, Product
 from shop.models.accounts import Contact

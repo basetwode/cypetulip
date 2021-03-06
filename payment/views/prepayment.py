@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import View
 
-from payment.models import Payment, PaymentDetail
+from payment.models.main import Payment, PaymentDetail
 from shop.views.mixins import EmailConfirmView
 from shop.models.orders import Order, OrderDetail, OrderItem
 from shop.models.products import Product
@@ -10,12 +10,9 @@ from shop.utils import create_hash
 
 __author__ = 'Anselm'
 
-# todo: refactor this, use create view
-# todo: add gdpr
-# todo: add agb and cancellation policy
 
-class BillConfirmView(View):
-    template_name = 'bill/confirm.html'
+class PrepaymentConfirmView(View):
+    template_name = 'bill/payment-confirm.html'
 
     def get(self, request, order):
         _order = Order.objects.filter(uuid=order)
@@ -24,12 +21,10 @@ class BillConfirmView(View):
                                                product__in=Product.objects.all())
         payment_details = PaymentDetail.objects.get(order=_order[0])
         return render(request, self.template_name,
-                      {'order_items': order_items, 'payment_details': payment_details, 'contact': order_details.contact,
+                      {'order_items': order_items, 'payment_details': payment_details, 'contact': order_details.contact, 'order_detail': order_details,
                        'shipment': order_details.shipment_address})
 
-
-
-class BillSubmitView(EmailConfirmView, View):
+class PrepaymentSubmitView(EmailConfirmView, View):
 
     def get(self, request, order):
         _order = Order.objects.filter(uuid=order)
@@ -41,6 +36,7 @@ class BillSubmitView(EmailConfirmView, View):
         return redirect(reverse("shop:confirmed_order", args=[order]))
 
     def post(self, request, order):
+
         _order = Order.objects.filter(uuid=order)
         order_items = OrderItem.objects.filter(order=_order[0], order_item__isnull=True,
                                                product__in=Product.objects.all())

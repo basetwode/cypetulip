@@ -3,7 +3,7 @@ from django.utils import timezone
 
 def rma_init_available(uuid):
     from datetime import timedelta, datetime
-    from rma.models import ReturnMerchandiseAuthorizationConfig
+    from rma.models.main import ReturnMerchandiseAuthorizationConfig
     from shop.models.orders import OrderDetail
     order = OrderDetail.objects.get(order__uuid=uuid)
     config = ReturnMerchandiseAuthorizationConfig.objects.first()

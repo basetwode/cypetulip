@@ -1,20 +1,19 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import render, redirect
 from django.template.defaultfilters import lower
-from django.urls import reverse, reverse_lazy
-from django.views.generic import View, CreateView
+from django.urls import reverse_lazy, reverse
+from django.views import View
+from django.views.generic import CreateView
 
-from payment.models import PaymentDetail, PaymentMethod
-from shop.errors import (FieldError,
-                         JsonResponse)
-from shop.models.orders import Order, OrderDetail
+from payment.forms.main import LegalForm, PaymentFormFactory, get_all_payment_forms_as_dict
+from payment.models.main import PaymentMethod, PaymentDetail
+from shop.errors import JsonResponse, FieldError
 from shop.models.accounts import Contact
-from shop.utils import get_order_for_hash_and_contact
-from shop.utils import json_response, check_params
-from .methods.forms import PaymentFormFactory, get_all_payment_forms_as_dict, LegalForm
+from shop.models.orders import Order, OrderDetail
+from shop.utils import get_order_for_hash_and_contact, check_params, json_response
 
 
 class PaymentView(View):
-    template_name = 'payment.html'
+    template_name = 'payment/payment-create.html'
     context_object_name = 'payment_methods'
     model = PaymentMethod
 
@@ -36,7 +35,7 @@ class PaymentView(View):
 
 
 class PaymentConfirmationView(View):
-    template_name = 'order/payment.html'
+    template_name = 'payment/payment-create.html'
 
     def get(self, request, order):
         return redirect('/shop/overview/' + order)

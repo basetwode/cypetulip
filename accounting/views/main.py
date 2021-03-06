@@ -6,7 +6,7 @@ from django.views.generic.list import MultipleObjectMixin
 from django_filters.views import FilterView
 
 from accounting.filters.filters import OrderDetailFilter
-from payment.models import Payment
+from payment.models.main import Payment
 from permissions.mixins import LoginRequiredMixin
 from shop.models.orders import OrderState, OrderDetail
 from shop.models.products import Product

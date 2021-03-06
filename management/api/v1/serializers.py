@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
-from payment.models import PaymentDetail, PaymentMethod
+from payment.models.main import PaymentDetail, PaymentMethod
 from shop.models.orders import OrderState, Order, OrderItem, FileOrderItem, SelectOrderItem, CheckBoxOrderItem, \
     NumberOrderItem
 from shop.models.products import ProductCategory, ProductSubItem, ProductAttributeType, ProductAttributeTypeInstance, \

@@ -1,9 +1,9 @@
 from django.conf.urls import url
 
-from payment.methods.bill.views import BillConfirmView, BillSubmitView
-from payment.methods.paypal.views import PaypalPaymentConfirmationView, PaypalSubmitView
-from payment.methods.prepayment.views import PrepaymentConfirmView, PrepaymentSubmitView
-from payment.views import (PaymentConfirmationView, PaymentCreationView,
+from payment.views.bill import BillConfirmView, BillSubmitView
+from payment.views.paypal import PaypalPaymentConfirmationView, PaypalSubmitView
+from payment.views.prepayment import PrepaymentConfirmView, PrepaymentSubmitView
+from payment.views.main import (PaymentConfirmationView, PaymentCreationView,
                            PaymentView)
 
 __author__ = ''

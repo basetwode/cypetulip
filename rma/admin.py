@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from rma.models import *
+from rma.models.main import *
 
 # Register your models here.
 

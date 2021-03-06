@@ -4,7 +4,7 @@ from django.apps import apps, AppConfig
 class BaseConfig(AppConfig):
     api = {'shop':
         {
-            'myaccount.orders.order.buttons': {}
+            'account.orders.order.buttons': {}
         }
     }
 

@@ -1,14 +1,13 @@
 from django.apps import AppConfig
 
 
-
 class ShippingConfig(AppConfig):
     name = 'shipping'
 
     def ready(self):
         try:
-            from shipping.models import Region
-            from shipping.models import Country, Continent, Shipper
+            from shipping.models.main import Region
+            from shipping.models.main import Country, Continent, Shipper
             region_europe = Region.objects.filter(name="Europe")
             if region_europe.count() == 0:
                 region_europe = Region(name="Europe", countries="")

@@ -10,7 +10,7 @@ class RMAConfig(AppConfig):
 
     def ready(self):
         try:
-            from rma.models import ReturnMerchandiseAuthorizationConfig, ReturnMerchandiseAuthorizationShipper, \
+            from rma.models.main import ReturnMerchandiseAuthorizationConfig, ReturnMerchandiseAuthorizationShipper, \
                 ReturnMerchandiseAuthorizationState
             rma_config = ReturnMerchandiseAuthorizationConfig.objects.first()
             if not rma_config:
