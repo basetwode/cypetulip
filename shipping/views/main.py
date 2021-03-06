@@ -7,7 +7,7 @@ from django.views.generic import UpdateView, DeleteView
 
 from cms.views.mixins import GenericCreateView
 from management.views.mixins import NotifyCustomerCreateView, NotifyCustomerUpdateView
-from permissions.mixins import PermissionPostGetRequiredMixin
+from permissions.views.mixins import PermissionPostGetRequiredMixin
 from shipping.forms.main import OnlineShipmentForm, PackageForm
 from shipping.models.main import OnlineShipment, PackageShipment, Package, Shipment
 from shop.models.orders import OrderState, OrderDetail

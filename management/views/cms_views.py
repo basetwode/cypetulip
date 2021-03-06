@@ -8,7 +8,7 @@ from django_filters.views import FilterView
 
 from cms.models.models import Page, Section
 from management.models.models import Header, Footer
-from permissions.mixins import LoginRequiredMixin
+from permissions.views.mixins import LoginRequiredMixin
 from shop.filters.filters import ProductCategoryFilter, SectionFilter, \
     PageFilter, FooterFilter, HeaderFilter
 from shop.models.products import ProductCategory

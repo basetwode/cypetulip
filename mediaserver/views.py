@@ -6,7 +6,7 @@ from django.views.generic import View
 from home import settings
 # Todo: check permissions and raise 401 AND check if file exists and if not raise 404 then
 from permissions.error_handler import raise_404
-from permissions.mixins import LoginRequiredMixin, PermissionOwnsObjectMixin
+from permissions.views.mixins import PermissionOwnsObjectMixin
 from shop.models.orders import OrderDetail
 
 CONTENT_TYPES = {

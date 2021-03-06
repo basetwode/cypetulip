@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 
-from permissions.mixins import LoginRequiredMixin
+from permissions.views.mixins import LoginRequiredMixin
 from shop.models.accounts import Employee
 
 

@@ -1,4 +1,4 @@
-from permissions.mixins import LoginRequiredMixin
+from permissions.views.mixins import LoginRequiredMixin
 from rma.models.main import ReturnMerchandiseAuthorization
 from utils.views import CreateUpdateView
 

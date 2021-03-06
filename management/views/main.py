@@ -4,7 +4,7 @@ from django.utils import timezone
 # Create your views here.
 from django.views.generic import TemplateView
 
-from permissions.mixins import LoginRequiredMixin
+from permissions.views.mixins import LoginRequiredMixin
 from shop.models.accounts import Contact
 
 

@@ -3,7 +3,6 @@ import json
 from django.contrib import messages
 from django.contrib.auth.views import PasswordChangeView
 from django.core import serializers
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -13,7 +12,7 @@ from django_filters.views import FilterView
 
 from billing.utils import calculate_sum
 from permissions.error_handler import raise_401
-from permissions.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin, PermissionOwnsObjectMixin
+from permissions.views.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin, PermissionOwnsObjectMixin
 from shop.filters.filters import OrderDetailFilter
 from shop.models.orders import Order, OrderDetail, OrderItem
 from shop.models.products import Product

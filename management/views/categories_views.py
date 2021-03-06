@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 
-from permissions.mixins import LoginRequiredMixin
+from permissions.views.mixins import LoginRequiredMixin
 from shop.models.products import ProductCategory
 
 

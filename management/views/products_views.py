@@ -7,7 +7,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
 
 from management.forms.forms import ProductForm
-from permissions.mixins import LoginRequiredMixin
+from permissions.views.mixins import LoginRequiredMixin
 from shop.filters.filters import ProductFilter, ProductSubItemFilter
 from shop.models.products import ProductSubItem, FileSubItem, SelectSubItem, SelectItem, NumberSubItem, CheckBoxSubItem, \
     Product

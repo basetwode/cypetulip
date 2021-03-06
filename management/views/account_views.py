@@ -14,7 +14,7 @@ from management.forms.forms import ContactUserForm, ContactUserIncludingPassword
     MergeAccountsForm, CustomerImportForm
 from management.models.models import LegalSetting
 from management.views.mixins import NotifyNewCustomerAccountView
-from permissions.mixins import LoginRequiredMixin
+from permissions.views.mixins import LoginRequiredMixin
 from shop.filters.filters import ContactFilter
 from shop.models.orders import Order, OrderDetail
 from shop.models.accounts import Company, Contact, Address

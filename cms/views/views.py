@@ -13,7 +13,7 @@ from home.settings import STATIC_ROOT
 from management.models.models import MailSetting, LegalSetting, CacheSetting
 from permissions.error_handler import raise_404
 # Create your views here.
-from permissions.mixins import LoginRequiredMixin
+from permissions.views.mixins import LoginRequiredMixin
 from shop.models.accounts import Contact
 from utils.mixins import EmailMixin
 
