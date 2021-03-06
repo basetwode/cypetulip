@@ -6,7 +6,7 @@ from rma import buttons
 
 api = {
     'shop': {
-        'myaccount.orders.order.buttons':
+        'account.orders.order.buttons':
             {
                 'rma:init': {
                     'url': 'rma:rma_init',

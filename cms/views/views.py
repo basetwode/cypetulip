@@ -30,7 +30,7 @@ class AdminView(View):
 
 class CSSSettingsView(LoginRequiredMixin, FormView):
     form_class = CSSSettingForm
-    template_name = 'management/csssettings-edit.html'
+    template_name = 'cms/management/csssettings-edit.html'
 
     def get_context_data(self, **kwargs):
         context = super(CSSSettingsView, self).get_context_data(**kwargs)

@@ -8,8 +8,8 @@ from django.views.generic import UpdateView, DeleteView
 from cms.views.mixins import GenericCreateView
 from management.views.mixins import NotifyCustomerCreateView, NotifyCustomerUpdateView
 from permissions.mixins import PermissionPostGetRequiredMixin
-from shipping.forms import OnlineShipmentForm, PackageForm
-from shipping.models import OnlineShipment, PackageShipment, Package, Shipment
+from shipping.forms.main import OnlineShipmentForm, PackageForm
+from shipping.models.main import OnlineShipment, PackageShipment, Package, Shipment
 from shop.models.orders import OrderState, OrderDetail
 
 
@@ -26,7 +26,7 @@ class CreateOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateV
     order_object = None
 
     def get_success_url(self):
-        return reverse('management_order_detail_view', kwargs={'order': self.object.order.order.uuid})
+        return reverse('management_order_detail_view', kwargs={'uuid': self.object.order.order.uuid})
 
     def form_valid(self, form):
         order: OrderDetail = self.get_order()

@@ -1,11 +1,11 @@
-# Create your models here.
 from django.db import models
 from tinymce.models import HTMLField
 
 from mediaserver.upload import rma_files_upload_handler, fs
-from shipping.models import Shipper, Shipment
+from shipping.models.main import Shipper, Shipment
+
+from shop.models.accounts import Address, Contact, Employee
 from shop.models.orders import Order, OrderItem
-from shop.models.accounts import Contact, Address, Employee
 
 
 class ReturnMerchandiseAuthorizationConfig(models.Model):
@@ -22,6 +22,7 @@ class ReturnMerchandiseAuthorizationShipper(models.Model):
 
     def __str__(self):
         return self.shipper.name if self.shipper else 'Default'
+
 
 class ReturnMerchandiseAuthorizationState(models.Model):
     name = models.CharField(max_length=20)
@@ -53,6 +54,3 @@ class ReturnMerchandiseAuthorizationItem(models.Model):
     approved = models.BooleanField(default=False, blank=True, null=True)
     approval_date = models.DateTimeField(blank=True, null=True, default=None)
     approval_employee = models.ForeignKey(Employee, blank=True, null=True, default=None, on_delete=models.SET_NULL)
-
-# todo: app config, initial create rma stuff
-# todo: in shop, check if app available and enabled and load button

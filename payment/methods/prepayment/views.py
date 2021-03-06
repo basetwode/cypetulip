@@ -21,7 +21,7 @@ class PrepaymentConfirmView(View):
                                                product__in=Product.objects.all())
         payment_details = PaymentDetail.objects.get(order=_order[0])
         return render(request, self.template_name,
-                      {'order_items': order_items, 'payment_details': payment_details, 'contact': order_details.contact,
+                      {'order_items': order_items, 'payment_details': payment_details, 'contact': order_details.contact, 'order_detail': order_details,
                        'shipment': order_details.shipment_address})
 
 class PrepaymentSubmitView(EmailConfirmView, View):

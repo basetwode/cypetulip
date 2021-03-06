@@ -292,17 +292,6 @@
                                         <td colspan="2"
                                             data-th="Price">{{ sub_item.price }} &euro;
                                         </td>
-                                        <td>
-
-                                            {% if sub_product.is_multiple_per_item %}
-                                                <button onclick="duplicateProduct(this,{{ order.id }},{{ sub_product.price }})"
-                                                        class="btn btn-secondary btn-sm"><i
-                                                        class="fa fa-plus-circle"></i>
-                                                </button>
-                                                {#                                        <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>#}
-                                            {% endif %}
-
-                                        </td>
                                     </tr>
                                 {% endfor %}
                             {% endfor %}
@@ -396,7 +385,7 @@
                     <button href="#" class="btn btn-fw btn-secondary" data-bs-toggle="modal"
                             {% if order.is_send %}{% endif %}
                             data-bs-target="#create-modal">{% trans 'Ship' %}</button>
-                    {% include 'create-shipment.html' with uuid=order.uuid %}
+                    {% include 'shipping/shipment/shipment-create.html' with uuid=order.uuid %}
                     <form method="post" action="{% url 'order_delete_view' order.uuid %}">
                         {% csrf_token %}
                         <input type="submit" class="btn-danger btn btn-fw" value="{% trans 'Delete' %}"><br>

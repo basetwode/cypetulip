@@ -19,7 +19,7 @@ from management.filters.filters import OrderDetailFilter
 from management.forms.forms import OrderDetailForm, OrderForm, OrderItemForm
 from payment.models import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME
 from permissions.mixins import LoginRequiredMixin
-from shipping.models import Shipment
+from shipping.models.main import Shipment
 from shop.models.orders import OrderState, Order, OrderDetail, OrderItem
 from shop.models.products import Product, IndividualOffer
 from shop.models.accounts import Contact, Employee

@@ -19,13 +19,13 @@
                 <div class="stepwizard">
                     <div class="stepwizard-row">
                         <div class="stepwizard-step">
-                            <a href="{% url 'shop:shopping_cart' %}" type="button"
+                            <a href="{% url 'shop:shoppingcart_cart' %}" type="button"
                                class="btn btn-outline-success btn-circle"><i
                                     class="fa fa-shopping-cart"></i></a>
                             <p><small>{% trans 'Shoppingcart' %}</small></p>
                         </div>
                         <div class="stepwizard-step">
-                            <form action="{% url 'shop:delivery_order' order_items.uuid %}" method="get">
+                            <form action="{% url 'shop:delivery_order' order_detail.order.uuid %}" method="get">
                                 <a onclick="$(this).parent().submit()" type="button"
                                    class="btn btn-outline-success btn-circle"><i
                                         class="fas fa-truck"></i></a>

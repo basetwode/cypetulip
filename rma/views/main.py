@@ -1,17 +1,10 @@
-import zipfile
-
-import datetime
-from functools import reduce
-
-from django.views.generic import TemplateView, CreateView
-
 from permissions.mixins import LoginRequiredMixin
-from rma.models import ReturnMerchandiseAuthorization
+from rma.models.main import ReturnMerchandiseAuthorization
 from utils.views import CreateUpdateView
 
 
 class RMAInitView(LoginRequiredMixin, CreateUpdateView):
-    template_name = 'myaccount/rma-init.html'
+    template_name = 'rma/account/account-rma-create.html'
     model = ReturnMerchandiseAuthorization
     slug_url_kwarg = 'uuid'
     slug_field = 'order'
@@ -23,4 +16,3 @@ class RMAInitView(LoginRequiredMixin, CreateUpdateView):
         # todo set defaults on save (eg. contact,...)
         # todo select orderitem too
         print('asd')
-

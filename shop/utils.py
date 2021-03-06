@@ -14,8 +14,6 @@ __author__ = 'Anselm'
 logger = logging.getLogger(__name__)
 
 
-
-
 def create_hash():
     gen_hash = hashlib.sha1()
     gen_hash.update(str(time.time()).encode('utf-8'))
@@ -39,10 +37,10 @@ def check_params(required_arguments, redirect_page=None, message=""):
             request = args[0]
 
             missing_arguments = [FieldError(field_name=arg,
-                                             message=message,
-                                             mismatch=False if len(value) > 0 and arg not in request.POST
-                                             else re.match(value, request.POST[arg]) is None)
-                                   for
+                                            message=message,
+                                            mismatch=False if len(value) > 0 and arg not in request.POST
+                                            else re.match(value, request.POST[arg]) is None)
+                                 for
                                  arg, value in required_arguments.items() if arg not in request.POST
                                  or re.match(value, request.POST[arg]) is None
                                  ]
@@ -62,8 +60,6 @@ def check_params(required_arguments, redirect_page=None, message=""):
         return decorator
 
     return real_decorator
-
-
 
 
 def get_orderitems_once_only(order):

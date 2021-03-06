@@ -250,11 +250,6 @@
                                             class="text-center">{{ sub_item.product.price }} &euro;
                                         </td>
                                         <td style="width:15%" colspan="3">
-                                            <script>
-                                                $(document).ready(function () {
-                                                    addToSubTotal(0, {{ sub_item.product.price }})
-                                                });
-                                            </script>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -283,7 +278,7 @@
                         {% else %}
                             <button class="btn btn-fw btn-secondary" disabled
                             >{% trans 'Bill' %}</button> {% endif %}
-                        {% with api_config|get_var:'myaccount.orders.order.buttons'  as apiconfig %}
+                        {% with api_config|get_var:'account.orders.order.buttons'  as apiconfig %}
                         {% for btn_key, button in apiconfig.items %}
 
                             {% if button|is_available:order.uuid %}

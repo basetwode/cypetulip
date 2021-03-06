@@ -12,7 +12,7 @@ from django.views.generic.base import ContextMixin
 
 from home import settings
 from management.models.models import LegalSetting, MailSetting
-from shipping.models import OnlineShipment
+from shipping.models.main import OnlineShipment
 from shop.models.orders import Order
 
 

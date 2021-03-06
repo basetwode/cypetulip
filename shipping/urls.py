@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from shipping.views import CreateOnlineShipment, CreatePackageShipment, ShowOnlineShipment, ShowPackageShipment, \
+from shipping.views.main import CreateOnlineShipment, CreatePackageShipment, ShowOnlineShipment, ShowPackageShipment, \
     DeleteShipment
 
 __author__ = ''

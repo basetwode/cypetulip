@@ -1,7 +1,7 @@
 from django_filters.views import FilterView
 
 from permissions.mixins import LoginRequiredMixin
-from shipping.models import Shipment
+from shipping.models.main import Shipment
 from shop.filters.filters import ShipmentFilter
 from utils.mixins import PaginatedFilterViews
 

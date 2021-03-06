@@ -460,12 +460,12 @@
                 </div>
             </form>
 
-            <form id="next-step-form" action="/payment/{{ order_details.uuid }}" method="get">
+            <form id="next-step-form" action="/payment/{{ order_detail.order.uuid }}" method="get">
             </form>
             <script type='text/javascript'>
                 var csrfmiddlewaretoken = '{{ csrf_token }}';
-                var order = '{{ order_details.uuid }}';
-                var discount = '{{ order_details.orderdetail_set.first.discount.voucher_id }}';
+                var order = '{{ order_detail.order.uuid }}';
+                var discount = '{{ order_detail.discount.voucher_id }}';
             </script>
             <script>
                 var app = new Vue({
