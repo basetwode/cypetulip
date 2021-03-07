@@ -24,7 +24,8 @@
         <div class="stepwizard">
             <div class="stepwizard-row">
                 <div class="stepwizard-step">
-                    <a href="{% url 'shop:shoppingcart_cart' %}" type="button" class="btn btn-outline-success btn-circle"><i
+                    <a href="{% url 'shop:shoppingcart_cart' %}" type="button"
+                       class="btn btn-outline-success btn-circle"><i
                             class="fa fa-shopping-cart"></i></a>
                     <p><small>{% trans 'Shoppingcart' %}</small></p>
                 </div>
@@ -46,568 +47,590 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <form id="order-form" method="post">
-
-                {% csrf_token %}
-                <table id="cart" class="table table-hover table-striped table-responsive-md">
-                    <thead>
-                    <tr>
-                        <th style="width:30%">{% trans 'Product' %}</th>
-                        <th style="width:15%">{% trans 'Price' %}</th>
-                        <th style="width:50%" class="text-center">{% trans 'Total' %}</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    <input type="submit" hidden id="#submit">
-                    {% for order in open_orders %}
-                        <tr class="product-row" style="background-color: rgba(0, 0, 0, .06);">
-                            <td data-th="Product">
-                                <input type="hidden" name="[{{ order.id }}][prod]{{ order.product.id }}">
-
-                                <div class="row">
-                                    <div class="d-none d-sm-block col-md-2">
-                                        {% if order.product.product.product_picture %}
-                                            <img
-                                                    src="{{ order.product.product.product_picture.url }}"
-                                                    alt="..."
-                                                    class="img-fluid img-thumbnail"/>
-                                        {% else %}
-                                            <i class="fa fa-4x fa-image img-thumbnail"></i>
-                                        {% endif %}
-                                    </div>
-                                    <div class="col-12 col-md-7">
-                                        {{ order.count }} x {{ order.product.name }}
-
-                                    </div>
-
-                                </div>
-                            </td>
-                            <td data-th="Price">{{ order.price_wt }}&euro;</td>
-
-                            <td id="subtotal-{{ order.id }}" data-th="Subtotal"
-                                class="text-center">{{ order.total_wt|floatformat:"2"}}&euro;
-                                {% if order.applied_discount %}<br>
-                                    <span style="font-size: x-small" class="mt-1">- {{ order.total_discount_wt }}&euro; ({{ order_detail.discount.voucher_id }}
-                                        {{ order_detail.discount.discount_percentage_in_percent }}%)</span>
-                                    <br> <b>{{ order.total_discounted_wt|floatformat:"2" }}&euro;</b>
-                                {% endif %}
-                            </td>
-                        </tr>
-
-                        {% for sub_item in order.orderitem_set.all %}
-                            <tr id="{{ order.id }}-{{ sub_item.id }}" style="border-top: none; background-color: white">
-                                <td colspan="3">
-                                    <div class="row ps-3">
-
-                                        <div class="col-6">
-                                            <span>{{ sub_item.product.name }}</span>
-                                        </div>
-                                        <div class="col-6">
-                                            {{ sub_item.price_wt }}&euro;
-                                        </div>
-                                        <div class="col-12 ">
-                                            {% if sub_item.fileorderitem %}
-                                                {% trans 'File' %}:
-                                                <a href="{{ sub_item.fileorderitem.file.url }}">
-                                                    {{ sub_item.fileorderitem.file_name }}
-                                                </a>
-                                                <div class="col-sm-2 d-none d-sm-block "><img
-                                                        src="{{ sub_item.fileorderitem.file.url }}"
-                                                        alt="..."
-                                                        style="max-height: 100px"
-                                                        class="img-fluid img-thumbnail"/></div>
-                                            {% elif sub_item.selectorderitem %}
-                                                {{ sub_item.selectorderitem.selected_item }}
-                                            {% elif sub_item.checkboxorderitem %}
-                                                {% if sub_item.checkboxorderitem.is_checked %}{% trans 'Yes' %}
-                                                    {% else %}{% trans 'No' %} {% endif %}
-                                            {% elif sub_item.numberorderitem %}
-                                                {{ sub_item.numberorderitem.number }}
-                                            {% endif %}
-
-
-                                        </div>
-
-
-                                    </div>
-                                </td>
-
-                            </tr>
-                        {% endfor %}
-                    {% endfor %}
-
-                    {% for sub_item in order_items_once_only %}
-                        <tr class="product-row" style="border-top: none">
-                            <td colspan="3">
-                                <div class="row">
-                                    <div class="col-4">
-                                        <h4>{{ sub_item.product.name }}</h4>
-
-
-                                        <div class="col-md-12">
-                                            {% if sub_item.fileorderitem %}
-                                                {% trans 'File' %}:
-                                                <a href="{{ sub_item.fileorderitem.file.url }}">
-                                                    {{ sub_item.fileorderitem.file_name }}
-                                                </a>
-                                                <div class="col-2 d-none d-sm-block "><img
-                                                        src="{{ sub_item.fileorderitem.file.url }}"
-                                                        alt="..."
-                                                        class="img-fluid"/></div>
-                                            {% elif sub_item.selectorderitem %}
-                                                {{ sub_item.selectorderitem.selected_item.name }}
-                                            {% elif sub_item.checkboxorderitem %}
-                                                {% if sub_item.checkboxorderitem.is_checked %}{% trans 'Yes' %}
-                                                    {% else %}{% trans 'No' %} {% endif %}
-                                            {% elif sub_item.numberorderitem %}
-                                                {{ sub_item.numberorderitem.number }}
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    <div class="col-8">
-                                        {{ sub_item.product.price }}&euro;
-                                    </div>
-
-
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-
-                    {% if not open_orders %}
-                        <tr>
-                            <td data-th="Product">
-                                {{ open_order }}
-                                {% trans 'Empty Cart' %}
-                            </td>
-                        </tr>
-                    {% endif %}
-
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td colspan="1" style="width:22%" class="text-center">
-                            {% if open_orders.first.discount %}<br>
-                                <span
-                                    id="total">{{ open_orders.first.total_wt }}</span>&euro;<br>
-                                <small class="mt-1">- {{ open_orders.first.total_discount_wt }}&euro; ({{ open_orders.first.discount.voucher_id }}
-                                    {{ open_orders.first.discount.discount_percentage_in_percent }}%)</small>
-                                <br> <b>{% trans 'Total' %}: {{ open_orders.first.total_discounted_wt }}&euro;</b>
-                            {% else %}
-                                <strong>{% trans 'Total' %}: <span
-                                        id="total">{{ open_orders.first.order_detail.total_wt }}</span>&euro;</strong>
-                            {% endif %}
-
-                            </td>
-                    </tr>
-                </table>
-
-                <div id="addressFormInput">
-                    <div class="row mt-2 mb-2">
-                        <div class="col">
-                            <div :class="{'input-group':true, 'mb-3':true, 'was-validated': validateVoucher, 'has-error': voucherError.length>0,
-                            'is-invalid':voucherError}">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroup-sizing-default">{% trans 'Voucher' %}</span>
-                                </div>
-                                <input type="text" class="form-control" aria-label="Sizing example input" v-model="voucher"
-                                       :class="{'has-error': voucherError.length>0, 'is-invalid':voucherError.length > 0}"  :valid="voucherError.length==0"
-                                       aria-describedby="inputGroup-sizing-default">
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" @click="applyVoucher()"
-                                            type="button" id="button-addon2">{% trans 'Redeem' %}</button>
-                                </div>
-                                <div v-if="voucherError.length==0" class="valid-feedback">
-                                    {% trans 'Voucher applied' %}!
-                                </div>
-                                <div class="invalid-feedback">
-                                    <p v-if="voucherError">
-                                        <span v-for="error in voucherError">[[error]]</span>
-                                    </p>
-                                </div>
-                            </div>
-
-
-                        </div>
+    <form id="order-form" method="post">
+        <div class="row">
+            <div id="addressFormInput" class="col-md-7 ">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>{% trans 'Delivery' %}</h3>
                     </div>
-                    <div class="modal fade" id="add-modal" tabindex="-1" role="dialog"
+                    <div class="card-body">
+                        <div class="modal fade" id="add-modal" tabindex="-1" role="dialog"
 
-                         aria-labelledby="add-account-modal-title"
-                         aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title"
-                                        id="add-account-modal-title">{% trans 'Add address details' %}</h5>
-                                    <button type="button" ref="modalClose" class="close" data-bs-dismiss="modal"
-                                            aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <div v-if="errors.address.length">
-                                        <div class="alert alert-danger" role="alert">
-                                            <b>{% trans 'Please correct the following error(s):' %}</b>
-                                            <ul>
-                                                <li class="text-decoration-none"
-                                                    v-for="(value, propertyName) in errors.address[0]">
-                                                    {% trans '[[  propertyName]]' %} : [[ value[0] ]]
-                                                </li>
-                                            </ul>
-                                        </div>
-
+                             aria-labelledby="add-account-modal-title"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title"
+                                            id="add-account-modal-title">{% trans 'Add address details' %}</h5>
+                                        <button type="button" ref="modalClose" class="close" data-bs-dismiss="modal"
+                                                aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
-                                    {% if not user.is_authenticated %}
-                                        <div class="row">
-                                            <div class="col-6"><label class="col-form-label">{% trans 'Title' %}<strong>:
+
+                                    <div class="modal-body">
+                                        <div v-if="errors.address.length">
+                                            <div class="alert alert-danger" role="alert">
+                                                <b>{% trans 'Please correct the following error(s):' %}</b>
+                                                <ul>
+                                                    <li class="text-decoration-none"
+                                                        v-for="(value, propertyName) in errors.address[0]">
+                                                        {% trans '[[  propertyName]]' %} : [[ value[0] ]]
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                        </div>
+                                        {% if not user.is_authenticated %}
+                                            <div class="row">
+                                                <div class="col-6"><label
+                                                        class="col-form-label">{% trans 'Title' %}<strong>:
                                                 </strong>
-                                            </label>
-                                                <select v-model="account.title"
-                                                        class="form-control">
-                                                    <option value="D">{% trans 'Dr.' %}</option>
-                                                    <option value="P">{% trans 'Prof.' %}</option>
-                                                    <option value="PD">{% trans 'Prof. Dr.' %}</option>
-                                                </select></div>
-                                            <div class="col-6">
-                                                <label class="col-form-label">{% trans 'Gender' %}<strong>: *</strong>
                                                 </label>
-                                                <select v-model="account.gender" required
-                                                        class="form-control">
-                                                    <option value="M">{% trans 'Mr' %}</option>
-                                                    <option value="F">{% trans 'Mrs' %}</option>
-                                                    <option value="D">{% trans 'Divers' %}</option>
-                                                </select>
+                                                    <select v-model="account.title"
+                                                            class="form-control">
+                                                        <option value="D">{% trans 'Dr.' %}</option>
+                                                        <option value="P">{% trans 'Prof.' %}</option>
+                                                        <option value="PD">{% trans 'Prof. Dr.' %}</option>
+                                                    </select></div>
+                                                <div class="col-6">
+                                                    <label class="col-form-label">{% trans 'Gender' %}<strong>:
+                                                        *</strong>
+                                                    </label>
+                                                    <select v-model="account.gender" required
+                                                            class="form-control">
+                                                        <option value="M">{% trans 'Mr' %}</option>
+                                                        <option value="F">{% trans 'Mrs' %}</option>
+                                                        <option value="D">{% trans 'Divers' %}</option>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <label class=" col-form-label">{% trans 'firstname' %}<strong>:
+                                                        *</strong></label>
+                                                    <input v-model="account.firstname" required type="text"
+                                                           class="form-control"
+                                                           type="text">
+                                                </div>
+                                                <div class="col-6"><label
+                                                        class="col-form-label">{% trans 'lastname' %}<strong>:
+                                                    *</strong>
+                                                </label>
+                                                    <input v-model="account.lastname" required type="text"
+                                                           class="form-control"
+                                                           type="text">
+                                                </div>
+                                            </div>
+                                            <div><label
+                                                    class="col-form-label">{% trans 'e-mail' %}<strong>: *</strong>
+                                            </label>
+                                                <input v-model="account.email" required type="email"
+                                                       class="form-control"
+                                                       type="text">
                                             </div>
 
+                                            <div><label
+                                                    class="col-form-label">{% trans 'telephone' %}<strong>: *</strong>
+                                            </label>
+                                                <input v-model="account.telephone" required type="tel"
+                                                       class="form-control"
+                                                       type="text">
+                                            </div>
+                                        {% endif %}
+                                        <div>
+                                            <label
+                                                    class="col-form-label">{% trans 'description of address' %}<strong>:
+                                                *</strong> </label>
+                                            <input v-model="account.description" required type="text"
+                                                   class="form-control" type="text">
                                         </div>
                                         <div class="row">
-                                            <div class="col-6">
-                                                <label class=" col-form-label">{% trans 'firstname' %}<strong>:
-                                                    *</strong></label>
-                                                <input v-model="account.firstname" required type="text"
-                                                       class="form-control"
-                                                       type="text">
-                                            </div>
-                                            <div class="col-6"><label
-                                                    class="col-form-label">{% trans 'lastname' %}<strong>:
-                                                *</strong>
+                                            <div class="col-9"><label
+                                                    class="col-form-label">{% trans 'street' %}<strong>: *</strong>
                                             </label>
-                                                <input v-model="account.lastname" required type="text"
+                                                <input v-model="account.street" required type="text"
+                                                       class="form-control"
+                                                       type="text">
+                                            </div>
+                                            <div class="col-3"><label
+                                                    class="col-form-label">{% trans 'number' %}<strong>: *</strong>
+                                            </label>
+                                                <input v-model="account.number" required
                                                        class="form-control"
                                                        type="text">
                                             </div>
                                         </div>
-                                        <div><label
-                                                class="col-form-label">{% trans 'e-mail' %}<strong>: *</strong>
-                                        </label>
-                                            <input v-model="account.email" required type="email"
-                                                   class="form-control"
-                                                   type="text">
+                                        <div class="row">
+                                            <div class="col-3"><label
+                                                    class="col-form-label">{% trans 'zipcode' %}<strong>: *</strong>
+                                            </label>
+                                                <input v-model="account.zipcode" max="99999" maxlength="5"
+                                                       required class="form-control"
+                                                       type="text">
+                                            </div>
+                                            <div class="col-9"><label
+                                                    class="col-form-label">{% trans 'city' %}<strong>: *</strong>
+                                            </label>
+                                                <input v-model="account.city " required
+                                                       class="form-control"
+                                                       type="text">
+                                            </div>
                                         </div>
 
-                                        <div><label
-                                                class="col-form-label">{% trans 'telephone' %}<strong>: *</strong>
-                                        </label>
-                                            <input v-model="account.telephone" required type="tel"
-                                                   class="form-control"
-                                                   type="text">
-                                        </div>
-                                    {% endif %}
-                                    <div>
-                                        <label
-                                                class="col-form-label">{% trans 'description of address' %}<strong>:
-                                            *</strong> </label>
-                                        <input v-model="account.description" required type="text"
-                                               class="form-control" type="text">
                                     </div>
-                                    <div class="row">
-                                        <div class="col-9"><label
-                                                class="col-form-label">{% trans 'street' %}<strong>: *</strong> </label>
-                                            <input v-model="account.street" required type="text"
-                                                   class="form-control"
-                                                   type="text">
+                                    <div class="modal-footer">
+                                        <div>
+                                            * {% trans 'Required fields' %}
                                         </div>
-                                        <div class="col-3"><label
-                                                class="col-form-label">{% trans 'number' %}<strong>: *</strong> </label>
-                                            <input v-model="account.number" required
-                                                   class="form-control"
-                                                   type="text">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-3"><label
-                                                class="col-form-label">{% trans 'zipcode' %}<strong>: *</strong>
-                                        </label>
-                                            <input v-model="account.zipcode" max="99999" maxlength="5"
-                                                   required class="form-control"
-                                                   type="text">
-                                        </div>
-                                        <div class="col-9"><label
-                                                class="col-form-label">{% trans 'city' %}<strong>: *</strong> </label>
-                                            <input v-model="account.city " required
-                                                   class="form-control"
-                                                   type="text">
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="modal-footer">
-                                    <div>
-                                        * {% trans 'Required fields' %}
-                                    </div>
-                                    <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                                    <button type="button" v-on:click="addAccount"
-                                            class="btn btn-primary">{% trans 'Add' %}</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div v-if="errors.shipment.length">
-                        <div class="alert alert-danger" role="alert">
-                            <b>{% trans 'Please correct the following error(s):' %}</b>
-                            <ul class="text-decoration-none">
-                                <li v-for="(value, propertyName) in errors.shipment[0]">
-                                    {% trans '[[propertyName]]' %}: [[ value[0] ]]
-                                </li>
-                            </ul>
-                        </div>
-
-                    </div>
-                    <div class="accordion">
-
-                        <div class="btn btn-outline-dark mb-1 ms-0" data-bs-toggle="modal" type="button"
-                             data-bs-target="#add-modal">{% trans 'Add Address' %}</div>
-                        <h4 class="pt-2">{% trans 'Select shipment address' %}</h4>
-                        <div v-for="entry in addresses">
-                            <div class="card">
-                                <div class="card-header" :id="`heading${entry.name}`">
-                                    <h5 class="mb-0">
-                                        <input :id="`input${entry.id}`" type="radio"
-                                               name="shipment-address" data-bs-toggle="collapse"
-                                               :data-bs-target="`#body${entry.id}`"
-                                               aria-expanded="false" :aria-controls="`#body${entry.name}`"
-                                               v-model="shipment"
-                                               v-bind:value="entry.id">
-                                        <label :for="`input${entry.id}`"
-                                               data-bs-toggle="collapse" :data-bs-target="`#body${entry.id}`">
-                                            <i class="fas fa-truck"></i>
-                                            [[ entry.name ]]</label>
-                                    </h5>
-                                </div>
-
-                                <div :id="`body${entry.id}`" class="collapsed collapse"
-                                     :aria-labelledby="`heading${entry.name}`"
-                                     data-parent="#addressFormInput">
-                                    <div class="card-body">
-                                        [[ entry.street ]] [[ entry.number ]]
-                                        <p>[[ entry.zipcode ]] [[ entry.city ]]</p>
-
+                                        <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                                        <button type="button" v-on:click="addAccount"
+                                                class="btn btn-primary">{% trans 'Add' %}</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <h4 class="pt-2">{% trans 'Select billing address' %}</h4>
-                        <div v-for="entry in addresses">
-                            <div class="card">
-                                <div class="card-header" :id="`heading-bill${entry.name}`">
-                                    <h5 class="mb-0">
-                                        <input :id="`input-bill${entry.id}`" type="radio"
-                                               name="bill-address" data-bs-toggle="collapse"
-                                               :data-bs-target="`#body-bill${entry.id}`"
-                                               aria-expanded="false" :aria-controls="`#body-bill${entry.name}`"
-                                               v-model="billing"
-                                               v-bind:value="entry.id">
-                                        <label :for="`input-bill${entry.id}`"
-                                               data-bs-toggle="collapse" :data-bs-target="`#body-bill${entry.id}`">
-                                            <i class="fas fa-truck"></i>
-                                            [[ entry.name ]]</label>
-                                    </h5>
-                                </div>
 
-                                <div :id="`body-bill${entry.id}`" class="collapsed collapse"
-                                     :aria-labelledby="`heading-bill${entry.name}`"
-                                     data-parent="#addressFormInput">
-                                    <div class="card-body">
-                                        [[ entry.street ]] [[ entry.number ]]
-                                        <p>[[ entry.zipcode ]] [[ entry.city ]]</p>
+                        <div v-if="errors.shipment.length">
+                            <div class="alert alert-danger" role="alert">
+                                <b>{% trans 'Please correct the following error(s):' %}</b>
+                                <ul class="text-decoration-none">
+                                    <li v-for="(value, propertyName) in errors.shipment[0]">
+                                        {% trans '[[propertyName]]' %}: [[ value[0] ]]
+                                    </li>
+                                </ul>
+                            </div>
 
-                                    </div>
-                                </div>
+                        </div>
+                        <div>
+                            <h4 class="pt-2">{% trans 'Select shipment address' %}</h4>
+                            <div v-for="entry in addresses">
+
+                                <div class="form-check">
+                                    <input :id="entry.id" class="form-check-input" type="radio" name="shipment-radios"
+                                           v-model="shipment"
+                                           v-bind:value="entry.id">
+                                    <label class="form-check-label" :for="entry.id">
+                                        [[ entry.name ]]<br>
+                                        [[ entry.street ]] [[ entry.number ]]<br>
+                                        [[ entry.zipcode ]] [[ entry.city ]]
+
+                                    </label>
+                                </div><hr>
+
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="shipment-radios" id="addAddress">
+                                <label class="form-check-label" data-bs-toggle="modal" for="addAddress"
+                                       data-bs-target="#add-modal">
+                                    {% trans 'Add Address' %}
+                                </label>
+                            </div>
+                            <hr>
+                            <h4 class="pt-2">{% trans 'Select billing address' %}</h4>
+                            <div v-for="entry in addresses">
+
+                                <div class="form-check">
+                                    <input :id="'billing'+entry.id" class="form-check-input" type="radio" name="billing-radios"
+                                           v-model="billing"
+                                           v-bind:value="entry.id">
+                                    <label class="form-check-label" :for="'billing'+entry.id">
+                                        [[ entry.name ]]<br>
+                                        [[ entry.street ]] [[ entry.number ]]<br>
+                                        [[ entry.zipcode ]] [[ entry.city ]]
+
+                                    </label>
+                                </div><hr>
+
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="billing-radios" id="addAddressBilling">
+                                <label class="form-check-label" data-bs-toggle="modal" for="addAddressBilling"
+                                       data-bs-target="#add-modal">
+                                    {% trans 'Add Address' %}
+                                </label>
                             </div>
                         </div>
-                    </div>
 
 
-                    <div class="row pt-3 pb-2">
-                        <div class="col">
-                            <a href="{% url 'shop:shoppingcart_cart' %}" class="btn btn-warning ms-0"><i
-                                    class="fa fa-angle-left"></i> {% trans 'Shoppingcart' %}</a>
-                        </div>
-                        <div class="col">
-                            <a v-on:click="submitDelivery"
-                               class="btn btn-success float-end">{% trans 'Payment' %} <i
-                                    class="fa fa-angle-right"></i></a>
+                        <div class="row pt-3 pb-2">
+                            <div class="col">
+                                <a href="{% url 'shop:shoppingcart_cart' %}" class="btn btn-warning ms-0"><i
+                                        class="fa fa-angle-left"></i> {% trans 'Shoppingcart' %}</a>
+                            </div>
+                            <div class="col">
+                                <a v-on:click="submitDelivery"
+                                   class="btn btn-success float-end">{% trans 'Payment' %} <i
+                                        class="fa fa-angle-right"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </form>
+                <div class="card mt-4">
+                    <div class="card-header">
 
-            <form id="next-step-form" action="/payment/{{ order_detail.uuid }}" method="get">
-            </form>
-            <script type='text/javascript'>
-                var csrfmiddlewaretoken = '{{ csrf_token }}';
-                var order = '{{ order_detail.uuid }}';
-                var discount = '{{ order_detail.discount.voucher_id }}';
-            </script>
-            <script>
-                var app = new Vue({
-                    delimiters: ['[[', ']]'],
-                    el: '#addressFormInput',
-                    data: {
-                        csrfmiddlewaretoken: csrfmiddlewaretoken,
-                        contact: {},
-                        account: {
-                            firstname: "",
-                            lastname: "",
-                            email: "",
-                            gender: "",
-                            telephone: "",
-                            description: "",
-                            street: "",
-                            number: "",
-                            zipcode: "",
-                            city: ""
-                        },
-                        addresses: [],
-                        shipment: "",
-                        billing: "",
-                        voucher: discount,
-                        voucherError: [],
-                        validateVoucher: false,
-                        order: order,
-                        errors: {shipment: [], address: []},
-                        showModal: false,
-                    },
-                    mounted() {
-                        this.reloadData()
-                    },
-                    methods: {
-                        reloadData: function () {
-                            axios.get('/api/v1/addresses')
-                                .then(response => {
-                                    this.addresses = response.data
-                                });
-                            axios.get('/api/v1/contacts')
-                                .then(response => {
-                                    this.contact = response.data
-                                });
-                        },
-                        applyVoucher: function() {
-                            let instance = this;
-                            axios.post('/api/v1/voucher/', {'uuid':this.order,'voucher':this.voucher},  {
-                                headers: {
-                                    'X-CSRFToken': this.csrfmiddlewaretoken
-                                }})
-                                .then(response => {
-                                        instance.reloadData()
-                                        instance.voucherError = [];
-                                        location.reload();
-                                    }
-                                ).catch(error => {
-                                    instance.voucherError = error.response.data.voucher;
-                            }).finally(resp => {
-                                instance.validateVoucher = true;
-                            })
-                        },
-                        addAccount: function () {
-                            let company = {
-                                name: this.account.email,
-                                street: this.account.street,
-                                number: this.account.number,
-                                zipcode: this.account.zipcode,
-                                city: this.account.city
-                            }, contact = {
-                                first_name: this.account.firstname,
-                                last_name: this.account.lastname,
-                                gender: this.account.gender,
-                                email: this.account.email,
-                                title: this.account.title,
-                                telephone: this.account.telephone,
-                                language: this.account.language,
-                                company: company
-                            }, address = {
-                                name: this.account.description,
-                                street: this.account.street,
-                                number: this.account.number,
-                                zipcode: this.account.zipcode,
-                                city: this.account.city,
-                            };
-                            loadingSpinner = $('#loading-spinner');
-                            loadingSpinner.removeClass('overlay-hidden');
-                            axios.post('/api/v1/accounts/', {
-                                address, contact
-                            })
-                                .then(response => {
-                                    this.errors.address = [];
-                                    this.addresses.push(response.data);
-                                    loadingSpinner.addClass('overlay-hidden');
-                                    this.$refs.modalClose.click()
-                                    this.account = {
-                                        firstname: "",
-                                        lastname: "",
-                                        email: "",
-                                        gender: "",
-                                        telephone: "",
-                                        description: "",
-                                        street: "",
-                                        number: "",
-                                        zipcode: "",
-                                        city: ""
-                                    }
-                                })
-                                .catch(error => {
-                                    this.errors.address.push(error.response.data);
-                                    loadingSpinner.addClass('overlay-hidden')
-                                }).finally(() => loadingSpinner.addClass('overlay-hidden'))
-                        },
-                        submitDelivery: function () {
-                            loadingSpinner = $('#loading-spinner');
-                            loadingSpinner.removeClass('overlay-hidden');
-                            shipment = this.shipment;
-                            billing = this.billing;
-                            axios.post('/api/v1/deliveries/', {
-                                order,
-                                shipment,
-                                billing
+                        <h3>{% trans 'Voucher' %}</h3>
+                    </div>
+                    <div class="card-body">
 
-                            }, {
-                                headers: {
-                                    'X-CSRFToken': this.csrfmiddlewaretoken
-                                }
-                            })
-                                .then(response => {
-                                    this.errors.shipment = [];
-                                    loadingSpinner.addClass('overlay-hidden');
-                                    var nextForm = $('#next-step-form');
-                                    nextForm.submit();
-                                })
-                                .catch(error => {
-                                    loadingSpinner.addClass('overlay-hidden');
-                                    this.errors.shipment.push(error.response.data);
-                                }).finally(() => loadingSpinner.addClass('overlay-hidden'))
-                        }
-                    }
-                });
-            </script>
+                        <div class="row mt-2 mb-2">
+                            <div class="col">
+                                <div :class="{'input-group':true, 'mb-3':true, 'was-validated': validateVoucher, 'has-error': voucherError.length>0,
+                            'is-invalid':voucherError}">
+                                    <div class="input-group-prepend">
+                                    <span class="input-group-text"
+                                          id="inputGroup-sizing-default">{% trans 'Voucher' %}</span>
+                                    </div>
+                                    <input type="text" class="form-control" aria-label="Sizing example input"
+                                           v-model="voucher"
+                                           :class="{'has-error': voucherError.length>0, 'is-invalid':voucherError.length > 0}"
+                                           :valid="voucherError.length==0"
+                                           aria-describedby="inputGroup-sizing-default">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" @click="applyVoucher()"
+                                                type="button" id="button-addon2">{% trans 'Redeem' %}</button>
+                                    </div>
+                                    <div v-if="voucherError.length==0" class="valid-feedback">
+                                        {% trans 'Voucher applied' %}!
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        <p v-if="voucherError">
+                                            <span v-for="error in voucherError">[[error]]</span>
+                                        </p>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 ">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>{% trans 'Order overview' %}</h3>
+                    </div>
+                    {% csrf_token %}
+                    <div class="card-body">
+                        <table id="cart" class="table table-hover table-striped table-responsive-md">
+                            <thead>
+                            <tr>
+                                <th style="width:30%">{% trans 'Product' %}</th>
+                                <th style="width:15%">{% trans 'Price' %}</th>
+                                <th style="width:50%" class="text-center">{% trans 'Total' %}</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <input type="submit" hidden id="#submit">
+                            {% for order in open_orders %}
+                                <tr class="product-row" style="background-color: rgba(0, 0, 0, .06);">
+                                    <td data-th="Product">
+                                        <input type="hidden" name="[{{ order.id }}][prod]{{ order.product.id }}">
+
+                                        <div class="row">
+                                            <div class="d-none d-sm-block col-md-4 p-0">
+                                                {% if order.product.product.product_picture %}
+                                                    <img
+                                                            src="{{ order.product.product.product_picture.url }}"
+                                                            alt="..."
+                                                            class="img-fluid img-thumbnail" style="margin-left: 7px"/>
+                                                {% else %}
+                                                    <i class="fa fa-4x fa-image img-thumbnail"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-12 col-md-7">
+                                                {{ order.count }} x {{ order.product.name }}
+
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                    <td data-th="Price">{{ order.price_wt }}&euro;</td>
+
+                                    <td id="subtotal-{{ order.id }}" data-th="Subtotal"
+                                        class="text-center">{{ order.total_wt|floatformat:"2" }}&euro;
+                                        {% if order.applied_discount %}<br>
+                                            <span style="font-size: x-small"
+                                                  class="mt-1">- {{ order.total_discount_wt }}&euro; ({{ order_detail.discount.voucher_id }}
+                                        {{ order_detail.discount.discount_percentage_in_percent }}%)</span>
+                                            <br> <b>{{ order.total_discounted_wt|floatformat:"2" }}&euro;</b>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+
+                                {% for sub_item in order.orderitem_set.all %}
+                                    <tr id="{{ order.id }}-{{ sub_item.id }}"
+                                        style="border-top: none; background-color: white">
+                                        <td colspan="3">
+                                            <div class="row ps-3">
+
+                                                <div class="col-6">
+                                                    <span>{{ sub_item.product.name }}</span>
+                                                </div>
+                                                <div class="col-6">
+                                                    {{ sub_item.price_wt }}&euro;
+                                                </div>
+                                                <div class="col-12 ">
+                                                    {% if sub_item.fileorderitem %}
+                                                        {% trans 'File' %}:
+                                                        <a href="{{ sub_item.fileorderitem.file.url }}">
+                                                            {{ sub_item.fileorderitem.file_name }}
+                                                        </a>
+                                                        <div class="col-sm-2 d-none d-sm-block "><img
+                                                                src="{{ sub_item.fileorderitem.file.url }}"
+                                                                alt="..."
+                                                                style="max-height: 100px"
+                                                                class="img-fluid img-thumbnail"/></div>
+                                                    {% elif sub_item.selectorderitem %}
+                                                        {{ sub_item.selectorderitem.selected_item }}
+                                                    {% elif sub_item.checkboxorderitem %}
+                                                        {% if sub_item.checkboxorderitem.is_checked %}{% trans 'Yes' %}
+                                                            {% else %}{% trans 'No' %} {% endif %}
+                                                    {% elif sub_item.numberorderitem %}
+                                                        {{ sub_item.numberorderitem.number }}
+                                                    {% endif %}
+
+
+                                                </div>
+
+
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+
+                            {% for sub_item in order_items_once_only %}
+                                <tr class="product-row" style="border-top: none">
+                                    <td colspan="3">
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <h4>{{ sub_item.product.name }}</h4>
+
+
+                                                <div class="col-md-12">
+                                                    {% if sub_item.fileorderitem %}
+                                                        {% trans 'File' %}:
+                                                        <a href="{{ sub_item.fileorderitem.file.url }}">
+                                                            {{ sub_item.fileorderitem.file_name }}
+                                                        </a>
+                                                        <div class="col-2 d-none d-sm-block "><img
+                                                                src="{{ sub_item.fileorderitem.file.url }}"
+                                                                alt="..."
+                                                                class="img-fluid"/></div>
+                                                    {% elif sub_item.selectorderitem %}
+                                                        {{ sub_item.selectorderitem.selected_item.name }}
+                                                    {% elif sub_item.checkboxorderitem %}
+                                                        {% if sub_item.checkboxorderitem.is_checked %}{% trans 'Yes' %}
+                                                            {% else %}{% trans 'No' %} {% endif %}
+                                                    {% elif sub_item.numberorderitem %}
+                                                        {{ sub_item.numberorderitem.number }}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-8">
+                                                {{ sub_item.product.price }}&euro;
+                                            </div>
+
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                            {% if not open_orders %}
+                                <tr>
+                                    <td data-th="Product">
+                                        {{ open_order }}
+                                        {% trans 'Empty Cart' %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td colspan="1" style="width:22%" class="text-center">
+                                    {% if open_orders.first.order_detail.discount %}<br>
+                                        <span
+                                                id="total">{{ open_orders.first.order_detail.total_wt }}</span>&euro;<br>
+                                        <small class="mt-1">- {{ open_orders.first.order_detail.total_discount_wt }}&euro;
+                                            ({{ open_orders.first.order_detail.discount.voucher_id }}
+                                            {{ open_orders.first.order_detail.discount.discount_percentage_in_percent }}%)</small>
+                                        <br>
+                                        <b>{% trans 'Total' %}: {{ open_orders.first.order_detail.total_discounted_wt }}&euro;</b>
+                                    {% else %}
+                                        <strong>{% trans 'Total' %}: <span
+                                                id="total">{{ open_orders.first.order_detail.total_wt }}</span>&euro;</strong>
+                                    {% endif %}
+
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
+    </form>
 
-    </div>
+    <form id="next-step-form" action="/payment/{{ order_detail.uuid }}" method="get">
+    </form>
+    <script type='text/javascript'>
+        var csrfmiddlewaretoken = '{{ csrf_token }}';
+        var order = '{{ order_detail.uuid }}';
+        var discount = '{{ order_detail.discount.voucher_id }}';
+    </script>
+    <script>
+        var app = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#addressFormInput',
+            data: {
+                csrfmiddlewaretoken: csrfmiddlewaretoken,
+                contact: {},
+                account: {
+                    firstname: "",
+                    lastname: "",
+                    email: "",
+                    gender: "",
+                    telephone: "",
+                    description: "",
+                    street: "",
+                    number: "",
+                    zipcode: "",
+                    city: ""
+                },
+                addresses: [],
+                shipment: "",
+                billing: "",
+                voucher: discount,
+                voucherError: [],
+                validateVoucher: false,
+                order: order,
+                errors: {shipment: [], address: []},
+                showModal: false,
+            },
+            mounted() {
+                this.reloadData()
+            },
+            methods: {
+                reloadData: function () {
+                    axios.get('/api/v1/addresses')
+                        .then(response => {
+                            this.addresses = response.data
+                        });
+                    axios.get('/api/v1/contacts')
+                        .then(response => {
+                            this.contact = response.data
+                        });
+                },
+                applyVoucher: function () {
+                    let instance = this;
+                    axios.post('/api/v1/voucher/', {'uuid': this.order, 'voucher': this.voucher}, {
+                        headers: {
+                            'X-CSRFToken': this.csrfmiddlewaretoken
+                        }
+                    })
+                        .then(response => {
+                                instance.reloadData()
+                                instance.voucherError = [];
+                                location.reload();
+                            }
+                        ).catch(error => {
+                        instance.voucherError = error.response.data.voucher;
+                    }).finally(resp => {
+                        instance.validateVoucher = true;
+                    })
+                },
+                addAccount: function () {
+                    let company = {
+                        name: this.account.email,
+                        street: this.account.street,
+                        number: this.account.number,
+                        zipcode: this.account.zipcode,
+                        city: this.account.city
+                    }, contact = {
+                        first_name: this.account.firstname,
+                        last_name: this.account.lastname,
+                        gender: this.account.gender,
+                        email: this.account.email,
+                        title: this.account.title,
+                        telephone: this.account.telephone,
+                        language: this.account.language,
+                        company: company
+                    }, address = {
+                        name: this.account.description,
+                        street: this.account.street,
+                        number: this.account.number,
+                        zipcode: this.account.zipcode,
+                        city: this.account.city,
+                    };
+                    loadingSpinner = $('#loading-spinner');
+                    loadingSpinner.removeClass('overlay-hidden');
+                    axios.post('/api/v1/accounts/', {
+                        address, contact
+                    })
+                        .then(response => {
+                            this.errors.address = [];
+                            this.addresses.push(response.data);
+                            loadingSpinner.addClass('overlay-hidden');
+                            this.$refs.modalClose.click()
+                            this.account = {
+                                firstname: "",
+                                lastname: "",
+                                email: "",
+                                gender: "",
+                                telephone: "",
+                                description: "",
+                                street: "",
+                                number: "",
+                                zipcode: "",
+                                city: ""
+                            }
+                        })
+                        .catch(error => {
+                            this.errors.address.push(error.response.data);
+                            loadingSpinner.addClass('overlay-hidden')
+                        }).finally(() => loadingSpinner.addClass('overlay-hidden'))
+                },
+                submitDelivery: function () {
+                    loadingSpinner = $('#loading-spinner');
+                    loadingSpinner.removeClass('overlay-hidden');
+                    shipment = this.shipment;
+                    billing = this.billing;
+                    axios.post('/api/v1/deliveries/', {
+                        order,
+                        shipment,
+                        billing
+
+                    }, {
+                        headers: {
+                            'X-CSRFToken': this.csrfmiddlewaretoken
+                        }
+                    })
+                        .then(response => {
+                            this.errors.shipment = [];
+                            loadingSpinner.addClass('overlay-hidden');
+                            var nextForm = $('#next-step-form');
+                            nextForm.submit();
+                        })
+                        .catch(error => {
+                            loadingSpinner.addClass('overlay-hidden');
+                            this.errors.shipment.push(error.response.data);
+                        }).finally(() => loadingSpinner.addClass('overlay-hidden'))
+                }
+            }
+        });
+    </script>
+
 {% endblock %}
