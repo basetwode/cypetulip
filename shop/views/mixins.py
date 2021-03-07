@@ -23,7 +23,7 @@ class TaxView(View):
 
 
 class EmailNotifyStaffView(EmailMixin, View):
-    email_template = "mail/mail-newindividualofferrequest.html"
+    email_template = "shop/mail/mail-newindividualofferrequest.html"
     subject = _("New individual offer request")
     text = ""
     object = None
@@ -47,11 +47,10 @@ class EmailConfirmView(EmailMixin, View):
 
     def notify_client(self, contact):
         translation.activate('de')
-        order_detail = OrderDetail.objects.get(order=self.object)
-        self.object.unique_nr = order_detail.unique_nr()
-        self.subject += f" {order_detail.unique_nr()}"
+        order_detail = self.object
+        self.subject += f" {self.object.unique_nr()}"
 
-        order_items = OrderItem.objects.filter(order=self.object)
+        order_items = OrderItem.objects.filter(order_detail=self.object)
         total = calculate_sum(order_items, True)
 
         self.send_mail(contact, self.subject, self.text, {'contact': contact,
@@ -71,11 +70,9 @@ class EmailConfirmView(EmailMixin, View):
 
         staff_contact = Contact()
         staff_contact.email = mail_setting.contact_new_order
-        order_detail = OrderDetail.objects.get(order=self.object)
-        self.object.unique_nr = order_detail.unique_nr()
-        order_items = OrderItem.objects.filter(order=self.object)
+        order_items = OrderItem.objects.filter(order_detail=self.object)
         total = calculate_sum(order_items, True)
-        self.subject += f" {order_detail.unique_nr()}"
+        self.subject += f" {self.object.unique_nr()}"
 
         self.send_mail(staff_contact,
                        self.subject, self.text, {'contact': staff_contact,

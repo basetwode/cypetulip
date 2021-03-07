@@ -99,7 +99,7 @@
             <div class="list-group">
                 {% for order_detail in object_list %}
 
-                    <a href="{% url 'management_order_detail_view' order_detail.order.uuid %}"
+                    <a href="{% url 'management_order_detail_view' order_detail.uuid %}"
                        class="list-group-item list-group-item-action">
                         <div class="row">
                             <div class="col-md-3" style="text-align: left; ">

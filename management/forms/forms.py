@@ -68,7 +68,7 @@ class OrderForm(ModelForm):
     search = CharField(max_length=20, help_text='Filter companies', widget=SearchField(), required=False)
 
     class Meta:
-        model = Order
+        model = OrderDetail
         fields = ['search', 'company']
         required = ['company']
 

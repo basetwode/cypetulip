@@ -9,6 +9,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.template.loader import get_template
 from django.views import View
+from django.views.generic import DetailView
 from xhtml2pdf import pisa
 
 from billing.utils import calculate_sum, Round
@@ -16,22 +17,21 @@ from home import settings
 from management.models.models import LegalSetting
 from payment.models.main import PaymentDetail
 from permissions.views.mixins import PermissionOwnsObjectMixin
-from shop.models.orders import Order, OrderDetail, OrderItem
+from shop.models.orders import OrderDetail, OrderItem
 
 
 class HTMLPreview(PermissionOwnsObjectMixin, View):
     model = OrderDetail
-    slug_field = "order__uuid"
+    slug_field = "uuid"
     slug_url_kwarg = "order"
     field_name = "contact"
 
     def get(self, request, order):
-        _order = Order.objects.get(uuid=order)
-        order_detail = OrderDetail.objects.get(order=_order)
+        order_detail = OrderDetail.objects.get(uuid=order)
         contact = order_detail.contact
-        company = _order.company
-        order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True).annotate(
-            price_t=Round(F('price') * Cast(F('count'), FloatField()),2),
+        company = order_detail.company
+        order_items = OrderItem.objects.filter(order_detail=order_detail, order_item__isnull=True).annotate(
+            price_t=Round(F('price') * Cast(F('count'), FloatField()), 2),
         )
         if not order_detail.date_bill:
             order_detail.date_bill = datetime.now()
@@ -40,15 +40,14 @@ class HTMLPreview(PermissionOwnsObjectMixin, View):
         legal_settings = LegalSetting.objects.first()
         total_without_tax = calculate_sum(order_items)
         total_with_tax = calculate_sum(order_items, True)
-        payment_detail = PaymentDetail.objects.get(order=_order)
-        tax_rate = int(round(total_with_tax / total_without_tax, 2)*100)-100 if total_without_tax > 0 else 0
+        payment_detail = PaymentDetail.objects.get(order_detail=order_detail)
+        tax_rate = int(round(total_with_tax / total_without_tax, 2) * 100) - 100 if total_without_tax > 0 else 0
 
         context = {
             'total': total_with_tax,
             'total_without_tax': total_without_tax,
             'tax': round(order_detail.total_wt() - order_detail.total(), 2),
             'tax_rate': tax_rate,
-            'order': _order,
             'order_detail': order_detail,
             'order_items': order_items,
             'contact': contact,
@@ -60,14 +59,13 @@ class HTMLPreview(PermissionOwnsObjectMixin, View):
         return render(request, 'billing/invoice.html', context)
 
 
-
 class GeneratePDFFile():
     def generate(self, _order):
-        order_detail = OrderDetail.objects.get(order=_order)
+        order_detail = OrderDetail.objects.get(uuid=_order)
         contact = order_detail.contact
-        company = _order.company
-        order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True).annotate(
-            price_t=Round(F('price') * Cast(F('count'), FloatField()),2),
+        company = order_detail.company
+        order_items = OrderItem.objects.filter(order_detail=order_detail, order_item__isnull=True).annotate(
+            price_t=Round(F('price') * Cast(F('count'), FloatField()), 2),
         )
         if not order_detail.date_bill:
             order_detail.date_bill = datetime.now()
@@ -76,15 +74,14 @@ class GeneratePDFFile():
         legal_settings = LegalSetting.objects.first()
         total_without_tax = calculate_sum(order_items)
         total_with_tax = calculate_sum(order_items, True)
-        payment_detail = PaymentDetail.objects.get(order=_order)
-        tax_rate = int(round(total_with_tax / total_without_tax, 2)*100)-100
+        payment_detail = PaymentDetail.objects.get(order_detail=order_detail)
+        tax_rate = int(round(total_with_tax / total_without_tax, 2) * 100) - 100
 
         context = {
             'total': total_with_tax,
             'total_without_tax': total_without_tax,
             'tax': round(order_detail.total_discounted_wt() - order_detail.total_discounted(), 2),
             'tax_rate': tax_rate,
-            'order': _order,
             'order_detail': order_detail,
             'order_items': order_items,
             'contact': contact,
@@ -132,19 +129,18 @@ class GeneratePDFFile():
         return path
 
 
-
-class GeneratePDF(GeneratePDFFile,PermissionOwnsObjectMixin, View):
+class GeneratePDF(GeneratePDFFile, PermissionOwnsObjectMixin, View):
     model = OrderDetail
-    slug_field = "order__uuid"
+    slug_field = "uuid"
     slug_url_kwarg = "order"
     field_name = "contact"
 
     def get(self, request, order):
-        _order = Order.objects.get(uuid=order)
-        pdf = HttpResponse(self.generate(_order).getvalue(), content_type='application/pdf')
+        order = OrderDetail.objects.get(uuid=order)
+        pdf = HttpResponse(self.generate(order.uuid).getvalue(), content_type='application/pdf')
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
-            filename = "Invoice_%s.pdf" % _order.uuid
+            filename = "Invoice_%s.pdf" % order.uuid
             content = "inline; filename='%s'" % filename
             download = request.GET.get("download")
             if download:

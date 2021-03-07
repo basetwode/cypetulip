@@ -5,7 +5,7 @@ from mediaserver.upload import rma_files_upload_handler, fs
 from shipping.models.main import Shipper, Shipment
 
 from shop.models.accounts import Address, Contact, Employee
-from shop.models.orders import Order, OrderItem
+from shop.models.orders import OrderItem, OrderDetail
 
 
 class ReturnMerchandiseAuthorizationConfig(models.Model):
@@ -36,7 +36,7 @@ class ReturnMerchandiseAuthorizationState(models.Model):
 
 class ReturnMerchandiseAuthorization(models.Model):
     number = models.CharField(max_length=100)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(OrderDetail, on_delete=models.CASCADE)
     shipment = models.ForeignKey(Shipment, null=True, blank=True, default=None, on_delete=models.SET_NULL)
     date_opened = models.DateTimeField(auto_now_add=True)
     contact = models.ForeignKey(Contact, on_delete=models.SET_NULL, null=True)

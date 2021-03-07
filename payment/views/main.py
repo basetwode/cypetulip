@@ -22,7 +22,7 @@ This is a shoppingcart view (Step 3)
 class PaymentCreateView(CreateView):
     model = PaymentDetail
     template_name = 'payment/payment-create.html'
-    slug_field = 'order__uuid'
+    slug_field = 'order_detail__uuid'
     slug_url_kwarg = 'order'
     fields = []
 
@@ -33,16 +33,15 @@ class PaymentCreateView(CreateView):
             method.form = PaymentFormFactory(method.provider.api)
         return {**super(PaymentCreateView, self).get_context_data(**kwargs),
                 **{'payment_methods': payment_methods, 'forms': payment_forms,
-                   'order_details': Order.objects.get(uuid=self.kwargs['order']),
+                   'order_details': OrderDetail.objects.get(uuid=self.kwargs['order']),
                    'legal_form': LegalForm()}}
 
     def form_valid(self, form):
-        _order = Order.objects.get(uuid=self.kwargs['order'])
-        order_details = OrderDetail.objects.get(order=_order)
+        order_details = OrderDetail.objects.get(uuid=self.kwargs['order'])
         order_details.contact = order_details.shipment_address.contact
         order_details.save()
 
-        payment_details = PaymentDetail.objects.filter(order=_order)
+        payment_details = PaymentDetail.objects.filter(order_detail=order_details)
         payment_details.delete()
 
         if not 'method' in self.request.POST:
@@ -53,7 +52,7 @@ class PaymentCreateView(CreateView):
         if form.is_valid() and legal_form.is_valid():
             payment_instance = form.save(commit=False)
             payment_instance.user = order_details.contact
-            payment_instance.order = _order
+            payment_instance.order_detail = order_details
             payment_instance.method = PaymentMethod.objects.get(id=self.request.POST['method'])
             payment_instance.save()
             return redirect(
@@ -69,18 +68,18 @@ class PaymentCreateView(CreateView):
 class PaymentConfirmView(DetailView):
     template_name = 'payment/payment-confirm.html'
     slug_url_kwarg = 'order'
-    slug_field = 'order__uuid'
+    slug_field = 'order_detail__uuid'
     model = PaymentDetail
 
     def get_context_data(self, **kwargs):
-        order_items = OrderItem.objects.filter(order=self.object.order, order_item__isnull=True,
+        order_items = OrderItem.objects.filter(order_detail=self.object.order_detail, order_item__isnull=True,
                                                product__in=Product.objects.all())
 
         return {**super(PaymentConfirmView, self).get_context_data(**kwargs),
                 **{'order_items': order_items, 'payment_details': self.object,
-                   'contact': self.object.order.orderdetail_set.first().contact,
-                   'order_detail': self.object.order.orderdetail_set.first(),
-                   'shipment': self.object.order.orderdetail_set.first().shipment_address}}
+                   'contact': self.object.order_detail.contact,
+                   'order_detail': self.object.order_detail,
+                   'shipment': self.object.order_detail.shipment_address}}
 
 
 class PaymentSubmitView(EmailConfirmView, CreateView):
@@ -96,15 +95,15 @@ class PaymentSubmitView(EmailConfirmView, CreateView):
 
     def form_valid(self, form):
         payment = form.save(commit=False)
-        payment_details = PaymentDetail.objects.get(order__uuid=self.kwargs['order'])
-        order_detail = payment_details.order.orderdetail_set.first()
+        payment_details = PaymentDetail.objects.get(order_detail__uuid=self.kwargs['order'])
+        order_detail = payment_details.order_detail
         payment.is_paid = False
-        payment.token = payment_details.order.uuid
+        payment.token = payment_details.order_detail.uuid
         payment.details = payment_details
         if not order_detail.state:
             order_detail.state = OrderState.objects.get(initial=True)
             order_detail.save()
-        self.object = payment_details.order
+        self.object = payment_details.order_detail
         payment.save()
         self.notify_client(order_detail.contact)
         self.notify_staff()

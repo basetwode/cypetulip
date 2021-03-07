@@ -97,49 +97,14 @@ class Order(models.Model):
     individual_offer_request = models.ForeignKey(IndividualOffer, on_delete=models.SET_NULL, blank=True, null=True,
                                                  editable=False)
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        if self.uuid is None:
-            self.uuid = uuid.uuid4()
-        if self.order_id is None:
-            orders = self.__class__.objects.all().order_by("-order_id")
-            if orders:
-                self.order_id = self.__class__.objects.all().order_by(
-                    "-order_id")[0].order_id + 1
-            else:
-                self.order_id = 1
-        models.Model.save(self, force_insert, force_update,
-                          using, update_fields)
-
-    def delete(self, using=None, keep_parents=False):
-        if self.orderdetail_set.count() > 0:
-            self.orderdetail_set.first().increase_stocks()
-        super(Order, self).delete(using, keep_parents)
-
-    def __str__(self):
-        return str(self.order_id)
-
-    @staticmethod
-    def create_new_order(request):
-        if request.user.is_authenticated:
-            company = request.user.contact.company
-            order = Order(is_send=False, company=company)
-            order.save()
-            order_detail = OrderDetail(order=order, uuid=order.uuid,
-                                       contact=request.user.contact)
-            order_detail.save()
-            return order, order_detail
-        else:
-            order = Order(is_send=False, session=request.session.session_key)
-            order.save()
-            order_detail = OrderDetail(order=order, uuid=order.uuid)
-            order_detail.save()
-            return order, order_detail
-
 
 class OrderDetail(models.Model):
-    uuid = models.UUIDField(primary_key=False, default=None, null=True, blank=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, null=True, blank=True)
+    is_send = models.BooleanField(default=False)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Company'))
+    session = models.CharField(max_length=40, blank=True, null=True)
+    individual_offer_request = models.ForeignKey(IndividualOffer, on_delete=models.SET_NULL, blank=True, null=True,
+                                                 editable=False)
     date_added = models.DateTimeField(auto_now_add=True)
     assigned_employee = models.ForeignKey(
         Employee, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Assigned employee'))
@@ -162,6 +127,19 @@ class OrderDetail(models.Model):
     discount_code = models.CharField(default="", max_length=20, blank=True, null=True, editable=False)
     discount_amount = models.FloatField(default=0, blank=True, null=True, editable=False)
     discount_percentage = models.FloatField(default=0, blank=True, null=True, editable=False)
+
+    @staticmethod
+    def create_new_order(request):
+        if request.user.is_authenticated:
+            company = request.user.contact.company
+            order_detail = OrderDetail(company=company,
+                                       contact=request.user.contact)
+            order_detail.save()
+            return order_detail
+        else:
+            order_detail = OrderDetail(session=request.session.session_key)
+            order_detail.save()
+            return order_detail
 
     def unique_nr(self):
         return "CT-NR" + str(self.id).rjust(10, "0")
@@ -206,7 +184,7 @@ class OrderDetail(models.Model):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         if not self.uuid:
-            self.uuid = self.order.uuid
+            self.uuid = uuid.uuid4()
         if self.__was_canceled():
             self.increase_stocks()
             self.is_cancelled = True
@@ -215,28 +193,32 @@ class OrderDetail(models.Model):
             self.is_cancelled = False
         if not self.state and self.orderitem_set.count() == 0:
             self.remove_voucher()
-        if not self.order.company and self.contact:
-            self.order.company = self.contact.company
-            self.order.save()
+        if not self.company and self.contact:
+            self.company = self.contact.company
+            self.save()
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
 
+    def delete(self, using=None, keep_parents=False):
+        self.increase_stocks()
+        super(OrderDetail, self).delete(using, keep_parents)
+
     def increase_stocks(self):
-        for order_item in self.order.orderitem_set.all():
+        for order_item in self.orderitem_set.all():
             if hasattr(order_item.product, 'product') and isinstance(order_item.product.product, Product):
                 order_item.product.product.increase_stock(order_item.count)
 
     def decrease_stocks(self):
-        for order_item in self.order.orderitem_set.all():
+        for order_item in self.orderitem_set.all():
             if hasattr(order_item.product, 'product') and isinstance(order_item.product.product, Product):
                 order_item.product.product.decrease_stock(order_item.count)
 
     def apply_discount(self):
-        for order_item in self.order.orderitem_set.all():
+        for order_item in self.orderitem_set.all():
             order_item.save()
 
     def remove_discount(self):
-        for order_item in self.order.orderitem_set.all():
+        for order_item in self.orderitem_set.all():
             order_item.save()
 
     def __was_canceled(self):
@@ -277,7 +259,6 @@ class OrderDetail(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     order_detail = models.ForeignKey(OrderDetail, on_delete=models.CASCADE, default=None, blank=True, null=True)
     product = models.ForeignKey(ProductSubItem, null=True, blank=True, on_delete=models.CASCADE)
     order_item = models.ForeignKey(

@@ -64,12 +64,6 @@ class CompanySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class OrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Order
-        fields = '__all__'
-
-
 class FullOrderItemSerializer(serializers.ModelSerializer):
     total_wt = serializers.ReadOnlyField()
     period_of_performance_start = serializers.DateField(input_formats=['%Y-%m-%d', ], required=False)

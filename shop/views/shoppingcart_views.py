@@ -6,8 +6,8 @@ from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import View, TemplateView, DetailView, FormView, UpdateView
 
-from shop.forms.shoppingcart_forms import ItemBuilder, SubItemForm, OrderItemForm
-from shop.models.orders import OrderState, Order, OrderDetail, OrderItem
+from shop.forms.shoppingcart_forms import OrderItemForm
+from shop.models.orders import OrderState, OrderDetail, OrderItem
 from shop.models.products import ProductSubItem, Product
 from shop.models.accounts import Contact
 
@@ -16,14 +16,14 @@ __author__ = 'Anselm'
 
 class ShoppingCartDetailView(DetailView):
     template_name = 'shop/shoppingcart/shoppingcart-cart.html'
-    model = Order
+    model = OrderDetail
     context_object_name = 'order_details'
 
     def get_object(self, queryset=None):
-        return Order.objects.get(orderdetail__state__isnull=True,
+        return OrderDetail.objects.get(state__isnull=True,
                                  company=Contact.objects.get(
                                      user_ptr=self.request.user).company) if self.request.user.is_authenticated \
-            else Order.objects.get(is_send=False, session=self.request.session.session_key)
+            else OrderDetail.objects.get(is_send=False, session=self.request.session.session_key)
 
 
 class ShoppingCartAddItemView(FormView):
@@ -40,13 +40,13 @@ class ShoppingCartAddItemView(FormView):
         if not product:
             return self.form_invalid(form)
 
-        order, order_detail = self.get_or_create_order()
+        order = self.get_or_create_order()
 
         stock_sufficient = self.validate_product_stock(form, order, product)
         if not stock_sufficient:
             return self.form_invalid(form)
 
-        self.create_orderitem(order, order_detail, product)
+        self.create_orderitem(order, product)
         return response
 
     def validate_and_get_product(self, form):
@@ -73,16 +73,14 @@ class ShoppingCartAddItemView(FormView):
 
     def get_or_create_order(self):
         contact = Contact.objects.filter(user_ptr=self.request.user) if self.request.user.is_authenticated else None
-        order = Order.objects.filter(orderdetail__state__isnull=True,
+        order = OrderDetail.objects.filter(state__isnull=True,
                                      company=contact.first().company) if self.request.user.is_authenticated else \
-            Order.objects.filter(is_send=False, session=self.request.session.session_key)
-        order, order_detail = Order.create_new_order(self.request) if order.count() == 0 else [order.first(),
-                                                                                               OrderDetail.objects.get(
-                                                                                                   order=order.first())]
-        return order, order_detail
+            OrderDetail.objects.filter(is_send=False, session=self.request.session.session_key)
+        order = OrderDetail.create_new_order(self.request) if order.count() == 0 else order.first()
+        return order
 
-    def create_orderitem(self, order, order_detail, product):
-        item = OrderItem(order=order, order_detail=order_detail, product=product, count=1)
+    def create_orderitem(self, order_detail, product):
+        item = OrderItem(order_detail=order_detail, product=product, count=1)
         item.save()
 
 

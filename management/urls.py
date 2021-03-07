@@ -17,14 +17,14 @@ from management.views.offers_views import IndividualOfferRequestOverview, Indivi
     DeleteIndividualOfferRequest
 from management.views.orders_views import ManagementOrderOverview, ManagementOrderDetailView, OrderAssignEmployeeView, \
     OrderCreateView, DeleteOrder, OrderPayView, OrderShipView, OrderChangeStateView, OrderAcceptInvoiceView, \
-    ManagementFullExport, ManagementOrderExportCSV
+    ManagementFullExport, ManagementOrderExportCSV, OrderCancelView
 from management.views.products_views import ProductCreationView, ProductEditView, ProductDeleteView, \
     ProductsOverview, FileSubItemCreationView, NumberSubItemCreateUpdateView, CheckboxSubItemCreateUpdateView, \
     SelectSubItemCreationView, SelectItemCreationView, SelectItemDeleteView, SubItemDeleteView, SubItemOverview
 from management.views.settings_views import MailSettingsDetailView, LdapSettingsDetailView, LegalSettingsDetailView, \
     ShopSettingsDetailView, PaymentProviderSettings, CacheManagementView
 from management.views.shipments_views import ShipmentOverview
-from shop.views.account_views import SearchOrders, SearchCustomers, OrderCancelView
+from shop.views.account_views import SearchOrders, SearchCustomers
 
 urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
@@ -118,8 +118,9 @@ urlpatterns = [
     url(r'^orders/create/$', OrderCreateView.as_view(),
         name="order_create_view"),
 
-    url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/cancel/$',
-        OrderCancelView.as_view(), name="order_cancel_view"),
+
+    url(r'^orders/(?P<uuid>[a-zA-Z0-9\\s\-_ ]+)/cancel$',
+        OrderCancelView.as_view(), name="management_order_cancel_view"),
     url(r'^orders/(?P<uuid>[a-zA-Z0-9\\s\-_ ]+)/delete/$',
         DeleteOrder.as_view(), name="order_delete_view"),
     url(r'^orders/([a-zA-Z0-9\\s\-_ ]+)/pay/$',

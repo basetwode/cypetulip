@@ -36,10 +36,15 @@
                     <div class="card-body">
                         <div class="row">
                         <div class="col-md-4">
+                            {% if product.productimage_set.first  %}
                             <img style=" width: 100%; height: auto; max-width: 25vw;"
-                                 src="{% version product.product_picture 'medium' %}"
+                                 src="{% version product.productimage_set.first 'medium' %}"
                                  alt="..."
                                  class="img-fluid"/>
+                            {% else %}
+                                <i style=" width: 100%; height: auto; max-width: 25vw;"
+                                   class="fa fa-4x fa-image img-thumbnail"></i>
+                            {% endif %}
                         </div>
                         <div class="col-md-8">
                             <h4>{{ product.name }}</h4>

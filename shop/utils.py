@@ -7,7 +7,7 @@ import time
 from django.http import HttpResponse
 
 from shop.errors import FieldError, JsonResponse
-from shop.models.orders import Order, OrderItem
+from shop.models.orders import OrderItem, OrderDetail
 from shop.models.products import Product
 
 __author__ = 'Anselm'
@@ -63,14 +63,14 @@ def check_params(required_arguments, redirect_page=None, message=""):
 
 
 def get_orderitems_once_only(order):
-    order_items = OrderItem.objects.filter(order=order, order_item__isnull=True).exclude(
+    order_items = OrderItem.objects.filter(order_detail=order, order_item__isnull=True).exclude(
         product__in=Product.objects.all())
     return order_items
 
 
 def get_order_for_hash_and_contact(contact, uuid):
     company = contact[0].company
-    order = Order.objects.filter(uuid=uuid, is_send=False, company=company)
+    order = OrderDetail.objects.filter(uuid=uuid, is_send=False, company=company)
     if order.count() > 0:
         order = order[0]
         return order

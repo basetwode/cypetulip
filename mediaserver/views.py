@@ -17,7 +17,7 @@ CONTENT_TYPES = {
 
 class ServeOrderFiles(PermissionOwnsObjectMixin, View):
     model = OrderDetail
-    slug_field = "order__uuid"
+    slug_field = "uuid"
     slug_url_kwarg = "hash"
     field_name = "contact"
     hash = None

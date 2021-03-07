@@ -3,7 +3,7 @@ from rest_framework import routers
 from management.api.v1.viewsets import CompanyViewSet, OrderStateViewSet, \
     PaymentDetailAdmViewSet, PaymentMethodAdmViewSet, \
     ProductViewSet, ProductCategoryViewSet, ProductAttributeTypeViewSet, ProductAttributeTypeInstanceViewSet, \
-    ProductSubItemViewSet, ProductImageViewSet, ProductImageViewSetForProduct, OrderViewSet
+    ProductSubItemViewSet, ProductImageViewSet, ProductImageViewSetForProduct
 from shop.api.v1.viewsets import GuestViewSet, AddressViewSet, ContactViewSet, DeliveryViewSet, \
     ApplyVoucherViewSet, OrderItemViewSet, FileOrderItemViewSet, SelectOrderItemViewSet, NumberOrderItemViewSet, \
     CheckboxOrderItemViewSet, OrderDetailViewSet
@@ -24,7 +24,6 @@ router.register(r'contacts/(?P<id>[0-9]*)/addresses', AddressViewSet)
 router.register(r'addresses', AddressViewSet)
 router.register(r'contacts', ContactViewSet)
 router.register(r'deliveries', DeliveryViewSet)
-router.register(r'order', OrderViewSet)
 router.register(r'voucher', ApplyVoucherViewSet)
 router.register(r'orderitem', OrderItemViewSet)
 router.register(r'fileorderitem', FileOrderItemViewSet)

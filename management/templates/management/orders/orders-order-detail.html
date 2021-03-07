@@ -16,10 +16,9 @@
     <div class="row">
         <div class=" col-md-3">
             <div class="card">
-                {% for order_detail in order.orderdetail_set.all %}
                     <h4 class="card-header">
                         <div style="overflow: auto">
-                            <div class="col-md-12"><span>{{ order.company }}</span></div>
+                            <div class="col-md-12"><span>{{ order_detail.company }}</span></div>
                             <div class="col-md-12"><span style="font-size: small; font-weight: bold">
                                     {{ order_detail.contact.first_name }} {{ order_detail.contact.last_name }}<br>
                                     {{ order_detail.contact.customer_nr }}
@@ -28,17 +27,17 @@
                         </div>
                     </h4>
                     <div class="card-body">
-                    {% if order.company.logo %}
+                    {% if order_detail.company.logo %}
                         <div class="col-sm-12">
                             <img class="card-img-top"
-                                 src="{{ order.company.logo.url }}" alt=""/>
+                                 src="{{ order_detail.company.logo.url }}" alt=""/>
                         </div>
                     {% endif %}
                     <div class="col-sm-12">
-                        {{ order.company.street }} {{ order.company.number }}
+                        {{ order_detail.company.street }} {{ order_detail.company.number }}
                     </div>
                     <div class="col-sm-12">
-                        {{ order.company.zipcode }} {{ order.company.city }}
+                        {{ order_detail.company.zipcode }} {{ order_detail.company.city }}
                     </div>
                     <div class="col-sm-12" style="margin-top: 5px">
                         {{ order_detail.contact.telephone }}
@@ -46,7 +45,6 @@
                     <div class="col-sm-12">
                         {{ order_detail.contact.email }}
                     </div>
-                {% endfor %}
                 </div>
             </div>
             <br>
@@ -78,16 +76,14 @@
                             </strong>
                             <div>
 
-                                {% for order_detail in order.orderdetail_set.all %}
                                     {{ order_detail.date_added }}
-                                {% endfor %}
                             </div>
 
                         </div>
                         <div class="col-md-2">
                             <strong>{% trans 'Total' %}</strong>
-                            <div>{{ order.orderdetail_set.first.total_discounted }} €</div>
-                            <div>{{ order.orderdetail_set.first.total_discounted_wt }} € {% trans 'incl. Tax' %}</div>
+                            <div>{{ orderdetail.total_discounted }} €</div>
+                            <div>{{ orderdetail.total_discounted_wt }} € {% trans 'incl. Tax' %}</div>
                         </div>
                         <div class="col-md-2">
                             <strong>{% trans 'Paid via' %}</strong>
@@ -99,16 +95,14 @@
                         </div>
                         <div class="col-md-2">
                             <strong>{% trans 'Shipped via' %}</strong>
-                            {% if order.is_send %}
-                                {% for order_detail in order.orderdetail_set.all %}
-                                    {% for shipment in order_detail.shipment_set.all %}
-                                        {% if shipment.packageshipment %}
-                                            <div>
-                                                #{{ forloop.counter }} {{ shipment.packageshipment.package.shipper.name }}</div>
-                                        {% else %}
-                                            <div>#{{ forloop.counter }} {% trans 'Online' %}</div>
-                                        {% endif %}
-                                    {% endfor %}
+                            {% if order_detail.is_send %}
+                                {% for shipment in order_detail.shipment_set.all %}
+                                    {% if shipment.packageshipment %}
+                                        <div>
+                                            #{{ forloop.counter }} {{ shipment.packageshipment.package.shipper.name }}</div>
+                                    {% else %}
+                                        <div>#{{ forloop.counter }} {% trans 'Online' %}</div>
+                                    {% endif %}
                                 {% endfor %}
                             {% else %}
                                 {% trans 'Not yet shipped' %}
@@ -116,12 +110,12 @@
                         </div>
                         <div class="col-md-4">
                             <strong>Ordernr.:</strong>
-                            <div><small>{{ order.orderdetail_set.first.unique_nr }}</small>
+                            <div><small>{{ orderdetail.unique_nr }}</small>
                             </div>
                             <strong>{% trans 'Bill Nr' %}.:</strong>
                             <div><small>
-                                {% if order.orderdetail_set.first.bill_number %}
-                                    {{ order.orderdetail_set.first.unique_bill_nr }}
+                                {% if order_detail.bill_number %}
+                                    {{ orderdetail.unique_bill_nr }}
                                 {% else %}
                                     {% trans 'Invoice has not been sent yet' %}
                                 {% endif %}
@@ -139,31 +133,29 @@
 
 
                             <div class="progress">
-                                {% for order_detail in order.orderdetail_set.all %}
-                                    <div class="progress-bar
+                                <div class="progress-bar
                                 {% if order_detail.state.initial %}
                                         bg-danger" aria-valuenow="20" style="width:20%"
-                                    {% endif %}{% if order_detail.state.is_paid_state %}
-                                         bg-warning" aria-valuenow="50" style="width:50%"
-                                    {% endif %}{% if order_detail.state.is_sent_state %}
-                                        bg-success" aria-valuenow="100" style="width:100%"
-                                    {% elif order_detail.state.next_state %}
-                                        bg-warning" aria-valuenow="50" style="width:50%"
-                                    {% else %}
-                                        bg-warning" aria-valuenow="100" style="width:100%"
-                                        role="progressbar"
-                                        aria-valuemin="0" aria-valuemax="100"
-                                    {% endif %}>
-                                    {{ order_detail.state.name }}
-                                    </div>
-                                {% endfor %}
+                                {% endif %}{% if order_detail.state.is_paid_state %}
+                                     bg-warning" aria-valuenow="50" style="width:50%"
+                                {% endif %}{% if order_detail.state.is_sent_state %}
+                                    bg-success" aria-valuenow="100" style="width:100%"
+                                {% elif order_detail.state.next_state %}
+                                    bg-warning" aria-valuenow="50" style="width:50%"
+                                {% else %}
+                                    bg-warning" aria-valuenow="100" style="width:100%"
+                                    role="progressbar"
+                                    aria-valuemin="0" aria-valuemax="100"
+                                {% endif %}
+                                >
+                                {{ order_detail.state.name }}
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-3"><strong>
                         {% trans 'Tracking' %}
                     </strong>
                         <div>
-                            {% for order_detail in order.orderdetail_set.all %}
                                 {% for shipment in order_detail.shipment_set.all %}
                                     {% if shipment.packageshipment %}
                                         <div>#{{ forloop.counter }}
@@ -172,7 +164,6 @@
                                         <div>#{{ forloop.counter }} {% trans 'Online' %}</div>
                                     {% endif %}
                                 {% endfor %}
-                            {% endfor %}
                         </div>
                     </div>
                     <div class="col-md-1"></div>
@@ -181,7 +172,7 @@
                             {% trans 'Assigned Employee' %}
                         </strong>
                         <div>
-                            {{ order.orderdetail_set.first.assigned_employee.last_name|default:"None" }} {{ order.orderdetail_set.first.assigned_employee.first_name }}
+                            {{ orderdetail.assigned_employee.last_name|default:"None" }} {{ orderdetail.assigned_employee.first_name }}
                         </div>
                     </div>
                 </div>
@@ -238,17 +229,17 @@
                                     <td id="subtotal-{{ order.id }}" data-th="Subtotal"
                                         class="text-center">{{ order.total }} &euro;
                                         {% if order.applied_discount %}<br>
-                                            <small class="mt-1">-{{ order.order_detail.total_discount }}
-                                                ({{ order.order_detail.discount.discount_percentage_in_percent }}%
-                                                {{ order.order_detail.discount.voucher_id }})</small>
-                                            <br> <b>{{ order.total_discounted|floatformat:"2" }} &euro;</b>
+                                            <small class="mt-1">-{{ order.total_discount }}
+                                                ({{ order.discount.discount_percentage_in_percent }}%
+                                                {{ order.order.voucher_id }})</small>
+                                            <br> <b>{{ order_detail.total_discounted|floatformat:"2" }} &euro;</b>
                                         {% endif %}
                                     </td>
                                     <td class="actions" data-th="">
                                     </td>
                                 </tr>
                                 {% for sub_item in order.orderitem_set.all %}
-                                    <tr id="{{ order.id }}-{{ sub_item.id }}"
+                                    <tr id="{{ order_detail.id }}-{{ sub_item.id }}"
                                         style="border-top: none">
                                         <td colspan="1">
                                             <div class="col-sm-12 ">
@@ -289,7 +280,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td colspan="2"
+                                        <td colspan="3"
                                             data-th="Price">{{ sub_item.price }} &euro;
                                         </td>
                                     </tr>
@@ -349,44 +340,40 @@
 
                 <div class="col-lg-3 col-md-12 col-sm-12 text-center">
                     <h5 class="h-bold">{% trans 'Options' %}</h5>
-                    <a href="{% url 'order_update_view' order.uuid %}"
+                    <a href="{% url 'order_update_view' order_detail.uuid %}"
                        class="btn btn-fw btn-warning">{% trans 'Edit order' %}</a>
-                    <a href="{% url 'invoice_pdf' order.uuid %}" target="_blank"
+                    <a href="{% url 'invoice_pdf' order_detail.uuid %}" target="_blank"
                        class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
                     <a class="btn btn-fw btn-secondary" data-bs-toggle="modal" style="color: #fff"
                        data-bs-target="#assign-employee-modal">{% trans 'Assign' %}</a>
-                    {% include 'management/orders/orders-orderdetail-modal-assignemployee.html' with employees=employees uuid=order.uuid %}
+                    {% include 'management/orders/orders-orderdetail-modal-assignemployee.html' with employees=employees uuid=order_detail.uuid %}
                     <a class="btn btn-fw btn-secondary" data-bs-toggle="modal" style="color: #fff"
                        data-bs-target="#change-state-modal">{% trans 'Set State' %}</a>
-                    {% include 'management/orders/orders-order-changestate.html' with states=states uuid=order.uuid %}
-                    {% for order_detail in order.orderdetail_set.all %}
-                        <form action="{% url 'shop:detail_order_cancel_order' order.uuid %}" method="post">
+                    {% include 'management/orders/orders-order-changestate.html' with states=states uuid=order_detail.uuid %}
+                        <form action="{% url 'management_order_cancel_view' order_detail.uuid %}" method="post">
                             {% csrf_token %}
                             <button type="submit"
                                     {% if order_detail.state == order_detail.state.cancel_order_state %}disabled{% endif %}
                                     class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
                         </form>
-                    {% endfor %}
-                    <form action="{% url 'order_accept_view' order.uuid %}" method="post">
+                    <form action="{% url 'order_accept_view' order_detail.uuid %}" method="post">
                         {% csrf_token %}
                         <button type="submit"
                                 class="btn btn-fw btn-secondary">{% trans 'Send Invoice' %}</button>
-                        {% for order_detail in order.orderdetail_set.all %}
                             {% if not order_detail.bill_sent %}
                                 <small>{% trans 'Invoice has not been sent yet' %}</small>
                             {% endif %}
-                        {% endfor %}
                     </form>
-                    <form action="{% url 'order_pay_view' order.uuid %}" method="post">
+                    <form action="{% url 'order_pay_view' order_detail.uuid %}" method="post">
                         {% csrf_token %}
                         <button type="submit" {% if payment.is_paid %}disabled{% endif %}
                                 class="btn btn-fw btn-secondary">{% trans 'Paid' %}</button>
                     </form>
                     <button href="#" class="btn btn-fw btn-secondary" data-bs-toggle="modal"
-                            {% if order.is_send %}{% endif %}
+                            {% if order_detail.is_send %}{% endif %}
                             data-bs-target="#create-modal">{% trans 'Ship' %}</button>
-                    {% include 'shipping/shipment/shipment-create.html' with uuid=order.uuid %}
-                    <form method="post" action="{% url 'order_delete_view' order.uuid %}">
+                    {% include 'shipping/shipment/shipment-create.html' with uuid=order_detail.uuid %}
+                    <form method="post" action="{% url 'order_delete_view' order_detail.uuid %}">
                         {% csrf_token %}
                         <input type="submit" class="btn-danger btn btn-fw" value="{% trans 'Delete' %}"><br>
                     </form>
@@ -401,25 +388,21 @@
                 <div class="row">
                     <div class="col-md-6" style="text-align: left; ">
                         <strong> {% trans 'Billing Address' %}</strong><br>
-                        {% for order_detail in order.orderdetail_set.all %}
                             {{ order_detail.billing_address.contact.first_name }}
                             {{ order_detail.billing_address.contact.last_name }}<br>
                             {{ order_detail.billing_address.street }}
                             {{ order_detail.billing_address.number }}<br>
                             {{ order_detail.billing_address.zipcode }}
                             {{ order_detail.billing_address.city }}
-                        {% endfor %}
                     </div>
                     <div class="col-md-6">
                         <strong> {% trans 'Shipping Address' %}</strong><br>
-                        {% for order_detail in order.orderdetail_set.all %}
                             {{ order_detail.shipment_address.contact.first_name }}
                             {{ order_detail.shipment_address.contact.last_name }}<br>
                             {{ order_detail.shipment_address.street }}
                             {{ order_detail.shipment_address.number }}<br>
                             {{ order_detail.shipment_address.zipcode }}
                             {{ order_detail.shipment_address.city }}
-                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -440,7 +423,6 @@
                         </thead>
 
                         <tbody>
-                        {% for order_detail in order.orderdetail_set.all %}
                             {% for shipment in order_detail.shipment_set.all %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
@@ -482,7 +464,7 @@
 
                                         <a href="#" class="btn btn-outline-dark" data-bs-toggle="modal"
                                            data-bs-target="#delete-modal-{{ shipment.id }}">{% trans 'Delete' %}</a>
-                                        {% include 'management/generic/generic-modal-delete.html' with id=shipment.id uuid=order.uuid url='shipping:shipment_delete' url_param='subitem_delete_id' %}
+                                        {% include 'management/generic/generic-modal-delete.html' with id=shipment.id uuid=order_detail.uuid url='shipping:shipment_delete' url_param='subitem_delete_id' %}
                                     </td>
                                 </tr>
                             {% empty %}
@@ -494,7 +476,6 @@
                                     <td></td>
                                 </tr>
                             {% endfor %}
-                        {% endfor %}
                         </tbody>
 
                     </table>
@@ -514,7 +495,7 @@
                         </thead>
 
                         <tbody>
-                        {% for payment in order.paymentdetail_set.all %}
+                        {% for payment in order_detail.paymentdetail_set.all %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ payment.method.name }}</td>
@@ -538,21 +519,21 @@
                 </div>
             </div>
             <div class="card-body">
-                {% if order.individual_offer_request %}
+                {% if order_detail.individual_offer_request %}
                     <hr>
                     <h5>{% trans 'Individual Offer Request' %}</h5>
                     <div class="col-md-6" style="text-align: left; ">
                         <strong> {% trans 'Date' %}</strong>
-                        {{ order.individual_offer_request.date_added|date:"SHORT_DATE_FORMAT" }}
+                        {{ order_detail.individual_offer_request.date_added|date:"SHORT_DATE_FORMAT" }}
                     </div>
                     <div class="col-md-6">
 
-                        {{ order.individual_offer_request.message }}
+                        {{ order_detail.individual_offer_request.message }}
 
                     </div>
                     <div class="col-md-12">
                         <a class="btn btn-secondary"
-                           href="{% url 'individualofferrequest_view' order.individual_offer_request.id %}">{% trans 'Open' %}</a>
+                           href="{% url 'individualofferrequest_view' order_detail.individual_offer_request.id %}">{% trans 'Open' %}</a>
                     </div>
                 {% endif %}
             </div>

@@ -4,7 +4,7 @@ from django.core.validators import MaxValueValidator
 from django.db import models
 
 from shop.models.accounts import Contact
-from shop.models.orders import Order
+from shop.models.orders import Order, OrderDetail
 
 YEAR_CHOICES = [(r, r) for r in range(datetime.datetime.now().year, datetime.datetime.now().year + 11)]
 MONTH_CHOICES = [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10), (11, 11), (12, 12)]
@@ -33,7 +33,7 @@ class CardType(models.Model):
 
 
 class PaymentDetail(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order_detail = models.ForeignKey(OrderDetail, on_delete=models.CASCADE, null=True, blank=True)
     method = models.ForeignKey(PaymentMethod, on_delete=models.CASCADE)
     user = models.ForeignKey(Contact, on_delete=models.CASCADE, blank=True)
 
@@ -73,12 +73,11 @@ class Payment(models.Model):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         if self.pk is None:
-            for order_item in self.details.order.orderitem_set.all():
+            for order_item in self.details.order_detail.orderitem_set.all():
                 if hasattr(order_item.product, 'product'):
                     order_item.product.product.decrease_stock(order_item.count)
-            for order_detail in self.details.order.orderdetail_set.all():
-                # update order create date
-                order_detail.send_order()
+            # update order create date
+            self.details.order_detail.send_order()
 
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)

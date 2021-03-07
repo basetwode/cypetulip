@@ -12,7 +12,7 @@ from shop.api.v1.serializers import AddressSerializer, BasicContactSerializer, O
     VoucherSerializer, BasicOrderItemSerializer, BasicFileOrderItemSerializer, \
     BasicSelectOrderItemSerializer, \
     BasicNumberOrderItemSerializer, BasicCheckboxOrderItemSerializer, OrderDetailSerializer, FullOrderDetailSerializer
-from shop.models.orders import Discount, Order, OrderDetail, OrderItem, FileOrderItem, SelectOrderItem, \
+from shop.models.orders import Discount, OrderDetail, OrderItem, FileOrderItem, SelectOrderItem, \
     CheckBoxOrderItem, NumberOrderItem
 from shop.models.accounts import Company, Contact, Address
 from shop.utils import create_hash
@@ -75,21 +75,20 @@ class OrderDetailViewSet(viewsets.ModelViewSet):
             uuid = self.request.query_params.get('uuid', None)
             order_year = self.request.query_params.get('orderYear', None)
             if uuid is not None:
-                return queryset.filter(order__uuid=uuid)
+                return queryset.filter(uuid=uuid)
             if order_year is not None:
                 return queryset.filter(date_bill__year=order_year)
         if request.user.is_authenticated:
             contact = Contact.objects.filter(user_ptr=request.user)
             if contact:
                 company = contact[0].company
-                result = OrderDetail.objects.filter(state__isnull=True, order__company=company)
+                result = OrderDetail.objects.filter(state__isnull=True, company=company)
         else:
-            result = OrderDetail.objects.filter(state__isnull=True, order__session=request.session.session_key)
+            result = OrderDetail.objects.filter(state__isnull=True, session=request.session.session_key)
         if result:
             return result
         else:
-            order, order_detail = Order.create_new_order(request)
-            return OrderDetail.objects.filter(id=order_detail.id)
+            return OrderDetail.create_new_order(request)
 
 
 class AddressViewSet(viewsets.ModelViewSet):
@@ -136,28 +135,21 @@ class ContactViewSet(viewsets.ModelViewSet):
 
 class DeliveryViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
-    queryset = Order.objects.all()
+    queryset = OrderDetail.objects.all()
     serializer_class = OrderShipmentSerializer
 
     def create(self, request):
         order_serializer = OrderShipmentSerializer(data=request.data)
         if order_serializer.is_valid():
             order = request.data['order']
-            _order = Order.objects.filter(uuid=order, is_send=False)
-            order_details = OrderDetail.objects.get(uuid=order)
-            if _order.count() > 0:
-                token = create_hash()
-                shipment_address = Address.objects.get(id=request.data['shipment'])
-                billing_address = Address.objects.get(id=request.data['billing'])
-                order_details.shipment_address = shipment_address
-                order_details.billing_address = billing_address
-                order_details.save()
-                ord = _order[0]
-                ord.token = token
-                ord.save()
-                return Response(order_serializer.data, status=status.HTTP_200_OK)
-            else:
-                return Response(order_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            order_details = OrderDetail.objects.get(uuid=order, is_send=False)
+
+            shipment_address = Address.objects.get(id=request.data['shipment'])
+            billing_address = Address.objects.get(id=request.data['billing'])
+            order_details.shipment_address = shipment_address
+            order_details.billing_address = billing_address
+            order_details.save()
+            return Response(order_serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(order_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -178,9 +170,9 @@ class OrderItemViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return queryset
         if self.request.user.is_authenticated:
-            queryset = queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
+            queryset = queryset.filter(order_detail__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
-            queryset = queryset.filter(order__session=self.request.session.session_key)
+            queryset = queryset.filter(order_detail__session=self.request.session.session_key)
         return queryset
 
     def update(self, request, *args, **kwargs):
@@ -221,9 +213,9 @@ class FileOrderItemViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return queryset
         if self.request.user.is_authenticated:
-            queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
+            queryset.filter(order_detail__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
-            queryset.filter(order__session=self.request.session.session_key)
+            queryset.filter(order_detail__session=self.request.session.session_key)
         return queryset
 
 
@@ -242,9 +234,9 @@ class SelectOrderItemViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return queryset
         if self.request.user.is_authenticated:
-            queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
+            queryset.filter(order_detail__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
-            queryset.filter(order__session=self.request.session.session_key)
+            queryset.filter(order_detail__session=self.request.session.session_key)
         return queryset
 
 
@@ -263,9 +255,9 @@ class NumberOrderItemViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return queryset
         if self.request.user.is_authenticated:
-            queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
+            queryset.filter(order_detail__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
-            queryset.filter(order__session=self.request.session.session_key)
+            queryset.filter(order_detail__session=self.request.session.session_key)
         return queryset
 
 
@@ -284,9 +276,9 @@ class CheckboxOrderItemViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return queryset
         if self.request.user.is_authenticated:
-            queryset.filter(order__company=Company.objects.get(contact__user_ptr=self.request.user))
+            queryset.filter(order_detail__company=Company.objects.get(contact__user_ptr=self.request.user))
         else:
-            queryset.filter(order__session=self.request.session.session_key)
+            queryset.filter(order_detail__session=self.request.session.session_key)
         return queryset
 
 

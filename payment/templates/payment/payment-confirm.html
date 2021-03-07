@@ -25,7 +25,7 @@
                             <p><small>{% trans 'Shoppingcart' %}</small></p>
                         </div>
                         <div class="stepwizard-step">
-                            <form action="{% url 'shop:delivery_order' order_detail.order.uuid %}" method="get">
+                            <form action="{% url 'shop:delivery_order' order_detail.uuid %}" method="get">
                                 <a onclick="$(this).parent().submit()" type="button"
                                    class="btn btn-outline-success btn-circle"><i
                                         class="fas fa-truck"></i></a>
@@ -96,8 +96,8 @@
                                     <td id="subtotal-{{ order.id }}" data-th="Subtotal"
                                         class="text-center">{{ order.total_wt|floatformat:2 }}&euro;
                                         {% if order.applied_discount %}<br>
-                                            <small class="mt-1">- {{ order.total_discount_wt|floatformat:2 }}&euro; ({{ order.order_detail.discount.voucher_id }}
-                                                {{ order.order_detail.discount.discount_percentage_in_percent }}%)</small>
+                                            <small class="mt-1">- {{ order.total_discount_wt|floatformat:2 }}&euro; ({{ order_detail.discount.voucher_id }}
+                                                {{ order_detail.discount.discount_percentage_in_percent }}%)</small>
                                             <br> <b>{{ order.total_discounted_wt|floatformat:2 }}&euro;</b>
                                         {% endif %}
                                     </td>

@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import View, CreateView, RedirectView
 
 from shop.forms.authentication_forms import CompleteCompanyForm, SignUpForm, PasswordResetFormSMTP
-from shop.models.orders import Order
+from shop.models.orders import Order, OrderDetail
 from shop.models.accounts import Company, Contact, Address
 
 __author__ = ''
@@ -31,13 +31,13 @@ class LoginAuthenticationView(LoginView):
 
     def form_valid(self, form):
         auth_login(self.request, form.get_user())
-        order_from_session = Order.objects.filter(session=self.request.session.session_key, orderdetail__state__isnull=True)
+        order_from_session = OrderDetail.objects.filter(session=self.request.session.session_key, state__isnull=True)
         contact = Contact.objects.filter(user_ptr=self.request.user)
         if contact.count()>0:
             contact = contact.first()
-            order_from_contact = Order.objects.filter(company=contact.company, orderdetail__state__isnull=True)
+            order_from_contact = OrderDetail.objects.filter(company=contact.company, state__isnull=True)
             if order_from_contact.count() == 0:
-                order_from_contact, order_detail = Order.create_new_order(self.request)
+                order_from_contact = OrderDetail.create_new_order(self.request)
             else:
                 order_from_contact = order_from_contact.first()
             if order_from_session.count() > 0:
@@ -67,7 +67,7 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('shop:my_account')
 
     def form_valid(self, form):
-        order_from_session = Order.objects.filter(session=self.request.session.session_key, orderdetail__state__isnull=True)
+        order_from_session = OrderDetail.objects.filter(session=self.request.session.session_key, state__isnull=True)
         user = form.save(commit=False)
         company = Company(name="", term_of_payment=10, street="",number="",zipcode="",city="")
         company.save()
@@ -87,10 +87,8 @@ class RegisterView(CreateView):
         if order_from_session.count() > 0:
             order = order_from_session.first()
             order.company = contact.company
+            order.contact = contact
             order.save()
-            order_detail = order.orderdetail_set.first()
-            order_detail.contact = contact
-            order_detail.save()
 
     def get_context_data(self, **kwargs):
         return {**{'buttonText': _('Sign up')}, **super(RegisterView, self).get_context_data(**kwargs)}

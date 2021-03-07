@@ -36,11 +36,10 @@ class PaypalPaymentConfirmationView(View):
         self.client = apps.get_app_config("payment").paypal_client
 
     def get(self, request, order):
-        _order = Order.objects.filter(uuid=order)
-        order_details = OrderDetail.objects.get(order=_order[0])
-        order_items = OrderItem.objects.filter(order=_order[0], order_item__isnull=True,
+        order_details = OrderDetail.objects.get(uuid=order)
+        order_items = OrderItem.objects.filter(order_detail=order_details, order_item__isnull=True,
                                                product__in=Product.objects.all())
-        payment_details = PaymentDetail.objects.get(order=_order[0])
+        payment_details = PaymentDetail.objects.get(order_detail=order_details)
         return render(request, self.template_name,
                       {'order_items': order_items,
                        'payment_details': payment_details, 'contact': order_details.contact,
@@ -56,13 +55,12 @@ class PaypalSubmitView(EmailConfirmView, View):
 
     # called when being redirect back to shop from paypal
     def get(self, request, order):
-        _order = Order.objects.get(uuid=order)
-        order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True,
+        order_detail = OrderDetail.objects.get(uuid=order)
+        order_items = OrderItem.objects.filter(order_detail=order_detail, order_item__isnull=True,
                                                product__in=Product.objects.all())
-        payment_details = PaymentDetail.objects.get(order=_order)
+        payment_details = PaymentDetail.objects.get(order_detail=order_detail)
         payment_details.paypal.paypal_payer_id = request.GET['PayerID']
         payment_details.paypal.save()
-        order_detail = OrderDetail.objects.get(order=_order)
         order_detail.state = OrderState.objects.get(is_paid_state=True)
         capture_request = OrdersCaptureRequest(payment_details.paypal.paypal_order_id)
         try:
@@ -83,7 +81,7 @@ class PaypalSubmitView(EmailConfirmView, View):
                     payment = Payment(is_paid=True, token=create_hash(), details=payment_details)
                     payment.save()
 
-                    self.object = _order
+                    self.object = order_detail
                     self.notify_client(order_detail.contact)
                     self.notify_staff()
                     return redirect(reverse("shop:confirmed_order", args=[order]))
@@ -94,17 +92,16 @@ class PaypalSubmitView(EmailConfirmView, View):
             print(ioe.message)
             messages.error(self.request, _("Something went wrong while processing your payment:\n") + ioe.message)
             return HttpResponseRedirect(reverse("payment:paypal",
-                                                kwargs={"order": _order.uuid}))
+                                                kwargs={"order": order_detail.uuid}))
         messages.error(self.request, _("Something went wrong while processing your payment"))
         return HttpResponseRedirect(reverse("payment:paypal",
-                                            kwargs={"order": _order.uuid}))
+                                            kwargs={"order": order_detail.uuid}))
 
     # called by client when sending order (PayPalConfirmationView)
     def post(self, request, order):
         paypal_request = OrdersCreateRequest()
-        order_object = Order.objects.get(uuid=order)
-        order_detail = OrderDetail.objects.get(order=order_object)
-        order_items = OrderItem.objects.filter(order=order_object)
+        order_detail = OrderDetail.objects.get(uuid=order)
+        order_items = OrderItem.objects.filter(order_detail=order_detail)
         total_with_tax = order_detail.total_discounted_wt()
 
         paypal_request.prefer('return=representation')
@@ -113,10 +110,10 @@ class PaypalSubmitView(EmailConfirmView, View):
              "application_context": {
                  "return_url": "http://" + self.request.META['HTTP_HOST'] + reverse("payment:paypal_submit",
                                                                                     kwargs={
-                                                                                        "order": order_object.uuid}),
+                                                                                        "order": order_detail.uuid}),
                  "cancel_url": "http://" + self.request.META['HTTP_HOST'] + reverse("payment:payment",
                                                                                     kwargs={
-                                                                                        "order": order_object.uuid})
+                                                                                        "order": order_detail.uuid})
              },
              "purchase_units": [
                  {
@@ -138,11 +135,11 @@ class PaypalSubmitView(EmailConfirmView, View):
                     elif link.rel == "payer-action":
                         payment_response.payer_action = link.href
                 if response.result.status == "CREATED":
-                    payment_detail = PaymentDetail.objects.get(order=order_object)
+                    payment_detail = PaymentDetail.objects.get(order_detail=order_detail)
                     payment_detail.paypal.paypal_order_id = response.result.id
                     payment_detail.paypal.save()
 
-                    self.object = order_object
+                    self.object = order_detail
                     self.notify_client(order_detail.contact)
                     self.notify_staff()
                     return HttpResponseRedirect(payment_response.approve_link)
@@ -151,6 +148,6 @@ class PaypalSubmitView(EmailConfirmView, View):
                 else:
                     messages.error(self.request, _("Something went wrong while processing your payment"))
                     return HttpResponseRedirect(reverse("payment:paypal",
-                                                        kwargs={"order": order_object.uuid}))
+                                                        kwargs={"order": order_detail.uuid}))
         except IOError as ioe:
             pass

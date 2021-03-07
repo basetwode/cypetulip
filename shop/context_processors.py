@@ -6,7 +6,7 @@ __author__ = 'Anselm'
 from cms.models.models import Page
 from management.models.models import Header, Footer, CacheSetting
 from payment.models.main import PaymentMethod
-from shop.models.orders import Order, OrderItem
+from shop.models.orders import Order, OrderItem, OrderDetail
 from shop.models.products import ProductCategory, Product
 from shop.models.accounts import Contact
 
@@ -16,10 +16,10 @@ def get_open_orders(request):
     if request.user.is_authenticated:
         contact = Contact.objects.filter(user_ptr=request.user)
         if contact.count() > 0:
-            order = Order.objects.filter(company=contact[0].company, orderdetail__state__isnull=True)
+            order = OrderDetail.objects.filter(company=contact[0].company, state__isnull=True)
             return collect_open_orders(order)
     elif request.session.session_key:
-        order = Order.objects.filter( orderdetail__state__isnull=True, session=request.session.session_key)
+        order = OrderDetail.objects.filter(state__isnull=True, session=request.session.session_key)
         return collect_open_orders(order)
     else:
         request.session.save()
@@ -28,8 +28,8 @@ def get_open_orders(request):
 
 def collect_open_orders(order):
     if order.count() > 0:
-        items = OrderItem.objects.filter(order=order[0], product__id__in=Product.objects.all())
-        all_items = OrderItem.objects.filter(order=order[0])
+        items = OrderItem.objects.filter(order_detail=order[0], product__id__in=Product.objects.all())
+        all_items = OrderItem.objects.filter(order_detail=order[0])
         sum = 0
         for item in all_items:
             sum += item.product.bprice_wt()

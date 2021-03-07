@@ -244,7 +244,7 @@ class VoucherSerializer(serializers.Serializer):
 
     def validate_voucher(self, value):
 
-        order_detail = OrderDetail.objects.get(order__uuid=self.initial_data['uuid'])
+        order_detail = OrderDetail.objects.get(uuid=self.initial_data['uuid'])
         voucher = Discount.objects.filter(voucher_id=value)
         if not voucher.exists():
             raise serializers.ValidationError(_('Voucher code invalid'))

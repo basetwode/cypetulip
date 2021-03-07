@@ -120,7 +120,7 @@ class PermissionOwnsObjectMixin(AccessMixin):
         if self.get_model() is not Order:
             # todo: orderdetails too
             if 'order' in self.kwargs or 'uuid' in self.kwargs:
-                order_detail = OrderDetail.objects.filter(order__uuid=self.kwargs[self.get_slug_kwarg()])
+                order_detail = OrderDetail.objects.filter(uuid=self.kwargs[self.get_slug_kwarg()])
                 owns_order = self.test_object_ownership(order_detail, 'contact')
                 return owns_order
         return False

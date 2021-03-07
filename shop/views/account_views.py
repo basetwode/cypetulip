@@ -25,7 +25,7 @@ from utils.mixins import PaginatedFilterViews, APIMixin
 
 class OrderDetailView(PermissionOwnsObjectMixin, APIMixin, DetailView):
     model = OrderDetail
-    slug_field = "order__uuid"
+    slug_field = "uuid"
     slug_url_kwarg = "order"
     field_name = "contact"
     template_name = 'shop/account/account-order-detail.html'
@@ -33,21 +33,20 @@ class OrderDetailView(PermissionOwnsObjectMixin, APIMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(OrderDetailView, self).get_context_data(**kwargs)
 
-        _order = self.object.order
         order_details = self.object
-        if _order:
-            order_items = OrderItem.objects.filter(order=_order, order_item__isnull=True,
-                                                   product__in=Product.objects.all())
-            total_without_tax = calculate_sum(order_items)
-            total_with_tax = calculate_sum(order_items, True)
 
-            context = {**context, **{
-                  'total': total_with_tax,
-                  'total_without_tax': total_without_tax,
-                  'tax': round(total_with_tax - total_without_tax, 2),
-                  'order_details': order_details, 'order': _order, 'contact': order_details.contact,
-                  'order_items': order_items,
-                  'order_items_once_only': get_orderitems_once_only(_order)}}
+        order_items = OrderItem.objects.filter(order_detail=self.object, order_item__isnull=True,
+                                               product__in=Product.objects.all())
+        total_without_tax = calculate_sum(order_items)
+        total_with_tax = calculate_sum(order_items, True)
+
+        context = {**context, **{
+              'total': total_with_tax,
+              'total_without_tax': total_without_tax,
+              'tax': round(total_with_tax - total_without_tax, 2),
+              'order_detail': order_details, 'contact': order_details.contact,
+              'order_items': order_items,
+              'order_items_once_only': get_orderitems_once_only(self.object)}}
 
         return context
 
@@ -67,7 +66,7 @@ class OrdersView(LoginRequiredMixin, PermissionPostGetRequiredMixin,  PaginatedF
 
     def get_queryset(self):
         contact = Contact.objects.get(user_ptr=self.request.user)
-        return super(OrdersView, self).get_queryset().filter(state__isnull=False, order__company=contact.company) \
+        return super(OrdersView, self).get_queryset().filter(state__isnull=False, company=contact.company) \
             .order_by('-date_added')
 
 
@@ -134,39 +133,39 @@ class SearchCustomers(View):
 
 
 class SearchOrders(View):
-    # todo refactor to rest view
-    def get(self, request):
-        _orders, search = SearchOrders.filter_orders(request)
-        _json = json.loads(
-            serializers.serialize('json', _orders.all(), use_natural_foreign_keys=True, use_natural_primary_keys=True))
-        return json_response(code=200, x=_json)
-
-    @staticmethod
-    def filter_orders(request, admin=False):
-        if request.user.is_staff or admin:
-            _orders = Order.objects.filter(orderdetail__state__isnull=False)
-        else:
-            contact = Contact.objects.get(user_ptr=request.user)
-            if contact:
-                company = contact.company
-                if company:
-                    _orders = Order.objects.filter(company=company, orderdetail__state__isnull=False)
-                else:
-                    return redirect('/shop/companies/create')
-            else:
-                return redirect('/shop/register')
-        _orders_copy = _orders
-        search = None
-        if 'search' in request.GET:
-            search = request.GET.get('search')
-            _orders = _orders_copy.filter(Q(uuid__icontains=search) |
-                                          Q(orderitem__product__name__icontains=search) |
-                                          Q(orderdetail__uuid__icontains=search)).distinct()
-            if search.isdigit():
-                _orders = _orders_copy.filter(Q(orderdetail__date_added__year=search) |
-                                              Q(orderdetail__date_added__month=search))
-
-        return _orders.order_by('-orderdetail__date_added'), search
+    pass # todo Legacy view, ansgar refactors this into rest api. please remove this code afterwards
+    # def get(self, request):
+    #     _orders, search = SearchOrders.filter_orders(request)
+    #     _json = json.loads(
+    #         serializers.serialize('json', _orders.all(), use_natural_foreign_keys=True, use_natural_primary_keys=True))
+    #     return json_response(code=200, x=_json)
+    #
+    # @staticmethod
+    # def filter_orders(request, admin=False):
+    #     if request.user.is_staff or admin:
+    #         _orders = Order.objects.filter(orderdetail__state__isnull=False)
+    #     else:
+    #         contact = Contact.objects.get(user_ptr=request.user)
+    #         if contact:
+    #             company = contact.company
+    #             if company:
+    #                 _orders = Order.objects.filter(company=company, orderdetail__state__isnull=False)
+    #             else:
+    #                 return redirect('/shop/companies/create')
+    #         else:
+    #             return redirect('/shop/register')
+    #     _orders_copy = _orders
+    #     search = None
+    #     if 'search' in request.GET:
+    #         search = request.GET.get('search')
+    #         _orders = _orders_copy.filter(Q(uuid__icontains=search) |
+    #                                       Q(orderitem__product__name__icontains=search) |
+    #                                       Q(orderdetail__uuid__icontains=search)).distinct()
+    #         if search.isdigit():
+    #             _orders = _orders_copy.filter(Q(orderdetail__date_added__year=search) |
+    #                                           Q(orderdetail__date_added__month=search))
+    #
+    #     return _orders.order_by('-orderdetail__date_added'), search
 
 
 class AddressOverviewView(PermissionPostGetRequiredMixin, ListView):
@@ -244,7 +243,7 @@ class OrderCancelView(UpdateView):
 
     def get_success_url(self):
         messages.success(self.request, _("Order canceled!"))
-        return reverse_lazy('shop:detail_order', kwargs={'order': self.object.order.uuid})
+        return reverse_lazy('shop:detail_order', kwargs={'order': self.object.uuid})
 
     def form_valid(self, form):
         resp = super(OrderCancelView, self).form_valid(form)

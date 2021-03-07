@@ -461,7 +461,6 @@
                             let form = instance.$refs['form-' + subItem.randID];
                             var formData = new FormData(form[0]);
                             formData.append('product', subItem.product.id);
-                            formData.append('order', instance.order.order.id);
                             formData.append('order_detail', instance.order.id);
                             formData.append('order_item', orderItem.id);
                             formData.append('id', subItem.id);

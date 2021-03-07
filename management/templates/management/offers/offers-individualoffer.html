@@ -66,10 +66,15 @@
                             <div class="card-body">
                                 <div class="row pb-3">
                                     <div class="col-md-4 ">
-                                        <img style=" width: 100%; height: auto; max-width: 25vw;"
-                                             src="{% version offer.product.product_picture 'medium' %}"
-                                             alt="..."
-                                             class="img-fluid"/>
+                                        {% if product.productimage_set.first  %}
+                                            <img style=" width: 100%; height: auto; max-width: 25vw;"
+                                                 src="{% version product.productimage_set.first 'medium' %}"
+                                                 alt="..."
+                                                 class="img-fluid"/>
+                                        {% else %}
+                                            <i style=" width: 100%; height: auto; max-width: 25vw;"
+                                               class="fa fa-4x fa-image img-thumbnail"></i>
+                                        {% endif %}
                                     </div>
                                     <div class="col-md-8">
                                         <h4>{{ offer.product.name }}</h4>
@@ -86,16 +91,16 @@
                             <div class="card-body">
 
 
-                                {% if offer.order_set.count > 0 %}
+                                {% if offer.orderdetail_set.count > 0 %}
                                     <h4>{% trans 'Orders' %}: </h4>
                                     <div class="row ps-3">
-                                        {% for order in offer.order_set.all %}
+                                        {% for order in offer.orderdetail_set.all %}
 
                                             <a href="{% url 'management_order_detail_view' order.uuid %}"
                                                class=" list-group-item list-group-item-action">
                                                 <div class="ps-4 col-md-12">
                                                     {% trans 'Order' %}:
-                                                    {{ order.orderdetail_set.first.unique_nr }}
+                                                    {{ order.unique_nr }}
                                                 </div>
                                             </a>
                                         {% endfor %}
@@ -103,7 +108,7 @@
                                 {% endif %}
                             </div>
                             <div class="card-footer">
-                                <a href="{% url 'order_create_view' '' %}?product={{ offer.product.id }}&contact={{ offer.contact.id }}&ior={{ offer.id }}"
+                                <a href="{% url 'order_create_view' %}?product={{ offer.product.id }}&contact={{ offer.contact.id }}&ior={{ offer.id }}"
                                    class="btn float-end btn-primary">{% trans 'Create order' %}</a>
                                 <form method="post" action="{% url 'individualoffer_delete_view' offer.id %}">
                                     {% csrf_token %}

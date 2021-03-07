@@ -73,10 +73,10 @@
                         <div class="row">
                             <div class="col-12" style="text-align: left; ">
                                 <a class="btn btn-outline-secondary me-2"
-                                   href="{% url 'shop:detail_order' order_detail.order.uuid %}">{% trans 'Orderdetails' %}</a>
+                                   href="{% url 'shop:detail_order' order_detail.uuid %}">{% trans 'Orderdetails' %}</a>
                                 {% if order_detail.bill_sent %}
                                     <a class="btn btn-outline-secondary me-2"
-                                       target="_blank" href="{% url 'invoice_pdf' order_detail.order.uuid %}"
+                                       target="_blank" href="{% url 'invoice_pdf' order_detail.uuid %}"
                                     >{% trans 'Bill' %}</a>
                                 {% else %}
                                     <button class="btn btn-outline-secondary me-2" disabled
@@ -92,16 +92,16 @@
                             <div class="col-md-6">
                                 <h4>{% trans 'Customer Information' %}</h4>
                                 <div>
-                                    <b>{{ order_detail.order.company }}</b>
+                                    <b>{{ order_detail.company }}</b>
                                 </div>
                                     <div>
                                         {{ order_detail.contact.first_name }} {{ order_detail.contact.last_name }}
                                     </div>
                                     <div>
-                                        {{ order_detail.order.company.street }} {{ order_detail.order.company.number }}
+                                        {{ order_detail.company.street }} {{ order_detail.company.number }}
                                     </div>
                                     <div>
-                                        {{ order_detail.order.company.zipcode }} {{ order_detail.order.company.city }}
+                                        {{ order_detail.company.zipcode }} {{ order_detail.company.city }}
                                     </div>
                                     <div style="margin-top: 5px">
                                         {{ order_detail.contact.telephone }}
@@ -146,7 +146,7 @@
 
                                 <h4>{% trans 'Order' %}</h4>
                                 <div style="margin-left: 15px; background-color: white">
-                                    {% for order_item in order_detail.order.orderitem_set.all %}
+                                    {% for order_item in order_detail.orderitem_set.all %}
                                         <div class="row">
                                             <div class="col-sm-3 col-4">
                                                 {% if  order_item.product.product.product_picture %}

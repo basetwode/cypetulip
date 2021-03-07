@@ -3,7 +3,7 @@ from django.core import management
 from django.core.management import BaseCommand
 from django.utils import timezone
 
-from shop.models.orders import Order
+from shop.models.orders import Order, OrderDetail
 from shop.models.accounts import Company, Contact, Address
 
 
@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         inactive_sessions = Session.objects.filter(expire_date__lte=timezone.now())
-        inactive_orders = Order.objects.filter(session__in=inactive_sessions, orderdetail__state__isnull=True)
+        inactive_orders = OrderDetail.objects.filter(session__in=inactive_sessions, state__isnull=True)
         inactive_contacts = Contact.objects.filter(session__in=inactive_sessions)
         inactive_addresses = Address.objects.filter(contact__in=inactive_contacts)
         company_list = inactive_contacts.values_list('company', flat=True)

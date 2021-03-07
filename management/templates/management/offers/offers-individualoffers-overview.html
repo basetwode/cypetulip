@@ -61,10 +61,15 @@
                                 {% endif %}
                             </div>
                             <div class="col-md-4" style="text-align: left; ">
-                                <img style=" width: 100%; height: auto; max-width: 2vw;"
-                                     src="{% version offer.product.product_picture 'medium' %}"
-                                     alt="..."
-                                     class="img-fluid"/>
+                                {% if product.productimage_set.first  %}
+                                    <img style=" width: 100%; height: auto; max-width: 25vw;"
+                                         src="{% version product.productimage_set.first 'medium' %}"
+                                         alt="..."
+                                         class="img-fluid"/>
+                                {% else %}
+                                    <i style=" "
+                                       class="fa fa-1x fa-image img-thumbnail"></i>
+                                {% endif %}
                                 <strong> {% trans 'Product' %} {{ offer.product.name }}</strong>
                             </div>
                             <div class="col-md-3" style="text-align: left; ">
@@ -86,7 +91,7 @@
                                class=" list-group-item list-group-item-action">
                                 <div class="ps-4 col-md-12">
                                     {% trans 'Order' %}:
-                                    {{ order.orderdetail_set.first.unique_nr }}
+                                    {{ orderdetail.unique_nr }}
                                 </div>
                             </a>
                         {% endfor %}

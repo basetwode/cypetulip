@@ -5,20 +5,13 @@ from rest_framework.permissions import DjangoModelPermissions, IsAdminUser
 from management.api.v1.serializers import CompanySerializer, ProductSerializer, \
     ProductCategorySerializer, ProductAttributeTypeSerializer, \
     ProductAttributeTypeInstanceSerializer, ProductSubItemSerializer, ProductImageSerializer, OrderStateSerializer, \
-    PaymentDetailSerializer, PaymentMethodSerializer, OrderSerializer
+    PaymentDetailSerializer, PaymentMethodSerializer
 from payment.models.main import PaymentDetail, PaymentMethod, Payment
-from shop.models.orders import OrderState, Order
+from shop.models.orders import OrderState
 from shop.models.products import ProductCategory, ProductSubItem, ProductAttributeType, ProductAttributeTypeInstance, \
     Product, ProductImage
 from shop.models.accounts import Company
 from shop.utils import create_hash
-
-
-class OrderViewSet(viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
 
 
 class CompanyViewSet(viewsets.ModelViewSet):

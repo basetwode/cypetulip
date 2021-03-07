@@ -210,12 +210,10 @@ class MergeAccounts(SuccessMessageMixin, LoginRequiredMixin, FormView, NotifyNew
         contact_to_merge_to = form.cleaned_data['leading_contact']
 
         companies = Company.objects.filter(contact__in=contacts_to_merge)
-        orders = Order.objects.filter(company__in=companies)
         order_details = OrderDetail.objects.filter(contact__in=contacts_to_merge)
         addresses = Address.objects.filter(contact__in=contacts_to_merge)
 
-        orders.update(company=contact_to_merge_to.company, session="")
-        order_details.update(contact=contact_to_merge_to)
+        order_details.update(contact=contact_to_merge_to, company=contact_to_merge_to.company, session="")
         addresses.update(contact=contact_to_merge_to)
         # todo: merge addresses to remove dups
         contacts_to_merge.delete()

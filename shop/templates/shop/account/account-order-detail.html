@@ -39,10 +39,7 @@
                                 {% trans 'Orderdate' %}
                             </strong>
                             <div>
-
-                                {% for order_detail in order.orderdetail_set.all %}
-                                    {{ order_detail.date_added }}
-                                {% endfor %}
+                                {{ order_detail.date_added }}
                             </div>
 
                         </div>
@@ -51,18 +48,17 @@
                                 {% trans 'State' %}
                             </strong>
                             <div>
-                                {% for order_detail in order.orderdetail_set.all %}
+                               
                                     {{ order_detail.state.name }}
-                                {% endfor %}
                             </div>
                         </div>
                         <div class="col-md-2 col-sm-2">
                             <strong>{% trans 'Total' %}</strong>
-                            <div>{{ order.orderdetail_set.first.total_discounted_wt|floatformat:2 }} €</div>
+                            <div>{{ order_detail.total_discounted_wt|floatformat:2 }} €</div>
                         </div>
                         <div class="col-md-5 col-sm-5">
                             <strong>Ordernr.:</strong>
-                            <div><small>{{ order.orderdetail_set.first.unique_nr }}</small>
+                            <div><small>{{ order_detail.unique_nr }}</small>
                             </div>
                         </div>
                     </div>
@@ -75,7 +71,7 @@
                                 {% trans 'Payment' %}
                             </strong>
                             <div>
-                                {% for payment in order.paymentdetail_set.all %}
+                                {% for payment in order_detail.paymentdetail_set.all %}
                                     {% trans 'via ' %}{{ payment.method.name }}
                                 {% endfor %}
                             </div>
@@ -84,7 +80,6 @@
                             {% trans 'Tracking' %}
                         </strong>
                             <div>
-                                {% for order_detail in order.orderdetail_set.all %}
                                     {% for shipment in order_detail.shipment_set.all %}
                                         {% if shipment.packageshipment %}
                                             <div>#{{ forloop.counter }}
@@ -93,7 +88,6 @@
                                             <div>#{{ forloop.counter }} {% trans 'Online' %}</div>
                                         {% endif %}
                                     {% endfor %}
-                                {% endfor %}
                             </div>
                         </div>
                         <div class="col-md-2"></div>
@@ -124,16 +118,16 @@
 
                             <form id="order-form">
                                 <input type="submit" hidden id="#submit">
-                                {% for order in order_items %}
+                                {% for order_item in order_items %}
                                     <tr>
                                         <td style="width:50%" data-th="Product">
                                             <input type="hidden"
-                                                   name="[{{ order.id }}][prod]{{ order.product.id }}">
+                                                   name="[{{ order_item.id }}][prod]{{ order_item.product.id }}">
                                             <div class="row">
                                                 <div class="col-5 col-md-2">
-                                                    {% if order.product.product.product_picture %}
+                                                    {% if order_item.product.product.product_picture %}
                                                         <img
-                                                                src="{{ order.product.product.product_picture.url }}"
+                                                                src="{{ order_item.product.product.product_picture.url }}"
                                                                 alt="..."
                                                                 class="img img-thumbnail img-fluid"/>
                                                     {% else %}
@@ -141,26 +135,26 @@
                                                     {% endif %}
                                                 </div>
                                                 <div class="col-7">
-                                                    <h5 class="nomargin">{{ order.count }} x {{ order.product.name }}</h5>
+                                                    <h5 class="nomargin">{{ order_item.count }} x {{ order_item.product.name }}</h5>
                                                 </div>
                                             </div>
                                         </td>
                                         <td style="width:15%" data-th="Price">
-                                            {{ order.price_wt | floatformat:2 }}&euro;
+                                            {{ order_item.price_wt | floatformat:2 }}&euro;
                                         </td>
-                                        <td style="width:27%" id="subtotal-{{ order.id }}" data-th="Subtotal"
+                                        <td style="width:27%" id="subtotal-{{ order_item.id }}" data-th="Subtotal"
                                             class="text-center">
-                                            {{ order.total_wt | floatformat:2 }}&euro;
-                                            {% if order.applied_discount %}<br>
-                                                <small class="mt-1">- {{ order.total_discount_wt }}&euro; ({{ order.order_detail.discount.voucher_id }}
-                                                    {{ order.order_detail.discount.discount_percentage_in_percent }}%)</small>
-                                                <br> <b>{{ order.total_discounted_wt | floatformat:2 }}&euro;</b>
+                                            {{ order_item.total_wt | floatformat:2 }}&euro;
+                                            {% if order_item.applied_discount %}<br>
+                                                <small class="mt-1">- {{ order_item.total_discount_wt }}&euro; ({{ order_item.discount.voucher_id }}
+                                                    {{ order_item.discount.discount_percentage_in_percent }}%)</small>
+                                                <br> <b>{{ order_item.total_discounted_wt | floatformat:2 }}&euro;</b>
                                             {% endif %}
                                         </td>
                                     </tr>
 
-                                    {% for sub_item in order.orderitem_set.all %}
-                                        <tr id="{{ order.id }}-{{ sub_item.id }}"
+                                    {% for sub_item in order_item.orderitem_set.all %}
+                                        <tr id="{{ order_detail.id }}-{{ sub_item.id }}"
                                             style="border-top: none">
                                             <td style="width:70%" colspan="1">
                                                 <div class="col-sm-12 ">
@@ -264,25 +258,25 @@
 
                     <div class="col-lg-3 col-md-12 col-sm-12">
                         <h5 class="h-bold">{% trans 'Options' %}</h5>
-                        <form action="{% url 'shop:detail_order_cancel_order' order.uuid %}" method="post">
+                        <form action="{% url 'shop:detail_order_cancel_order' order_detail.uuid %}" method="post">
                             {% csrf_token %}
-                            <button type="submit" {% if not order_details.state.initial %}disabled{% endif %}
+                            <button type="submit" {% if not order_detail.state.initial %}disabled{% endif %}
                                     class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
                         </form>
-                        <a href="{% url 'shop:detail_order_write_review' order.uuid %}"
+                        <a href="{% url 'shop:detail_order_write_review' order_detail.uuid %}"
                            class="btn btn-fw btn-secondary">{% trans 'Write review' %}</a>
-                        {% if order_details.bill_sent %}
+                        {% if order_detail.bill_sent %}
                             <a class="btn btn-fw btn-secondary"
-                               target="_blank" href="{% url 'invoice_pdf' order.uuid %}"
+                               target="_blank" href="{% url 'invoice_pdf' order_detail.uuid %}"
                             >{% trans 'Bill' %}</a>
                         {% else %}
                             <button class="btn btn-fw btn-secondary" disabled
                             >{% trans 'Bill' %}</button> {% endif %}
-                        {% with api_config|get_var:'account.orders.order.buttons'  as apiconfig %}
+                        {% with api_config|get_var:'account.orders.order_detail.buttons'  as apiconfig %}
                         {% for btn_key, button in apiconfig.items %}
 
-                            {% if button|is_available:order.uuid %}
-                                <a href="{% url button.url order.uuid %}"
+                            {% if button|is_available:order_detail.uuid %}
+                                <a href="{% url button.url order_detail.uuid %}"
                                    class="btn btn-fw btn-secondary">{{ button.text }}</a>
                             {% else %}
                                 <button class="btn btn-fw btn-secondary" disabled
@@ -310,7 +304,6 @@
                             </thead>
 
                             <tbody>
-                            {% for order_detail in order.orderdetail_set.all %}
                                 {% for shipment in order_detail.shipment_set.all %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
@@ -346,7 +339,6 @@
                                         <td></td>
                                     </tr>
                                 {% endfor %}
-                            {% endfor %}
                             </tbody>
                         </table>
                     </div>

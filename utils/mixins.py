@@ -186,13 +186,13 @@ class APIMixin(ContextMixin):
 
 class ObjectSerializer():
     @staticmethod
-    def deserialize(dict):
-        for k, v in dict.items():
+    def deserialize(dictionary):
+        for k, v in dictionary.items():
             if hasattr(v, '_meta'):
                 serialized = {'type': v._meta.object_name, 'id': v.id,
                               'app': v._meta.app_label
                               }
-                dict[k] = serialized
-            if k == 'files':
+                dictionary[k] = serialized
+            if k == 'files' and v:
                 for kfile, vfile in v.items():
-                    dict['files'][kfile] = vfile.path
+                    dictionary['files'][kfile] = vfile.path
