@@ -2,8 +2,8 @@ from django.contrib.auth.mixins import AccessMixin
 from django.contrib.auth.mixins import LoginRequiredMixin as LoginRequired
 from django.contrib.contenttypes.models import ContentType
 
-from shop.models.orders import Order, OrderDetail
-from shop.models.accounts import Company, Contact
+from shop.models.orders import OrderDetail
+from shop.models.accounts import Contact
 
 
 class PermissionPostGetRequiredMixin(AccessMixin):

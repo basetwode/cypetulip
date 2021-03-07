@@ -17,16 +17,14 @@ from six import BytesIO
 from billing.utils import calculate_sum
 from billing.views.main import GeneratePDFFile
 from management.filters.filters import OrderDetailFilter
-from management.forms.forms import OrderDetailForm, OrderForm, OrderItemForm
-from payment.models.main import PaymentDetail, Payment, PaymentMethod, PAYMENTMETHOD_BILL_NAME
+from payment.models.main import PaymentDetail, Payment
 from permissions.views.mixins import LoginRequiredMixin
 from shipping.models.main import Shipment
+from shop.models.accounts import Employee
 from shop.models.orders import OrderState, OrderDetail, OrderItem
-from shop.models.products import Product, IndividualOffer
-from shop.models.accounts import Contact, Employee
+from shop.models.products import Product
 from shop.utils import get_orderitems_once_only
 from shop.utils import json_response
-from shop.views.mixins import WizardView, RepeatableWizardView
 from utils.mixins import EmailMixin, PaginatedFilterViews
 from utils.views import CreateUpdateView
 

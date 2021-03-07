@@ -13,7 +13,7 @@ from django.views.generic.base import ContextMixin
 from home import settings
 from management.models.models import LegalSetting, MailSetting
 from shipping.models.main import OnlineShipment
-from shop.models.orders import Order
+from shop.models.orders import OrderDetail
 
 
 class EmailLogMixin:
@@ -136,7 +136,7 @@ class EmailThread(threading.Thread):
         if 'object' in self.context and isinstance(self.context['object'],OnlineShipment):
             email.attach_file(self.context['object'].file.path)
 
-        if 'object' in self.context and isinstance(self.context['object'], Order):
+        if 'object' in self.context and isinstance(self.context['object'], OrderDetail):
             for order_item in self.context['object'].orderitem_set.filter(orderitem__isnull=True):
                 if hasattr(order_item.product, 'product') and order_item.product.product.product_picture():
 

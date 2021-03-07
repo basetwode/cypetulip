@@ -1,15 +1,12 @@
-from datetime import datetime
-
 from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
-from django.views.generic import View, TemplateView, DetailView, FormView, UpdateView
+from django.views.generic import DetailView, FormView
 
 from shop.forms.shoppingcart_forms import OrderItemForm
-from shop.models.orders import OrderState, OrderDetail, OrderItem
-from shop.models.products import ProductSubItem, Product
 from shop.models.accounts import Contact
+from shop.models.orders import OrderDetail, OrderItem
+from shop.models.products import Product
 
 __author__ = 'Anselm'
 

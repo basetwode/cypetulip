@@ -14,7 +14,7 @@ from billing.utils import calculate_sum
 from permissions.error_handler import raise_401
 from permissions.views.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin, PermissionOwnsObjectMixin
 from shop.filters.filters import OrderDetailFilter
-from shop.models.orders import Order, OrderDetail, OrderItem
+from shop.models.orders import OrderDetail, OrderItem
 from shop.models.products import Product
 from shop.models.accounts import Company, Contact, Address
 from shop.forms.account_forms import CompanyForm, ContactForm

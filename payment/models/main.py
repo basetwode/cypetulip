@@ -4,7 +4,7 @@ from django.core.validators import MaxValueValidator
 from django.db import models
 
 from shop.models.accounts import Contact
-from shop.models.orders import Order, OrderDetail
+from shop.models.orders import OrderDetail
 
 YEAR_CHOICES = [(r, r) for r in range(datetime.datetime.now().year, datetime.datetime.now().year + 11)]
 MONTH_CHOICES = [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10), (11, 11), (12, 12)]

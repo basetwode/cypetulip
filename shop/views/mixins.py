@@ -5,7 +5,7 @@ from django.views import View
 
 from billing.utils import calculate_sum, Round
 from management.models.models import MailSetting
-from shop.models.orders import OrderDetail, OrderItem
+from shop.models.orders import OrderItem
 from shop.models.accounts import Contact
 from utils.mixins import EmailMixin
 from utils.views import CreateUpdateView

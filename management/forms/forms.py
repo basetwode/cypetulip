@@ -2,7 +2,7 @@ from django.forms import ModelForm, CharField, Form, BooleanField, Textarea, for
     ModelChoiceField, FileField
 from django.utils.translation import ugettext_lazy as _
 
-from shop.models.orders import Order, OrderDetail, OrderItem
+from shop.models.orders import OrderDetail, OrderItem
 from shop.models.products import ProductSubItem, Product
 from shop.models.accounts import Company, Contact, Address
 from utils.forms import SearchField, SearchableSelect, SetPasswordForm, SearchableMultiSelect

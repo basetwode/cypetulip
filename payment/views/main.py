@@ -8,7 +8,7 @@ from django.views.generic import CreateView, DetailView
 from payment.forms.main import LegalForm, PaymentFormFactory, get_all_payment_forms_as_dict
 from payment.models.main import Payment, PaymentDetail
 from payment.models.main import PaymentMethod
-from shop.models.orders import Order, OrderDetail, OrderState
+from shop.models.orders import OrderDetail, OrderState
 from shop.models.orders import OrderItem
 from shop.models.products import Product
 from shop.views.mixins import EmailConfirmView

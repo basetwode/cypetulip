@@ -3,7 +3,7 @@ from django.core import management
 from django.core.management import BaseCommand
 from django.utils import timezone
 
-from shop.models.orders import Order, OrderDetail
+from shop.models.orders import OrderDetail
 from shop.models.accounts import Company, Contact, Address
 
 

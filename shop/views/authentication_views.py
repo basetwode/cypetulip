@@ -3,16 +3,15 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.models import Group
 from django.contrib.auth.views import PasswordResetView, LoginView
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.urls import reverse_lazy, reverse
-from django.utils.http import is_safe_url
+from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import View, CreateView, RedirectView
+from django.views.generic import CreateView, RedirectView
 
 from shop.forms.authentication_forms import CompleteCompanyForm, SignUpForm, PasswordResetFormSMTP
-from shop.models.orders import Order, OrderDetail
 from shop.models.accounts import Company, Contact, Address
+from shop.models.orders import OrderDetail
 
 __author__ = ''
 
