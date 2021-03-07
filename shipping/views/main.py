@@ -26,7 +26,7 @@ class CreateOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateV
     order_object = None
 
     def get_success_url(self):
-        return reverse('management_order_detail_view', kwargs={'uuid': self.object.order.order.uuid})
+        return reverse('management_order_detail_view', kwargs={'uuid': self.object.order_detail.uuid})
 
     def form_valid(self, form):
         order: OrderDetail = self.get_order()
@@ -35,8 +35,7 @@ class CreateOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateV
         shipment.order = order
         self.contact = self.get_order().contact
         order.state = OrderState.objects.get(is_sent_state=True)
-        order.order.is_send = True
-        order.order.save()
+        order.is_send = True
         order.save()
         messages.success(self.request, _("Shipment created"))
         return super().form_valid(form)
@@ -101,15 +100,15 @@ class ShowOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerUpdateVie
 
     def get_context_data(self, **kwargs):
         return {**{"page_name": f"{self.page_name} - "
-                                f"{self.object.order_detail.unique_nr()}", "page_info": self.page_info},
+                                f"{self.object.order.unique_nr()}", "page_info": self.page_info},
                 **super().get_context_data()}
 
     def get_success_url(self):
-        return reverse('management_order_detail_view', kwargs={'order': self.object.order_detail.uuid})
+        return reverse('management_order_detail_view', kwargs={'order': self.object.order.uuid})
 
     def form_valid(self, form):
-        self.contact = self.object.order_detail.contact
-        self.order_object = self.object.order_detail
+        self.contact = self.object.order.contact
+        self.order_object = self.object.order
         return super().form_valid(form)
 
 
@@ -125,7 +124,7 @@ class ShowPackageShipment(PermissionPostGetRequiredMixin, UpdateView):
     page_info = _("Update shipment")
 
     def get_success_url(self):
-        return reverse('management_order_detail_view', kwargs={'order': self.get_order().order_detail.uuid})
+        return reverse('management_order_detail_view', kwargs={'order': self.get_order().uuid})
 
     def get_context_data(self, **kwargs):
         return {**{"page_name": f"{self.page_name} - "
@@ -133,7 +132,7 @@ class ShowPackageShipment(PermissionPostGetRequiredMixin, UpdateView):
                 **super().get_context_data()}
 
     def get_order(self):
-        return get_object_or_404(PackageShipment, package=self.object).order_detail
+        return get_object_or_404(PackageShipment, package=self.object).order
 
     def form_valid(self, form):
         self.contact = self.get_order().contact
