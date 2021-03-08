@@ -1,5 +1,7 @@
 from django.conf.urls import url
+from django.urls import include
 
+from shipping.api import routes
 from shipping.views.main import CreateOnlineShipment, CreatePackageShipment, ShowOnlineShipment, ShowPackageShipment, \
     DeleteShipment
 
@@ -9,6 +11,7 @@ __author__ = ''
 app_name = "shipping"
 
 urlpatterns = [
+    url(r'^api/v1/', include(routes.router.urls)),
     url(r'^onlineshipment/create/(?P<order>[a-zA-Z0-9\\s\-_ ]+)$', CreateOnlineShipment.as_view(),
         name='onlineshipment_create'),
     url(r'^packageshipment/create/(?P<order>[a-zA-Z0-9\\s\-_ ]+)$', CreatePackageShipment.as_view(),

@@ -174,7 +174,7 @@
                 loadData: function (year) {
                     if (year) {
                         const vm = this;
-                        return axios.get(`/api/v1/orderdetails/?orderYear=${year}`)
+                        return axios.get(`/shop/api/v1/orderdetails/?orderYear=${year}`)
                             .then(response => {
                                 vm.ordersPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
                                 vm.amountPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];

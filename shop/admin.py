@@ -1,15 +1,14 @@
 from django.contrib import admin
 
 # Register your models here.
-from shop.models.accounts import Address, Company, Employee, Contact
-from shop.models.orders import OrderItemState, OrderState, Discount, FixedAmountDiscount, PercentageDiscount, Order, \
+from shop.models.accounts import Address, Company, Employee, Contact, WorkingTime
+from shop.models.orders import OrderItemState, OrderState, Discount, FixedAmountDiscount, PercentageDiscount, \
     OrderDetail, OrderItem, FileOrderItem, SelectOrderItem, CheckBoxOrderItem, NumberOrderItem
 from shop.models.products import ProductCategory, ProductSubItem, FileSubItem, FileExtensionItem, SelectSubItem, \
     SelectItem, NumberSubItem, CheckBoxSubItem, ProductAttributeType, ProductAttributeTypeInstance, Product, \
     ProductImage, IndividualOffer
 
 admin.site.register(Address)
-admin.site.register(Order)
 admin.site.register(Company)
 admin.site.register(Contact)
 admin.site.register(Employee)
@@ -37,3 +36,4 @@ admin.site.register(IndividualOffer)
 admin.site.register(ProductSubItem)
 admin.site.register(FixedAmountDiscount)
 admin.site.register(PercentageDiscount)
+admin.site.register(WorkingTime)

@@ -23,7 +23,6 @@ from accounting import urls as accounting_urls
 from billing import urls as billing_urls
 from cms import urls as cms_urls
 from management import urls as admin_urls
-from management.api import routes
 from mediaserver import urls as media_urls
 from payment import urls as payment_urls
 from permissions import urls as perm_urls
@@ -44,7 +43,6 @@ site.storage = default_storage
 
 urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls')),
-    url(r'^api/v1/', include(routes.router.urls)),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
