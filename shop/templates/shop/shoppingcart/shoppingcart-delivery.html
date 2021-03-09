@@ -525,18 +525,18 @@
             },
             methods: {
                 reloadData: function () {
-                    axios.get('/api/v1/addresses')
+                    axios.get('/shop/api/v1/addresses')
                         .then(response => {
                             this.addresses = response.data
                         });
-                    axios.get('/api/v1/contacts')
+                    axios.get('/shop/api/v1/contacts')
                         .then(response => {
                             this.contact = response.data
                         });
                 },
                 applyVoucher: function () {
                     let instance = this;
-                    axios.post('/api/v1/voucher/', {'uuid': this.order, 'voucher': this.voucher}, {
+                    axios.post('/shop/api/v1/voucher/', {'uuid': this.order, 'voucher': this.voucher}, {
                         headers: {
                             'X-CSRFToken': this.csrfmiddlewaretoken
                         }
@@ -577,7 +577,7 @@
                     };
                     loadingSpinner = $('#loading-spinner');
                     loadingSpinner.removeClass('overlay-hidden');
-                    axios.post('/api/v1/accounts/', {
+                    axios.post('/shop/api/v1/accounts/', {
                         address, contact
                     })
                         .then(response => {
@@ -608,7 +608,7 @@
                     loadingSpinner.removeClass('overlay-hidden');
                     shipment = this.shipment;
                     billing = this.billing;
-                    axios.post('/api/v1/deliveries/', {
+                    axios.post('/shop/api/v1/deliveries/', {
                         order,
                         shipment,
                         billing

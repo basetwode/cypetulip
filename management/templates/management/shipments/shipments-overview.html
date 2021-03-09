@@ -52,7 +52,7 @@
                             {% trans 'Online' %}{% endif %}</td>
 
                         <td>
-                            <a href="{% url 'management_order_detail_view' shipment.order.order.uuid %}">{{ shipment.order.unique_nr }}</a>
+                            <a href="{% url 'management_order_detail_view' shipment.order.uuid %}">{{ shipment.order.unique_nr }}</a>
                         </td>
 
                         <td>
@@ -77,7 +77,7 @@
 
                             <a href="#" class="btn btn-fw btn-outline-dark" data-bs-toggle="modal"
                                data-bs-target="#delete-modal-{{ shipment.id }}">{% trans 'Delete' %}</a>
-                            {% include 'management/generic/generic-modal-delete.html' with id=shipment.id uuid=shipment.order.order.uuid url='shipping:shipment_delete' url_param='subitem_delete_id' %}
+                            {% include 'management/generic/generic-modal-delete.html' with id=shipment.id uuid=shipment.order.uuid url='shipping:shipment_delete' url_param='subitem_delete_id' %}
                         </td>
                     </tr>
                 {% endfor %}

@@ -87,17 +87,6 @@ class PercentageDiscount(Discount):
         return int(self.discount_percentage * 100)
 
 
-class Order(models.Model):
-    uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, null=True, blank=True)
-    order_id = models.IntegerField(null=True, blank=True)
-    is_send = models.BooleanField(default=False)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Company'))
-    token = models.CharField(max_length=25, blank=True, null=True)
-    session = models.CharField(max_length=40, blank=True, null=True)
-    individual_offer_request = models.ForeignKey(IndividualOffer, on_delete=models.SET_NULL, blank=True, null=True,
-                                                 editable=False)
-
-
 class OrderDetail(models.Model):
     uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, null=True, blank=True)
     is_send = models.BooleanField(default=False)
@@ -113,8 +102,8 @@ class OrderDetail(models.Model):
     date_bill = models.DateTimeField(null=True, blank=True)
     bill_sent = models.BooleanField(default=False, blank=True)
     bill_file = models.FileField(default=None, null=True,
-                            upload_to=invoice_files_upload_handler,
-                            storage=fs)
+                                 upload_to=invoice_files_upload_handler,
+                                 storage=fs)
     bill_number = models.IntegerField(default=None, blank=True, null=True)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Contact'))
     shipment_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True,
@@ -283,7 +272,8 @@ class OrderItem(models.Model):
              update_fields=None, recalculate_tax=False):
         price_changed = self.price_changed()
 
-        if (not self.order_detail.state or not self.price) and price_changed and self.product and not self.product.price_on_request:
+        if (
+                not self.order_detail.state or not self.price) and price_changed and self.product and not self.product.price_on_request:
             self.price = self.get_product_special_price() if self.get_product_special_price() else self.get_product_price()
             self.price_wt = self.get_product_price_wt()
             self.applied_discount = 0
@@ -360,10 +350,11 @@ class OrderItem(models.Model):
         if not self.allowable:
             return 0
         sub_items = OrderItem.objects.filter(order_item=self)
-        sum = (calculate_sum(sub_items, True, include_discount)  + (
+        sum = (calculate_sum(sub_items, True, include_discount) + (
             (float(self.price_wt) if not include_discount else self.price_discounted_wt) \
-            if sub_items.count() > 0 else 0 + float(self.price_wt) if not include_discount else self.price_discounted_wt)) * \
-               self.count
+                if sub_items.count() > 0 else 0 + float(
+                self.price_wt) if not include_discount else self.price_discounted_wt)) * \
+              self.count
         return Decimal(f"{sum}") \
             .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
@@ -373,7 +364,7 @@ class OrderItem(models.Model):
         sub_items = OrderItem.objects.filter(order_item=self)
         return (calculate_sum(sub_items, False, include_discount) + (
             self.price if not include_discount else self.price_discounted) \
-            if sub_items.count() > 0 else 0 + self.price if not include_discount else self.price_discounted)  * \
+                    if sub_items.count() > 0 else 0 + self.price if not include_discount else self.price_discounted) * \
                self.count
 
     def total_discounted(self):
@@ -406,19 +397,19 @@ class OrderItem(models.Model):
 
     def get_product_price_wt(self):
         return (self.calculate_tax(self.get_product_special_price()) if self.get_product_special_price() else
-                      self.calculate_tax(self.get_product_price()))
+                self.calculate_tax(self.get_product_price()))
 
     def get_product_price_b(self):
         return (self.get_product_special_price() if self.get_product_special_price() else
-                      self.get_product_price())
-
+                self.get_product_price())
 
     def price_changed(self):
         return \
-            (not self.price_wt or self.price_wt != self.calculate_tax(self.price)) if hasattr(self, 'fileorderitem') else \
-            self.checkboxorderitem.price_changed() if hasattr(self, 'checkboxorderitem') else \
-                self.selectorderitem.price_changed() if hasattr(self, 'selectorderitem') else \
-                    (not self.price_wt or self.price_wt != self.calculate_tax(self.price))
+            (not self.price_wt or self.price_wt != self.calculate_tax(self.price)) if hasattr(self,
+                                                                                              'fileorderitem') else \
+                self.checkboxorderitem.price_changed() if hasattr(self, 'checkboxorderitem') else \
+                    self.selectorderitem.price_changed() if hasattr(self, 'selectorderitem') else \
+                        (not self.price_wt or self.price_wt != self.calculate_tax(self.price))
 
 
 class FileOrderItem(OrderItem):
@@ -451,7 +442,8 @@ class CheckBoxOrderItem(OrderItem):
         return self.product.special_price if self.is_checked else 0
 
     def price_changed(self):
-        return (not self.price_wt and self.is_checked) or (not not self.price_wt and not self.is_checked) or not self.price_wt
+        return (not self.price_wt and self.is_checked) or (
+                not not self.price_wt and not self.is_checked) or not self.price_wt
 
 
 class NumberOrderItem(OrderItem):

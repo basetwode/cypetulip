@@ -1,10 +1,8 @@
-
-from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from rma import buttons
 
-api = {
+view_api = {
     'shop': {
         'account.orders.order.buttons':
             {

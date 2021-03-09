@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.urls import include
 
+from management.api import routes
 from management.views.account_views import CustomersOverview, MergeAccounts, CompanyCreationView, CompanyDeleteView, \
     AddressCreationView, AddressDeleteView, ContactCreationView, ContactDeleteView, ContactResetPwdView, \
     CustomerImportView
@@ -29,6 +30,7 @@ from shop.views.account_views import SearchOrders, SearchCustomers
 urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
     url(r'^$', ManagementView.as_view(), name="management_index"),
+    url(r'^api/v1/', include(routes.router.urls)),
     url(r'^shipments/$', ShipmentOverview.as_view(), name="shipments_overview"),
 
     url(r'^orders(/(?P<number_of_orders>[0-9]*)/(?P<page>[0-9]*))?/$', ManagementOrderOverview.as_view(),

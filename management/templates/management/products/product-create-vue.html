@@ -169,22 +169,22 @@
             methods: {
                 reloadData: function () {
                     var instance = this;
-                    axios.get('/api/v1/productattributetypes')
+                    axios.get('/shop/api/v1/productattributetypes')
                         .then(response => {
                             this.productAttributeTypes = response.data
                         });
                     if (this.selectedProductId) {
-                        axios.get('/api/v1/product/' + this.selectedProductId + '/productimage')
+                        axios.get('/shop/api/v1/product/' + this.selectedProductId + '/productimage')
                             .then(response => {
                                 this.productImages = response.data
                             })
                     }
 
-                    axios.get('/api/v1/productattributetypeinstances')
+                    axios.get('/shop/api/v1/productattributetypeinstances')
                         .then(response => {
                             this.productAttributeTypeInstances = response.data
                             if (this.selectedProductId) {
-                                axios.get('/api/v1/products/' + this.selectedProductId).then(
+                                axios.get('/shop/api/v1/products/' + this.selectedProductId).then(
                                     response => {
                                         this.selectedProduct = response.data
                                         this.selectedAttributes = this.productAttributeTypeInstances.filter(function (attributeInstance) {
@@ -198,7 +198,7 @@
                     console.log('Hello from ' + type + '!')
                 },
                 addProductAttributeType: function () {
-                    axios.post('/api/v1/productattributetypes/', {
+                    axios.post('/shop/api/v1/productattributetypes/', {
                         'name': this.newTypeName, 'csrfmiddlewaretoken':
                         this.csrfmiddlewaretoken
                     })
@@ -215,7 +215,7 @@
 
                 },
                 addProductAttributeTypeInstance: function () {
-                    axios.post('/api/v1/productattributetypeinstances/', {
+                    axios.post('/shop/api/v1/productattributetypeinstances/', {
                         'value': this.newTypeInstanceName,
                         'type': this.selectedType.url
                     })
@@ -225,7 +225,7 @@
                 },
                 deleteProductImage: function (img) {
                     let instance = this;
-                    axios.delete('/api/v1/productimage/' + img.id)
+                    axios.delete('/shop/api/v1/productimage/' + img.id)
                         .then(response => {
                             instance.reloadData()
                         })
@@ -241,7 +241,7 @@
                         var formData = new FormData();
                         formData.append('product', instance.selectedProductId);
                         formData.append('product_picture', entry);
-                        axios.post('/api/v1/productimage/', formData)
+                        axios.post('/shop/api/v1/productimage/', formData)
                             .then(response => {
                                 instance.reloadData()
                             })

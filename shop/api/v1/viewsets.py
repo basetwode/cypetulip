@@ -1,21 +1,33 @@
 import secrets
 
 from django.utils.translation import ugettext_lazy as _
-from rest_framework import viewsets, status
+from rest_framework import status
+from rest_framework import viewsets
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny
+from rest_framework.permissions import DjangoModelPermissions, IsAdminUser
 from rest_framework.response import Response
 
-from management.api.v1.serializers import FullOrderItemSerializer, FullFileOrderItemSerializer, \
-    FullCheckboxOrderItemSerializer, FullNumberOrderItemSerializer, FullSelectOrderItemSerializer
 from shop.api.v1.serializers import AddressSerializer, BasicContactSerializer, OrderShipmentSerializer, \
     VoucherSerializer, BasicOrderItemSerializer, BasicFileOrderItemSerializer, \
     BasicSelectOrderItemSerializer, \
-    BasicNumberOrderItemSerializer, BasicCheckboxOrderItemSerializer, OrderDetailSerializer, FullOrderDetailSerializer
-from shop.models.orders import Discount, OrderDetail, OrderItem, FileOrderItem, SelectOrderItem, \
-    CheckBoxOrderItem, NumberOrderItem
-from shop.models.accounts import Company, Contact, Address
-from shop.utils import create_hash
+    BasicNumberOrderItemSerializer, BasicCheckboxOrderItemSerializer, OrderDetailSerializer, FullOrderDetailSerializer, \
+    FullOrderItemSerializer, FullFileOrderItemSerializer, \
+    FullCheckboxOrderItemSerializer, FullNumberOrderItemSerializer, FullSelectOrderItemSerializer, \
+    CompanySerializer, ProductSerializer, \
+    ProductCategorySerializer, ProductAttributeTypeSerializer, \
+    ProductAttributeTypeInstanceSerializer, ProductSubItemSerializer, ProductImageSerializer, OrderStateSerializer, \
+    FileExtensionItemSerializer, \
+    SelectItemSerializer, OrderItemStateSerializer, IndividualOfferSerializer, FixedAmountDiscountSerializer, \
+    PercentageDiscountSerializer, WorkingTimeSerializer
+from shop.models.accounts import Address, Contact, WorkingTime, Company
+from shop.models.orders import OrderItem, CheckBoxOrderItem, NumberOrderItem, \
+    SelectOrderItem, FileOrderItem, OrderState, OrderDetail, Discount, OrderItemState, PercentageDiscount, \
+    FixedAmountDiscount
+from shop.models.products import Product, ProductCategory, ProductAttributeType, ProductAttributeTypeInstance, \
+    ProductSubItem, \
+    ProductImage, SelectItem, FileExtensionItem, \
+    IndividualOffer
 
 
 class GuestViewSet(viewsets.ViewSet):
@@ -152,7 +164,6 @@ class DeliveryViewSet(viewsets.ViewSet):
             return Response(order_serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(order_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class OrderItemViewSet(viewsets.ModelViewSet):
@@ -294,3 +305,102 @@ class ApplyVoucherViewSet(viewsets.ViewSet):
             return Response(voucher_serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(voucher_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CompanyViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class ProductCategoryViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = ProductCategory.objects.all()
+    serializer_class = ProductCategorySerializer
+
+
+class ProductAttributeTypeViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = ProductAttributeType.objects.all()
+    serializer_class = ProductAttributeTypeSerializer
+
+
+class ProductAttributeTypeInstanceViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = ProductAttributeTypeInstance.objects.all()
+    serializer_class = ProductAttributeTypeInstanceSerializer
+
+
+class ProductSubItemViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = ProductSubItem.objects.all()
+    serializer_class = ProductSubItemSerializer
+
+
+class ProductImageViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = ProductImage.objects.all()
+    serializer_class = ProductImageSerializer
+
+
+class ProductImageViewSetForProduct(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = ProductImage.objects.all()
+    serializer_class = ProductImageSerializer
+
+    def get_queryset(self):
+        return super(ProductImageViewSetForProduct, self).get_queryset().filter(product=self.kwargs['id'])
+
+
+class OrderStateViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = OrderState.objects.all()
+    serializer_class = OrderStateSerializer
+
+
+class FileExtensionItemViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = FileExtensionItem.objects.all()
+    serializer_class = FileExtensionItemSerializer
+
+
+class SelectItemViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = SelectItem.objects.all()
+    serializer_class = SelectItemSerializer
+
+
+class OrderItemStateViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = OrderItemState.objects.all()
+    serializer_class = OrderItemStateSerializer
+
+
+class IndividualOfferViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = IndividualOffer.objects.all()
+    serializer_class = IndividualOfferSerializer
+
+
+class PercentageDiscountViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = PercentageDiscount.objects.all()
+    serializer_class = PercentageDiscountSerializer
+
+
+class FixedAmountDiscountViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = FixedAmountDiscount.objects.all()
+    serializer_class = FixedAmountDiscountSerializer
+
+
+class WorkingTimeSerializerViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = WorkingTime.objects.all()
+    serializer_class = WorkingTimeSerializer

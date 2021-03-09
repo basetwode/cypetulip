@@ -120,7 +120,7 @@
                                         <p><small v-html="subproduct.description">
                                         </small>
                                         </p>
-                                        <form enctype="multipart/form-data" action="/api/v1/orderitem"
+                                        <form enctype="multipart/form-data" action="/shop/api/v1/orderitem"
                                               :class="{'was-validated': (was_validated &&  order_items_subproduct.dirty)}"
                                               method="post" :ref="'form-'+order_items_subproduct.randID">
                                             <div v-if="order_items_subproduct.product.filesubitem"
@@ -349,7 +349,7 @@
             methods: {
                 reloadData: function () {
                     let instance = this
-                    axios.get('/api/v1/orderdetails?orderHash=' + this.uuid)
+                    axios.get('/shop/api/v1/orderdetails?orderHash=' + this.uuid)
                         .then(response => {
                             if (Array.isArray(response.data)) {
 
@@ -525,7 +525,7 @@
                 },
                 deleteItem: function (uri, id) {
                     loadingSpinner = $('#loading-spinner').removeClass('overlay-hidden');
-                    axios.delete('/api/v1/' + uri + id + "/", {
+                    axios.delete('/shop/api/v1/' + uri + id + "/", {
                         headers: {
                             'X-CSRFToken': this.csrfmiddlewaretoken
                         }
@@ -541,7 +541,7 @@
                 postItem: function (formData, uri, subItem) {
                     let instance = this;
                     loadingSpinner = $('#loading-spinner').removeClass('overlay-hidden');
-                    return axios.post('/api/v1/' + uri, formData, {
+                    return axios.post('/shop/api/v1/' + uri, formData, {
                         headers: {
                             'X-CSRFToken': this.csrfmiddlewaretoken
                         }
@@ -561,7 +561,7 @@
                 putItem: function (formData, uri, id, subItem, callback) {
                     let instance = this;
                     loadingSpinner = $('#loading-spinner').removeClass('overlay-hidden');
-                    return axios.put('/api/v1/' + uri + id + "/", formData, {
+                    return axios.put('/shop/api/v1/' + uri + id + "/", formData, {
                         headers: {
                             'X-CSRFToken': this.csrfmiddlewaretoken
                         }

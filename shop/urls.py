@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
-from django.views.generic import RedirectView
 
+from shop.api import routes
 from shop.views.account_views import *
 from shop.views.authentication_views import *
 from shop.views.product_views import *
@@ -10,6 +10,7 @@ __author__ = ''
 app_name = 'shop'
 
 urlpatterns = [
+    url(r'^api/v1/', include(routes.router.urls)),
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^$', RedirectView.as_view(url='/cms/home/'), name='home'),
     url(r'^login/$', LoginAuthenticationView.as_view(), name='login'),

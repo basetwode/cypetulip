@@ -2,88 +2,55 @@ import django_filters
 from rest_framework import viewsets
 from rest_framework.permissions import DjangoModelPermissions, IsAdminUser
 
-from management.api.v1.serializers import CompanySerializer, ProductSerializer, \
-    ProductCategorySerializer, ProductAttributeTypeSerializer, \
-    ProductAttributeTypeInstanceSerializer, ProductSubItemSerializer, ProductImageSerializer, OrderStateSerializer, \
-    PaymentDetailSerializer, PaymentMethodSerializer
-from payment.models.main import PaymentDetail, PaymentMethod, Payment
-from shop.models.orders import OrderState
-from shop.models.products import ProductCategory, ProductSubItem, ProductAttributeType, ProductAttributeTypeInstance, \
-    Product, ProductImage
-from shop.models.accounts import Company
-from shop.utils import create_hash
+from management.api.v1.serializers import MailSettingSerializer, LdapSettingSerializer, ShopSettingSerializer, \
+    LegalSettingSerializer, HeaderSerializer, FooterSerializer, CacheSettingSerializer
+from management.models.models import MailSetting, LdapSetting, ShopSetting, LegalSetting, Header, Footer, CacheSetting
 
 
-class CompanyViewSet(viewsets.ModelViewSet):
+class MailSettingViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
+    queryset = MailSetting.objects.all()
+    serializer_class = MailSettingSerializer
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
 
 
-class ProductViewSet(viewsets.ModelViewSet):
+class LdapSettingViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    queryset = LdapSetting.objects.all()
+    serializer_class = LdapSettingSerializer
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
 
 
-class ProductCategoryViewSet(viewsets.ModelViewSet):
+class ShopSettingViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = ProductCategory.objects.all()
-    serializer_class = ProductCategorySerializer
+    queryset = ShopSetting.objects.all()
+    serializer_class = ShopSettingSerializer
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
 
 
-class ProductAttributeTypeViewSet(viewsets.ModelViewSet):
+class LegalSettingViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = ProductAttributeType.objects.all()
-    serializer_class = ProductAttributeTypeSerializer
+    queryset = LegalSetting.objects.all()
+    serializer_class = LegalSettingSerializer
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
 
 
-class ProductAttributeTypeInstanceViewSet(viewsets.ModelViewSet):
+class HeaderViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = ProductAttributeTypeInstance.objects.all()
-    serializer_class = ProductAttributeTypeInstanceSerializer
+    queryset = Header.objects.all()
+    serializer_class = HeaderSerializer
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
 
 
-class ProductSubItemViewSet(viewsets.ModelViewSet):
+class FooterViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = ProductSubItem.objects.all()
-    serializer_class = ProductSubItemSerializer
+    queryset = Footer.objects.all()
+    serializer_class = FooterSerializer
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
 
 
-class ProductImageViewSet(viewsets.ModelViewSet):
+class CacheSettingViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = ProductImage.objects.all()
-    serializer_class = ProductImageSerializer
-
-
-class ProductImageViewSetForProduct(viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = ProductImage.objects.all()
-    serializer_class = ProductImageSerializer
-
-    def get_queryset(self):
-        return super(ProductImageViewSetForProduct, self).get_queryset().filter(product=self.kwargs['id'])
-
-
-class OrderStateViewSet(viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = OrderState.objects.all()
-    serializer_class = OrderStateSerializer
-
-
-class PaymentDetailAdmViewSet(viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = PaymentDetail.objects.all()
-    serializer_class = PaymentDetailSerializer
-
-    def perform_create(self, serializer):
-        payment_details = super(PaymentDetailAdmViewSet, self).perform_create(serializer)
-        payment = Payment(is_paid=False, details=serializer.instance, token=create_hash())
-        payment.save()
-        return payment_details
-
-
-class PaymentMethodAdmViewSet(viewsets.ModelViewSet):
-    permission_classes = [DjangoModelPermissions, IsAdminUser]
-    queryset = PaymentMethod.objects.all()
-    serializer_class = PaymentMethodSerializer
+    queryset = CacheSetting.objects.all()
+    serializer_class = CacheSettingSerializer
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]

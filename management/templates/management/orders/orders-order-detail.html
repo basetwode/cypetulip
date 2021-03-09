@@ -231,7 +231,7 @@
                                         {% if order.applied_discount %}<br>
                                             <small class="mt-1">-{{ order.total_discount }}
                                                 ({{ order.discount.discount_percentage_in_percent }}%
-                                                {{ order.order.voucher_id }})</small>
+                                                {{ order.voucher_id }})</small>
                                             <br> <b>{{ order_detail.total_discounted|floatformat:"2" }} &euro;</b>
                                         {% endif %}
                                     </td>

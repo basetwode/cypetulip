@@ -2,12 +2,14 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
-from management.api.v1.serializers import CompanySerializer
-from shop.models.orders import Discount, OrderDetail, OrderItem, FileOrderItem, SelectOrderItem, CheckBoxOrderItem, \
-    NumberOrderItem
-from shop.models.products import ProductSubItem, FileSubItem, SelectSubItem, SelectItem, NumberSubItem, CheckBoxSubItem, \
-    Product, ProductImage
-from shop.models.accounts import Company, Contact, Address
+from shop.models.accounts import Address, Contact, WorkingTime, Company
+from shop.models.orders import OrderItem, CheckBoxOrderItem, NumberOrderItem, \
+    SelectOrderItem, FileOrderItem, OrderState, OrderDetail, Discount, OrderItemState, PercentageDiscount, \
+    FixedAmountDiscount
+from shop.models.products import Product, ProductCategory, ProductAttributeType, ProductAttributeTypeInstance, \
+    ProductSubItem, \
+    ProductImage, FileSubItem, SelectItem, SelectSubItem, CheckBoxSubItem, NumberSubItem, FileExtensionItem, \
+    IndividualOffer
 
 
 class FileSubItemSerializer(serializers.ModelSerializer):
@@ -156,7 +158,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderDetail
-        fields = ['uuid', 'order', 'order_items', 'id', 'voucher', 'total_wt', 'total', 'date_bill']
+        fields = ['uuid', 'order_items', 'id', 'voucher', 'total_wt', 'total', 'date_bill']
         depth = 4
 
     def get_order_items(self, order):
@@ -207,6 +209,15 @@ class OrderItemSerializer(serializers.ModelSerializer):
         return True
 
 
+class CompanySerializer(serializers.ModelSerializer):
+    def create(self, request):
+        return Company.objects.create(**request)
+
+    class Meta:
+        model = Company
+        fields = '__all__'
+
+
 class BasicContactSerializer(serializers.ModelSerializer):
     company = CompanySerializer()
 
@@ -255,3 +266,123 @@ class VoucherSerializer(serializers.Serializer):
         voucher_applied = order_detail.apply_voucher(voucher)
         if not voucher_applied:
             raise serializers.ValidationError(_('Voucher code not eligible'))
+
+
+class ProductAttributeTypeSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = ProductAttributeType
+        fields = '__all__'
+
+
+class ProductAttributeTypeInstanceSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = ProductAttributeTypeInstance
+        fields = '__all__'
+
+
+class ProductCategorySerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = ProductCategory
+        fields = '__all__'
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = '__all__'
+
+
+class FullOrderItemSerializer(serializers.ModelSerializer):
+    total_wt = serializers.ReadOnlyField()
+    period_of_performance_start = serializers.DateField(input_formats=['%Y-%m-%d', ], required=False)
+    period_of_performance_end = serializers.DateField(input_formats=['%Y-%m-%d', ], required=False)
+
+    class Meta:
+        model = OrderItem
+        fields = '__all__'
+
+
+class FullFileOrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FileOrderItem
+        fields = '__all__'
+
+
+class FullSelectOrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SelectOrderItem
+        fields = '__all__'
+
+
+class FullNumberOrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NumberOrderItem
+        fields = '__all__'
+
+
+class FullCheckboxOrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CheckBoxOrderItem
+        fields = '__all__'
+
+    def validate_is_checked(self, value):
+
+        product = ProductSubItem.objects.get(id=self.initial_data['product'])
+        if product.checkboxsubitem.is_required and not value:
+            raise serializers.ValidationError(_('This field is required'))
+        else:
+            return value
+
+
+class OrderStateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderState
+        fields = '__all__'
+
+
+class FileExtensionItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FileExtensionItem
+        fields = '__all__'
+
+
+class SelectItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SelectItem
+        fields = '__all__'
+
+
+class OrderItemStateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItemState
+        fields = '__all__'
+
+
+class IndividualOfferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IndividualOffer
+        fields = '__all__'
+
+
+class PercentageDiscountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PercentageDiscount
+        fields = '__all__'
+
+
+class FixedAmountDiscountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FixedAmountDiscount
+        fields = '__all__'
+
+
+class WorkingTimeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkingTime
+        fields = '__all__'

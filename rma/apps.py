@@ -1,12 +1,11 @@
 from django.apps import AppConfig
 
-
-from rma.api import api
+from rma.view_api import view_api
 
 
 class RMAConfig(AppConfig):
     name = 'rma'
-    api = api
+    api = view_api
 
     def ready(self):
         try:
