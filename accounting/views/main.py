@@ -28,7 +28,7 @@ class AccountingView(LoginRequiredMixin, PaginatedFilterViews, FilterView, Multi
         open_order_state_id = OrderState.objects.get(initial=True).id
         total_gross = reduce(lambda total, order_detail_total: total + order_detail_total,
                              [order_detail.total_discounted_wt() for order_detail in filter.qs], 0)
-        last_orders = OrderDetail.objects.all()[:5]
+        last_orders = OrderDetail.objects.all().order_by('-date_added')[:5]
 
         counted_open_orders = OrderDetail.objects.filter(state__initial=True).count()
         counted_open_shipments = OrderDetail.objects.filter(state__is_paid_state=True).count()
@@ -48,5 +48,4 @@ class AccountingView(LoginRequiredMixin, PaginatedFilterViews, FilterView, Multi
                                                                      'counted_open_shipments': counted_open_shipments,
                                                                      'last_orders': last_orders,
                                                                      'open_order_state_id': open_order_state_id,
-                                                                     'stock': stock_page_obj,
-                                                                     'amount_per_month': ''}}
+                                                                     'stock': stock_page_obj}}
