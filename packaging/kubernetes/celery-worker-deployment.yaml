@@ -1,10 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\Program Files\dart-sass\kompose.exe convert
-    kompose.version: 1.21.0 (992df58d8)
-  creationTimestamp: null
   labels:
     io.kompose.service: celery-worker
   name: celery-worker
@@ -16,10 +12,6 @@ spec:
   strategy: {}
   template:
     metadata:
-      annotations:
-        kompose.cmd: C:\Program Files\dart-sass\kompose.exe convert
-        kompose.version: 1.21.0 (992df58d8)
-      creationTimestamp: null
       labels:
         io.kompose.service: celery-worker
     spec:
@@ -82,10 +74,11 @@ spec:
             configMapKeyRef:
               key: SESSION_COOKIE_AGE
               name: packaging-cypetulip--env-cypetulip-prod
-        image: celery-worker
-        imagePullPolicy: ""
+        image: git.bwk-technik.de:5005/basetwo/cypetulip/cypetulip:latest
         name: celery-worker
-        resources: {}
+        resources: { }
+      imagePullSecrets:
+        - name: gitlab-cypetulip
       restartPolicy: Always
       serviceAccountName: ""
       volumes: null

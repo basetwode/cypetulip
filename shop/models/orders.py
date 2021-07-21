@@ -12,7 +12,7 @@ from drf_spectacular.utils import extend_schema_field
 
 from billing.utils import calculate_sum_order, calculate_sum
 from mediaserver.upload import invoice_files_upload_handler, fs, order_files_upload_handler
-from shop.models.accounts import Company, Employee, Contact, Address
+from shop.models.accounts import Company, Contact, Address
 from shop.models.products import Product, ProductCategory, IndividualOffer, ProductSubItem, SelectItem
 
 
@@ -21,6 +21,10 @@ class OrderItemState(models.Model):
     next_state = models.ForeignKey(
         'self', on_delete=models.CASCADE, null=True, blank=True, related_name='previous_state',
         verbose_name=_('Next state'))
+
+    class Meta:
+        verbose_name = _("OrderItemState")
+        verbose_name_plural = _("OrderItemStates")
 
 
 class OrderState(models.Model):
@@ -35,6 +39,7 @@ class OrderState(models.Model):
 
     class Meta:
         verbose_name = _('Order State')
+        verbose_name_plural = _('Order States')
 
     # todo states have corresponding actions that also need to be linked!
 
@@ -74,14 +79,32 @@ class Discount(models.Model):
 
     class Meta:
         verbose_name = _('Discount')
+        verbose_name_plural = _('Discounts')
+
+    def __str__(self):
+        return self.voucher_id
 
 
 class FixedAmountDiscount(Discount):
     amount = models.FloatField(default=0)
 
+    def __str__(self):
+        return self.voucher_id
+
+    class Meta:
+        verbose_name = _("FixedAmountDiscount")
+        verbose_name_plural = _("FixedAmountDiscounts")
+
 
 class PercentageDiscount(Discount):
     discount_percentage = models.FloatField(default=0)
+
+    def __str__(self):
+        return self.voucher_id
+
+    class Meta:
+        verbose_name = _("PercentageDiscount")
+        verbose_name_plural = _("PercentageDiscounts")
 
     def discount_percentage_in_percent(self):
         return int(self.discount_percentage * 100)
@@ -96,7 +119,8 @@ class OrderDetail(models.Model):
                                                  editable=False)
     date_added = models.DateTimeField(auto_now_add=True)
     assigned_employee = models.ForeignKey(
-        Employee, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Assigned employee'))
+        Contact, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Assigned employee'),
+        related_name='employee')
     state = models.ForeignKey(OrderState, on_delete=models.CASCADE, null=True,
                               blank=True, verbose_name=_('State'))
     date_bill = models.DateTimeField(null=True, blank=True)
@@ -116,6 +140,13 @@ class OrderDetail(models.Model):
     discount_code = models.CharField(default="", max_length=20, blank=True, null=True, editable=False)
     discount_amount = models.FloatField(default=0, blank=True, null=True, editable=False)
     discount_percentage = models.FloatField(default=0, blank=True, null=True, editable=False)
+
+    def __str__(self):
+        return self.uuid.__str__()
+
+    class Meta:
+        verbose_name = _("OrderDetail")
+        verbose_name_plural = _("OrderDetails")
 
     @staticmethod
     def create_new_order(request):
@@ -253,7 +284,7 @@ class OrderItem(models.Model):
     order_item = models.ForeignKey(
         'OrderItem', on_delete=models.CASCADE, null=True, blank=True, )
     employee = models.ForeignKey(
-        Employee, on_delete=models.CASCADE, null=True, blank=True, )
+        Contact, on_delete=models.CASCADE, null=True, blank=True, )
     additional_text = models.CharField(max_length=200, null=True, blank=True)
     state = models.ForeignKey(
         OrderItemState, on_delete=models.CASCADE, null=True, blank=True, )
@@ -267,6 +298,10 @@ class OrderItem(models.Model):
     period_of_performance_start = models.DateTimeField(null=True, blank=True)
     period_of_performance_end = models.DateTimeField(null=True, blank=True)
     allowable = models.BooleanField(default=True, blank=True, null=True)
+
+    class Meta:
+        verbose_name = _("OrderItem")
+        verbose_name_plural = _("OrderItems")
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None, recalculate_tax=False):
@@ -418,9 +453,17 @@ class FileOrderItem(OrderItem):
                             storage=fs)
     file_name = models.CharField(max_length=200, blank=True)
 
+    class Meta:
+        verbose_name = _("FileOrderItem")
+        verbose_name_plural = _("FileOrderItems")
+
 
 class SelectOrderItem(OrderItem):
     selected_item = models.ForeignKey(SelectItem, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _("SelectOrderItem")
+        verbose_name_plural = _("SelectOrderItems")
 
     def get_product_price(self):
         return self.selected_item.price if self.selected_item else 0
@@ -435,6 +478,10 @@ class SelectOrderItem(OrderItem):
 class CheckBoxOrderItem(OrderItem):
     is_checked = models.BooleanField()
 
+    class Meta:
+        verbose_name = _("CheckBoxOrderItem")
+        verbose_name_plural = _("CheckBoxOrderItems")
+
     def get_product_price(self):
         return self.product.price if self.is_checked else 0
 
@@ -448,6 +495,10 @@ class CheckBoxOrderItem(OrderItem):
 
 class NumberOrderItem(OrderItem):
     number = models.IntegerField()
+
+    class Meta:
+        verbose_name = _("NumberOrderItem")
+        verbose_name_plural = _("NumberOrderItems")
 
 
 @receiver(pre_delete, sender=FileOrderItem)

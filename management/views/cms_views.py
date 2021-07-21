@@ -6,8 +6,8 @@ from django.views.generic import DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
 
-from cms.models.models import Page, Section
-from management.models.models import Header, Footer
+from cms.models.main import Page, Section
+from management.models.main import Header, Footer
 from permissions.views.mixins import LoginRequiredMixin
 from shop.filters.filters import ProductCategoryFilter, SectionFilter, \
     PageFilter, FooterFilter, HeaderFilter

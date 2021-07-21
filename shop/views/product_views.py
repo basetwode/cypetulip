@@ -12,7 +12,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic import ListView, FormView, DetailView
 
-from cms.models.models import Section
+from cms.models.main import Section
 from home.settings import CACHE_MIDDLEWARE_SECONDS
 from shop.forms.product_forms import ProductAttributeForm, IndividualOfferForm
 from shop.models.accounts import Contact

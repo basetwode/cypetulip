@@ -4,9 +4,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.views import View
 
 from billing.utils import calculate_sum, Round
-from management.models.models import MailSetting
-from shop.models.orders import OrderItem
+from management.models.main import MailSetting
 from shop.models.accounts import Contact
+from shop.models.orders import OrderItem
 from utils.mixins import EmailMixin
 from utils.views import CreateUpdateView
 

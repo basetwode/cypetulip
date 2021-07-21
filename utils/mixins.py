@@ -11,7 +11,7 @@ from django.views import View
 from django.views.generic.base import ContextMixin
 
 from home import settings
-from management.models.models import LegalSetting, MailSetting
+from management.models.main import LegalSetting, MailSetting
 from shipping.models.main import OnlineShipment
 from shop.models.orders import OrderDetail
 

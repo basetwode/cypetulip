@@ -5,7 +5,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from management.models.models import ShopSetting
+from management.models.main import ShopSetting
 from shop.models.products import ProductAttributeType, IndividualOffer
 
 

@@ -3,8 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 
 __author__ = 'Anselm'
 
-from cms.models.models import Page
-from management.models.models import Header, Footer, CacheSetting
+from cms.models.main import Page
+from management.models.main import Header, Footer, CacheSetting
 from payment.models.main import PaymentMethod
 from shop.models.orders import OrderItem, OrderDetail
 from shop.models.products import ProductCategory, Product

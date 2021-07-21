@@ -8,9 +8,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View, TemplateView, FormView
 
 from cms.forms.forms import ContactForm, CSSSettingForm
-from cms.models.models import Page, Section
+from cms.models.main import Page, Section
 from home.settings import STATIC_ROOT
-from management.models.models import MailSetting, LegalSetting, CacheSetting
+from management.models.main import MailSetting, LegalSetting, CacheSetting
 from permissions.error_handler import raise_404
 # Create your views here.
 from permissions.views.mixins import LoginRequiredMixin
@@ -37,16 +37,15 @@ class CSSSettingsView(LoginRequiredMixin, FormView):
         from django.contrib.staticfiles import finders
         result_f = finders.find('base.scss')
         template = open(result_f, 'r')
-        form={}
+        form = {}
         for line in template.readlines():
             if line.startswith("$"):
                 line = line.split(":")
-                form.setdefault(line[0],line[1].replace(";\n","").strip(" "))
-        return {**context, **{'form':form}}
-
+                form.setdefault(line[0], line[1].replace(";\n", "").strip(" "))
+        return {**context, **{'form': form}}
 
     def get_success_url(self):
-        return reverse_lazy('css-settings', kwargs={'css_settings_id':1})
+        return reverse_lazy('css-settings', kwargs={'css_settings_id': 1})
 
     def form_valid(self, form):
         result = super(CSSSettingsView, self).form_valid(form)
@@ -58,9 +57,9 @@ class CSSSettingsView(LoginRequiredMixin, FormView):
         for line in template.readlines():
             if line.startswith("$"):
                 line = line.split(":")
-                new_template += line[0]+": "+form.data[line[0]]+";\n"
+                new_template += line[0] + ": " + form.data[line[0]] + ";\n"
             else:
-                new_template+=line
+                new_template += line
         template.close()
         out = open(result_f, 'w')
         out.writelines(new_template)
@@ -82,21 +81,11 @@ class GenericView(View):
         if page.count() == 1:
             page = page[0]
             if page.is_enabled:
-                if page.link:
-                    sections = Section.objects.filter(page=page)
-                    return render(request, 'cms/index.html',
-                                  {'page': page, 'sections': sections, 'all_pages': all_pages})
-                else:
-                    sections = Section.objects.filter(page=page)
-                    return render(request, 'cms/index.html',
-                                  {'page': page, 'sections': sections, 'all_pages': all_pages})
+                sections = Section.objects.filter(page=page)
+                return render(request, 'cms/index.html',
+                              {'page': page, 'sections': sections, 'all_pages': all_pages})
 
-        # <view logic>
         return raise_404(request)
-
-    def post(self, request, site):
-        # <view logic>
-        return HttpResponse('GenericSite')
 
 
 class PermissionDeniedView(TemplateView):

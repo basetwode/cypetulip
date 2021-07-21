@@ -62,6 +62,7 @@ class Contact(DjangoUser):
 
     class Meta:
         verbose_name = _('Contact')
+        verbose_name_plural = _('Contacts')
 
     def save(self, force_insert=False, force_update=False, using=None,
          update_fields=None):
@@ -85,21 +86,16 @@ class Address(models.Model):
                                 verbose_name=_('Contact'))
 
     class Meta:
-        verbose_name_plural = "Addresses"
         verbose_name = _('Address')
+        verbose_name_plural = _("Addresses")
 
     def __str__(self):
         return self.contact.__str__() + " | " + self.name
 
 
-class Employee(models.Model):
-    user = models.OneToOneField(DjangoUser, on_delete=models.CASCADE, default=None)
-    first_name = models.CharField(max_length=100, verbose_name=_('Firstname'))
-    last_name = models.CharField(max_length=100, verbose_name=_('Lastname'))
+class WorkingTime(models.Model):
+    employee = models.ForeignKey(Contact, on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name = _('Employee')
-
-
-class WorkingTime(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+        verbose_name = _('WorkingTime')
+        verbose_name_plural = _('WorkingTimes')

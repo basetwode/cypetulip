@@ -54,6 +54,7 @@ RUN set -ex \
     libjpeg-dev \
     libopenjp2-7 \
     libtiff5 \
+    bash\
     " \
     && apt-get update && apt-get install -y --no-install-recommends $BUILD_DEPS \
     && rm -rf /var/lib/apt/lists/*

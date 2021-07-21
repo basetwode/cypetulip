@@ -26,6 +26,7 @@ class Page(models.Model):
 
     class Meta:
         verbose_name = _('Page')
+        verbose_name_plural = _("Pages")
 
     def __str__(self):
         return self.page_name
@@ -51,7 +52,9 @@ class Section(models.Model):
                                upload_to=public_files_upload_handler,
                                storage=fs)
 
+    def __str__(self):
+        return _('Section of ') + self.page.page_name
+
     class Meta:
         verbose_name = _('Section')
-
-
+        verbose_name_plural = _('Sections')

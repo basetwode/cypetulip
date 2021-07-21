@@ -14,6 +14,13 @@ class MailSetting(models.Model):
     stmp_use_tls = models.BooleanField(max_length=100)
     smtp_default_from = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.smtp_server
+
+    class Meta:
+        verbose_name = _('MailSetting')
+        verbose_name_plural = _('MailSettings')
+
 
 class LdapSetting(models.Model):
     ldap_server = models.CharField(max_length=100)
@@ -24,10 +31,21 @@ class LdapSetting(models.Model):
     ldap_user_filter = models.CharField(max_length=1000)
     ldap_group_filter = models.CharField(max_length=1000)
 
+    def __str__(self):
+        return self.ldap_server
+
+    class Meta:
+        verbose_name = _('LdapSetting')
+        verbose_name_plural = _('LdapSettings')
+
 
 class ShopSetting(models.Model):
     google_recaptcha_publickey = models.CharField(max_length=100)
     google_recaptcha_privatekey = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name = _('ShopSetting')
+        verbose_name_plural = _('ShopSettings')
 
 
 class LegalSetting(models.Model):
@@ -49,6 +67,13 @@ class LegalSetting(models.Model):
     general_business_term = HTMLField(null=True, blank=True, default=None)
     privacy_policy = HTMLField(null=True, blank=True, default=None)
 
+    def __str__(self):
+        return self.company_name
+
+    class Meta:
+        verbose_name = _('LegalSetting')
+        verbose_name_plural = _('LegalSettings')
+
 
 class Layout(models.IntegerChoices):
     ONE_COLUMN = 1, _('One Column Layout')
@@ -64,6 +89,13 @@ class Header(models.Model):
     content_column_one = HTMLField(_('Content Column One'), null=True, blank=True)
     content_column_two = HTMLField(_('Content Column Two'), null=True, blank=True)
     content_column_three = HTMLField(_('Content Column Three'), null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Header')
+        verbose_name_plural = _('Headers')
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -90,6 +122,13 @@ class Footer(models.Model):
     content_column_two = HTMLField(_('Content Column Two'), null=True, blank=True)
     content_column_three = HTMLField(_('Content Column Three'), null=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Footer')
+        verbose_name_plural = _('Footers')
+
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         enabled_footers = Footer.objects.filter(is_enabled=True, language=self.language).exclude(id=self.id)
@@ -107,3 +146,7 @@ class Footer(models.Model):
 class CacheSetting(models.Model):
     css_js_cache_enabled = models.BooleanField(verbose_name=_('Is CSS/JS cache enabled'), default=True)
     cache_clear_required = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = _('CacheSetting')
+        verbose_name_plural = _('CacheSettings')

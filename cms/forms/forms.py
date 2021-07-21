@@ -5,7 +5,7 @@ from django.forms import BooleanField, CharField, EmailField
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from management.models.models import ShopSetting
+from management.models.main import ShopSetting
 
 
 class ContactForm(forms.Form):

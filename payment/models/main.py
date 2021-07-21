@@ -2,6 +2,7 @@ import datetime
 
 from django.core.validators import MaxValueValidator
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from shop.models.accounts import Contact
 from shop.models.orders import OrderDetail
@@ -17,6 +18,13 @@ class PaymentProvider(models.Model):
     secret = models.CharField(max_length=200)
     use_sandbox = models.BooleanField(default=True, blank=True)
 
+    def __str__(self):
+        return self.api
+
+    class Meta:
+        verbose_name = _('PaymentProvider')
+        verbose_name_plural = _('PaymentProviders')
+
 
 class PaymentMethod(models.Model):
     name = models.CharField(max_length=30)
@@ -24,9 +32,20 @@ class PaymentMethod(models.Model):
     provider = models.ForeignKey(PaymentProvider, on_delete=models.CASCADE, blank=True, null=True)
     enabled = models.BooleanField(default=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('PaymentMethod')
+        verbose_name_plural = _('PaymentMethods')
+
 
 class CardType(models.Model):
     name = models.CharField(max_length=20)
+
+    class Meta:
+        verbose_name = _('CardType')
+        verbose_name_plural = _('CardTypes')
 
     def __str__(self):
         return self.name
@@ -36,6 +55,10 @@ class PaymentDetail(models.Model):
     order_detail = models.ForeignKey(OrderDetail, on_delete=models.CASCADE, null=True, blank=True)
     method = models.ForeignKey(PaymentMethod, on_delete=models.CASCADE)
     user = models.ForeignKey(Contact, on_delete=models.CASCADE, blank=True)
+
+    class Meta:
+        verbose_name = _('PaymentDetail')
+        verbose_name_plural = _('PaymentDetails')
 
     def delete(self, using=None, keep_parents=False):
         self.payment_set.delete()
@@ -50,13 +73,24 @@ class CreditCard(PaymentDetail):
     expiry_month = models.IntegerField(choices=MONTH_CHOICES, default=datetime.datetime.now().month)
     cvv = models.PositiveIntegerField(validators=[MaxValueValidator(999)])
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('CreditCard')
+        verbose_name_plural = _('CreditCards')
+
 
 class Bill(PaymentDetail):
-    pass
+    class Meta:
+        verbose_name = _('Bill')
+        verbose_name_plural = _('Bills')
 
 
 class Prepayment(PaymentDetail):
-    pass
+    class Meta:
+        verbose_name = _('Prepayment')
+        verbose_name_plural = _('Prepayments')
 
 
 class PayPal(PaymentDetail):
@@ -64,11 +98,22 @@ class PayPal(PaymentDetail):
     paypal_transaction_id = models.CharField(max_length=70, blank=True, null=True, default="")
     paypal_payer_id = models.CharField(max_length=70, blank=True, null=True, default="")
 
+    def __str__(self):
+        return self.paypal_payer_id
+
+    class Meta:
+        verbose_name = _('PayPal')
+        verbose_name_plural = _('PayPal')
+
 
 class Payment(models.Model):
     is_paid = models.BooleanField()
     token = models.CharField(max_length=100)
     details = models.ForeignKey(PaymentDetail, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _('Payment')
+        verbose_name_plural = _('Payments')
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):

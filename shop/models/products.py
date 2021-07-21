@@ -25,9 +25,12 @@ class ProductCategory(models.Model):
 
     class Meta:
         verbose_name = _('Category')
+        verbose_name_plural = _('Categories')
 
     def build_path(self, path=""):
-        return self.mother_category.build_path(self.name+("-"+path if path else "")) if self.mother_category else self.name+("-"+path if path else "")
+        return self.mother_category.build_path(
+            self.name + ("-" + path if path else "")) if self.mother_category else self.name + (
+            "-" + path if path else "")
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -47,6 +50,10 @@ class ProductSubItem(models.Model):
     is_required = models.BooleanField(default=False, verbose_name=_('Is required'))
     is_multiple_per_item = models.BooleanField(default=False, verbose_name=_('Is multiple per item'))
     is_once_per_order = models.BooleanField(default=False, verbose_name=_('Is once per order'))
+
+    class Meta:
+        verbose_name = _('ProductSubItem')
+        verbose_name_plural = _('ProductSubItems')
 
     def __str__(self):
         if hasattr(self, 'product'):
@@ -69,47 +76,66 @@ class ProductSubItem(models.Model):
 
 
 class FileSubItem(ProductSubItem):
-    # name = models.CharField(max_length=20)
     extensions = models.CharField(max_length=200, null=True, blank=True, default="")
     file = models.FileField(default=None, null=True, blank=True,
                             upload_to=order_files_upload_handler, storage=fs)
+
+    class Meta:
+        verbose_name = _('FileSubItem')
+        verbose_name_plural = _('FileSubItems')
 
 
 class FileExtensionItem(models.Model):
     extension = models.CharField(max_length=30)
     file = models.ForeignKey(FileSubItem, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = _('FileExtensionItem')
+        verbose_name_plural = _('FileExtensionItems')
+
 
 class SelectSubItem(ProductSubItem):
-    pass
-    # name = models.CharField(max_length=20)
+    class Meta:
+        verbose_name = _('SelectSubItem')
+        verbose_name_plural = _('SelectSubItems')
 
 
 class SelectItem(models.Model):
     name = models.CharField(max_length=40)
     select = models.ForeignKey(SelectSubItem, on_delete=models.CASCADE)
-    price = models.FloatField(verbose_name=_('Price'),default=0)
+    price = models.FloatField(verbose_name=_('Price'), default=0)
     tax = models.FloatField(default=0.19, blank=False, null=False, verbose_name=_('Tax'))
+
+    class Meta:
+        verbose_name = _('SelectItem')
+        verbose_name_plural = _('SelectItems')
 
     def __str__(self):
         return self.name
 
     def price_wt(self):
-        return Decimal(f"{self.price * (1 + self.tax)}")\
+        return Decimal(f"{self.price * (1 + self.tax)}") \
             .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
 class NumberSubItem(ProductSubItem):
-    pass
-    # name = models.CharField(max_length=20)
+    class Meta:
+        verbose_name = _('NumberSubItem')
+        verbose_name_plural = _('NumberSubItems')
 
 
 class CheckBoxSubItem(ProductSubItem):
-    pass
+    class Meta:
+        verbose_name = _('CheckBoxSubItem')
+        verbose_name_plural = _('CheckBoxSubItems')
 
 
 class ProductAttributeType(models.Model):
     name = models.CharField(max_length=100, db_index=True)
+
+    class Meta:
+        verbose_name = _('ProductAttributeType')
+        verbose_name_plural = _('ProductAttributeTypes')
 
     def __str__(self):
         return self.name
@@ -121,6 +147,8 @@ class ProductAttributeTypeInstance(models.Model):
 
     class Meta:
         ordering = ['type']
+        verbose_name = _('ProductAttributeTypeInstance')
+        verbose_name_plural = _('ProductAttributeTypeInstances')
 
     def __str__(self):
         return self.type.__str__() + " | " + self.value
@@ -138,7 +166,7 @@ class Product(ProductSubItem):
 
     class Meta:
         verbose_name = _('Product')
-
+        verbose_name_plural = _('Products')
 
     def decrease_stock(self, number_of_items=1):
         self.stock = self.stock - number_of_items if self.stock > 0 else self.stock
@@ -152,10 +180,11 @@ class Product(ProductSubItem):
         return f"{self.stock if self.stock > -1 else '~'}"
 
     def is_stock_sufficient(self, order):
-        order_items_count_with_product = order.orderitem_set.filter(product=self)\
-            .aggregate(count=Sum('count'))['count'] or 0
+        order_items_count_with_product = order.orderitem_set.filter(product=self) \
+                                             .aggregate(count=Sum('count'))['count'] or 0
 
-        return self.stock == -1 or (self.stock > order_items_count_with_product), self.stock - order_items_count_with_product
+        return self.stock == -1 or (
+                self.stock > order_items_count_with_product), self.stock - order_items_count_with_product
 
     def product_picture(self):
         return self.productimage_set.first().product_picture if self.productimage_set.count() > 0 else None
@@ -164,11 +193,12 @@ class Product(ProductSubItem):
         from django.db.models import Count
         from shop.models.orders import OrderItem
         from shop.models.orders import OrderDetail
-        related_orderitems = OrderItem.objects.filter(order_detail__in=OrderDetail.objects.filter(orderitem__product=self),
-                                                      order_item__isnull=True).exclude(product=self).order_by('product')
-        return Product.objects.all()\
-            .annotate(ocount=Count('orderitem', filter=Q(orderitem__in=related_orderitems)))\
-            .filter(ocount__gt=0)\
+        related_orderitems = OrderItem.objects.filter(
+            order_detail__in=OrderDetail.objects.filter(orderitem__product=self),
+            order_item__isnull=True).exclude(product=self).order_by('product')
+        return Product.objects.all() \
+            .annotate(ocount=Count('orderitem', filter=Q(orderitem__in=related_orderitems))) \
+            .filter(ocount__gt=0) \
             .order_by('-ocount')
 
     def get_related_products(self):
@@ -182,6 +212,10 @@ class ProductImage(models.Model):
                                         storage=fs, verbose_name=_('Product picture'))
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = _('ProductImage')
+        verbose_name_plural = _('ProductImages')
+
 
 class IndividualOffer(models.Model):
     date_added = models.DateTimeField(auto_now=True, blank=True)
@@ -192,8 +226,12 @@ class IndividualOffer(models.Model):
     product = models.ForeignKey(Product, editable=False, null=True, on_delete=models.SET_NULL,
                                 verbose_name=_('Product'))
 
+    def __str__(self):
+        return self.mail + ' | ' + self.message
+
     def is_new(self):
         return (datetime.now().date() - self.date_added.date()).days < 3
 
     class Meta:
         verbose_name = _('Individual offer')
+        verbose_name_plural = _('Individual offers')

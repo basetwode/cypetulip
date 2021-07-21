@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from cms.models.models import Page, Section
+from cms.models.main import Page, Section
 
 
 class PageSerializer(serializers.ModelSerializer):

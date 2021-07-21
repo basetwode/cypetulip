@@ -9,12 +9,11 @@ from django.shortcuts import render
 # Create your views here.
 from django.template.loader import get_template
 from django.views import View
-from django.views.generic import DetailView
 from xhtml2pdf import pisa
 
 from billing.utils import calculate_sum, Round
 from home import settings
-from management.models.models import LegalSetting
+from management.models.main import LegalSetting
 from payment.models.main import PaymentDetail
 from permissions.views.mixins import PermissionOwnsObjectMixin
 from shop.models.orders import OrderDetail, OrderItem

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from management.models.models import LegalSetting, MailSetting, LdapSetting, Footer, Header, CacheSetting, ShopSetting
+from management.models.main import LegalSetting, MailSetting, LdapSetting, Footer, Header, CacheSetting, ShopSetting
 
 admin.site.register(LegalSetting)
 admin.site.register(MailSetting)

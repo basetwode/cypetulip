@@ -4,7 +4,7 @@ from rest_framework.permissions import DjangoModelPermissions, IsAdminUser
 
 from management.api.v1.serializers import MailSettingSerializer, LdapSettingSerializer, ShopSettingSerializer, \
     LegalSettingSerializer, HeaderSerializer, FooterSerializer, CacheSettingSerializer
-from management.models.models import MailSetting, LdapSetting, ShopSetting, LegalSetting, Header, Footer, CacheSetting
+from management.models.main import MailSetting, LdapSetting, ShopSetting, LegalSetting, Header, Footer, CacheSetting
 
 
 class MailSettingViewSet(viewsets.ModelViewSet):

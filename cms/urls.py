@@ -3,7 +3,7 @@ from django.urls import include
 from django.views.decorators.cache import cache_page
 
 from cms.api import routes
-from cms.views.views import *
+from cms.views.main import *
 from home.settings import CACHE_MIDDLEWARE_SECONDS
 
 __author__ = ''

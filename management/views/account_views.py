@@ -12,12 +12,12 @@ from django_filters.views import FilterView
 
 from management.forms.forms import ContactUserForm, ContactUserIncludingPasswordForm, ContactUserUpdatePasswordForm, \
     MergeAccountsForm, CustomerImportForm
-from management.models.models import LegalSetting
+from management.models.main import LegalSetting
 from management.views.mixins import NotifyNewCustomerAccountView
 from permissions.views.mixins import LoginRequiredMixin
 from shop.filters.filters import ContactFilter
-from shop.models.orders import OrderDetail
 from shop.models.accounts import Company, Contact, Address
+from shop.models.orders import OrderDetail
 from shop.views.mixins import WizardView, RepeatableWizardView
 from utils.mixins import PaginatedFilterViews
 

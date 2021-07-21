@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic.edit import FormView
 
 from management.forms.forms import PaymentProviderForm, ClearCacheForm
-from management.models.models import LdapSetting, MailSetting, LegalSetting, ShopSetting, CacheSetting
+from management.models.main import LdapSetting, MailSetting, LegalSetting, ShopSetting, CacheSetting
 from payment.models.main import PaymentMethod, PaymentProvider
 from permissions.views.mixins import LoginRequiredMixin
 from utils.views import CreateUpdateView

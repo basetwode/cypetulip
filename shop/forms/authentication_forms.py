@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from home import settings
-from management.models.models import MailSetting
+from management.models.main import MailSetting
 from shop.models.accounts import Company, Contact
 
 

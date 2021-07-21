@@ -1,5 +1,3 @@
-from django.apps import AppConfig, apps
-
 from utils.apps import BaseConfig
 
 
@@ -21,12 +19,12 @@ class WebappConfig(BaseConfig):
                 admin_contact.save()
 
             from shop.models.orders import OrderState
-            from management.models.models import LegalSetting
+            from management.models.main import LegalSetting
             legal_settings = LegalSetting.objects.all()
             if legal_settings.count() ==0:
                 ls = LegalSetting(company_name="Shop", street="")
                 ls.save()
-            from management.models.models import CacheSetting
+            from management.models.main import CacheSetting
             cache_settings = CacheSetting.objects.all()
             if cache_settings.count() ==0:
                 cs = CacheSetting(css_js_cache_enabled=False, cache_clear_required=False)
@@ -49,4 +47,3 @@ class WebappConfig(BaseConfig):
         except Exception as e:
             print("DB not migrated")
         super(WebappConfig, self).ready()
-

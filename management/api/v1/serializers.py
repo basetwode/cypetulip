@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from management.models.models import MailSetting, LdapSetting, ShopSetting, LegalSetting, Header, CacheSetting, Footer
+from management.models.main import MailSetting, LdapSetting, ShopSetting, LegalSetting, Header, CacheSetting, Footer
 
 
 class MailSettingSerializer(serializers.ModelSerializer):

@@ -20,7 +20,7 @@ from management.filters.filters import OrderDetailFilter
 from payment.models.main import PaymentDetail, Payment
 from permissions.views.mixins import LoginRequiredMixin
 from shipping.models.main import Shipment
-from shop.models.accounts import Employee
+from shop.models.accounts import Contact
 from shop.models.orders import OrderState, OrderDetail, OrderItem
 from shop.models.products import Product
 from shop.utils import get_orderitems_once_only
@@ -48,7 +48,7 @@ class ManagementOrderDetailView(LoginRequiredMixin, DetailView):
     filterset_class = OrderDetailFilter
 
     def get_context_data(self, **kwargs):
-        employees = Employee.objects.all()
+        employees = Contact.objects.filter(is_staff=True)
         _payment_details = None
         _payment = None
         try:
@@ -71,7 +71,7 @@ class ManagementOrderDetailView(LoginRequiredMixin, DetailView):
 class OrderAssignEmployeeView(LoginRequiredMixin, View):
     def post(self, request, uuid):
         _order = OrderDetail.objects.get(uuid=uuid)
-        _employee = Employee.objects.get(id=request.POST['id'])
+        _employee = Contact.objects.get(id=request.POST['id'])
         _order.assigned_employee = _employee
         try:
             _order.save()
@@ -127,10 +127,10 @@ class OrderAcceptInvoiceView(View, EmailMixin):
 
         if _order.state.initial:
             _order.state = _order.state.next_state
-            _order.assigned_employee = Employee.objects.get(user=request.user)
+            _order.assigned_employee = Contact.objects.get(user=request.user)
         if not _order.date_bill:
             _order.date_bill = datetime.now()
-            _order.assigned_employee = Employee.objects.get(user=request.user)
+            _order.assigned_employee = Contact.objects.get(user=request.user)
         _order.bill_sent = True
         _order.save()
         try:
