@@ -20,7 +20,7 @@ def company_files_upload_handler(company, filename):
 
 def order_files_upload_handler(order, filename):
     order.file_name = filename
-    return "orders/{hash}/order/{file}".format(hash=order.uuid, file=__create_hash(filename))
+    return "orders/{hash}/order/{file}".format(hash=order.order_detail.uuid, file=__create_hash(filename))
 
 
 def invoice_files_upload_handler(order, filename):

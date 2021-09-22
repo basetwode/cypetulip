@@ -178,11 +178,17 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
 
 class FullOrderDetailSerializer(OrderDetailSerializer):
+    id = serializers.ReadOnlyField()
     unique_nr = serializers.ReadOnlyField()
 
     class Meta:
         model = OrderDetail
         fields = '__all__'
+
+    def create(self, request):
+        contact = request.get('contact', None)
+        request['company'] = contact.company
+        return OrderDetail.objects.create(**request)
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -277,7 +283,7 @@ class VoucherSerializer(serializers.Serializer):
             raise serializers.ValidationError(_('Voucher code not eligible'))
 
 
-class ProductAttributeTypeSerializer(serializers.HyperlinkedModelSerializer):
+class ProductAttributeTypeSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
 
     class Meta:
@@ -285,7 +291,7 @@ class ProductAttributeTypeSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 
-class ProductAttributeTypeInstanceSerializer(serializers.HyperlinkedModelSerializer):
+class ProductAttributeTypeInstanceSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
 
     class Meta:
@@ -293,7 +299,7 @@ class ProductAttributeTypeInstanceSerializer(serializers.HyperlinkedModelSeriali
         fields = '__all__'
 
 
-class ProductCategorySerializer(serializers.HyperlinkedModelSerializer):
+class ProductCategorySerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
 
     class Meta:

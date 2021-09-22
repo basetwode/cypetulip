@@ -188,7 +188,7 @@
                                     response => {
                                         this.selectedProduct = response.data
                                         this.selectedAttributes = this.productAttributeTypeInstances.filter(function (attributeInstance) {
-                                            return instance.selectedProduct.attributes.includes(attributeInstance.url)
+                                            return instance.selectedProduct.attributes.includes(attributeInstance.id)
                                         }).map(attribute => attribute.id)
                                     })
                             }
@@ -210,14 +210,14 @@
                 },
                 getTypeName: function (name) {
                     return this.productAttributeTypes.filter(function (type) {
-                        return type.url === name;
+                        return type.id === name;
                     })[0].name;
 
                 },
                 addProductAttributeTypeInstance: function () {
                     axios.post('/shop/api/v1/productattributetypeinstances/', {
                         'value': this.newTypeInstanceName,
-                        'type': this.selectedType.url
+                        'type': this.selectedType.id
                     })
                         .then(response => {
                             this.productAttributeTypeInstances.push(response.data)
@@ -250,7 +250,6 @@
                 filterByType: function () {
                     var instance = this;
                     return this.productAttributeTypeInstances.filter(function (typeInstance) {
-                        return typeInstance.type === instance.selectedType.url;
                     })
                 }
             }

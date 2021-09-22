@@ -90,6 +90,7 @@ class OrderDetailViewSet(viewsets.ModelViewSet):
                 return queryset.filter(uuid=uuid)
             if order_year is not None:
                 return queryset.filter(date_bill__year=order_year)
+            return queryset
         if request.user.is_authenticated:
             contact = Contact.objects.filter(user_ptr=request.user)
             if contact:

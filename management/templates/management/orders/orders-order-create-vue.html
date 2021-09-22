@@ -559,7 +559,6 @@
                     loadingSpinner.removeClass('overlay-hidden');
                     var instance = this;
                     var orderPromise = null;
-                    var orderdetailsPromise = null;
                     var billPreview = null;
 
                     if (this.selectedOrderHash) {
@@ -574,11 +573,7 @@
                                 }));
                                 this.selectedOrder = response.data[0];
                                 this.selectedOrderId = this.selectedOrder.id;
-                                this.orderItems = this.selectedOrder.order_items
-
-                            });
-                        orderdetailsPromise = axios.get('/shop/api/v1/orderdetails?uuid=' + this.selectedOrderHash)
-                            .then(response => {
+                                this.orderItems = this.selectedOrder.order_items;
                                 this.orderDetails = response.data[0];
                                 this.selectedContact = this.orderDetails.contact;
                                 this.selectedShippingAddress = this.orderDetails.shipment_address;
@@ -592,7 +587,7 @@
                         billPreview = this.getBillPreview();
 
                     }
-                    return [orderdetailsPromise, orderPromise, billPreview];
+                    return [orderPromise, billPreview];
 
                 },
                 showPreview: function () {
@@ -623,7 +618,7 @@
                         .then(response => {
                             this.addresses = response.data
                         });
-                    this.saveOrder();
+                    this.saveOrderDetail();
                 },
                 onProductSelected: function (item) {
                     var product = this.products.filter(product => {
@@ -677,7 +672,6 @@
                     let formData = new FormData();
                     formData.append("id", item.id);
                     formData.append("product", item.product.id);
-                    formData.append("order", this.selectedOrder.id);
                     formData.append("order_detail", this.orderDetails.id);
                     formData.append("allowable", item.allowable);
                     formData.append("price", item.price);
@@ -710,7 +704,7 @@
                     if (item.selectorderitem && item.selectorderitem.selected_item.id) return 'selectorderitem';
                     return 'orderitem';
                 },
-                saveOrder: function () {
+               /** saveOrder: function () {
                     let instance = this;
                     if (!this.selectedOrderHash) {
                         axios.post('/shop/api/v1/order/', {'company': this.contacts.filter(c => c.id === this.selectedContact)[0].company.id})
@@ -726,31 +720,32 @@
                         axios.put('/shop/api/v1/order/' + this.selectedOrder.id + '/', {'company': this.contacts.filter(c => c.id === this.selectedContact)[0].company.id})
                     }
 
-                },
+                },**/
                 saveOrderDetail: function () {
+                    let instance = this;
                     if (this.orderDetails) {
                         axios.put('/shop/api/v1/orderdetails/' + this.orderDetails.id + '/', {
                             'shipment_address': this.selectedShippingAddress,
                             'billing_address': this.selectedBillingAddress,
                             'uuid': this.selectedOrderHash,
-                            'order': this.selectedOrder.id,
-                            'contact': this.selectedContact
+                            'contact': this.selectedContact,
                         }).catch(() => {
                             loadingSpinner = $('#loading-spinner');
                             loadingSpinner.addClass('overlay-hidden');
                         })
                     } else {
                         axios.post('/shop/api/v1/orderdetails/', {
-                            'uuid': this.selectedOrderHash,
-                            // in this case we do't need order.id since the data came from a different rest api (see saveOrder)
-                            'order': this.selectedOrder.id,
                             'state': this.orderStates.filter(state => state.initial === true)[0].id,
                             'shipment_address': this.selectedShippingAddress,
                             'billing_address': this.selectedBillingAddress,
                             'contact': this.selectedContact
                         }).then(response => {
+                            instance.selectedOrderHash = response.data.uuid;
+                            instance.selectedOrderId = response.data.id;
+                            instance.orderDetails = response.data;
+                            this.selectedOrder = response.data;
                             axios.post('/payment/api/v1/paymentdetail/', {
-                                'order': this.selectedOrder.id,
+                                'order_detail': this.selectedOrder.id,
                                 'method': this.paymentMethods.filter(method => method.name === 'Bill')[0].id,
                                 'user': this.selectedContact
                             }).then(response => {
