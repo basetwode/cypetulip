@@ -9,3 +9,4 @@ def rma_init_available(uuid):
     config = ReturnMerchandiseAuthorizationConfig.objects.first()
     is_eligible = (order.date_bill + timedelta(days=config.retention_time) > timezone.now()) if order.date_bill else True
     return is_eligible
+

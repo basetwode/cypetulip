@@ -46,7 +46,7 @@ class NumberSubItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class BasicProductSerializer(serializers.ModelSerializer):
     product_picture = serializers.SerializerMethodField('get_image')
 
     class Meta:
@@ -59,13 +59,20 @@ class ProductSerializer(serializers.ModelSerializer):
             if ProductImage.objects.filter(product=object).count() > 0 else None
 
     def get_fields(self):
-        fields = super(ProductSerializer, self).get_fields()
+        fields = super(BasicProductSerializer, self).get_fields()
         fields['assigned_sub_products'] = ProductSubItemSerializer(many=True)
         return fields
 
 
+class FullProductSerializer(BasicProductSerializer):
+
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+
 class ProductSubItemSerializer(serializers.ModelSerializer):
-    product = ProductSerializer()
+    product = BasicProductSerializer()
     numbersubitem = NumberSubItemSerializer()
     checkboxsubitem = CheckBoxSubItemSerializer()
     filesubitem = FileSubItemSerializer()
@@ -171,6 +178,8 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
 
 class FullOrderDetailSerializer(OrderDetailSerializer):
+    unique_nr = serializers.ReadOnlyField()
+
     class Meta:
         model = OrderDetail
         fields = '__all__'
@@ -189,7 +198,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = ['product', 'price', 'price_wt', 'count', 'id', 'fileorderitem', 'valid', 'applied_discount',
                   'allowable',
                   'price_discounted', 'price_discounted_wt', 'total_wt', 'period_of_performance_start',
-                  'period_of_performance_end',
+                  'period_of_performance_end', 'is_conveyed',
                   'numberorderitem', 'selectorderitem', 'checkboxorderitem', 'randID', 'errors']
         depth = 4
 

@@ -14,12 +14,12 @@ from shop.api.v1.serializers import AddressSerializer, BasicContactSerializer, O
     BasicNumberOrderItemSerializer, BasicCheckboxOrderItemSerializer, OrderDetailSerializer, FullOrderDetailSerializer, \
     FullOrderItemSerializer, FullFileOrderItemSerializer, \
     FullCheckboxOrderItemSerializer, FullNumberOrderItemSerializer, FullSelectOrderItemSerializer, \
-    CompanySerializer, ProductSerializer, \
+    CompanySerializer, BasicProductSerializer, \
     ProductCategorySerializer, ProductAttributeTypeSerializer, \
     ProductAttributeTypeInstanceSerializer, ProductSubItemSerializer, ProductImageSerializer, OrderStateSerializer, \
     FileExtensionItemSerializer, \
     SelectItemSerializer, OrderItemStateSerializer, IndividualOfferSerializer, FixedAmountDiscountSerializer, \
-    PercentageDiscountSerializer, WorkingTimeSerializer
+    PercentageDiscountSerializer, WorkingTimeSerializer, FullProductSerializer
 from shop.models.accounts import Address, Contact, WorkingTime, Company
 from shop.models.orders import OrderItem, CheckBoxOrderItem, NumberOrderItem, \
     SelectOrderItem, FileOrderItem, OrderState, OrderDetail, Discount, OrderItemState, PercentageDiscount, \
@@ -316,8 +316,12 @@ class CompanyViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = BasicProductSerializer
 
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+            return FullProductSerializer
+        return BasicProductSerializer
 
 class ProductCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]

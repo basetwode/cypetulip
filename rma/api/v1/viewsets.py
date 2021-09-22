@@ -7,6 +7,7 @@ from rma.api.v1.serializers import ReturnMerchandiseAuthorizationConfigSerialize
     ReturnMerchandiseAuthorizationSerializer, ReturnMerchandiseAuthorizationItemSerializer
 from rma.models.main import ReturnMerchandiseAuthorizationConfig, ReturnMerchandiseAuthorizationShipper, \
     ReturnMerchandiseAuthorizationState, ReturnMerchandiseAuthorization, ReturnMerchandiseAuthorizationItem
+from shop.api.v1.viewsets import OrderItemViewSet
 
 
 class ReturnMerchandiseAuthorizationConfigViewSet(viewsets.ModelViewSet):
@@ -36,9 +37,20 @@ class ReturnMerchandiseAuthorizationViewSet(viewsets.ModelViewSet):
     serializer_class = ReturnMerchandiseAuthorizationSerializer
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
 
+    def create(self, request, *args, **kwargs):
+        request.data['contact'] = request.user.contact
+        super(ReturnMerchandiseAuthorizationViewSet, self).create(request, *args, **kwargs)
+
 
 class ReturnMerchandiseAuthorizationItemViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
     queryset = ReturnMerchandiseAuthorizationItem.objects.all()
     serializer_class = ReturnMerchandiseAuthorizationItemSerializer
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+
+
+class ReturnMerchandiseAuthorizationOrderItemSet(OrderItemViewSet):
+    def get_queryset(self):
+        queryset = super(ReturnMerchandiseAuthorizationOrderItemSet, self).get_queryset()
+        queryset.filter()
+        # todo filter for order and contact and eligible items.

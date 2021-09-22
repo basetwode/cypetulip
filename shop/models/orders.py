@@ -446,6 +446,8 @@ class OrderItem(models.Model):
                     self.selectorderitem.price_changed() if hasattr(self, 'selectorderitem') else \
                         (not self.price_wt or self.price_wt != self.calculate_tax(self.price))
 
+    def is_conveyed(self):
+        return self.shipment_set.exists()
 
 class FileOrderItem(OrderItem):
     file = models.FileField(default=None, null=True,

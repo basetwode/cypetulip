@@ -7,7 +7,6 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shop', '0004_migrate_order_fields'),
         ('rma', '0003_auto_20210305_1626'),
     ]
 

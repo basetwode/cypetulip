@@ -5,46 +5,179 @@
 {% load i18n %}
 {% block head %}
     <title>{% trans 'Create a RMA' %}</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue@3.0.5/dist/vue.global.prod.js"></script>
 {% endblock %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="h-bold">{% trans "Menu" %}</h4>
-                </div>
-                <div class="card-body">
-                    <hr>
-                    <a href="{% url 'shop:products' %}"
-                       class="btn btn-fw btn-primary">{% trans 'Back to products' %}</a>
-                </div>
+    <div id="rma-app">
+        <div class="row">
 
-            </div>
-        </div>
-        <div class="col-sm-12 col-md-9">
-            <form method="post" enctype="multipart/form-data">{% csrf_token %}
-                <div class="card">
-                    <div class="card-header">
-                        <h3>{% trans 'Request an individual offer' %}</h3>
-                    </div>
-                    <div class="card-body">
+            <div class="col-md-9">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>{% trans 'Select Articles' %}</h3>
+                        </div>
+                        <div class="card-body">
 
-                        <hr>
-                        <div class="row">
-                            <div class="col-md-12 pt-4">
-                                {{ form.errors }}
-                                {% block form %}
-                                    {% bootstrap_form form  layout='horizontal' %}
-                                    <input class="btn btn-primary btn-block" type="submit" value="Send">
-                                {% endblock %}
+                            <hr>
+                            <div class="row">
+                                <div v-for="(orderItem, idx) in order.order_items" class="col-md-12 ">
+                                    <input :id="idx" class="form-check-input" style="vertical-align: middle;"
+                                           type="checkbox" name="billing-radios" :disabled="!orderItem.is_conveyed"
+                                           v-model="orderItem.selected">
+                                    <label class="form-check-label w-75" :for="idx">
+
+                                        <div class="row pl-2">
+
+                                            <div class="col-2 offset-1">
+                                                <img v-if="orderItem.product.product.product_picture"
+                                                     :src="orderItem.product.product.product_picture"
+                                                     alt="..."
+                                                     class="img-fluid img-thumbnail "
+                                                     style="margin-left: 7px; height: 80px"/>
+                                            </div>
+                                            <div class="col-3">
+                                                <span class="h-bold">[[orderItem.product.name]]</span><br>
+                                                <span>[[orderItem.price_wt]]</span>
+                                            </div>
+                                            <div class="col-6 align-middle">
+                                                <div class="form-floating" v-if="orderItem.is_conveyed">
+                                                    <select class="form-select" v-model="orderItem.reason" id="floatingSelect"
+                                                            aria-label="Default select example">
+                                                        <option class="a-prompt" value="">Wählen Sie eine Antwort.</option>
+                                                        <option value="RO_CR-ORDERED_WRONG_ITEM">
+                                                            Irrtümlich bestellt
+                                                        </option>
+                                                        <option value="RO_CR-FOUND_BETTER_PRICE">
+                                                            Günstigeren Preis entdeckt
+                                                        </option>
+                                                        <option value="RO_CR-NO_REASON_GIVEN">
+                                                            Keinen Grund angeben
+                                                        </option>
+                                                        <option value="RO_CR-QUALITY_UNACCEPTABLE">
+                                                            Leistung oder Qualität ungenügend
+                                                        </option>
+                                                        <option value="RO_CR-NOT_COMPATIBLE">
+                                                            Inkompatibel oder für vorgesehenen Einsatz ungeeignet
+                                                        </option>
+                                                        <option value="RO_CR-DAMAGED_BY_FC">
+                                                            Versandverpackung unbeschädigt, Artikel beschädigt
+                                                        </option>
+                                                        <option value="RO_CR-MISSED_ESTIMATED_DELIVERY">
+                                                            Kam nicht rechtzeitig an
+                                                        </option>
+                                                        <option value="RO_CR-MISSING_PARTS">
+                                                            Teile fehlen/Zubehör fehlt
+                                                        </option>
+                                                        <option value="RO_CR-DAMAGED_BY_CARRIER">
+                                                            Versandverpackung und Artikel beschädigt
+                                                        </option>
+                                                        <option value="RO_CR-SWITCHEROO">
+                                                            Falscher Artikel versendet
+                                                        </option>
+                                                        <option value="RO_CR-DEFECTIVE">
+                                                            Defekt/funktioniert nicht einwandfrei
+                                                        </option>
+                                                        <option value="RO_CR-EXTRA_ITEM">
+                                                            Wurde über die bestellte Ware hinaus geliefert
+                                                        </option>
+                                                        <option value="RO_CR-UNWANTED_ITEM">
+                                                            Gefällt mir nicht mehr
+                                                        </option>
+                                                        <option value="RO_CR-UNAUTHORIZED_PURCHASE">
+                                                            Nicht autorisierter Kauf
+                                                        </option>
+                                                        <option value="RO_AMZ-PG-BAD-DESC">
+                                                            Entspricht nicht der Beschreibung auf der Website
+                                                        </option>
+                                                    </select><label
+                                                        for="floatingSelect">{% trans 'Why do you want to return this item?' %}</label>
+                                                </div>
+                                                <div v-else>
+                                                    <span style="font-size: small">
+                                                        <i class="fa fa-exclamation-triangle"></i><b>{% trans 'This article can not be returned, because it has not been sent yet.'%}</b>
+                                                    </span>
+                                                    <span>
+                                                        <p>
+                                                            {% trans 'If you no longer want this item, you can cancel it in the order details.' %}
+                                                        </p>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </label>
+
+                                </div>
                             </div>
                         </div>
                     </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <button class="btn btn-primary btn-fw">{% trans 'Continue' %}</button>
+                        <hr>
+                        <span style="font-size: smaller">{% trans 'Articles that you want to return' %}:</span>
+                        <div class="row">
+                            <div v-for="selectedItem in order.order_items.filter(item=>item.selected)"  class="col-3 p-1">
+                            <img v-if="selectedItem.product.product.product_picture"
+                                 :src="selectedItem.product.product.product_picture"
+                                 alt="..."
+                                 class="img-fluid img-thumbnail"
+                                 style="margin-left: 7px; height: 80px"/></div>
+                        </div>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
-
     </div>
+    <script type='text/javascript'>
+        var selectedOrderUUID = '{{ order.uuid }}';
+        var csrfmiddlewaretoken = '{{ csrf_token }}';
+    </script>
+    <script>
+        const app = Vue.createApp({
+
+            delimiters: ['[[', ']]'],
+            el: '#rma-app',
+            components: {},
+            data() {
+                return {
+                    csrfmiddlewaretoken: csrfmiddlewaretoken,
+                    selectedOrderUUID: selectedOrderUUID,
+                    selectedOrderItems: [],
+                    order: {}
+                }
+            },
+            mounted() {
+                axios.all([this.loadData()])
+            },
+            methods: {
+                loadData: function () {
+                    const vm = this;
+                    // TODO: also filter for items where there is an open rma
+                    return axios.get(`/shop/api/v1/orderdetails/?uuid=` + this.selectedOrderUUID)
+                        .then(response => {
+                            vm.order = response.data[0];
+                            vm.order.order_items.forEach(item=>{
+                                item["selected"]=false;
+                                item["reason"]="";
+                            })
+                        });
+
+                },
+                postRMA: function() {
+                    axios.post('/rma/api/v1/rma', {
+                        order: vm.order.id,
+                    }).then(
+
+                    )
+                }
+            }
+        });
+        const vm = app.mount('#rma-app');
+    </script>
 
 {% endblock %}

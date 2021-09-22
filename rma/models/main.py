@@ -4,7 +4,7 @@ from tinymce.models import HTMLField
 from mediaserver.upload import rma_files_upload_handler, fs
 from shipping.models.main import Shipper, Shipment
 
-from shop.models.accounts import Address, Contact, Employee
+from shop.models.accounts import Address, Contact
 from shop.models.orders import OrderItem, OrderDetail
 
 
@@ -45,6 +45,11 @@ class ReturnMerchandiseAuthorization(models.Model):
                                      upload_to=rma_files_upload_handler,
                                      storage=fs)
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if not self.number:
+            self.number = self.order.returnmerchandiseauthorization_set.count()+1
+        super(ReturnMerchandiseAuthorization, self).save(force_insert, force_update, using, update_fields)
 
 class ReturnMerchandiseAuthorizationItem(models.Model):
     rma = models.ForeignKey(ReturnMerchandiseAuthorization, on_delete=models.CASCADE)
@@ -53,4 +58,4 @@ class ReturnMerchandiseAuthorizationItem(models.Model):
     order_item = models.ForeignKey(OrderItem, on_delete=models.CASCADE)
     approved = models.BooleanField(default=False, blank=True, null=True)
     approval_date = models.DateTimeField(blank=True, null=True, default=None)
-    approval_employee = models.ForeignKey(Employee, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+    approval_employee = models.ForeignKey(Contact, blank=True, null=True, default=None, on_delete=models.SET_NULL)

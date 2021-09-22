@@ -30,6 +30,7 @@ class ReturnMerchandiseAuthorizationStateSerializer(serializers.ModelSerializer)
 
 class ReturnMerchandiseAuthorizationSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
+    contact = serializers.ReadOnlyField()
 
     class Meta:
         model = ReturnMerchandiseAuthorization

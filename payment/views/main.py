@@ -33,7 +33,7 @@ class PaymentCreateView(CreateView):
             method.form = PaymentFormFactory(method.provider.api)
         return {**super(PaymentCreateView, self).get_context_data(**kwargs),
                 **{'payment_methods': payment_methods, 'forms': payment_forms,
-                   'order_details': OrderDetail.objects.get(uuid=self.kwargs['order']),
+                   'order_details': OrderDetail.objects.get(uuid=self.kwargs['uuid']),
                    'legal_form': LegalForm()}}
 
     def form_valid(self, form):
