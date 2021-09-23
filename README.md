@@ -31,19 +31,23 @@ Screenshots can be found [here](https://cloud.bwk-technik.de/d/d31f4b48979144dcb
     - Manually create orders / clients
     - Accounting Dashboard
     - Create order from on request product
+    - Customize shop colors 
 - Other
     - LDAP Support
     - SMTP Support
+    - Communication Log (Celery) incl. retry
+    - CSV Export incl. bills
     
 ## Planned Features
 - Other payment providers
 - RMA
 - Web hooks for (almost) all transactions
-- Communication Log
-- CSV Export
+- (Done) Communication Log
+- (Done) CSV Export
 - Reviews
 - Wishlist
 - Shipper Integration (DHL,...)
+- Installer / Documentation
 
 
 # Development
