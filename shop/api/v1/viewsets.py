@@ -83,8 +83,8 @@ class OrderDetailViewSet(viewsets.ModelViewSet):
         queryset = OrderDetail.objects.all()
         request = self.request
         result = None
+        uuid = self.request.query_params.get('uuid', None)
         if request.user.is_authenticated and request.user.is_staff:
-            uuid = self.request.query_params.get('uuid', None)
             order_year = self.request.query_params.get('orderYear', None)
             if uuid is not None:
                 return queryset.filter(uuid=uuid)
@@ -98,10 +98,13 @@ class OrderDetailViewSet(viewsets.ModelViewSet):
                 result = OrderDetail.objects.filter(state__isnull=True, company=company)
         else:
             result = OrderDetail.objects.filter(state__isnull=True, session=request.session.session_key)
+            if uuid is not None:
+                return queryset.filter(uuid=uuid)
         if result:
             return result
         else:
-            return OrderDetail.create_new_order(request)
+            new_cart = OrderDetail.create_new_order(request)
+            return OrderDetail.objects.filter(uuid=new_cart.uuid)
 
 
 class AddressViewSet(viewsets.ModelViewSet):
@@ -125,7 +128,7 @@ class AddressViewSet(viewsets.ModelViewSet):
             contact = Contact.objects.get(user_ptr=user)
             return Address.objects.filter(contact__in=contact.company.contact_set.all())
         else:
-            raise NotFound()
+            return Address.objects.filter(contact__in=Contact.objects.filter(session=self.request.session.session_key))
 
 
 class ContactViewSet(viewsets.ModelViewSet):
@@ -189,7 +192,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        stock_sufficient, curr_stock = instance.product.product.is_stock_sufficient(instance.order)
+        stock_sufficient, curr_stock = instance.product.product.is_stock_sufficient(instance.order_detail)
         new_items = request.data.get('count') - instance.count
 
         if request.data.get('count') > instance.product.product.max_items_per_order:

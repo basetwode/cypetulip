@@ -96,14 +96,12 @@ class EmailThread(threading.Thread):
         legal = LegalSetting.objects.first()
         self.context['content'] = self.content
         self.context['legal'] = legal
-        html_content = render_to_string(self.email_template, context=self.context)
         print(self.content)
 
         email = EmailMultiAlternatives('Subject', self.subject, connection=self.connection)
         email.subject = self.subject
         email.mixed_subtype = 'related'
         email.content_subtype = 'html'
-        email.attach_alternative(html_content, "text/html")
 
         email.to = [self.receiver_user]
         if self.email_to:
@@ -150,6 +148,8 @@ class EmailThread(threading.Thread):
                     except:
                         pass
 
+        html_content = render_to_string(self.email_template, context=self.context)
+        email.attach_alternative(html_content, "text/html")
         print("from " + email.from_email)
         print("Sending mail")
         tries += 1

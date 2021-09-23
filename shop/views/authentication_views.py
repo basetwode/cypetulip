@@ -41,7 +41,6 @@ class LoginAuthenticationView(LoginView):
                 order_from_contact = order_from_contact.first()
             if order_from_session.count() > 0:
                 for item in order_from_session.first().orderitem_set.all():
-                    item.order = order_from_contact
                     item.order_detail = order_from_contact.orderdetail_set.first()
                     item.save()
             order_from_session.delete()

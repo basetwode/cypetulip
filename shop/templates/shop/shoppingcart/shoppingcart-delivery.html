@@ -145,7 +145,7 @@
                                             <label
                                                     class="col-form-label">{% trans 'description of address' %}<strong>:
                                                 *</strong> </label>
-                                            <input v-model="account.description" required type="text"
+                                            <input v-model="account.description" type="text"
                                                    class="form-control" type="text">
                                         </div>
                                         <div class="row">
@@ -215,7 +215,7 @@
                                            v-model="shipment"
                                            v-bind:value="entry.id">
                                     <label class="form-check-label" :for="entry.id">
-                                        [[ entry.name ]]<br>
+                                        [[ entry.get_name ]]<br>
                                         [[ entry.street ]] [[ entry.number ]]<br>
                                         [[ entry.zipcode ]] [[ entry.city ]]
 
@@ -239,7 +239,7 @@
                                            v-model="billing"
                                            v-bind:value="entry.id">
                                     <label class="form-check-label" :for="'billing'+entry.id">
-                                        [[ entry.name ]]<br>
+                                        [[ entry.get_name ]]<br>
                                         [[ entry.street ]] [[ entry.number ]]<br>
                                         [[ entry.zipcode ]] [[ entry.city ]]
 

@@ -20,7 +20,7 @@ class ShoppingCartDetailView(DetailView):
         return OrderDetail.objects.get(state__isnull=True,
                                  company=Contact.objects.get(
                                      user_ptr=self.request.user).company) if self.request.user.is_authenticated \
-            else OrderDetail.objects.get(is_send=False, session=self.request.session.session_key)
+            else OrderDetail.objects.filter(state__isnull=True, session=self.request.session.session_key).first()
 
 
 class ShoppingCartAddItemView(FormView):
@@ -72,7 +72,7 @@ class ShoppingCartAddItemView(FormView):
         contact = Contact.objects.filter(user_ptr=self.request.user) if self.request.user.is_authenticated else None
         order = OrderDetail.objects.filter(state__isnull=True,
                                      company=contact.first().company) if self.request.user.is_authenticated else \
-            OrderDetail.objects.filter(is_send=False, session=self.request.session.session_key)
+            OrderDetail.objects.filter(state__isnull=True, session=self.request.session.session_key)
         order = OrderDetail.create_new_order(self.request) if order.count() == 0 else order.first()
         return order
 

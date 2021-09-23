@@ -26,7 +26,7 @@ class CreateOnlineShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreateV
     order_object = None
 
     def get_success_url(self):
-        return reverse('management_order_detail_view', kwargs={'uuid': self.object.order_detail.uuid})
+        return reverse('management_order_detail_view', kwargs={'uuid': self.object.order.uuid})
 
     def form_valid(self, form):
         order: OrderDetail = self.get_order()

@@ -257,11 +257,11 @@
                         class="fa fa-angle-left"></i> {% trans 'Shopping' %}</a>
             </div>
             <div class="col">
-                <a type="submit" @click="submitCart()"
+                <a type="submit" @click="submitCart()" {% if not order_details %}disabled{% endif %}
                    class="btn btn-success float-end">{% trans 'Delivery' %} <i
                         class="fa fa-angle-right"></i></a>
             </div>
-            <form id="next-step-form" action="{% url "shop:delivery_order" order_details.uuid %}" method="get">
+            <form id="next-step-form" {% if order_details %}action="{% url "shop:delivery_order" order_details.uuid %}"{% endif %} method="get">
             </form>
         </div>
         <button type="button" class="btn btn-primary" ref="showModal" style="display: none" data-bs-toggle="modal"
@@ -278,7 +278,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        {% url 'shop:delivery_order' order_details.uuid as next_uri %}
+                        {% if order_details %}{% url 'shop:delivery_order' order_details.uuid as next_uri %}{% endif %}
                         {% include 'shop/authentication/authentication-component-loginform.html' with next_url=next_uri %}
                     </div>
                     <div class="modal-footer">
@@ -322,7 +322,7 @@
         var csrfmiddlewaretoken = '{{ csrf_token }}';
         var order = '{{ order_details.uuid }}';
         var is_authenticated = '{{ user.is_authenticated }}';
-        var next_url = '{% url "shop:delivery_order" order_details.uuid %}';
+        var next_url = {% if order_details %}'{% url "shop:delivery_order" order_details.uuid %}' {% else %}''{% endif %};
     </script>
 
     <script>
@@ -501,8 +501,8 @@
                                     requests.push(instance.postItem(formData, uri, subItem))
                                 }
                             }
-                        })
-                    })
+                        });
+                    });
                     axios.all(requests)
                         .finally(() => {
                             loadingSpinner.addClass('overlay-hidden');
@@ -547,6 +547,7 @@
                         }
                     })
                         .then(response => {
+
                             subItem.id = response.data.id;
                             if (subItem.fileorderitem) {
                                 subItem.fileorderitem.file_name = response.data.file_name
@@ -579,7 +580,7 @@
                             if (callback) {
                                 callback(error)
                             }
-                        })
+                        }).finally(() => loadingSpinner.addClass('overlay-hidden'))
                 }
 
             }

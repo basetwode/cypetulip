@@ -1,9 +1,5 @@
 {% load i18n %}
 {% load static %}
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="{% static 'bootstrap-select/css/bootstrap-select.min.css' %}">
-<!-- Latest compiled and minified JavaScript -->
-<script src="{% static 'bootstrap-select/js/bootstrap-select.min.js' %}"></script>
 <script src="{% static 'utils.js' %}"></script>
 <div class="modal fade" id="change-state-modal" tabindex="-1" role="dialog" aria-labelledby="change-modal-title"
      aria-hidden="true">
@@ -19,8 +15,7 @@
                 {% trans 'Please choose the next state' %}
                 <br>
                 <br>
-                <div class="form-group">
-                    <select id="change-state-select" class="selectpicker form-control" data-live-search="true">
+                    <select id="change-state-select" class="form-select">
                         {% for state in states %}
                             <option value="{{ state.id }}"
                                     data-tokens="{{ state.name }}">
@@ -28,7 +23,6 @@
                             </option>
                         {% endfor %}
                     </select>
-                </div>
             </div>
             <div class="modal-footer">
 

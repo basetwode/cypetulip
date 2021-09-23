@@ -127,10 +127,10 @@ class OrderAcceptInvoiceView(View, EmailMixin):
 
         if _order.state.initial:
             _order.state = _order.state.next_state
-            _order.assigned_employee = Contact.objects.get(user=request.user)
+            _order.assigned_employee = Contact.objects.get(id=request.user.id)
         if not _order.date_bill:
             _order.date_bill = datetime.now()
-            _order.assigned_employee = Contact.objects.get(user=request.user)
+            _order.assigned_employee = Contact.objects.get(id=request.user.id)
         _order.bill_sent = True
         _order.save()
         try:

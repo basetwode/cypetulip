@@ -27,7 +27,8 @@ class Company(models.Model):
             self.company_id = rand_key(12)
         if self.customer_nr is None:
             nr = (Company.objects.filter(customer_nr__isnull=False).order_by('customer_nr').last().customer_nr + 1) \
-                if Company.objects.all().count() > 0 and Company.objects.filter(customer_nr__isnull=False).exists() else 1
+                if Company.objects.all().count() > 0 and Company.objects.filter(
+                customer_nr__isnull=False).exists() else 1
             self.customer_nr = nr
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
@@ -65,8 +66,7 @@ class Contact(DjangoUser):
         verbose_name_plural = _('Contacts')
 
     def save(self, force_insert=False, force_update=False, using=None,
-         update_fields=None):
-
+             update_fields=None):
         if self.company_customer_nr is None:
             nr = (Contact.objects.filter(company=self.company, company_customer_nr__isnull=False).order_by(
                 'company_customer_nr').last().company_customer_nr + 1) \
@@ -77,7 +77,7 @@ class Contact(DjangoUser):
 
 
 class Address(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, default="", blank=True, null=True)
     street = models.CharField(max_length=40, default=None, verbose_name=_('Street'))
     number = models.CharField(max_length=5, default=None, verbose_name=_('Number'))
     zipcode = models.CharField(max_length=5, default=None, verbose_name=_('Zipcode'))
@@ -88,6 +88,9 @@ class Address(models.Model):
     class Meta:
         verbose_name = _('Address')
         verbose_name_plural = _("Addresses")
+
+    def get_name(self):
+        return self.name + " " + (self.contact.first_name + " " +self.contact.last_name) if self.contact else ""
 
     def __str__(self):
         return self.contact.__str__() + " | " + self.name

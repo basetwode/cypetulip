@@ -23,7 +23,7 @@ class PaymentCreateView(CreateView):
     model = PaymentDetail
     template_name = 'payment/payment-create.html'
     slug_field = 'order_detail__uuid'
-    slug_url_kwarg = 'order'
+    slug_url_kwarg = 'uuid'
     fields = []
 
     def get_context_data(self, **kwargs):
@@ -37,7 +37,7 @@ class PaymentCreateView(CreateView):
                    'legal_form': LegalForm()}}
 
     def form_valid(self, form):
-        order_details = OrderDetail.objects.get(uuid=self.kwargs['order'])
+        order_details = OrderDetail.objects.get(uuid=self.kwargs['uuid'])
         order_details.contact = order_details.shipment_address.contact
         order_details.save()
 
@@ -56,7 +56,7 @@ class PaymentCreateView(CreateView):
             payment_instance.method = PaymentMethod.objects.get(id=self.request.POST['method'])
             payment_instance.save()
             return redirect(
-                reverse('payment:%s' % lower(payment_instance.method.name), kwargs={'order': self.kwargs['order']}))
+                reverse('payment:%s' % lower(payment_instance.method.name), kwargs={'uuid': self.kwargs['uuid']}))
         else:
             return self.form_invalid(form)
 
@@ -67,7 +67,7 @@ class PaymentCreateView(CreateView):
 
 class PaymentConfirmView(DetailView):
     template_name = 'payment/payment-confirm.html'
-    slug_url_kwarg = 'order'
+    slug_url_kwarg = 'uuid'
     slug_field = 'order_detail__uuid'
     model = PaymentDetail
 
@@ -87,7 +87,7 @@ class PaymentSubmitView(EmailConfirmView, CreateView):
     fields = []
 
     def get_success_url(self):
-        return reverse_lazy('shop:confirmed_order', kwargs={"uuid":self.kwargs['order']})
+        return reverse_lazy('shop:confirmed_order', kwargs={"uuid":self.kwargs['uuid']})
 
     def get_context_data(self, **kwargs):
         return {**super(PaymentSubmitView, self).get_context_data(**kwargs),
@@ -95,7 +95,7 @@ class PaymentSubmitView(EmailConfirmView, CreateView):
 
     def form_valid(self, form):
         payment = form.save(commit=False)
-        payment_details = PaymentDetail.objects.get(order_detail__uuid=self.kwargs['order'])
+        payment_details = PaymentDetail.objects.get(order_detail__uuid=self.kwargs['uuid'])
         order_detail = payment_details.order_detail
         payment.is_paid = False
         payment.token = payment_details.order_detail.uuid

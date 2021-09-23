@@ -6,6 +6,7 @@ from _decimal import Decimal, ROUND_HALF_UP
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
@@ -69,7 +70,7 @@ class Discount(models.Model):
     date_added = models.DateTimeField(auto_now=True, blank=True)
 
     def is_invalid(self):
-        is_expired = datetime.now() > self.valid_until_date if self.valid_until_date else False
+        is_expired = timezone.now() > self.valid_until_date if self.valid_until_date else False
         is_utilized = self.count >= self.valid_until_count if self.valid_until_count > 0 else False
         return is_expired or is_utilized or not self.enabled
 
@@ -111,7 +112,7 @@ class PercentageDiscount(Discount):
 
 
 class OrderDetail(models.Model):
-    uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, null=True, blank=True)
+    uuid = models.UUIDField(primary_key=False, default=uuid.uuid4, null=True, blank=True, db_index=True)
     is_send = models.BooleanField(default=False)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_('Company'))
     session = models.CharField(max_length=40, blank=True, null=True)

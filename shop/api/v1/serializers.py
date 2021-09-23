@@ -250,6 +250,8 @@ class BasicContactSerializer(serializers.ModelSerializer):
 
 class AddressSerializer(serializers.ModelSerializer):
 
+    get_name = serializers.ReadOnlyField()
+
     def create(self, request):
         return Address.objects.create(**request)
 
