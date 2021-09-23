@@ -4,12 +4,15 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_headers
 from django.views.generic import View, TemplateView, FormView
 
 from cms.forms.forms import ContactForm, CSSSettingForm
 from cms.models.main import Page, Section
-from home.settings import STATIC_ROOT
+from home.settings import STATIC_ROOT, CACHE_MIDDLEWARE_SECONDS
 from management.models.main import MailSetting, LegalSetting, CacheSetting
 from permissions.error_handler import raise_404
 # Create your views here.
@@ -74,6 +77,8 @@ class CSSSettingsView(LoginRequiredMixin, FormView):
 
 
 # This is for added sites #
+@method_decorator(vary_on_headers('User-Agent', 'Cookie'), name='dispatch')
+@method_decorator(cache_page(CACHE_MIDDLEWARE_SECONDS), name='dispatch')
 class GenericView(View):
     def get(self, request, site):
         page = Page.objects.filter(page_id=site)
@@ -114,6 +119,8 @@ class ContactView(FormView, EmailMixin):
         return HttpResponseRedirect(reverse('contact'))
 
 
+@method_decorator(vary_on_headers('User-Agent', 'Cookie'), name='dispatch')
+@method_decorator(cache_page(CACHE_MIDDLEWARE_SECONDS), name='dispatch')
 class GBTView(TemplateView):
     template_name = "cms/predefined_page.html"
 
@@ -125,6 +132,8 @@ class GBTView(TemplateView):
         return context
 
 
+@method_decorator(vary_on_headers('User-Agent', 'Cookie'), name='dispatch')
+@method_decorator(cache_page(CACHE_MIDDLEWARE_SECONDS), name='dispatch')
 class LegalView(TemplateView):
     template_name = "cms/legal.html"
 
@@ -136,6 +145,8 @@ class LegalView(TemplateView):
         return context
 
 
+@method_decorator(vary_on_headers('User-Agent', 'Cookie'), name='dispatch')
+@method_decorator(cache_page(CACHE_MIDDLEWARE_SECONDS), name='dispatch')
 class CancellationPolicyView(TemplateView):
     template_name = "cms/predefined_page.html"
 
@@ -146,7 +157,8 @@ class CancellationPolicyView(TemplateView):
         context['page_name'] = _("Cancellation Policy")
         return context
 
-
+@method_decorator(vary_on_headers('User-Agent', 'Cookie'), name='dispatch')
+@method_decorator(cache_page(CACHE_MIDDLEWARE_SECONDS), name='dispatch')
 class PrivacyPolicyView(TemplateView):
     template_name = "cms/predefined_page.html"
 

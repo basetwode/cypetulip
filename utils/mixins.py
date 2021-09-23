@@ -26,8 +26,8 @@ class EmailLogMixin:
         # )
 
 @shared_task
-def send_mail_celery(receiver_user, content, subject, context, email_template):
-    mail_thread = EmailThread(receiver_user, content, subject, context, email_template)
+def send_mail_celery(receiver_user, content, subject, context, email_template, email_to):
+    mail_thread = EmailThread(receiver_user, content, subject, context, email_template, email_to)
     mail_thread.create_mail()
     mail_thread.email.send()
 

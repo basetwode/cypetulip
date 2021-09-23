@@ -26,7 +26,7 @@ urlpatterns = [
 
     url(r'^products/$', ProductView.as_view(), name="products"),  # ProductsOverview und name dann prodcuts_overview
     url(r"^products/(?P<category>[\S0-9_.-\\s\- ]*)/(?P<product>[\S0-9_.-\\s\- ]+)$",
-        cache_page(CACHE_MIDDLEWARE_SECONDS)(ProductDetailView.as_view()), name='product_detail'),
+       ProductDetailView.as_view(), name='product_detail'),
     url(r'^products/(?P<category>[\S0-9_.-\\s\- ]*)$', ProductView.as_view(), name="products"),
 
     url(r'^myaccount/$', MyAccountView.as_view(), name="my_account"),
