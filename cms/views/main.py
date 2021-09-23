@@ -94,7 +94,7 @@ class PermissionDeniedView(TemplateView):
 
 class ContactView(FormView, EmailMixin):
     template_name = 'cms/contact.html'
-    email_template = "mail/new_contact_request.html"
+    email_template = "cms/mail/new_contact_request.html"
     form_class = ContactForm
 
     def form_valid(self, form):

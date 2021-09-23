@@ -116,13 +116,16 @@ class ProductDetailView(DetailView):
 
 
 class IndividualOfferView(EmailNotifyStaffView, FormView):
+    email_template = "shop/mail/mail-newindividualofferrequest.html"
+    subject = _("New individual offer request")
     form_class = IndividualOfferForm
     template_name = 'shop/products/products-product-individualoffer.html'
     success_url = reverse_lazy('shop:products', kwargs={'category': ''})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['product'] = Product.objects.get(name=self.kwargs['product'])
+        context['product'] = Product.objects.get(name=self.kwargs['product'],
+                                                 category__path=self.kwargs['category'])
         return context
 
     def get_initial(self, form_class=None):
@@ -137,7 +140,8 @@ class IndividualOfferView(EmailNotifyStaffView, FormView):
         self.object = form.save(commit=False)
         if self.request.user.is_authenticated:
             self.object.contact = Contact.objects.get(user_ptr=self.request.user)
-        self.object.product = Product.objects.get(name=self.kwargs['product'])
+        self.object.product = Product.objects.get(name=self.kwargs['product'],
+                                                  category__path=self.kwargs['category'])
         self.object.save()
         self.notify()
         messages.success(self.request, _("Thank you for your request, we'll contact you soon"))
