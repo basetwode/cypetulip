@@ -49,7 +49,7 @@
     {% include 'cms/header.html' %}
 
     <!-- Fixed navbar -->
-    {% cache 0 navbar %}
+    {% cache 500 navbar request.user.username %}
         {% include 'cms/navbar.html' %}
     {% endcache %}
 

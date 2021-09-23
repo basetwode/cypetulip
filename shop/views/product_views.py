@@ -22,8 +22,6 @@ from shop.models.products import ProductCategory, ProductAttributeType, ProductA
 from shop.views.mixins import TaxView, EmailNotifyStaffView
 
 
-@method_decorator(vary_on_headers('User-Agent', 'Cookie'), name='dispatch')
-@method_decorator(cache_page(CACHE_MIDDLEWARE_SECONDS), name='dispatch')
 class ProductView(TaxView, ListView):
     template_name = 'shop/products/products-product-overview.html'
     context_object_name = 'products'

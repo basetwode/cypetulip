@@ -77,8 +77,6 @@ class CSSSettingsView(LoginRequiredMixin, FormView):
 
 
 # This is for added sites #
-@method_decorator(vary_on_headers('User-Agent', 'Cookie'), name='dispatch')
-@method_decorator(cache_page(CACHE_MIDDLEWARE_SECONDS), name='dispatch')
 class GenericView(View):
     def get(self, request, site):
         page = Page.objects.filter(page_id=site)
@@ -119,8 +117,6 @@ class ContactView(FormView, EmailMixin):
         return HttpResponseRedirect(reverse('contact'))
 
 
-@method_decorator(vary_on_headers('User-Agent', 'Cookie'), name='dispatch')
-@method_decorator(cache_page(CACHE_MIDDLEWARE_SECONDS), name='dispatch')
 class GBTView(TemplateView):
     template_name = "cms/predefined_page.html"
 
@@ -132,8 +128,6 @@ class GBTView(TemplateView):
         return context
 
 
-@method_decorator(vary_on_headers('User-Agent', 'Cookie'), name='dispatch')
-@method_decorator(cache_page(CACHE_MIDDLEWARE_SECONDS), name='dispatch')
 class LegalView(TemplateView):
     template_name = "cms/legal.html"
 
@@ -145,8 +139,6 @@ class LegalView(TemplateView):
         return context
 
 
-@method_decorator(vary_on_headers('User-Agent', 'Cookie'), name='dispatch')
-@method_decorator(cache_page(CACHE_MIDDLEWARE_SECONDS), name='dispatch')
 class CancellationPolicyView(TemplateView):
     template_name = "cms/predefined_page.html"
 
@@ -157,8 +149,7 @@ class CancellationPolicyView(TemplateView):
         context['page_name'] = _("Cancellation Policy")
         return context
 
-@method_decorator(vary_on_headers('User-Agent', 'Cookie'), name='dispatch')
-@method_decorator(cache_page(CACHE_MIDDLEWARE_SECONDS), name='dispatch')
+
 class PrivacyPolicyView(TemplateView):
     template_name = "cms/predefined_page.html"
 
