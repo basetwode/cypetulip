@@ -344,7 +344,6 @@
                        class="btn btn-fw btn-warning">{% trans 'Edit order' %}</a>
                     <form action="{% url 'invoice_pdf' order_detail.uuid %}" method="get"
                           target="_blank">
-                        {% csrf_token %}
                         <button type="submit" style="pointer-events: auto;"
                                 {% if not order_items %}disabled title="{% trans 'Products needed' %}"{% endif %}
                                 class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</button>
