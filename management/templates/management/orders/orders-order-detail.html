@@ -342,7 +342,7 @@
                     <h5 class="h-bold">{% trans 'Options' %}</h5>
                     <a href="{% url 'order_update_view' order_detail.uuid %}"
                        class="btn btn-fw btn-warning">{% trans 'Edit order' %}</a>
-                    <form action="{% url 'invoice_pdf' order_detail.uuid %}' order_detail.uuid %}" method="get"
+                    <form action="{% url 'invoice_pdf' order_detail.uuid %}" method="get"
                           target="_blank">
                         {% csrf_token %}
                         <button type="submit" style="pointer-events: auto;"
