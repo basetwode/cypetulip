@@ -1,12 +1,6 @@
 {% load i18n %}
 {% load static %}
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="{% static 'bootstrap-select/css/bootstrap-select.min.css' %}">
-<!-- Latest compiled and minified JavaScript -->
-<script src="{% static 'bootstrap-select/js/bootstrap-select.min.js' %}"></script>
-<script src="{% static 'utils.js' %}">
-
-</script>
+<script src="{% static 'utils.js' %}"></script>
 <div class="modal fade" id="assign-employee-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-title"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -22,7 +16,7 @@
                 <br>
                 <br>
                 <div class="form-group">
-                    <select id="employee-select" class="selectpicker form-control" data-live-search="true">
+                    <select id="employee-select" class="form-select">
                         {% for employee in employees %}
                             <option value="{{ employee.id }}"
                                     data-tokens="{{ employee.first_name }} {{ employee.last_name }}">
@@ -46,5 +40,3 @@
         </div>
     </div>
 </div>
-
-

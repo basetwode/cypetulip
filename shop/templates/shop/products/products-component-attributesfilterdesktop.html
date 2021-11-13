@@ -12,7 +12,7 @@
     </form>
 
     {% for attribute_category in types %}
-        {% with attribute_form.data|get_var:attribute_category.name as selected %}
+        {% with attribute_form.initial|get_var:attribute_category.name as selected %}
 
             {% if selected %}
                 <div class="flex-item dropdown" style="border: 2px solid black;">
@@ -36,7 +36,8 @@
                 {% if instance.type_id == attribute_category.id %}
 
                     {% if instance.value in selected %}
-                        <button type="button" class="dropdown-item font-weight-bold" href="#" class="link"
+                        <button type="button" id="id_{{ attribute_category.name }}"
+                                class="dropdown-item font-weight-bold" href="#" class="link"
                                 onclick="clearAttributeParam('{{ attribute_category.name }}','{{ instance.value }}')">
                         {{ instance.value }}
                         {% if not selected %}

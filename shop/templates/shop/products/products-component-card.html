@@ -19,9 +19,10 @@
 
 
         <div class="card-body product-text">
-            <div class="d-flex justify-content-between">
-                <a class="text-center font-weight-bold"
-                   href="{% url 'shop:product_detail' category_path product.name %}">{{ product.name }}</a>
+            <div class=""><a class="text-center font-weight-bold"
+                             href="{% url 'shop:product_detail' category_path product.name %}">{{ product.name }}</a>
+            </div>
+            <div class="">
                 {% if product.price_on_request %}
                     <span data-bs-toggle="modal" data-bs-target="#price_on_request"
                           class="badge rounded-pill bg-success bg-primary badge-price-on-request">{% trans 'Price on request' %}
@@ -35,12 +36,13 @@
                 {% else %}
                     {{ product.price_wt | floatformat:2 }} &euro;
                 {% endif %} </div>
+
             {% if product.special_price %}
                 <span class="badge rounded-pill bg-danger bg-primary">{% trans 'Sale' %}
                                                         </span>
             {% endif %}
             {% if not product.price_on_request %}
-                <small class="float-end">({% trans 'incl. Tax' %})</small>{% endif %}
+                <small>({% trans 'incl. Tax' %})</small>{% endif %}
         </div>
 
         {% if product.discount_set.count > 0 %}
@@ -81,18 +83,18 @@
         <hr>
         <div class="card-body">
             <div class="text-right buttons"><a href="{% url 'shop:product_detail' category_path product.name %}"
-                                               class="btn btn-outline-dark">{% trans 'Details' %}</a>
+                                               class="btn btn-outline-dark m-1">{% trans 'Details' %}</a>
                 {% if product.price_on_request %}
                     <a type="button"
-                       class="btn btn-dark"
+                       class="btn btn-dark m-1"
                        href="{% url 'shop:individual_offer' category_path product.name %}">{% trans 'Request offer' %}</a>
                 {% elif product.stock > 0 or product.stock == -1 %}
-                    <button class="btn btn-dark"
+                    <button class="btn btn-dark m-1"
                             onclick="addToCart('{% url 'shop:shoppingcart_add' product.category.path product.name %}')">{% trans 'Add to cart' %}
                     </button>
                 {% else %}
                     <button disabled
-                            class="btn btn-outline-dark">{% trans 'Not in stock' %}</button>
+                            class="btn btn-outline-dark m-1">{% trans 'Not in stock' %}</button>
                 {% endif %}
             </div>
         </div>

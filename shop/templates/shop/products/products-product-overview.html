@@ -18,14 +18,12 @@
              aria-hidden="true">
             <div class="modal-dialog" style="height: 100%; max-width: none; width: 100vw; margin:0" role="document">
                 <div class="modal-content" style="height: 100%;">
-
-
                     <div class="modal-body">
-                    <span><a href="#" data-bs-dismiss="modal"> <i
-                            class="fa fa-arrow-left" style="font-size: 1.4rem"></i> Filter</a></span><br>
+                    <span class="mx-auto"><a href="#" data-bs-dismiss="modal"> <i
+                            class="fas fa-times fa-2x pe-1"></i></a></span><br>
                         {% include 'shop/products/products-component-attributesfiltermobile.html'  with cssclass="no-bg" %}
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer" style="background-color: white">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -37,7 +35,7 @@
 
         <div class="col-md-12 path">
             <nav aria-label="breadcrumb">
-                <ol class="breadcrumb rounded-0">
+                <ol class="breadcrumb ">
                     <li class="breadcrumb-item {% if not selected_category %} active{% endif %}"
                         aria-current="{% if not selected_category %} page{% endif %}"><a
                             href="{% url 'shop:products' %}">
@@ -124,7 +122,7 @@
                             {% trans 'Products' %}{% endif %}</h1>
                     </div>
                     <div class="col-2">
-                        <div class="attributes  d-block d-sm-none categories-list">
+                        <div class="attributes d-block d-sm-none categories-list">
                             <button class="btn btn-outline-secondary" data-bs-toggle="modal"
                                     data-bs-target="#filterModal">
                                 Filter

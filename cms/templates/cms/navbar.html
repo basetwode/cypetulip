@@ -159,7 +159,7 @@
                     </a>
                 </div>
             {% else %}
-                <div class="col p-0">
+                <div class="col">
                     <a class="btn"
                        href="{% if page.link %}{{ page.link }}{% else %}/cms/{{ page.page_name }}/{% endif %}">
                         {% trans page.page_name as page_name %}{{ page_name | upper }}</a>

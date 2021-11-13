@@ -11,48 +11,6 @@
             <a>{% trans 'Shopping-Filters' %}</a>
         </h4>
     </div>
-    <div id="collapseShopping" class="panel-collapse show">
-        <form id="attributeForm" class="mt-2 mb-2" method="get" action="">
-            {% for field in attribute_form %}
-                {{ field.as_hidden }}
-                <div>
-                    {% if field.value %}
-                        <a class="ms-3" href="#" onclick="clearAttributeParam('{{ field.auto_id }}')"><i
-                                class="fa fa-times"></i><span><b>{{ field.label }}</b>: {{ field.value }}</span></a>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </form>
-        <div class="accordion list-group" id="attributesAccordion">
 
-            {% for attribute_category in types %}
-                <div class="list-group-item" id="label-{{ attribute_category.name }}">
-                    <a class="attribute-label" href="#" data-bs-toggle="collapse"
-                       data-bs-target="#collapseFilter-{{ attribute_category.name }}">
-                        {{ attribute_category.name }} <span class="fas fa-angle-down">
-                                                </span></a>
-                </div>
-
-                <div aria-labelledby="label-{{ attribute_category.name }}"
-                     id="collapseFilter-{{ attribute_category.name }}"
-                     data-parent="#attributesAccordion" class="collapse">
-                    {% for instance in type_instances %}
-                        {% if instance.type_id == attribute_category.id %}
-
-                                <li class="list-group-item" id="v_hm">
-                                    <div class="heading">
-                                        <div class="arrowImage"></div>
-
-                                        <a class="attribute-item" href="#" class="link"
-                                           onclick="setAttributeParam('{{ attribute_category.name }}','{{ instance.value }}')"
-                                        >{{ instance.value }} ({{ instance.count }})</a>
-                                    </div>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                {% endfor %}
-            </div>
-
-        </div>
+    {% include 'shop/products/products-component-attributesfilterdesktop.html'  with cssclass="no-bg" %}
     </div>

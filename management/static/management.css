@@ -5,10 +5,6 @@
     font-weight: bold;
 }
 
-/*.navbar {*/
-/*    background-color: #265a88;*/
-/*    background-image: linear-gradient(to bottom, #337ab7 0, #265a88 100%);*/
-/*}*/
 
 .navbar-default .navbar-nav > li > a {
     color: white;
@@ -18,10 +14,6 @@
     color: white;
 }
 
-/*.panel-body {*/
-/*    padding-top: 1rem;*/
-/*    background-color: #e3ebf1;*/
-/*}*/
 
 .padding-1rem {
     padding: 1rem;
@@ -30,4 +22,3 @@
 .uppercase-text {
     text-transform: uppercase;
 }
-

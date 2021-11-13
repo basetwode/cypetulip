@@ -1,14 +1,25 @@
-function setAttributeParam(id, value){
-    let currValue = document.getElementById('id_'+id).value
-    document.getElementById('id_'+id).value = currValue? currValue+"."+value : value;
-    document.getElementById("attributeForm").submit()
+function setAttributeParam(key, value) {
+    key = encodeURIComponent(key);
+    value = encodeURIComponent(value);
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.append(key, value);
+
+    window.location.search = urlParams;
 }
 
-function clearAttributeParam(id, value) {
-    var newValue = document.getElementById(id).value.replaceAll(value, "");
-    newValue = newValue.startsWith('.') ? newValue.substring(1) : newValue;
-    newValue = newValue.endsWith('.') ? newValue.slice(0, -1) : newValue;
+function clearAttributeParam(key, value) {
+    key = encodeURIComponent(key);
+    value = encodeURIComponent(value);
+    const urlParams = new URLSearchParams(window.location.search.slice(1));
 
-    document.getElementById(id).value = newValue.replace('..', '.');
-    document.getElementById("attributeForm").submit()
+    var existingParams = urlParams.getAll(key)
+    const index = existingParams.indexOf(value)
+    if (index > -1) {
+        existingParams.splice(index, 1)
+    }
+    urlParams.delete(key);
+    existingParams.forEach(param => urlParams.append(key, param)
+    );
+
+    window.location.search = urlParams;
 }

@@ -78,6 +78,7 @@
                         <div class="col-md-9">
                             <select @change="onBillingSelected($event)" v-model="selectedBillingAddress"
                                     class="form-control" id="billingSelect">
+                                <option v-show="!addresses">{% trans 'Addresses are loading' %}</option>
                                 <option v-for="address in addresses" v-bind:value="address.id">
                                     [[ address.name]] | [[ address.street]] [[ address.number]], [[ address.zipcode]] [[
                                     address.city]]
@@ -120,7 +121,7 @@
                                                     v-model="item.product.id"
                                                     class="form-control"
                                                     id="productSelect">
-                                                <option v-if="!products">{% trans 'Items are loading' %}</option>
+                                                <option v-show="!products">{% trans 'Items are loading' %}</option>
                                                 <option v-for="product in products"
                                                         v-bind:value="product.id">
                                                     [[ product.name]]
@@ -851,4 +852,3 @@
         });
     </script>
 {% endblock %}
-

@@ -1,9 +1,9 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 from tinymce.models import HTMLField
 
 from mediaserver.upload import rma_files_upload_handler, fs
 from shipping.models.main import Shipper, Shipment
-
 from shop.models.accounts import Address, Contact
 from shop.models.orders import OrderItem, OrderDetail
 
@@ -14,11 +14,19 @@ class ReturnMerchandiseAuthorizationConfig(models.Model):
     auto_approve = models.BooleanField(default=False)
     return_address = models.ForeignKey(Address, on_delete=models.SET_NULL, blank=True, null=True)
 
+    class Meta:
+        verbose_name = _('ReturnMerchandiseAuthorizationConfig')
+        verbose_name_plural = _('ReturnMerchandiseAuthorizationConfigs')
+
 
 class ReturnMerchandiseAuthorizationShipper(models.Model):
     shipper = models.ForeignKey(Shipper, on_delete=models.CASCADE, blank=True, null=True)
     description = HTMLField(blank=True, null=True, default="")
     enabled = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = _('ReturnMerchandiseAuthorizationShipper')
+        verbose_name_plural = _('ReturnMerchandiseAuthorizationShippers')
 
     def __str__(self):
         return self.shipper.name if self.shipper else 'Default'
@@ -32,6 +40,13 @@ class ReturnMerchandiseAuthorizationState(models.Model):
         'self', on_delete=models.SET_NULL, null=True, blank=True, related_name='previous_state', )
     cancel_rma_state = models.ForeignKey(
         'self', on_delete=models.SET_NULL, null=True, blank=True, related_name='cancel_state', )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('ReturnMerchandiseAuthorizationState')
+        verbose_name_plural = _('ReturnMerchandiseAuthorizationStates')
 
 
 class ReturnMerchandiseAuthorization(models.Model):
@@ -48,8 +63,13 @@ class ReturnMerchandiseAuthorization(models.Model):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         if not self.number:
-            self.number = self.order.returnmerchandiseauthorization_set.count()+1
+            self.number = self.order.returnmerchandiseauthorization_set.count() + 1
         super(ReturnMerchandiseAuthorization, self).save(force_insert, force_update, using, update_fields)
+
+    class Meta:
+        verbose_name = _('ReturnMerchandiseAuthorization')
+        verbose_name_plural = _('ReturnMerchandiseAuthorizations')
+
 
 class ReturnMerchandiseAuthorizationItem(models.Model):
     rma = models.ForeignKey(ReturnMerchandiseAuthorization, on_delete=models.CASCADE)
@@ -59,3 +79,7 @@ class ReturnMerchandiseAuthorizationItem(models.Model):
     approved = models.BooleanField(default=False, blank=True, null=True)
     approval_date = models.DateTimeField(blank=True, null=True, default=None)
     approval_employee = models.ForeignKey(Contact, blank=True, null=True, default=None, on_delete=models.SET_NULL)
+
+    class Meta:
+        verbose_name = _('ReturnMerchandiseAuthorizationItem')
+        verbose_name_plural = _('ReturnMerchandiseAuthorizationItems')

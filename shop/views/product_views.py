@@ -6,14 +6,10 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Count, Q, Prefetch
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_headers
 from django.views.generic import ListView, FormView, DetailView
 
 from cms.models.main import Section
-from home.settings import CACHE_MIDDLEWARE_SECONDS
 from shop.forms.product_forms import ProductAttributeForm, IndividualOfferForm
 from shop.models.accounts import Contact
 from shop.models.products import ProductCategory, ProductAttributeType, ProductAttributeTypeInstance, Product, \
@@ -48,7 +44,6 @@ class ProductView(TaxView, ListView):
 
         product_attribute_categories = ProductAttributeType.objects. \
             filter(productattributetypeinstance__product__in=products).annotate(count=Count('name', distinct=True))
-        attribute_form = ProductAttributeForm(product_attribute_categories, self.request.GET)
 
         attribute_filter = (reduce(operator.or_, (Q(type__name=k, value=v_spl) for v_spl in v.split('.'))) for k, v in
                             self.request.GET.items()) \

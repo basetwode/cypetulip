@@ -90,22 +90,19 @@
                     <div>
 
                         <h5 class="card-title">{% trans 'Analytics' %}</h5>
-
-                        <button type="button" class="btn btn-outline-primary">
-                            {% trans 'Active Sessions' %}: <span class="badge bg-success"
-                                                                 style="font-size: 90%;">{{ active_sessions.count }}</span>
-                            <span class="sr-only">unread messages</span>
-                        </button>
-                        <br>
                         {% include 'management/management-modal-activeusers.html'  with objects=users %}
-                        <button type="button" class="btn btn-outline-primary mt-1 mb-1" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-outline-primary mt-1 mb-1 me-1" data-bs-toggle="modal"
                                 data-bs-target="#analytics">
                             {% trans 'Active Users' %}: <span class="badge bg-success"
                                                               style="font-size: 90%;">{{ users.count }}</span>
                             <span class="sr-only">unread messages</span>
                         </button>
+                        {% trans 'Active Sessions' %}: <span class="badge bg-success"
+                                                             style="font-size: 90%;">{{ active_sessions.count }}</span>
+                        <span class="sr-only">unread messages</span>
+                        <hr>
                         <a href="{% url 'management_communication_view' %}"
-                           class="btn btn-primary ms-1">{% trans 'Communication Log' %}</a>
+                           class="btn btn-primary">{% trans 'Communication Log' %}</a>
                     </div>
                     <hr>
                     <div class="btn-group">
