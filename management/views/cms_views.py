@@ -64,7 +64,7 @@ class PageDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         messages.success(self.request, self.success_message)
-        return reverse_lazy('pages')
+        return reverse_lazy('pages_overview')
 
 
 class SectionsOverviewView(LoginRequiredMixin, PaginatedFilterViews, FilterView):
