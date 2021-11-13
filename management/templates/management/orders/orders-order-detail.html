@@ -342,18 +342,23 @@
                     <h5 class="h-bold">{% trans 'Options' %}</h5>
                     <a href="{% url 'order_update_view' order_detail.uuid %}"
                        class="btn btn-fw btn-warning">{% trans 'Edit order' %}</a>
-                    <a href="{% url 'invoice_pdf' order_detail.uuid %}" target="_blank"
-                       class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</a>
+                    <form action="{% url 'invoice_pdf' order_detail.uuid %}' order_detail.uuid %}" method="get"
+                          target="_blank">
+                        {% csrf_token %}
+                        <button type="submit" style="pointer-events: auto;"
+                                {% if not order_items %}disabled title="{% trans 'Products needed' %}"{% endif %}
+                                class="btn btn-fw btn-secondary">{% trans 'Show bill' %}</button>
+                    </form>
                     <a class="btn btn-fw btn-secondary" data-bs-toggle="modal" style="color: #fff"
                        data-bs-target="#assign-employee-modal">{% trans 'Assign' %}</a>
                     {% include 'management/orders/orders-orderdetail-modal-assignemployee.html' with employees=employees uuid=order_detail.uuid %}
                     <a class="btn btn-fw btn-secondary" data-bs-toggle="modal" style="color: #fff"
                        data-bs-target="#change-state-modal">{% trans 'Set State' %}</a>
                     {% include 'management/orders/orders-order-changestate.html' with states=states uuid=order_detail.uuid %}
-                        <form action="{% url 'management_order_cancel_view' order_detail.uuid %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit"
-                                    {% if order_detail.state == order_detail.state.cancel_order_state %}disabled{% endif %}
+                    <form action="{% url 'management_order_cancel_view' order_detail.uuid %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit"
+                                {% if order_detail.state == order_detail.state.cancel_order_state %}disabled{% endif %}
                                     class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
                         </form>
                     <form action="{% url 'order_accept_view' order_detail.uuid %}" method="post">
