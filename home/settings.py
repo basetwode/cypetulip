@@ -379,15 +379,15 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 
-COMPRESS_ENABLED = True
-if os.environ.get('GITHUB_WORKFLOW'):
-    COMPRESS_ENABLED = False
+COMPRESS_ENABLED = False
+if not os.environ.get('GITHUB_WORKFLOW'):
+    COMPRESS_ENABLED = True
 
-COMPRESS_FILTERS = {'css': ['cms.compressor.CSSMinFilter'], 'js': ['compressor.filters.jsmin.JSMinFilter']}
-COMPRESS_PRECOMPILERS = (
-    # ('text/x-scss', 'sass.bat {infile} {outfile}'), # windows / development
-    ('text/x-scss', 'sass {infile} {outfile}'),
-)
+    COMPRESS_FILTERS = {'css': ['cms.compressor.CSSMinFilter'], 'js': ['compressor.filters.jsmin.JSMinFilter']}
+    COMPRESS_PRECOMPILERS = (
+        # ('text/x-scss', 'sass.bat {infile} {outfile}'), # windows / development
+        ('text/x-scss', 'sass {infile} {outfile}'),
+    )
 
 CELERY_BROKER_URL = None
 CELERY_RESULT_BACKEND = None
