@@ -2,8 +2,6 @@ import os
 from datetime import timedelta, datetime
 from io import BytesIO
 
-from django.db.models import FloatField, F
-from django.db.models.functions import Cast
 from django.http import HttpResponse
 from django.shortcuts import render
 # Create your views here.
@@ -11,7 +9,6 @@ from django.template.loader import get_template
 from django.views import View
 from xhtml2pdf import pisa
 
-from billing.utils import calculate_sum, Round
 from home import settings
 from management.models.main import LegalSetting
 from payment.models.main import PaymentDetail
@@ -30,7 +27,7 @@ class HTMLPreview(PermissionOwnsObjectMixin, View):
         contact = order_detail.contact
         company = order_detail.company
         order_items = OrderItem.objects.filter(order_detail=order_detail, order_item__isnull=True)
-        #\
+        # \
         #     .annotate(
         #     price_t=Round(F('price') * Cast(F('count'), FloatField()), 2),
         # )
@@ -66,17 +63,13 @@ class GeneratePDFFile():
         contact = order_detail.contact
         company = order_detail.company
         order_items = OrderItem.objects.filter(order_detail=order_detail, order_item__isnull=True)
-        #\
-        #     .annotate(
-        #     price_t=Round(F('price') * Cast(F('count'), FloatField()), 2),
-        # )
         if not order_detail.date_bill:
             order_detail.date_bill = datetime.now()
         order_detail.date_due = order_detail.date_bill + timedelta(days=company.term_of_payment)
 
         legal_settings = LegalSetting.objects.first()
-        total_without_tax = calculate_sum(order_items)
-        total_with_tax = calculate_sum(order_items, True)
+        total_without_tax = order_detail.total()
+        total_with_tax = order_detail.total_wt()
         payment_detail = PaymentDetail.objects.get(order_detail=order_detail)
         tax_rate = int(round(total_with_tax / total_without_tax, 2) * 100) - 100
 
