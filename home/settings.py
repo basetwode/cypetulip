@@ -380,6 +380,9 @@ STATICFILES_FINDERS = (
 )
 
 COMPRESS_ENABLED = True
+if os.environ.get('GITHUB_WORKFLOW'):
+    COMPRESS_ENABLED = False
+
 COMPRESS_FILTERS = {'css': ['cms.compressor.CSSMinFilter'], 'js': ['compressor.filters.jsmin.JSMinFilter']}
 COMPRESS_PRECOMPILERS = (
     # ('text/x-scss', 'sass.bat {infile} {outfile}'), # windows / development
