@@ -2,7 +2,7 @@
 
 ![image](https://cloud.bwk-technik.de/thumbnail/af528f4e3ecf400195c7/1024/cp_s.png)
 
-
+[![Django CI](https://github.com/basetwode/cypetulip/actions/workflows/django.yml/badge.svg?branch=master)](https://github.com/basetwode/cypetulip/actions/workflows/django.yml)
 
 CypeTulip is a free open source e-commerce system. Its strength is its highly flexible product system,
 that allows both digital and regular products, but also customizable products.

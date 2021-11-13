@@ -80,6 +80,34 @@ class OrderDetailViewSet(viewsets.ModelViewSet):
         return OrderDetailSerializer
 
     def get_queryset(self):
+        queryset = super(OrderDetailViewSet, self).get_queryset()
+        request = self.request
+        uuid = self.request.query_params.get('uuid', None)
+        if request.user.is_authenticated and request.user.is_staff:
+            order_year = self.request.query_params.get('orderYear', None)
+            if uuid is not None:
+                return queryset.filter(uuid=uuid)
+            if order_year is not None:
+                queryset = queryset.filter(date_bill__year=order_year)
+            return queryset
+        elif request.user.is_authenticated:
+            contact = Contact.objects.get(user_ptr=request.user)
+            queryset = queryset.filter(company=contact.company)
+        return queryset
+
+
+class CartViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
+    queryset = OrderDetail.objects.all()
+    serializer_class = OrderDetailSerializer
+
+    def get_serializer_class(self):
+        if self.request.user.is_staff:
+            return FullOrderDetailSerializer
+        return OrderDetailSerializer
+
+    # TODO: this needs to be refactored
+    def get_queryset(self):
         queryset = OrderDetail.objects.all()
         request = self.request
         result = None
@@ -93,13 +121,14 @@ class OrderDetailViewSet(viewsets.ModelViewSet):
             return queryset
         if request.user.is_authenticated:
             contact = Contact.objects.filter(user_ptr=request.user)
+            if uuid is not None:
+                result = queryset.filter(uuid=uuid)
             if contact:
                 company = contact[0].company
                 result = OrderDetail.objects.filter(state__isnull=True, company=company)
         else:
             result = OrderDetail.objects.filter(state__isnull=True, session=request.session.session_key)
-            if uuid is not None:
-                return queryset.filter(uuid=uuid)
+
         if result:
             return result
         else:
@@ -191,11 +220,13 @@ class OrderItemViewSet(viewsets.ModelViewSet):
         return queryset
 
     def update(self, request, *args, **kwargs):
+        if request.user.is_staff:
+            return super(OrderItemViewSet, self).update(request, *args, **kwargs)
         instance = self.get_object()
         stock_sufficient, curr_stock = instance.product.product.is_stock_sufficient(instance.order_detail)
-        new_items = request.data.get('count') - instance.count
+        new_items = int(request.data.get('count')) - instance.count
 
-        if request.data.get('count') > instance.product.product.max_items_per_order:
+        if int(request.data.get('count')) > instance.product.product.max_items_per_order:
             return Response({'error': _('We\'re sorry, you can only add up to %(count) items to your order') % {
                 'article': instance.product.product.max_items_per_order},
                              'count': instance.count

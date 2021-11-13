@@ -1,9 +1,11 @@
 import math
 import uuid
 from datetime import datetime
+from functools import reduce
 
 from _decimal import Decimal, ROUND_HALF_UP
 from django.db import models
+from django.db.models import Sum, DecimalField, F
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils import timezone
@@ -175,23 +177,37 @@ class OrderDetail(models.Model):
     def apply_voucher(self, voucher):
         if self.discount:
             return False
-        voucher_applied = [order_item.apply_discount_if_eligible(voucher) for order_item in self.orderitem_set.all()]
-        if True not in voucher_applied:
-            return False
-        self.discount = voucher
-        self.discount_code = voucher.voucher_id
         if hasattr(voucher, 'percentagediscount'):
             self.discount_percentage = voucher.percentagediscount.discount_percentage
-            self.save()
-            self.apply_discount()
         elif hasattr(voucher, 'fixedamountdiscount'):
             self.discount_amount = voucher.fixedamountdiscount.amount
-            self.orderitem_set.order_by('-price').first() \
-                .apply_discount_if_eligible(voucher, apply_fixed_discount=True)
             self.save()
+
+        voucher_applied = [order_item.apply_discount(voucher) for order_item in self.orderitem_set.all()]
+        if True not in voucher_applied:
+            self.discount_percentage = 0
+            self.save()
+            return False
+
+        self.discount = voucher
+        self.discount_code = voucher.voucher_id
         voucher.count += 1
         voucher.save()
-        return True
+        self.save()
+        # self.discount = voucher
+        # self.discount_code = voucher.voucher_id
+        # if hasattr(voucher, 'percentagediscount'):
+        #     self.discount_percentage = voucher.percentagediscount.discount_percentage
+        #     self.save()
+        #     self.apply_discount()
+        # elif hasattr(voucher, 'fixedamountdiscount'):
+        #     self.discount_amount = voucher.fixedamountdiscount.amount
+        #     self.orderitem_set.order_by('-price').first() \
+        #         .apply_discount(voucher, apply_fixed_discount=True)
+        #     self.save()
+        # voucher.count += 1
+        # voucher.save()
+        # return True
 
     def remove_voucher(self):
         if self.discount:
@@ -213,10 +229,15 @@ class OrderDetail(models.Model):
             self.decrease_stocks()
             self.is_cancelled = False
         if not self.state and self.orderitem_set.count() == 0:
+            # empty cart
             self.remove_voucher()
         if not self.company and self.contact:
             self.company = self.contact.company
             self.save()
+        if not self.state:
+            # Updates prices (eg. product price or tax) if order has not been sent yet
+            for order_item in self.orderitem_set.all():
+                order_item.save()
         models.Model.save(self, force_insert, force_update,
                           using, update_fields)
 
@@ -234,14 +255,6 @@ class OrderDetail(models.Model):
             if hasattr(order_item.product, 'product') and isinstance(order_item.product.product, Product):
                 order_item.product.product.decrease_stock(order_item.count)
 
-    def apply_discount(self):
-        for order_item in self.orderitem_set.all():
-            order_item.save()
-
-    def remove_discount(self):
-        for order_item in self.orderitem_set.all():
-            order_item.save()
-
     def __was_canceled(self):
         return self.state == OrderState.objects.get(initial=True).cancel_order_state and \
                not self.is_cancelled
@@ -251,20 +264,22 @@ class OrderDetail(models.Model):
                self.is_cancelled
 
     @extend_schema_field(OpenApiTypes.DOUBLE)
-    def total_wt(self, include_discount=False):
-        return Decimal(f"{calculate_sum_order(self.orderitem_set, True, include_discount) or 0}") \
-            .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    def total_wt(self):
+        return reduce(lambda total, order_item: total + order_item,
+                      [getattr(order_item, 'get_subtotal_wt')() for order_item in self.orderitem_set \
+                      .filter(order_item__isnull=True)], 0)
 
     @extend_schema_field(OpenApiTypes.DOUBLE)
-    def total(self, include_discount=False):
-        return Decimal(f"{calculate_sum_order(self.orderitem_set, False, include_discount) or 0}") \
-            .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    def total(self):
+        return reduce(lambda total, order_item: total + order_item,
+                      [getattr(order_item, 'get_subtotal')() for order_item in self.orderitem_set \
+                      .filter(order_item__isnull=True)], 0)
 
     def total_discounted(self):
-        return self.total(True)  # - (self.discount_amount or 0)
+        return self.total()  # - Decimal(self.discount_amount or 0) this is ok for wertgutscheine, but not for systemvoucher
 
     def total_discounted_wt(self):
-        return self.total_wt(True)  # - (self.discount_amount or 0)
+        return self.total_wt()  # - Decimal(self.discount_amount or 0)
 
     def tax(self):
         return self.total_discounted_wt() - self.total_discounted()
@@ -277,6 +292,10 @@ class OrderDetail(models.Model):
 
     def discount_str(self):
         return f"{int(self.discount_percentage * 100)} %" if self.discount_percentage else f"{self.discount_amount} €"
+
+
+def round(value):
+    return Decimal(f"{value}").quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
 class OrderItem(models.Model):
@@ -292,10 +311,12 @@ class OrderItem(models.Model):
     count = models.IntegerField(default=1)
     tax_rate = models.IntegerField(default=None, blank=True, null=True)
     price = models.FloatField(default=None, blank=True, null=True)
+    price_admin = models.FloatField(default=None, blank=True, null=True)
     price_wt = models.FloatField(default=None, blank=True, null=True)
     price_discounted = models.FloatField(default=None, blank=True, null=True)
     price_discounted_wt = models.FloatField(default=None, blank=True, null=True)
     applied_discount = models.FloatField(default=None, blank=True, null=True)
+    is_discount_eligible = models.BooleanField(default=False, blank=True, null=True)
     period_of_performance_start = models.DateTimeField(null=True, blank=True)
     period_of_performance_end = models.DateTimeField(null=True, blank=True)
     allowable = models.BooleanField(default=True, blank=True, null=True)
@@ -304,37 +325,64 @@ class OrderItem(models.Model):
         verbose_name = _("OrderItem")
         verbose_name_plural = _("OrderItems")
 
+    def apply_discount(self, voucher):  # necessary?
+        self.is_discount_eligible = self.determine_discount_eligible(voucher)
+        self.recalculate_price()
+        self.save()
+        for order_item in OrderItem.objects.filter(order_item=self):
+            order_item.apply_discount(voucher)
+        return self.is_discount_eligible
+
+    # this only calculates price for this product. subitems are calculated separately
+    def recalculate_price(self):
+
+        tax_rate = self.get_product_tax_rate() + 1
+        price = self.get_product_price_b()  # either normal or special net price
+        price_wt = round(price * tax_rate)
+        price_discounted = price
+        price_discounted_wt = round(price_discounted * tax_rate)
+        applied_discount = 0
+
+        if self.is_discount_eligible:
+            if self.order_detail.discount_percentage:
+                price_discounted = Decimal(price) - round(price * self.order_detail.discount_percentage)
+                price_discounted_wt = round(price_discounted * Decimal(tax_rate))
+                applied_discount = price_wt - price_discounted_wt
+            elif self.order_detail.discount_amount:
+                price_discounted = Decimal(price) - Decimal(self.order_detail.discount_amount) \
+                    if self.order_detail.discount_amount < self.price else self.price
+                price_discounted_wt = round(price_discounted * Decimal(tax_rate))
+                applied_discount = price_wt - price_discounted_wt
+
+        self.price = price
+        self.price_wt = price_wt
+        self.price_discounted = price_discounted
+        self.price_discounted_wt = price_discounted_wt
+        self.applied_discount = applied_discount
+        self.tax_rate = self.tax_rate if self.tax_rate else self.product.tax * 100
+
+    def get_subtotal(self):
+        subitemtotal = OrderItem.objects.filter(order_item=self, allowable=True).aggregate(
+            subtotal=Sum(F("price_discounted") * F("count"), field="price_discounted",
+                         output_field=DecimalField()))['subtotal'] or 0
+        return self.count * (round(subitemtotal) + round(self.price_discounted))
+
+    def get_subtotal_wt(self):
+        subitemtotal_wt = OrderItem.objects.filter(order_item=self, allowable=True).aggregate(
+            subtotal_wt=Sum(F("price_discounted_wt") * F("count"), field="price_discounted_wt ",
+                            output_field=DecimalField()))['subtotal_wt'] or 0
+        return self.count * (round(subitemtotal_wt) + round(self.price_discounted_wt))
+
+    def get_subtotal_discount(self):
+        subtotal_discount = OrderItem.objects.filter(order_item=self, allowable=True).aggregate(
+            subtotal_applied_discount=Sum("applied_discount", field="applied_discount * count",
+                                          output_field=DecimalField()))['subtotal_applied_discount'] or 0
+        return self.count * (float(subtotal_discount) + self.applied_discount)
+
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None, recalculate_tax=False):
-        price_changed = self.price_changed()
-
-        if (
-                not self.order_detail.state or not self.price) and price_changed and self.product and not self.product.price_on_request:
-            self.price = self.get_product_special_price() if self.get_product_special_price() else self.get_product_price()
-            self.price_wt = self.get_product_price_wt()
-            self.applied_discount = 0
-            self.price_discounted = self.get_product_price_b()
-            self.price_discounted_wt = self.get_product_price_wt()
-        if self.product.price_on_request and not self.price_wt:
-            self.price_wt = self.calculate_tax(self.price)
-            self.applied_discount = 0
-            self.price_discounted = self.price
-            self.price_discounted_wt = self.price_wt
-        if not self.pk or price_changed:
-            self.apply_discount_if_eligible(self.order_detail.discount,
-                                            save=False) if self.order_detail.discount else None
-        if not math.isclose(self.price_wt, self.calculate_tax(self.price), rel_tol=1e-5):
-            self.price_wt = self.calculate_tax(self.price)
-            self.applied_discount = 0
-            self.price_discounted = self.price
-            self.price_discounted_wt = self.price_wt
-        models.Model.save(self, force_insert, force_update,
-                          using, update_fields)
-        for order_item in OrderItem.objects.filter(order_item=self):
-            order_item.save()
-        if not self.tax_rate:
-            self.tax_rate = int(self.product.tax * 100)
-            self.save()
+        self.recalculate_price()
+        super(OrderItem, self).save(force_insert, force_update, using, update_fields)
 
     def delete(self, using=None, keep_parents=False):
         if hasattr(self.product, 'product'):
@@ -342,7 +390,7 @@ class OrderItem(models.Model):
         super(OrderItem, self).delete(using, keep_parents)
         self.order_detail.save()
 
-    def is_discount_eligible(self, voucher):
+    def determine_discount_eligible(self, voucher):
 
         product_id_in_discount = voucher.eligible_products.filter(id=self.product.id).exists()
         parent_product_in_discount = self.product.product.assigned_sub_products.filter(id=self.product.id).exists() if \
@@ -350,74 +398,30 @@ class OrderItem(models.Model):
         product_category_in_discount = voucher.eligible_categories.filter(
             id=self.product.product.category.id).exists() \
             if hasattr(self.product, 'product') else False
-        is_parent_item_eligible = self.order_item.is_discount_eligible(voucher) if self.order_item else False
+        is_parent_item_eligible = self.order_item.determine_discount_eligible(voucher) if self.order_item else False
         return product_id_in_discount or parent_product_in_discount or product_category_in_discount or is_parent_item_eligible
-
-    def apply_discount_if_eligible(self, voucher, apply_fixed_discount=False, save=True):
-        is_eligible = self.is_discount_eligible(voucher)
-        result = False
-        if is_eligible and hasattr(voucher, 'percentagediscount'):
-            self.applied_discount = round(self.price * voucher.percentagediscount.discount_percentage, 2)
-            self.price_discounted = round(self.price - self.applied_discount, 2)
-            self.price_discounted_wt = self.calculate_tax(self.price_discounted)
-            result = True
-        elif apply_fixed_discount:
-            amount = voucher.fixedamountdiscount.amount if voucher.fixedamountdiscount.amount < self.price else self.price
-            self.price_discounted_wt = round(self.price_wt - amount, 2)
-            self.price_discounted = round(self.price_discounted_wt / (1 + self.product.tax), 2)
-            self.applied_discount = self.price_discounted_wt - self.price_discounted
-            result = True
-        else:
-            self.applied_discount = 0
-            self.price_discounted = self.get_product_price_b()
-            self.price_discounted_wt = self.price_wt
-        # Fixed amount vouchers apply on the order not an individual item
-        if is_eligible:
-            result = True
-        if save:
-            self.save()
-        return result
 
     def __str__(self):
         return f"{self.count}x {self.product.name if self.product else ''} {self.price}"
 
     @extend_schema_field(OpenApiTypes.DOUBLE)
-    def total_wt(self, include_discount=False):
-        if not self.allowable:
-            return 0
-        sub_items = OrderItem.objects.filter(order_item=self)
-        sum = (calculate_sum(sub_items, True, include_discount) + (
-            (float(self.price_wt) if not include_discount else self.price_discounted_wt) \
-                if sub_items.count() > 0 else 0 + float(
-                self.price_wt) if not include_discount else self.price_discounted_wt)) * \
-              self.count
-        return Decimal(f"{sum}") \
-            .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    def total_wt(self):
+        return self.get_subtotal_wt() if self.allowable else 0
 
-    def total(self, include_discount=False):
-        if not self.allowable:
-            return 0
-        sub_items = OrderItem.objects.filter(order_item=self)
-        return (calculate_sum(sub_items, False, include_discount) + (
-            self.price if not include_discount else self.price_discounted) \
-                    if sub_items.count() > 0 else 0 + self.price if not include_discount else self.price_discounted) * \
-               self.count
+    def total(self):
+        return self.get_subtotal() if self.allowable else 0
 
     def total_discounted(self):
-        return round(self.total(True), 2)
+        return round(self.total())
 
     def total_discounted_wt(self):
-        return round(self.total_wt(True), 2)
+        return round(self.total_wt())
 
     def total_discount(self):
-        return round(self.total() - self.total_discounted(), 2)
+        return round(self.total() - self.total_discounted())
 
     def total_discount_wt(self):
-        return round(self.total_wt() - self.total_discounted_wt(), 2)
-
-    def calculate_tax(self, price):
-        return Decimal(f"{price * (1 + self.product.tax)}") \
-            .quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        return round(self.total_wt() - self.total_discounted_wt())
 
     def get_product_price(self):
         return self.product.price if hasattr(self, 'fileorderitem') else \
@@ -431,24 +435,22 @@ class OrderItem(models.Model):
                 self.selectorderitem.get_product_special_price() if hasattr(self, 'selectorderitem') else \
                     self.product.special_price
 
-    def get_product_price_wt(self):
-        return (self.calculate_tax(self.get_product_special_price()) if self.get_product_special_price() else
-                self.calculate_tax(self.get_product_price()))
+    def get_product_tax_rate(self):
+        if self.state:
+            return self.tax_rate
+        return self.product.tax
 
     def get_product_price_b(self):
+        if self.price_admin:
+            return self.price_admin
+        if self.state:
+            return self.price
         return (self.get_product_special_price() if self.get_product_special_price() else
                 self.get_product_price())
 
-    def price_changed(self):
-        return \
-            (not self.price_wt or self.price_wt != self.calculate_tax(self.price)) if hasattr(self,
-                                                                                              'fileorderitem') else \
-                self.checkboxorderitem.price_changed() if hasattr(self, 'checkboxorderitem') else \
-                    self.selectorderitem.price_changed() if hasattr(self, 'selectorderitem') else \
-                        (not self.price_wt or self.price_wt != self.calculate_tax(self.price))
-
     def is_conveyed(self):
         return self.shipment_set.exists()
+
 
 class FileOrderItem(OrderItem):
     file = models.FileField(default=None, null=True,

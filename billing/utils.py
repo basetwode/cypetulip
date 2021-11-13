@@ -1,6 +1,6 @@
 from functools import reduce
 
-from django.db.models import Case, When, FloatField, F, Sum, Func, Transform
+from django.db.models import Case, When, FloatField, F, Sum, Func, Transform, DecimalField
 from django.db.models.functions import Cast
 
 
@@ -23,10 +23,10 @@ def calculate_sum(order_items, include_tax=False, include_discount=False):
     order_items = order_items.filter(allowable=True)
     if include_tax:
         total = order_items.aggregate(
-            total=Round(Sum(price_field_wt, field=price_field_wt), 2))['total']
+            total=Round(Sum(price_field_wt, field=price_field_wt, output_field=DecimalField()), 2, output_field=DecimalField()))['total']
     else:
         total = order_items.aggregate(
-            total=Round(Sum(price_field, field=price_field), 2))['total']
+            total=Round(Sum(price_field, field=price_field, output_field=DecimalField()), 2, output_field=DecimalField()))['total']
     return total if total else 0
 
 

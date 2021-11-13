@@ -49,9 +49,8 @@
     {% include 'cms/header.html' %}
 
     <!-- Fixed navbar -->
-    {% cache 500 navbar request.user.username %}
-        {% include 'cms/navbar.html' %}
-    {% endcache %}
+
+    {% include 'cms/navbar.html' %}
 
     <main role="main" id="main" class="flex-shrink-0 mt-3 mb-3">
 

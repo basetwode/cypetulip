@@ -14,6 +14,7 @@ class PermissionPostGetRequiredMixin(AccessMixin):
     permission_post_required = []
     permission_get_required = []
     permission_denied_url = 'permissions:permission_denied'
+    internal_shop_mgmt_apps = ('management', 'accounting', 'billing', 'cms', 'payment', 'shipping')
 
     def get_login_url(self):
         if not self.request.user.is_authenticated:
@@ -23,11 +24,11 @@ class PermissionPostGetRequiredMixin(AccessMixin):
     def get_permission_get_required(self):
         if len(self.permission_get_required) == 0 and hasattr(self, 'model') and self.model:
             ct = ContentType.objects.get_for_model(self.model)
-            if self.request.path[1:].startswith('shop'):
+            if not self.request.path[1:].startswith(self.internal_shop_mgmt_apps):
                 return [ct.app_label+'.'+'view_'+ct.model]
             else:
                 return ['management.'+'view_'+ct.model]
-        elif len(self.permission_get_required) == 0 and not self.request.path[1:].startswith('shop'):
+        elif len(self.permission_get_required) == 0 and self.request.path[1:].startswith(self.internal_shop_mgmt_apps):
             return ['management.'+'view_generic']
         else:
             return self.permission_get_required
@@ -35,11 +36,11 @@ class PermissionPostGetRequiredMixin(AccessMixin):
     def get_permission_post_required(self):
         if len(self.permission_post_required) == 0 and hasattr(self, 'model') and self.model:
             ct = ContentType.objects.get_for_model(self.model)
-            if self.request.path[1:].startswith('shop'):
+            if not self.request.path[1:].startswith(self.internal_shop_mgmt_apps):
                 return [ct.app_label+'.'+'view_'+ct.model]
             else:
                 return ['management.'+'view_'+ct.model]
-        elif len(self.permission_post_required) == 0 and not self.request.path[1:].startswith('shop'):
+        elif len(self.permission_post_required) == 0 and self.request.path[1:].startswith(self.internal_shop_mgmt_apps):
             return ['management.'+'change_generic']
         else:
             return self.permission_post_required
@@ -117,7 +118,7 @@ class PermissionOwnsObjectMixin(AccessMixin):
 
     # Used to test for new objects. Tests whether the contact is set on the order that is related to the new object
     def test_order_ownership(self):
-        if self.get_model() is not Order:
+        if self.get_model() is not OrderDetail:
             # todo: orderdetails too
             if 'order' in self.kwargs or 'uuid' in self.kwargs:
                 order_detail = OrderDetail.objects.filter(uuid=self.kwargs[self.get_slug_kwarg()])

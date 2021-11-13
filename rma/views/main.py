@@ -1,4 +1,4 @@
-from permissions.views.mixins import LoginRequiredMixin
+from permissions.views.mixins import LoginRequiredMixin, PermissionOwnsObjectMixin
 from rma.models.main import ReturnMerchandiseAuthorization
 from shop.models.orders import OrderDetail
 from utils.views import CreateUpdateView
@@ -8,7 +8,7 @@ class RMAInitView(LoginRequiredMixin, CreateUpdateView):
     template_name = 'rma/account/account-rma-create.html'
     model = ReturnMerchandiseAuthorization
     slug_url_kwarg = 'uuid'
-    slug_field = 'order'
+    slug_field = 'order__uuid'
     fields = ['shipper']
 
     # todo make sure that this view is protected and that others can not create rmas for any orders

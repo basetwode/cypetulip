@@ -437,7 +437,7 @@
                             <tr>
                                 <td colspan="2"></td>
                                 <td colspan="2">{% trans 'Included VAT' %} </td>
-                                <td>tax €</td>
+                                <td>[[orderDetails.tax]] €</td>
                                 <td></td>
                             </tr>
 
@@ -674,10 +674,11 @@
                     formData.append("product", item.product.id);
                     formData.append("order_detail", this.orderDetails.id);
                     formData.append("allowable", item.allowable);
-                    formData.append("price", item.price);
+                    formData.append("price_admin", item.price);
                     formData.append("price_wt", 0);
                     formData.append("count", item.count);
-                    formData.append("additional_text", item.additional_text);
+                    if(item.additional_text)
+                        formData.append("additional_text", item.additional_text);
 
                     if (item.period_of_performance_start) {
                         formData.append("period_of_performance_start", item.period_of_performance_start);

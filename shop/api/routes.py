@@ -4,7 +4,7 @@ from shop.api.v1.viewsets import CompanyViewSet, OrderStateViewSet, \
     ProductViewSet, ProductCategoryViewSet, ProductAttributeTypeViewSet, ProductAttributeTypeInstanceViewSet, \
     ProductSubItemViewSet, ProductImageViewSet, ProductImageViewSetForProduct, FileExtensionItemViewSet, \
     SelectItemViewSet, OrderItemStateViewSet, FixedAmountDiscountViewSet, PercentageDiscountViewSet, \
-    WorkingTimeSerializerViewSet
+    WorkingTimeSerializerViewSet, CartViewSet
 from shop.api.v1.viewsets import GuestViewSet, AddressViewSet, ContactViewSet, DeliveryViewSet, \
     ApplyVoucherViewSet, OrderItemViewSet, FileOrderItemViewSet, SelectOrderItemViewSet, NumberOrderItemViewSet, \
     CheckboxOrderItemViewSet, OrderDetailViewSet
@@ -13,6 +13,7 @@ router = routers.DefaultRouter()
 router.register(r'companies', CompanyViewSet)
 router.register(r'orderstate', OrderStateViewSet)
 router.register(r'orderdetails', OrderDetailViewSet)
+router.register(r'cart', CartViewSet)
 router.register(r'products', ProductViewSet)
 router.register(r'categories', ProductCategoryViewSet)
 router.register(r'productattributetypes', ProductAttributeTypeViewSet)

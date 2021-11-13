@@ -349,7 +349,7 @@
             methods: {
                 reloadData: function () {
                     let instance = this
-                    axios.get('/shop/api/v1/orderdetails?orderHash=' + this.uuid)
+                    axios.get('/shop/api/v1/cart?uuid=' + this.uuid)
                         .then(response => {
                             if (Array.isArray(response.data)) {
 

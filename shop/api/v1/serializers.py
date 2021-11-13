@@ -160,12 +160,15 @@ class BasicCheckboxOrderItemSerializer(serializers.ModelSerializer):
 class OrderDetailSerializer(serializers.ModelSerializer):
     total = serializers.ReadOnlyField()
     total_wt = serializers.ReadOnlyField()
+    tax = serializers.ReadOnlyField()
     order_items = serializers.SerializerMethodField('get_order_items')
     voucher = SerializerMethodField()
 
     class Meta:
         model = OrderDetail
-        fields = ['uuid', 'order_items', 'id', 'voucher', 'total_wt', 'total', 'date_bill']
+        fields = ['uuid',
+                  'order_items', 'tax',
+                  'id', 'voucher', 'total_wt', 'total', 'date_bill']
         depth = 4
 
     def get_order_items(self, order):
@@ -201,8 +204,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItem
-        fields = ['product', 'price', 'price_wt', 'count', 'id', 'fileorderitem', 'valid', 'applied_discount',
-                  'allowable',
+        fields = ['product', 'price_discounted', 'price_wt', 'count', 'id', 'fileorderitem', 'valid', 'applied_discount',
+                  'allowable', 'price', 'price_admin',
                   'price_discounted', 'price_discounted_wt', 'total_wt', 'period_of_performance_start',
                   'period_of_performance_end', 'is_conveyed',
                   'numberorderitem', 'selectorderitem', 'checkboxorderitem', 'randID', 'errors']
