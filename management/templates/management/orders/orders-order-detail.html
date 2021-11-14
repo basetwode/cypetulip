@@ -16,17 +16,17 @@
     <div class="row">
         <div class=" col-md-3">
             <div class="card">
-                    <h4 class="card-header">
-                        <div style="overflow: auto">
-                            <div class="col-md-12"><span>{{ order_detail.company }}</span></div>
-                            <div class="col-md-12"><span style="font-size: small; font-weight: bold">
+                <h4 class="card-header">
+                    <div style="overflow: auto">
+                        <div class="col-md-12"><span>{{ order_detail.company }}</span></div>
+                        <div class="col-md-12"><span style="font-size: small; font-weight: bold">
                                     {{ order_detail.contact.first_name }} {{ order_detail.contact.last_name }}<br>
                                     {{ order_detail.contact.customer_nr }}
                                 </span>
-                            </div>
                         </div>
-                    </h4>
-                    <div class="card-body">
+                    </div>
+                </h4>
+                <div class="card-body">
                     {% if order_detail.company.logo %}
                         <div class="col-sm-12">
                             <img class="card-img-top"
@@ -76,7 +76,7 @@
                             </strong>
                             <div>
 
-                                    {{ order_detail.date_added }}
+                                {{ order_detail.date_added }}
                             </div>
 
                         </div>
@@ -156,14 +156,14 @@
                         {% trans 'Tracking' %}
                     </strong>
                         <div>
-                                {% for shipment in order_detail.shipment_set.all %}
-                                    {% if shipment.packageshipment %}
-                                        <div>#{{ forloop.counter }}
-                                            {% trans 'Package: ' %}{{ shipment.packageshipment.package.tracking_code }}</div>
-                                    {% else %}
-                                        <div>#{{ forloop.counter }} {% trans 'Online' %}</div>
-                                    {% endif %}
-                                {% endfor %}
+                            {% for shipment in order_detail.shipment_set.all %}
+                                {% if shipment.packageshipment %}
+                                    <div>#{{ forloop.counter }}
+                                        {% trans 'Package: ' %}{{ shipment.packageshipment.package.tracking_code }}</div>
+                                {% else %}
+                                    <div>#{{ forloop.counter }} {% trans 'Online' %}</div>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </div>
                     <div class="col-md-1"></div>
@@ -358,20 +358,22 @@
                         {% csrf_token %}
                         <button type="submit"
                                 {% if order_detail.state == order_detail.state.cancel_order_state %}disabled{% endif %}
-                                    class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
-                        </form>
+                                class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
+                    </form>
                     <form action="{% url 'order_accept_view' order_detail.uuid %}" method="post">
                         {% csrf_token %}
                         <button type="submit"
                                 class="btn btn-fw btn-secondary">{% trans 'Send Invoice' %}</button>
-                            {% if not order_detail.bill_sent %}
-                                <small>{% trans 'Invoice has not been sent yet' %}</small>
-                            {% endif %}
+                        {% if not order_detail.bill_sent %}
+                            <small>{% trans 'Invoice has not been sent yet' %}</small>
+                        {% endif %}
                     </form>
                     <form action="{% url 'order_pay_view' order_detail.uuid %}" method="post">
                         {% csrf_token %}
-                        <button type="submit" {% if payment.is_paid %}disabled{% endif %}
-                                class="btn btn-fw btn-secondary">{% trans 'Paid' %}</button>
+                        <button type="submit"
+                                class="btn btn-fw btn-secondary">
+                            {% if payment.is_paid %}{% trans 'Mark unpaid' %}
+                            {% else %}{% trans 'Mark paid' %}{% endif %}</button>
                     </form>
                     <button href="#" class="btn btn-fw btn-secondary" data-bs-toggle="modal"
                             {% if order_detail.is_send %}{% endif %}
@@ -392,21 +394,21 @@
                 <div class="row">
                     <div class="col-md-6" style="text-align: left; ">
                         <strong> {% trans 'Billing Address' %}</strong><br>
-                            {{ order_detail.billing_address.contact.first_name }}
-                            {{ order_detail.billing_address.contact.last_name }}<br>
-                            {{ order_detail.billing_address.street }}
-                            {{ order_detail.billing_address.number }}<br>
-                            {{ order_detail.billing_address.zipcode }}
-                            {{ order_detail.billing_address.city }}
+                        {{ order_detail.billing_address.contact.first_name }}
+                        {{ order_detail.billing_address.contact.last_name }}<br>
+                        {{ order_detail.billing_address.street }}
+                        {{ order_detail.billing_address.number }}<br>
+                        {{ order_detail.billing_address.zipcode }}
+                        {{ order_detail.billing_address.city }}
                     </div>
                     <div class="col-md-6">
                         <strong> {% trans 'Shipping Address' %}</strong><br>
-                            {{ order_detail.shipment_address.contact.first_name }}
-                            {{ order_detail.shipment_address.contact.last_name }}<br>
-                            {{ order_detail.shipment_address.street }}
-                            {{ order_detail.shipment_address.number }}<br>
-                            {{ order_detail.shipment_address.zipcode }}
-                            {{ order_detail.shipment_address.city }}
+                        {{ order_detail.shipment_address.contact.first_name }}
+                        {{ order_detail.shipment_address.contact.last_name }}<br>
+                        {{ order_detail.shipment_address.street }}
+                        {{ order_detail.shipment_address.number }}<br>
+                        {{ order_detail.shipment_address.zipcode }}
+                        {{ order_detail.shipment_address.city }}
                     </div>
                 </div>
             </div>
@@ -427,59 +429,59 @@
                         </thead>
 
                         <tbody>
-                            {% for shipment in order_detail.shipment_set.all %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{% if shipment.packageshipment %} {% trans 'Package' %}{% else %}
-                                        {% trans 'Online' %}{% endif %}</td>
-                                    <td>{{ shipment.date_shipped }}<br>
-                                        <p></p>
-                                        <small><b>{% trans 'Shipped products: ' %}</b></small><br>
-                                        {% for shipped_product in shipment.order_items_shipped.all %}
-                                            <p class="ps-3 pt-2">{{ shipped_product.product.name }}</p>
-                                        {% empty %}
-                                            <p class="ps-3 pt-2">
-                                                <small>{% trans 'No products associated with this shipment' %}</small>
-                                            </p>
-                                        {% endfor %}
-                                    </td>
-                                    <td>
-                                        {% if shipment.packageshipment %}
-                                            <p>{% trans 'Price: ' %}{{ shipment.packageshipment.package.price }}</p>
-                                            <p>
-                                                {% trans 'Weight: ' %}{{ shipment.packageshipment.package.weight }}</p>
-                                            <p>
-                                                {% trans 'Shipper: ' %}{{ shipment.packageshipment.package.shipper.name }}</p>
-                                            <p>
-                                                {% trans 'Tracking Code: ' %}{{ shipment.packageshipment.package.tracking_code }}</p>
-                                        {% else %}
-                                            {% trans 'File: ' %}
-                                            <a href="{{ shipment.onlineshipment.file.url }}">{{ shipment.onlineshipment.file_name }}</a>
-                                        {% endif %}
-
-                                    </td>
-                                    <td> {% if shipment.packageshipment %}
-                                        <a class="btn btn-fw btn-secondary"
-                                           href="{% url 'shipping:packageshipment_show' shipment.packageshipment.package.id %}">Open</a>
+                        {% for shipment in order_detail.shipment_set.all %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{% if shipment.packageshipment %} {% trans 'Package' %}{% else %}
+                                    {% trans 'Online' %}{% endif %}</td>
+                                <td>{{ shipment.date_shipped }}<br>
+                                    <p></p>
+                                    <small><b>{% trans 'Shipped products: ' %}</b></small><br>
+                                    {% for shipped_product in shipment.order_items_shipped.all %}
+                                        <p class="ps-3 pt-2">{{ shipped_product.product.name }}</p>
+                                    {% empty %}
+                                        <p class="ps-3 pt-2">
+                                            <small>{% trans 'No products associated with this shipment' %}</small>
+                                        </p>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% if shipment.packageshipment %}
+                                        <p>{% trans 'Price: ' %}{{ shipment.packageshipment.package.price }}</p>
+                                        <p>
+                                            {% trans 'Weight: ' %}{{ shipment.packageshipment.package.weight }}</p>
+                                        <p>
+                                            {% trans 'Shipper: ' %}{{ shipment.packageshipment.package.shipper.name }}</p>
+                                        <p>
+                                            {% trans 'Tracking Code: ' %}{{ shipment.packageshipment.package.tracking_code }}</p>
                                     {% else %}
-                                        <a class="btn btn-fw btn-secondary"
-                                           href="{% url 'shipping:onlineshipment_show' shipment.id %}">Open</a>
+                                        {% trans 'File: ' %}
+                                        <a href="{{ shipment.onlineshipment.file.url }}">{{ shipment.onlineshipment.file_name }}</a>
                                     {% endif %}
 
-                                        <a href="#" class="btn btn-outline-dark" data-bs-toggle="modal"
-                                           data-bs-target="#delete-modal-{{ shipment.id }}">{% trans 'Delete' %}</a>
-                                        {% include 'management/generic/generic-modal-delete.html' with id=shipment.id uuid=order_detail.uuid url='shipping:shipment_delete' url_param='subitem_delete_id' %}
-                                    </td>
-                                </tr>
-                            {% empty %}
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>{% trans 'No shipments' %}</td>
-                                    <td></td>
-                                </tr>
-                            {% endfor %}
+                                </td>
+                                <td> {% if shipment.packageshipment %}
+                                    <a class="btn btn-fw btn-secondary"
+                                       href="{% url 'shipping:packageshipment_show' shipment.packageshipment.package.id %}">Open</a>
+                                {% else %}
+                                    <a class="btn btn-fw btn-secondary"
+                                       href="{% url 'shipping:onlineshipment_show' shipment.id %}">Open</a>
+                                {% endif %}
+
+                                    <a href="#" class="btn btn-outline-dark" data-bs-toggle="modal"
+                                       data-bs-target="#delete-modal-{{ shipment.id }}">{% trans 'Delete' %}</a>
+                                    {% include 'management/generic/generic-modal-delete.html' with id=shipment.id uuid=order_detail.uuid url='shipping:shipment_delete' url_param='subitem_delete_id' %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>{% trans 'No shipments' %}</td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
                         </tbody>
 
                     </table>

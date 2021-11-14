@@ -85,7 +85,10 @@ class OrderPayView(View):
         _order_detail = OrderDetail.objects.get(uuid=uuid)
         _payment_detail = PaymentDetail.objects.get(order_detail=_order_detail)
         _payment = Payment.objects.get(details=_payment_detail)
-        _payment.is_paid = True
+        if _payment.is_paid == True:
+            _payment.is_paid = False
+        else:
+            _payment.is_paid = True
         _order_detail.state = OrderState.objects.get(is_paid_state=True)
         _order_detail.save()
         try:
