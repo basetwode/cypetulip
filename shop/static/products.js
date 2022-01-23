@@ -1,6 +1,6 @@
 function setAttributeParam(key, value) {
-    key = encodeURIComponent(key);
-    value = encodeURIComponent(value);
+    key = decodeURI(key);
+    value = decodeURI(value);
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.append(key, value);
 
@@ -8,8 +8,8 @@ function setAttributeParam(key, value) {
 }
 
 function clearAttributeParam(key, value) {
-    key = encodeURIComponent(key);
-    value = encodeURIComponent(value);
+    key = decodeURI(key);
+    value = decodeURI(value);
     const urlParams = new URLSearchParams(window.location.search.slice(1));
 
     var existingParams = urlParams.getAll(key)
