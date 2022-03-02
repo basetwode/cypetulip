@@ -65,6 +65,7 @@ class BasicProductSerializer(serializers.ModelSerializer):
 
 
 class FullProductSerializer(BasicProductSerializer):
+    is_public = serializers.BooleanField(write_only=True)
 
     class Meta:
         model = Product
