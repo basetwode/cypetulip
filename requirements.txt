@@ -60,7 +60,7 @@ tinycss==0.4
 tornado==6.0.3
 tzlocal==2.0.0
 urllib3==1.25.7
-wheel==0.33.6
+wheel==0.38.1
 paypalhttp==1.0.0
 paypal-checkout-serversdk==1.0.1
 django-cookiebanner==0.2.2
