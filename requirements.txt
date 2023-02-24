@@ -46,7 +46,7 @@ oauth2==1.9.0.post1
 oauthlib==3.2.2
 paypalrestsdk==1.13.1
 pefile==2023.2.7
-protobuf==4.22.0
+protobuf==3.20.3
 Pillow==9.4.0
 xhtml2pdf==0.2.9
 pytz==2022.7.1
