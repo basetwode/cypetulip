@@ -1,6 +1,6 @@
 import secrets
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.exceptions import NotFound
@@ -19,7 +19,7 @@ from shop.api.v1.serializers import AddressSerializer, BasicContactSerializer, O
     ProductAttributeTypeInstanceSerializer, ProductSubItemSerializer, ProductImageSerializer, OrderStateSerializer, \
     FileExtensionItemSerializer, \
     SelectItemSerializer, OrderItemStateSerializer, IndividualOfferSerializer, FixedAmountDiscountSerializer, \
-    PercentageDiscountSerializer, WorkingTimeSerializer, FullProductSerializer
+    PercentageDiscountSerializer, WorkingTimeSerializer, FullProductSerializer, ProductAttributeGroupSerializer
 from shop.models.accounts import Address, Contact, WorkingTime, Company
 from shop.models.orders import OrderItem, CheckBoxOrderItem, NumberOrderItem, \
     SelectOrderItem, FileOrderItem, OrderState, OrderDetail, Discount, OrderItemState, PercentageDiscount, \
@@ -27,7 +27,7 @@ from shop.models.orders import OrderItem, CheckBoxOrderItem, NumberOrderItem, \
 from shop.models.products import Product, ProductCategory, ProductAttributeType, ProductAttributeTypeInstance, \
     ProductSubItem, \
     ProductImage, SelectItem, FileExtensionItem, \
-    IndividualOffer
+    IndividualOffer, ProductAttributeGroup
 
 
 class GuestViewSet(viewsets.ViewSet):
@@ -351,12 +351,27 @@ class CompanyViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
     queryset = Product.objects.all()
-    serializer_class = BasicProductSerializer
+    serializer_class = FullProductSerializer
 
     def get_serializer_class(self):
         if self.request.user.is_staff:
             return FullProductSerializer
         return BasicProductSerializer
+
+    def post(self, request, pk):
+        if request.data['product']:
+            product = request.data['product']
+        else:
+            product = request.data
+        if self.request.user.is_staff:
+            instance = self.get_object()
+            serializer = FullProductSerializer(instance, data=product)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
 
 class ProductCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
@@ -368,6 +383,12 @@ class ProductAttributeTypeViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions, IsAdminUser]
     queryset = ProductAttributeType.objects.all()
     serializer_class = ProductAttributeTypeSerializer
+
+
+class ProductAttributeGroupViewSet(viewsets.ModelViewSet):
+    permission_classes = [DjangoModelPermissions, IsAdminUser]
+    queryset = ProductAttributeGroup.objects.all()
+    serializer_class = ProductAttributeGroupSerializer
 
 
 class ProductAttributeTypeInstanceViewSet(viewsets.ModelViewSet):

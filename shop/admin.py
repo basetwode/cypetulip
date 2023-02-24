@@ -6,7 +6,7 @@ from shop.models.orders import OrderItemState, OrderState, Discount, FixedAmount
     OrderDetail, OrderItem, FileOrderItem, SelectOrderItem, CheckBoxOrderItem, NumberOrderItem
 from shop.models.products import ProductCategory, FileSubItem, FileExtensionItem, SelectSubItem, \
     SelectItem, NumberSubItem, CheckBoxSubItem, ProductAttributeType, ProductAttributeTypeInstance, Product, \
-    ProductImage, IndividualOffer
+    ProductImage, IndividualOffer, ProductAttributeGroup
 
 admin.site.register(Address)
 admin.site.register(Company)
@@ -29,6 +29,7 @@ admin.site.register(NumberOrderItem)
 admin.site.register(NumberSubItem)
 admin.site.register(OrderState)
 admin.site.register(OrderItemState)
+admin.site.register(ProductAttributeGroup)
 admin.site.register(ProductAttributeType)
 admin.site.register(ProductAttributeTypeInstance)
 admin.site.register(IndividualOffer)

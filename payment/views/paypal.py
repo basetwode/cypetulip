@@ -3,15 +3,15 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import View
 from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest
 
 from payment.models.main import Payment, PaymentDetail
-from shop.views.mixins import EmailConfirmView
 from shop.models.orders import OrderState, OrderDetail, OrderItem
 from shop.models.products import Product
 from shop.utils import create_hash
+from shop.views.mixins import EmailConfirmView
 
 __author__ = 'Anselm'
 

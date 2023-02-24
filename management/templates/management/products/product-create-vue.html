@@ -1,116 +1,136 @@
 {% extends 'management/generic/generic-create.html' %}
-{% load bootstrap5 %}
+{% load django_bootstrap5 %}
 {% load i18n %}
 
 {% load fb_versions %}
 
 {% block form %}
-    {% bootstrap_form form exclude="attributes" form_group_class="m-1" layout='horizontal' %}
+  {% bootstrap_form form exclude="attributes,attribute_types" form_group_class="m-1" layout='horizontal' %}
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
     </script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script type='text/javascript'>
-        var csrfmiddlewaretoken = '{{ csrf_token }}';
-        var selProductId = {% if object %}{{ object.id }}{% else %}""{% endif %};
-    </script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script type='text/javascript'>
+    var csrfmiddlewaretoken = '{{ csrf_token }}';
+    var selProductId = {% if object %}{{ object.id }}{% else %}""{% endif %};
+  </script>
 
-    <div id="app">
-        <div class="form-group m-1 row"><label class="col-md-3 col-form-label"
-                                               for="id_selectedAttributes">Attributes</label>
-            <div class="col-md-8"><select size="10" v-model="selectedAttributes" name="attributes"
-                                          class="form-control"
-                                          title="" id="id_selectedAttributes"
-                                          multiple="">
-                <option v-for="option in productAttributeTypeInstances" v-bind:value="option.id">
-                    [[ getTypeName(option.type) ]] | [[ option.value ]]
-                </option>
+  <div id="app">
 
-            </select></div>
-            <div class="col-md-1">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#product-attribute-create">
+    <div class="form-group m-1 row"><label class="col-md-3 col-form-label"
+                                           for="id_selectedAttributes">{% trans 'Edit Attributes' %}</label>
+      <div class="col-md-8">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#product-attribute-create">
+          {% trans 'Edit product attributes' %}
+        </button>
+      </div>
+
+    </div>
+
+    <div id="product-attribute-create" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" style="max-width:800px" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{% trans 'Create Product Attribute' %}</h5>
+            <button type="button" class="close" data-bs-dismiss="modal"
+                    aria-label="{% trans 'Close' %}">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <section id="attribute instances">
+              <div class="form-group m-1 row">
+                <label class="col-md-3 col-form-label"
+                       for="id_attributes">{% trans 'Add new attribute type to list' %}</label>
+                <div class="col-md-7"><input type="text" v-model="newTypeName" maxlength="300"
+                                             class="form-control"
+                                             placeholder="Details" title=""></div>
+                <div class="col-md-1">
+                  <button type="button" v-on:click="addProductAttributeType()"
+                          class="btn btn-primary">
                     <i class="fa fa-plus"></i>
-                </button>
-            </div>
-        </div>
-        <div id="product-attribute-create" class="modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" style="max-width:800px" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans 'Create Product Attribute' %}</h5>
-                        <button type="button" class="close" data-bs-dismiss="modal"
-                                aria-label="{% trans 'Close' %}">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-
-                        <div class="form-group m-1 row"><label class="col-md-3 col-form-label"
-                                                               for="id_attributes">{% trans 'Attribute Type' %}</label>
-                            <div class="col-md-9"><select v-model="selectedType" name="attributesModal"
-                                                          class="form-control" title=""
-                                                          id="id_attributetypes"
-                            >
-                                <option v-for="option in productAttributeTypes" v-bind:value="option">
-                                    [[ option.name ]]
-                                </option>
-
-                            </select></div>
-
-
-                        </div>
-                        <div class="form-group m-1 row">
-                            <label class="offset-1 col-md-3 col-form-label"
-                                   for="id_attributes">{% trans 'Add new attribute type' %}</label>
-                            <div class="col-md-7"><input type="text" v-model="newTypeName" maxlength="300"
-                                                         class="form-control"
-                                                         placeholder="Details" title=""></div>
-                            <div class="col-md-1">
-                                <button type="button" v-on:click="addProductAttributeType()" class="btn btn-primary">
-                                    <i class="fa fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div v-if="selectedType" class="form-group row"><label class="col-md-3 col-form-label"
-                                                                               for="id_selectedAttributes">Attributes</label>
-                            <div class="col-md-9"><select size="10" readonly="" name="selectedAttributes"
-                                                          class="form-control"
-                                                          title="" id="id_selectedAttributes"
-                                                          multiple="">
-                                <option v-for="option in filterByType(productAttributeTypeInstances)"
-                                        v-bind:value="option.value">
-                                    [[ getTypeName(option.type) ]] | [[ option.value ]]
-                                </option>
-
-                            </select></div>
-
-
-                        </div>
-                        <div v-if="selectedType" class="form-group row">
-                            <label class="offset-1 col-md-3 col-form-label"
-                                   for="id_attributes">{% trans 'Add new attribute' %}</label>
-                            <div class="col-md-7"><input type="text" v-model="newTypeInstanceName" maxlength="300"
-                                                         class="form-control"
-                                                         placeholder="Instance Value" title=""></div>
-                            <div class="col-md-1">
-                                <button type="button" v-on:click="addProductAttributeTypeInstance()"
-                                        class="btn btn-primary">
-                                    <i class="fa fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                        </div>
-                    </div>
+                  </button>
                 </div>
+              </div>
+              <div class="form-group m-1 row"><label class="col-md-3 col-form-label"
+                                                     for="id_selectedAttributes">{% trans 'Select Attribute type' %}</label>
+                <div class="col-md-8">
+                  <div class="list-group">
+                    [[selectedAttributes]]
+                    [[productAttributeTypes]]
+                    <label class="list-group-item" v-for="attribute in productAttributeTypes">
+                      <input class="form-check-input me-1" type="checkbox"
+                             :checked="selectedAttributes.includes(attribute)"
+                             v-bind:value="[selectedAttributes.includes(attribute.name)]"
+                             v-on:click="addProductAttributeTypeToProduct(attribute)"
+                             aria-label="product attribute type">
+                      [[ attribute.name ]]
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </section>
+            {##}
+            {#                        <hr>#}
+            {#                        <section id="attribute instances">#}
+            {#                        TODO check for selected attribute types#}
+            {#                            <div class="list-group">#}
+            {#                                <label class="list-group-item" v-for="attribute in filterByType(productAttributeTypeInstances)">#}
+            {#                                    <input class="form-check-input me-1" type="checkbox"#}
+            {#                                           v-bind:value="attribute.id"#}
+            {#                                           v-on:click="addProductAttributeTypeInstanceToProduct(attribute)"#}
+            {#                                           aria-label="product attribute type">#}
+            {#                                    [[ attribute.value ]]#}
+            {#                                </label>#}
+            {#                            </div>#}
+            {##}
+            {#                            <div v-if="selectedType" class="form-group row"><label class="col-md-3 col-form-label"#}
+            {#                                                                                   for="id_selectedAttributes">{% trans 'Attributes' %}</label>#}
+            {#                                <div class="col-md-9">#}
+            {#                                    <select size="10" readonly="" name="selectedAttributes"#}
+            {#                                            class="form-control"#}
+            {#                                            title="" id="id_selectedAttributes"#}
+            {#                                            multiple="">#}
+            {#                                        <option v-for="option in filterByType(productAttributeTypeInstances)"#}
+            {#                                                v-bind:value="option.value">#}
+            {#                                            [[ getTypeName(option.type) ]] | [[ option.value ]]#}
+            {#                                        </option>#}
+            {##}
+            {#                                    </select></div>#}
+            {##}
+            {##}
+            {#                            </div>#}
+            {#                            <div v-if="selectedType" class="form-group row">#}
+            {#                                <label class="offset-1 col-md-3 col-form-label"#}
+            {#                                       for="id_attributes">{% trans 'Add new attribute' %}</label>#}
+            {#                                <div class="col-md-7"><input type="text" v-model="newTypeInstanceName" maxlength="300"#}
+            {#                                                             class="form-control"#}
+            {#                                                             placeholder="Instance Value" title=""></div>#}
+            {#                                <div class="col-md-1">#}
+            {#                                    <button type="button" v-on:click="addProductAttributeTypeInstance()"#}
+            {#                                            class="btn btn-primary">#}
+            {#                                        <i class="fa fa-plus"></i>#}
+            {#                                    </button>#}
+            {#                                </div>#}
+            {#                            </div>#}
+            {#                        </section>#}
+
+            <div class="modal-footer">
+              {# TODO implement save function for attributes#}
+              <button type="button" class="btn btn-secondary"
+                      v-on:click="saveProductAttributes()"
+              >{% trans 'Save' %}</button>
+              <button type="button" class="btn btn-secondary"
+                      data-bs-dismiss="modal">{% trans 'Close' %}</button>
             </div>
+          </div>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <h3>{% trans 'Images' %}</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <h3>{% trans 'Images' %}</h3>
 
                 <div class="row">
 
@@ -162,49 +182,64 @@
                 newTypeInstanceName: ''
             },
             mounted() {
-                this.selectedProductId = selProductId
-                this.reloadData()
+              this.selectedProductId = selProductId
+              this.reloadData()
             },
-            methods: {
-                reloadData: function () {
-                    var instance = this;
-                    axios.get('/shop/api/v1/productattributetypes')
-                        .then(response => {
-                            this.productAttributeTypes = response.data
-                        });
-                    if (this.selectedProductId) {
-                        axios.get('/shop/api/v1/product/' + this.selectedProductId + '/productimage')
-                            .then(response => {
-                                this.productImages = response.data
-                            })
-                    }
+          methods: {
+            reloadData: function () {
+              axios.get('/shop/api/v1/productattributetypes')
+                .then(response => {
+                  this.productAttributeTypes = response.data
+                });
+              if (this.selectedProductId) {
+                axios.get('/shop/api/v1/products/' + this.selectedProductId + '/productimage')
+                  .then(response => {
+                    this.productImages = response.data
+                  })
+              }
 
-                    axios.get('/shop/api/v1/productattributetypeinstances')
-                        .then(response => {
-                            this.productAttributeTypeInstances = response.data
-                            if (this.selectedProductId) {
-                                axios.get('/shop/api/v1/products/' + this.selectedProductId).then(
-                                    response => {
-                                        this.selectedProduct = response.data
-                                        this.selectedAttributes = this.productAttributeTypeInstances.filter(function (attributeInstance) {
-                                            return instance.selectedProduct.attributes.includes(attributeInstance.id)
-                                        }).map(attribute => attribute.id)
-                                    })
-                            }
-                        })
-                },
-                updateProductAttributyType: function (type) {
-                    console.log('Hello from ' + type + '!')
-                },
-                addProductAttributeType: function () {
-                    axios.post('/shop/api/v1/productattributetypes/', {
-                        'name': this.newTypeName, 'csrfmiddlewaretoken':
-                        this.csrfmiddlewaretoken
-                    })
-                        .then(response => {
-                            this.productAttributeTypes.push(response.data)
-                            this.newTypeName = "";
-                            this.selectedType = response.data;
+              axios.get('/shop/api/v1/productattributetypeinstances')
+                .then(response => {
+                  this.productAttributeTypeInstances = response.data
+                })
+              if (this.selectedProductId) {
+                axios.get('/shop/api/v1/products/' + this.selectedProductId).then(
+                  response => {
+                    this.selectedProduct = response.data
+                    this.selectedAttributes = this.selectedProduct.attribute_types;
+                  })
+              }
+            },
+            addProductAttributeTypeToProduct: function (attribute) {
+              const index = this.selectedAttributes.findIndex(attr => attribute === attr);
+              if (index !== -1) {
+                this.selectedAttributes.push(attribute)
+              } else {
+                this.selectedAttributes.splice(index, 1)
+              }
+            },
+            saveProductAttributes: function () {
+              axios.post(`/shop/api/v1/products/${this.selectedProductId}/`, {
+                'product': this.selectedProduct,
+                'csrfmiddlewaretoken': this.csrfmiddlewaretoken
+              })
+                .then(() => {
+                  const modal = document.getElementById('product-attribute-create')
+                  modal.hide()
+                })
+            },
+            addProductAttributeTypeInstanceToProduct: function (type) {
+              console.log('addProductAttributeTypeInstanceToProduct')
+            },
+            addProductAttributeType: function () {
+              axios.post('/shop/api/v1/productattributetypes/', {
+                'name': this.newTypeName, 'csrfmiddlewaretoken':
+                this.csrfmiddlewaretoken
+              })
+                .then(response => {
+                  this.productAttributeTypes.push(response.data)
+                  this.newTypeName = "";
+                  this.selectedType = response.data;
                         })
                 },
                 getTypeName: function (name) {
@@ -236,22 +271,20 @@
                     let files = Array.from(this.$refs['product-images'].files);
                     let instance = this;
                     console.log(files)
-                    files.forEach(function (entry) {
-                        var formData = new FormData();
-                        formData.append('product', instance.selectedProductId);
-                        formData.append('product_picture', entry);
-                        axios.post('/shop/api/v1/productimage/', formData)
-                            .then(response => {
-                                instance.reloadData()
-                            })
-                    })
+                  files.forEach(function (entry) {
+                    var formData = new FormData();
+                    formData.append('product', instance.selectedProductId);
+                    formData.append('product_picture', entry);
+                    axios.post('/shop/api/v1/productimage/', formData)
+                      .then(response => {
+                        instance.reloadData()
+                      })
+                  })
                 },
-                filterByType: function () {
-                    var instance = this;
-                    return this.productAttributeTypeInstances.filter(function (typeInstance) {
-                    })
-                }
+            filterByType: function (attributeType) {
+              return this.productAttributeTypeInstances.filter(instance => instance.type === attributeType.name)
             }
+          }
         });
     </script>
 {% endblock %}

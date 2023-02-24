@@ -1,7 +1,7 @@
 from django.forms import ModelForm, ModelMultipleChoiceField
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
-from shipping.models.main import Shipment, OnlineShipment, PackageShipment, Package
+from shipping.models.main import OnlineShipment, Package
 from shop.models.orders import OrderItem
 
 

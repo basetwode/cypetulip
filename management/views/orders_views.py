@@ -8,7 +8,7 @@ from django.core.files import File
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 # Create your views here.
 from django.views.generic import DetailView, View, DeleteView, UpdateView
 from django_filters.views import FilterView
@@ -184,12 +184,12 @@ class DeleteOrder(LoginRequiredMixin, DeleteView):
     slug_url_kwarg = 'uuid'
     slug_field = 'uuid'
 
-    def get_success_url(self):
+    def get_success_re_path(self):
         messages.success(self.request, _('Order deleted'))
         return reverse_lazy('management_orders_overview')
 
     def delete(self, request, *args, **kwargs):
-        Shipment.objects.filter(order_detail=self.get_object()).delete()
+        Shipment.objects.filter(order=self.get_object()).delete()
         return super(DeleteOrder, self).delete(request, *args, **kwargs)
 
 
@@ -242,7 +242,7 @@ class OrderCancelView(UpdateView):
     slug_field = 'uuid'
     fields = []
 
-    def get_success_url(self):
+    def get_success_re_path(self):
         messages.success(self.request, _("Order canceled!"))
         return reverse_lazy('management_order_detail_view', kwargs={'uuid': self.object.uuid})
 

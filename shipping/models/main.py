@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from mediaserver.upload import shipment_files_upload_handler, fs
 from shop.models.orders import OrderDetail, OrderItem

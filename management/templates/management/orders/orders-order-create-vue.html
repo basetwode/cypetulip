@@ -1,5 +1,5 @@
 {% extends 'management/generic/generic-create.html' %}
-{% load bootstrap5 %}
+{% load django_bootstrap5 %}
 {% load i18n %}
 {% load fb_versions %}
 
@@ -27,13 +27,13 @@
 
             </div>
         </div>
-        <div class="col-sm-12 col-md-9 mt-1 mt-md-0">
+      <div class="col-sm-12 col-md-9 mt-1 mt-md-0">
 
-            <div class="card">
-                <div class="card-header">
+        <div class="card">
+          <div class="card-header">
 
-                    <button @click="showPreview" class="btn btn-outline-primary float-end"
-                            type="button">{% trans 'Preview' %}</button>
+            <button @click="showPreview" class="btn btn-outline-primary float-end" id="previewBill"
+                    type="button">{% trans 'Preview' %}</button>
                 </div>
 
                 <div class="card-body">
@@ -165,63 +165,65 @@
                                         </template>
                                     </td>
                                     <td>[[ item.total_wt ]] € <small>({% trans 'incl. VAT' %} [[ item.tax_rate ]]
-                                        %)</small>
-                                        <div v-if="item.applied_discount">
-                                            <small class="mt-1">- [[ item.total_discount_wt ]] &euro; ([[
-                                                orderDetails.discount_code ]])</small>
-                                            <br> <b>[[ item.total_discounted_wt ]] &euro;</b>
-                                        </div>
+                                      %)</small>
+                                      <div v-if="item.applied_discount">
+                                        <small class="mt-1">- [[ item.total_discount_wt ]] &euro; ([[
+                                            orderDetails.discount_code ]])</small>
+                                        <br> <b>[[ item.total_discounted_wt ]] &euro;</b>
+                                      </div>
                                     </td>
-                                    <td>
-                                        <template v-if="!item.edit">
-                                            <button @click="deleteOrderItem(index)" type="button"
-                                                    class="close m-1"
-                                            >
+                                  <td>
+                                    <template v-if="!item.edit">
+                                      <button @click="deleteOrderItem(index)" type="button" id="deleteOrderItem"
+                                              class="close m-1"
+                                      >
                                                     <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i
-                                                            class="fa fa-xs fa-trash"></i></span>
-                                            </button>
-                                            <button @click="item.edit = 'true'" type="button"
-                                                    class="close m-1"
-                                            >
+                                                      class="fa fa-xs fa-trash"></i></span>
+                                      </button>
+                                      <button @click="item.edit = 'true'" type="button" id="editOrderItem"
+                                              class="close m-1"
+                                      >
                                                     <span style="font-size: 1.3rem; color:blue" aria-hidden="true"><i
-                                                            class="fa fa-xs fa-edit"></i></span>
-                                            </button>
-                                            <button @click="editOrderItemPeriodOfPerformance(item)" type="button"
-                                                    class="close m-1">
+                                                      class="fa fa-xs fa-edit"></i></span>
+                                      </button>
+                                      <button @click="editOrderItemPeriodOfPerformance(item)" type="button"
+                                              id="editPeriodOfPerformance"
+                                              class="close m-1">
                                                     <span style="font-size: 1.3rem; color:blue" aria-hidden="true"><i
-                                                            class="fa fa-xs fa-business-time"></i></span>
-                                            </button>
-                                            <button type="button" class="close m-1"
-                                                    data-bs-toggle="dropdown"
-                                            >
+                                                      class="fa fa-xs fa-business-time"></i></span>
+                                      </button>
+                                      <button type="button" class="close m-1"
+                                              data-bs-toggle="dropdown"
+                                      >
                                                     <span style="font-size: 1.3rem; color:blue"><i
-                                                            class="fa fa-xs fa-plus-square"></i></span>
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <a @click="addOrderItem" class="dropdown-item" href="#"><span><i
-                                                        class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new item' %}</span></a>
-                                                <a @click="addSubOrderItem(item)" class="dropdown-item"
-                                                   href="#"><span><i
-                                                        class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new subitem' %}</span></a>
-                                            </div>
-                                        </template>
-                                        <template v-if="item.edit">
-                                            <button @click="discardItemChanges(item, index)" type="button"
-                                                    class="close m-1">
+                                                      class="fa fa-xs fa-plus-square"></i></span>
+                                      </button>
+                                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a @click="addOrderItem" class="dropdown-item" href="#" id="addItem"><span><i
+                                          class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new item' %}</span></a>
+                                        <a @click="addSubOrderItem(item)" class="dropdown-item" id="addSubItem"
+                                           href="#"><span><i
+                                          class="fa fa-plus fa-xs"></i>&nbsp;&nbsp;{% trans 'Add new subitem' %}</span></a>
+                                      </div>
+                                    </template>
+                                    <template v-if="item.edit">
+                                      <button @click="discardItemChanges(item, index)" type="button"
+                                              id="discardItemChanges"
+                                              class="close m-1">
                                                 <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i
-                                                        class="fa fa-xs fa-times-circle"></i></span>
-                                            </button>
-                                            <button @click="saveItemChanges(item)" type="button"
-                                                    class="close m-1">
+                                                  class="fa fa-xs fa-times-circle"></i></span>
+                                      </button>
+                                      <button @click="saveItemChanges(item)" type="button" id="saveItemChanges"
+                                              class="close m-1">
                                                 <span style="font-size: 1.3rem; color:green" aria-hidden="true"><i
-                                                        class="fa fa-xs fa-save"></i></span>
-                                            </button>
-                                        </template>
-                                    </td>
+                                                  class="fa fa-xs fa-save"></i></span>
+                                      </button>
+                                    </template>
+                                  </td>
                                 </tr>
-                                <tr :class="{'table-warning': item.edit}" v-if="item.edit_pop"
-                                    style="padding-bottom: 5px">
-                                    <td valign="top"></td>
+                              <tr :class="{'table-warning': item.edit}" v-if="item.edit_pop"
+                                  style="padding-bottom: 5px">
+                                <td valign="top"></td>
                                     <td colspan="5" style="padding-left: 10px; font-size: small"
                                         valign="top">{% trans 'Period of performance' %}:
                                         <div class="form-group row pt-2">
@@ -370,39 +372,41 @@
 
                                         </template>
                                     </td>
-                                    <td>
+                                  <td>
 
-                                        <template v-if="!sub_item.edit">
-                                            <button @click="deleteSubOrderItem(item, index)" type="button"
-                                                    class="close">
+                                    <template v-if="!sub_item.edit">
+                                      <button @click="deleteSubOrderItem(item, index)" type="button" id="deleteSubItem"
+                                              class="close">
                                                 <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i
-                                                        class="fa fa-xs fa-trash"></i></span>
-                                            </button>
-                                            <button @click="sub_item.edit = 'true'" type="button"
-                                                    class="close">
+                                                  class="fa fa-xs fa-trash"></i></span>
+                                      </button>
+                                      <button @click="sub_item.edit = 'true'" type="button" id="editSubItem"
+                                              class="close">
                                                 <span style="font-size: 1.3rem; color:blue" aria-hidden="true"><i
-                                                        class="fa fa-xs fa-edit"></i></span>
-                                            </button>
-                                            <button @click="addSubOrderItem(item)" type="button"
-                                                    class="close">
+                                                  class="fa fa-xs fa-edit"></i></span>
+                                      </button>
+                                      <button @click="addSubOrderItem(item)" type="button" id="addSubOrderItem"
+                                              class="close">
                                                 <span style="font-size: 1.3rem; color:blue"><i
-                                                        class="fa fa-xs fa-plus-square"></i></span>
-                                            </button>
-                                        </template>
-                                        <template v-if="sub_item.edit">
-                                            <button @click="discardSubItemChanges(item, sub_item, index)" type="button"
-                                                    class="close">
+                                                  class="fa fa-xs fa-plus-square"></i></span>
+                                      </button>
+                                    </template>
+                                    <template v-if="sub_item.edit">
+                                      <button @click="discardSubItemChanges(item, sub_item, index)" type="button"
+                                              id="discardSubItemChanges"
+                                              class="close">
                                                 <span style="font-size: 1.3rem; color:red" aria-hidden="true"><i
-                                                        class="fa fa-xs fa-times-circle"></i></span>
-                                            </button>
-                                            <button @click="saveItemChanges(sub_item, item)" type="button"
-                                                    class="close">
+                                                  class="fa fa-xs fa-times-circle"></i></span>
+                                      </button>
+                                      <button @click="saveItemChanges(sub_item, item)" type="button"
+                                              id="saveSubItemChanges"
+                                              class="close">
                                                 <span style="font-size: 1.3rem; color:green" aria-hidden="true"><i
-                                                        class="fa fa-xs fa-save"></i></span>
-                                            </button>
-                                        </template>
+                                                  class="fa fa-xs fa-save"></i></span>
+                                      </button>
+                                    </template>
 
-                                    </td>
+                                  </td>
                                 </tr>
 
                             </template>
@@ -706,23 +710,6 @@
                     if (item.selectorderitem && item.selectorderitem.selected_item.id) return 'selectorderitem';
                     return 'orderitem';
                 },
-               /** saveOrder: function () {
-                    let instance = this;
-                    if (!this.selectedOrderHash) {
-                        axios.post('/shop/api/v1/order/', {'company': this.contacts.filter(c => c.id === this.selectedContact)[0].company.id})
-                            .then(response => {
-                                instance.selectedOrderHash = response.data.uuid;
-                                instance.selectedOrderId = response.data.id
-                                this.selectedOrder = response.data;
-                            }).catch(() => {
-                            loadingSpinner = $('#loading-spinner');
-                            loadingSpinner.addClass('overlay-hidden');
-                        })
-                    } else {
-                        axios.put('/shop/api/v1/order/' + this.selectedOrder.id + '/', {'company': this.contacts.filter(c => c.id === this.selectedContact)[0].company.id})
-                    }
-
-                },**/
                 saveOrderDetail: function () {
                     let instance = this;
                     if (this.orderDetails) {

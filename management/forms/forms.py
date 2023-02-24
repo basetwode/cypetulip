@@ -1,10 +1,10 @@
 from django.forms import ModelForm, CharField, Form, BooleanField, Textarea, forms, ModelMultipleChoiceField, \
     ModelChoiceField, FileField
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
+from shop.models.accounts import Company, Contact, Address
 from shop.models.orders import OrderDetail, OrderItem
 from shop.models.products import ProductSubItem, Product
-from shop.models.accounts import Company, Contact, Address
 from utils.forms import SearchField, SearchableSelect, SetPasswordForm, SearchableMultiSelect
 
 
@@ -12,7 +12,8 @@ class ProductForm(ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'category', 'is_public', 'price', 'special_price', 'price_on_request', 'tax', 'stock',
-                  'max_items_per_order', 'description', 'details', 'assigned_sub_products', 'attributes']
+                  'max_items_per_order', 'description', 'details', 'assigned_sub_products', 'attributes',
+                  'attribute_types']
 
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)

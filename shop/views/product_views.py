@@ -6,7 +6,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Count, Q, Prefetch
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView, FormView, DetailView
 
 from cms.models.main import Section
@@ -41,9 +41,6 @@ class ProductView(TaxView, ListView):
             products = Product.objects.filter(is_public=True, category__in=relevant_categories)
         if not selected_category:
             products = Product.objects.filter(is_public=True)
-
-        product_attribute_categories = ProductAttributeType.objects. \
-            filter(productattributetypeinstance__product__in=products).annotate(count=Count('name', distinct=True))
 
         attribute_filter = (reduce(operator.or_, (Q(type__name=k, value=v_spl) for v_spl in v.split('.'))) for k, v in
                             self.request.GET.items()) \

@@ -1,16 +1,16 @@
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
 
 from management.forms.forms import ProductForm
 from permissions.views.mixins import LoginRequiredMixin
-from shop.filters.filters import ProductFilter, ProductSubItemFilter
+from shop.filters.filters import ProductFilter, ProductSubItemFilter, ProductAttributeTypesFilter
 from shop.models.products import ProductSubItem, FileSubItem, SelectSubItem, SelectItem, NumberSubItem, CheckBoxSubItem, \
-    Product
+    Product, ProductAttributeType
 from shop.views.mixins import WizardView, RepeatableWizardView
 from utils.mixins import PaginatedFilterViews
 from utils.views import CreateUpdateView
@@ -71,6 +71,54 @@ class ProductDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         messages.success(self.request, self.success_message)
         return reverse_lazy('products_overview')
+
+
+class AttributeTypeOverview(LoginRequiredMixin, PaginatedFilterViews, FilterView):
+    template_name = 'management/products/product-attributetypes-overview.html'
+    context_object_name = 'attributetypes'
+    paginate_by = 40
+    model = ProductAttributeType
+    ordering = 'id'
+    filterset_class = ProductAttributeTypesFilter
+
+    def get_queryset(self):
+        return super(AttributeTypeOverview, self).get_queryset().filter()
+
+
+class AttributeTypeCreationView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
+    template_name = 'management/products/product-attributetypes-create-edit.html'
+    context_object_name = 'attributetypes'
+    model = ProductAttributeType
+    fields = '__all__'
+    success_message = _("Attributtype created successfully")
+
+    def get_success_url(self):
+        return reverse_lazy('attribute_types_edit_view', kwargs={'id': self.object.id})
+
+
+class AttributeTypeEditView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+    template_name = 'management/products/product-attributetypes-create-edit.html'
+    context_object_name = 'attributetypes'
+    model = ProductAttributeType
+    fields = '__all__'
+    slug_field = 'id'
+    slug_url_kwarg = 'id'
+    success_message = _("Attributtype updated successfully")
+
+    def get_success_url(self):
+        return reverse_lazy('attribute_types_edit_view', kwargs={'id': self.object.id})
+
+
+class AttributeTypeDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+    model = ProductAttributeType
+    slug_field = 'id'
+    slug_url_kwarg = "url_param"
+    template = ''
+    success_message = _("Attributtype deleted successfully")
+
+    def get_success_url(self):
+        messages.success(self.request, self.success_message)
+        return reverse_lazy('attribute_types_overview')
 
 
 class CheckboxSubItemCreateUpdateView(SuccessMessageMixin, LoginRequiredMixin, CreateUpdateView):

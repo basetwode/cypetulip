@@ -1,7 +1,7 @@
 {% extends 'cms/base-mgmt.html' %}
 {% load recurse %}
 {% load static %}
-{% load bootstrap5 %}
+{% load django_bootstrap5 %}
 {% load i18n %}
 {% block head %}
     <title>{% trans "management" %}</title>
@@ -135,26 +135,33 @@
                     <div>
                         <i class="fa fa-box-open fa-4x"></i>
                     </div>
-                    <div>
-                        <strong>{% trans 'Products and Categories' %}</strong>
-                    </div>
+                  <div>
+                    <strong>{% trans 'Products and Categories' %}</strong>
+                  </div>
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title">{% trans 'Products' %}</h5>
-                    <div class="btn-group">
-                        <a href="{% url 'products_overview' %}"
-                           class="btn btn-primary me-1">{% trans 'Show' %}</a>
-                        <a href="{% url 'product_create_view' %}"
-                           class="btn btn-primary me-1">{% trans 'Create' %}</a>
-                    </div>
-                    <hr>
-                    <h5 class="card-title">{% trans 'Subitems' %}</h5>
-                    <div class="btn-group mt-1">
-                        <a href="{% url 'subitem_overview' %}"
-                           class="btn btn-primary me-1">{% trans 'Show all' %}</a>
-                    </div>
-                    <div class="btn-group mt-1">
-                        <a href="{% url 'filesubitem_create' '' %}"
+              <div class="card-body">
+                <h5 class="card-title">{% trans 'Products' %}</h5>
+                <div class="btn-group">
+                  <a href="{% url 'products_overview' %}"
+                     class="btn btn-primary me-1">{% trans 'Show' %}</a>
+                  <a href="{% url 'product_create_view' %}"
+                     class="btn btn-primary me-1">{% trans 'Create' %}</a>
+                </div>
+                <h5 class="card-title mt-1">{% trans 'Attributes' %}</h5>
+                <div class="btn-group">
+                  <a href="{% url 'attribute_types_overview' %}"
+                     class="btn btn-primary me-1">{% trans 'Show' %}</a>
+                  <a href="{% url 'attribute_types_create_view' %}"
+                     class="btn btn-primary me-1">{% trans 'Create' %}</a>
+                </div>
+                <hr>
+                <h5 class="card-title">{% trans 'Subitems' %}</h5>
+                <div class="btn-group mt-1">
+                  <a href="{% url 'subitem_overview' %}"
+                     class="btn btn-primary me-1">{% trans 'Show all' %}</a>
+                </div>
+                <div class="btn-group mt-1">
+                  <a href="{% url 'filesubitem_create' '' %}"
                            class="btn btn-primary me-1">{% trans 'Add File' %}</a>
                         <a href="{% url 'checkboxsubitem_create_view' '' %}"
                            class="btn btn-primary me-1">{% trans 'Add Checkbox' %}</a>

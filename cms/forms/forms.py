@@ -3,7 +3,7 @@ from captcha.widgets import ReCaptchaV2Checkbox
 from django import forms
 from django.forms import BooleanField, CharField, EmailField
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from management.models.main import ShopSetting
 

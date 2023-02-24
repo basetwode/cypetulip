@@ -141,6 +141,19 @@ class ProductAttributeType(models.Model):
         return self.name
 
 
+class ProductAttributeGroup(models.Model):
+    name = models.CharField(max_length=100, db_index=True)
+    attribute_type_group = models.ManyToManyField(ProductAttributeType, blank=True,
+                                                  verbose_name=_('Attribute type groups'))
+
+    class Meta:
+        verbose_name = _('Product attribute group')
+        verbose_name_plural = _('Product attribute groups')
+
+    def __str__(self):
+        return self.name
+
+
 class ProductAttributeTypeInstance(models.Model):
     type = models.ForeignKey(ProductAttributeType, on_delete=models.CASCADE)
     value = models.CharField(max_length=100, db_index=True)
@@ -163,6 +176,7 @@ class Product(ProductSubItem):
                                                    symmetrical=False,
                                                    related_name='sub_products', verbose_name=_('Assigned sub products'))
     attributes = models.ManyToManyField(ProductAttributeTypeInstance, blank=True, verbose_name=_('Attributes'))
+    attribute_types = models.ManyToManyField(ProductAttributeType, blank=True, verbose_name=_('Attribute types'))
 
     class Meta:
         verbose_name = _('Product')

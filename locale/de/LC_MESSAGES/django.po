@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-14 10:00+0100\n"
+"POT-Creation-Date: 2023-02-19 18:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: .\accounting\filters\filters.py:10 .\rma\filters\main.py:10
-#: .\shop\filters\filters.py:54
+#: .\shop\filters\filters.py:60
 msgid "By type"
 msgstr "Nach Typ"
 
@@ -51,6 +51,8 @@ msgstr "Dashboard"
 #: .\management\templates\management\orders\orders-order-detail.html:53
 #: .\management\templates\management\orders\orders-orderitem-create.html:21
 #: .\management\templates\management\orders\orders-overview.html:29
+#: .\management\templates\management\products\product-attributetypes-create-edit.html:20
+#: .\management\templates\management\products\product-attributetypes-overview.html:19
 #: .\management\templates\management\products\products-overview.html:19
 #: .\management\templates\management\products\subitems-overview.html:19
 #: .\management\templates\management\settings\settings-cache.html:20
@@ -89,6 +91,8 @@ msgstr "Menü"
 #: .\management\templates\management\orders\orders-order-detail.html:61
 #: .\management\templates\management\orders\orders-orderitem-create.html:27
 #: .\management\templates\management\orders\orders-overview.html:82
+#: .\management\templates\management\products\product-attributetypes-create-edit.html:26
+#: .\management\templates\management\products\product-attributetypes-overview.html:37
 #: .\management\templates\management\products\products-overview.html:33
 #: .\management\templates\management\products\subitems-overview.html:42
 #: .\management\templates\management\settings\settings-cache.html:26
@@ -144,7 +148,7 @@ msgid "Select a year to show data"
 msgstr "Wählen Sie eine Adresse zur Bearbeitung aus"
 
 #: .\accounting\templates\accounting\accounting-dashboard.html:128
-#: .\shop\models\products.py:158
+#: .\shop\models\products.py:170
 msgid "Stock"
 msgstr "Warenbestand"
 
@@ -389,8 +393,8 @@ msgid "Page"
 msgstr "Seite"
 
 #: .\cms\models\main.py:29
-#: .\management\templates\management\management.html:248
-#: .\management\templates\management\management.html:250
+#: .\management\templates\management\management.html:255
+#: .\management\templates\management\management.html:257
 msgid "Pages"
 msgstr "Seiten"
 
@@ -415,8 +419,8 @@ msgid "Section"
 msgstr "Bereich"
 
 #: .\cms\models\main.py:60
-#: .\management\templates\management\management.html:254
-#: .\management\templates\management\management.html:256
+#: .\management\templates\management\management.html:261
+#: .\management\templates\management\management.html:263
 msgid "Sections"
 msgstr "Bereiche"
 
@@ -467,6 +471,7 @@ msgstr "Neue Preisanfrage"
 #: .\management\templates\management\cms\cms-footers-overview.html:42
 #: .\management\templates\management\cms\cms-headers-overview.html:42
 #: .\management\templates\management\customers\customers-overview.html:47
+#: .\management\templates\management\products\product-attributetypes-overview.html:51
 #: .\management\templates\management\products\products-overview.html:49
 #: .\management\templates\management\products\subitems-overview.html:54
 #: .\payment\templates\payment\payment-overview.html:26
@@ -487,38 +492,38 @@ msgstr "Mail"
 msgid "Message"
 msgstr "Nachricht"
 
-#: .\cms\templates\cms\navbar.html:71 .\cms\templates\cms\navbar.html:111
+#: .\cms\templates\cms\navbar.html:51 .\cms\templates\cms\navbar.html:91
 msgid "My account"
 msgstr "Mein Konto"
 
-#: .\cms\templates\cms\navbar.html:73 .\cms\templates\cms\navbar.html:113
+#: .\cms\templates\cms\navbar.html:53 .\cms\templates\cms\navbar.html:93
 msgid "My orders"
 msgstr "Meine Bestellungen"
 
-#: .\cms\templates\cms\navbar.html:75 .\cms\templates\cms\navbar.html:115
-#: .\management\templates\management\management.html:190
+#: .\cms\templates\cms\navbar.html:55 .\cms\templates\cms\navbar.html:95
+#: .\management\templates\management\management.html:197
 #: .\management\templates\management\settings\settings-details.html:13
 #: .\shop\templates\shop\account\account.html:62
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: .\cms\templates\cms\navbar.html:79 .\cms\templates\cms\navbar.html:119
+#: .\cms\templates\cms\navbar.html:59 .\cms\templates\cms\navbar.html:99
 msgid "Management"
 msgstr "Management"
 
-#: .\cms\templates\cms\navbar.html:82 .\cms\templates\cms\navbar.html:122
+#: .\cms\templates\cms\navbar.html:62 .\cms\templates\cms\navbar.html:102
 msgid "Logout"
 msgstr "Abmelden"
 
-#: .\cms\templates\cms\navbar.html:87 .\cms\templates\cms\navbar.html:125
+#: .\cms\templates\cms\navbar.html:67 .\cms\templates\cms\navbar.html:105
 msgid "Login"
 msgstr "Anmelden"
 
-#: .\cms\templates\cms\navbar.html:133 .\home\settings.py:132
+#: .\cms\templates\cms\navbar.html:113 .\home\settings.py:134
 msgid "German"
 msgstr "Deutsch"
 
-#: .\cms\templates\cms\navbar.html:140 .\home\settings.py:133
+#: .\cms\templates\cms\navbar.html:120 .\home\settings.py:135
 msgid "English"
 msgstr "Englisch"
 
@@ -582,59 +587,59 @@ msgstr "Widerrufsbelehrung"
 msgid "Privacy Policy"
 msgstr "Datenschutzerklärung"
 
-#: .\home\settings.py:319
+#: .\home\settings.py:321
 msgid "Cookie settings"
 msgstr "Cookie Einstellungen"
 
-#: .\home\settings.py:320
+#: .\home\settings.py:322
 msgid "Please accept our cookies"
 msgstr "Cookies akzeptieren"
 
-#: .\home\settings.py:323
+#: .\home\settings.py:325
 msgid "Imprint"
 msgstr "Impressum"
 
-#: .\home\settings.py:327
+#: .\home\settings.py:329
 #, fuzzy
 #| msgid "Privacy Policy"
 msgid "Privacy"
 msgstr "Datenschutzerklärung"
 
-#: .\home\settings.py:334
+#: .\home\settings.py:336
 msgid "Essential"
 msgstr "Essentiell"
 
-#: .\home\settings.py:335
+#: .\home\settings.py:337
 msgid "Essential cookies allow this page to work."
 msgstr "Essentielle Cookies sind notwendig, damit diese Seite funktioniert"
 
-#: .\home\settings.py:339
+#: .\home\settings.py:341
 msgid "Meta cookie for the cookies that are set."
 msgstr "Meta cookie für die Cookies die erlaubt werden"
 
-#: .\home\settings.py:343
+#: .\home\settings.py:345
 msgid "This cookie prevents Cross-Site-Request-Forgery attacks."
 msgstr "Dieser Cookie verhindert Cross-Site-Request-Forgery Attacken"
 
-#: .\home\settings.py:347
+#: .\home\settings.py:349
 msgid "This cookie is necessary to allow logging in, for example."
 msgstr "Dieser Cookie ist, z.B. für den Login notwendig"
 
-#: .\home\settings.py:351
+#: .\home\settings.py:353
 msgid "This cookie is necessary to allow saving your language preference"
 msgstr ""
 "Dieser Cookie ist, z.B. für das Speichern Ihrer Spracheinstellung im Shop "
 "notwendig"
 
-#: .\home\settings.py:357 .\management\templates\management\management.html:92
+#: .\home\settings.py:359 .\management\templates\management\management.html:92
 msgid "Analytics"
 msgstr "Analysen"
 
-#: .\home\settings.py:358
+#: .\home\settings.py:360
 msgid "These Cookies help us analyzing the website"
 msgstr "Diese Cookies helfen uns bei der Webseiten Analyse"
 
-#: .\home\settings.py:363
+#: .\home\settings.py:365
 msgid "Analytics cookie for website analysis."
 msgstr "Analytics Cookie für die Webseiten Analyse"
 
@@ -772,12 +777,12 @@ msgid "Content Column Three"
 msgstr "Inhalt Spalte Drei"
 
 #: .\management\models\main.py:97
-#: .\management\templates\management\management.html:260
+#: .\management\templates\management\management.html:267
 msgid "Header"
 msgstr "Header"
 
 #: .\management\models\main.py:98
-#: .\management\templates\management\management.html:262
+#: .\management\templates\management\management.html:269
 msgid "Headers"
 msgstr "Headers"
 
@@ -786,12 +791,12 @@ msgid "Payment methods"
 msgstr "Bezahlmethoden"
 
 #: .\management\models\main.py:129
-#: .\management\templates\management\management.html:266
+#: .\management\templates\management\management.html:273
 msgid "Footer"
 msgstr "Footer"
 
 #: .\management\models\main.py:130
-#: .\management\templates\management\management.html:268
+#: .\management\templates\management\management.html:275
 msgid "Footers"
 msgstr "Footers"
 
@@ -819,6 +824,7 @@ msgstr "Cache Einstellungen"
 #: .\management\templates\management\discounts\discounts-overview.html:20
 #: .\management\templates\management\orders\orders-order-create-vue.html:47
 #: .\management\templates\management\orders\orders-overview.html:32
+#: .\management\templates\management\products\product-attributetypes-overview.html:22
 #: .\management\templates\management\products\products-overview.html:22
 #: .\management\templates\management\products\subitems-overview.html:23
 #: .\management\templates\management\shipments\shipments-overview.html:22
@@ -834,6 +840,7 @@ msgstr "Filter"
 #: .\management\templates\management\customers\customers-overview.html:26
 #: .\management\templates\management\discounts\discounts-overview.html:24
 #: .\management\templates\management\orders\orders-overview.html:58
+#: .\management\templates\management\products\product-attributetypes-overview.html:25
 #: .\management\templates\management\products\products-overview.html:26
 #: .\management\templates\management\products\subitems-overview.html:27
 #: .\management\templates\management\shipments\shipments-overview.html:26
@@ -857,6 +864,7 @@ msgstr "Eltern Kategorie"
 #: .\management\templates\management\cms\cms-sections-overview.html:45
 #: .\management\templates\management\customers\customers-overview.html:49
 #: .\management\templates\management\discounts\discounts-overview.html:47
+#: .\management\templates\management\products\product-attributetypes-overview.html:53
 #: .\management\templates\management\products\products-overview.html:51
 #: .\management\templates\management\products\subitems-overview.html:56
 #: .\shop\templates\shop\account\account-address-overview.html:48
@@ -870,6 +878,7 @@ msgstr "Konfiguration"
 #: .\management\templates\management\cms\cms-sections-overview.html:58
 #: .\management\templates\management\discounts\discounts-overview.html:61
 #: .\management\templates\management\discounts\discounts-overview.html:64
+#: .\management\templates\management\products\product-attributetypes-overview.html:68
 #: .\management\templates\management\products\products-overview.html:77
 #: .\management\templates\management\products\subitems-overview.html:104
 #: .\shop\templates\shop\account\account-address-overview.html:64
@@ -888,6 +897,7 @@ msgstr "Bearbeiten"
 #: .\management\templates\management\orders\orders-order-create-vue.html:469
 #: .\management\templates\management\orders\orders-order-detail.html:384
 #: .\management\templates\management\orders\orders-order-detail.html:472
+#: .\management\templates\management\products\product-attributetypes-overview.html:70
 #: .\management\templates\management\products\products-overview.html:79
 #: .\management\templates\management\products\subitems-overview.html:110
 #: .\management\templates\management\shipments\shipments-overview.html:79
@@ -897,7 +907,7 @@ msgid "Delete"
 msgstr "Löschen"
 
 #: .\management\templates\management\cms\cms-footers-overview.html:28
-#: .\management\templates\management\management.html:270
+#: .\management\templates\management\management.html:277
 msgid "Add Footer"
 msgstr "Footer hinzufügen"
 
@@ -912,12 +922,12 @@ msgid "Layout (Columns)"
 msgstr "Layout (Spalten)"
 
 #: .\management\templates\management\cms\cms-headers-overview.html:28
-#: .\management\templates\management\management.html:264
+#: .\management\templates\management\management.html:271
 msgid "Add Header"
 msgstr "Header hinzufügen"
 
 #: .\management\templates\management\cms\cms-pages-overview.html:28
-#: .\management\templates\management\management.html:252
+#: .\management\templates\management\management.html:259
 msgid "Add Page"
 msgstr "Seite hinzufügen"
 
@@ -939,7 +949,7 @@ msgid "Link"
 msgstr "Link"
 
 #: .\management\templates\management\cms\cms-sections-overview.html:28
-#: .\management\templates\management\management.html:258
+#: .\management\templates\management\management.html:265
 msgid "Add Section"
 msgstr "Bereich hinzufügen"
 
@@ -1125,8 +1135,10 @@ msgstr "Wollen Sie wirklich löschen?"
 #: .\management\templates\management\generic\generic-modal-delete.html:22
 #: .\management\templates\management\orders\orders-order-changestate.html:29
 #: .\management\templates\management\orders\orders-orderdetail-modal-assignemployee.html:31
-#: .\management\templates\management\products\product-create-vue.html:43
-#: .\management\templates\management\products\product-create-vue.html:103
+#: .\management\templates\management\products\product-attributetypes-overview.html:95
+#: .\management\templates\management\products\product-attributetypes-overview.html:113
+#: .\management\templates\management\products\product-create-vue.html:37
+#: .\management\templates\management\products\product-create-vue.html:125
 #: .\shipping\templates\shipping\shipment\shipment-create.html:16
 #: .\shop\templates\shop\shoppingcart\shoppingcart-delivery.html:190
 msgid "Close"
@@ -1287,128 +1299,133 @@ msgid "Products and Categories"
 msgstr "Produkte und Kategorien"
 
 #: .\management\templates\management\management.html:143
-#: .\shop\models\products.py:169
+#: .\shop\models\products.py:182
 #: .\shop\templates\shop\products\products-product-detail.html:21
-#: .\shop\templates\shop\products\products-product-overview.html:10
-#: .\shop\templates\shop\products\products-product-overview.html:42
-#: .\shop\templates\shop\products\products-product-overview.html:122
+#: .\shop\templates\shop\products\products-product-overview.html:38
 msgid "Products"
 msgstr "Produkte"
 
 #: .\management\templates\management\management.html:146
-#: .\management\templates\management\management.html:172
+#: .\management\templates\management\management.html:153
+#: .\management\templates\management\management.html:179
 msgid "Show"
 msgstr "Anzeigen"
 
 #: .\management\templates\management\management.html:148
-#: .\management\templates\management\management.html:174
+#: .\management\templates\management\management.html:155
+#: .\management\templates\management\management.html:181
 msgid "Create"
 msgstr "Hinzufügen"
 
-#: .\management\templates\management\management.html:151
+#: .\management\templates\management\management.html:150
+#: .\shop\models\products.py:177
+msgid "Attributes"
+msgstr "Attribute"
+
+#: .\management\templates\management\management.html:158
 msgid "Subitems"
 msgstr "Subprodukte"
 
-#: .\management\templates\management\management.html:154
+#: .\management\templates\management\management.html:161
 msgid "Show all"
 msgstr "Alle anzeigen"
 
-#: .\management\templates\management\management.html:158
+#: .\management\templates\management\management.html:165
 msgid "Add File"
 msgstr "Dateityp hinzufügen"
 
-#: .\management\templates\management\management.html:160
+#: .\management\templates\management\management.html:167
 msgid "Add Checkbox"
 msgstr "Checkboxtyp hinzufügen"
 
-#: .\management\templates\management\management.html:164
+#: .\management\templates\management\management.html:171
 msgid "Add Number"
 msgstr "Nummerntyp hinzufügen"
 
-#: .\management\templates\management\management.html:166
+#: .\management\templates\management\management.html:173
 msgid "Add Select"
 msgstr "Auswahltyp hinzufügen"
 
-#: .\management\templates\management\management.html:169
+#: .\management\templates\management\management.html:176
 #: .\shop\models\products.py:28
-#: .\shop\templates\shop\products\products-product-overview.html:72
+#: .\shop\templates\shop\products\products-product-overview.html:68
 msgid "Categories"
 msgstr "Kategorien"
 
-#: .\management\templates\management\management.html:177
+#: .\management\templates\management\management.html:184
 msgid "Add Products and all of the possible sub item types"
 msgstr "Hinzufügen von Produkten und allen möglichen Sub-Produkttypen"
 
-#: .\management\templates\management\management.html:198
+#: .\management\templates\management\management.html:205
 msgid "Staff"
 msgstr "Mitarbeiter"
 
-#: .\management\templates\management\management.html:200
+#: .\management\templates\management\management.html:207
 msgid "permissions"
 msgstr "Berechtigungen"
 
-#: .\management\templates\management\management.html:205
+#: .\management\templates\management\management.html:212
 msgid "Legal Settings"
 msgstr "Unternehmens Einstellungen"
 
-#: .\management\templates\management\management.html:210
+#: .\management\templates\management\management.html:217
 msgid "mail"
 msgstr "Mail"
 
-#: .\management\templates\management\management.html:212
+#: .\management\templates\management\management.html:219
 msgid "ldap"
 msgstr "LDAP"
 
-#: .\management\templates\management\management.html:214
+#: .\management\templates\management\management.html:221
 msgid "shop"
 msgstr "Shop"
 
-#: .\management\templates\management\management.html:216
+#: .\management\templates\management\management.html:223
 msgid "payment"
 msgstr "Bezahlung"
 
-#: .\management\templates\management\management.html:221
+#: .\management\templates\management\management.html:228
 msgid "Cache management"
 msgstr "Cache Management"
 
-#: .\management\templates\management\management.html:223
+#: .\management\templates\management\management.html:230
 msgid "Database Adminstration"
 msgstr "Datenbank Administration"
 
-#: .\management\templates\management\management.html:228
+#: .\management\templates\management\management.html:235
 msgid ""
 "All shop related settings. Manage permissions, staff and products and pages"
 msgstr "Einstellungen für Berechtigungen, Mitarbeiter, LDAP oder Mail"
 
-#: .\management\templates\management\management.html:239
+#: .\management\templates\management\management.html:246
 msgid "CMS"
 msgstr "CMS"
 
-#: .\management\templates\management\management.html:244
+#: .\management\templates\management\management.html:251
 msgid "Theme"
 msgstr "Theme"
 
-#: .\management\templates\management\management.html:246
+#: .\management\templates\management\management.html:253
 msgid "Edit theme"
 msgstr "Theme bearbeiten"
 
-#: .\management\templates\management\management.html:275
+#: .\management\templates\management\management.html:282
 msgid "Show and edit pages"
 msgstr "Seiten anzeigen und bearbeiten"
 
-#: .\management\templates\management\management.html:276
+#: .\management\templates\management\management.html:283
 msgid "Show and edit Sections"
 msgstr "Bereiche anzeigen und bearbeiten"
 
-#: .\management\templates\management\management.html:288
+#: .\management\templates\management\management.html:295
 msgid "Accounting"
 msgstr "Buchhaltung"
 
-#: .\management\templates\management\management.html:296
+#: .\management\templates\management\management.html:303
 msgid "Open Dashboard"
 msgstr "Dashboard öffnen"
 
-#: .\management\templates\management\management.html:301
+#: .\management\templates\management\management.html:308
 msgid "Create or review accounting information"
 msgstr "Buchhaltung anzeigen oder bearbeiten"
 
@@ -1446,7 +1463,7 @@ msgstr "Bestellung anlegen"
 #: .\management\templates\management\orders\orders-order-detail.html:190
 #: .\payment\templates\payment\payment-confirm.html:63
 #: .\payment\templates\payment\payment-create.html:123
-#: .\shop\models\products.py:168 .\shop\models\products.py:227
+#: .\shop\models\products.py:181 .\shop\models\products.py:240
 #: .\shop\templates\shop\account\account-order-detail.html:109
 #: .\shop\templates\shop\shoppingcart\shoppingcart-cart.html:53
 #: .\shop\templates\shop\shoppingcart\shoppingcart-delivery.html:323
@@ -1500,7 +1517,7 @@ msgstr "Artikel werden geladen"
 #: .\management\templates\management\orders\orders-order-create-vue.html:93
 #: .\management\templates\management\orders\orders-order-detail.html:86
 #: .\payment\templates\payment\payment-confirm.html:136
-#: .\shop\templates\shop\products\products-component-card.html:45
+#: .\shop\templates\shop\products\products-component-card.html:51
 #: .\shop\templates\shop\products\products-product-detail.html:125
 #: .\shop\templates\shop\shoppingcart\shoppingcart-cart.html:243
 msgid "incl. Tax"
@@ -1750,7 +1767,7 @@ msgstr "Versanddatum"
 #: .\payment\templates\payment\payment-overview.html:27
 #: .\shop\models\products.py:48
 #: .\shop\templates\shop\account\account-order-detail.html:302
-#: .\shop\templates\shop\products\products-component-card.html:86
+#: .\shop\templates\shop\products\products-component-card.html:104
 #: .\shop\templates\shop\products\products-product-detail.html:194
 msgid "Details"
 msgstr "Details"
@@ -1869,32 +1886,81 @@ msgstr "Exportieren"
 msgid "Export (incl. Invoice)"
 msgstr "Exportieren (inkl. Rechnungen)"
 
-#: .\management\templates\management\products\product-create-vue.html:41
+#: .\management\templates\management\products\product-attributetypes-create-edit.html:28
+#, fuzzy
+#| msgid "Go back to all orders"
+msgid "Go back to Attributes"
+msgstr "Zurück zu allen Buchungen"
+
+#: .\management\templates\management\products\product-attributetypes-overview.html:28
+msgid "Clear all filters"
+msgstr ""
+
+#: .\management\templates\management\products\product-attributetypes-overview.html:32
+#, fuzzy
+#| msgid "Add new attribute type"
+msgid "Add Product attribute type"
+msgstr "Neuen Attributtyp hinzufügen"
+
+#: .\management\templates\management\products\product-attributetypes-overview.html:34
+#, fuzzy
+#| msgid "ProductAttributeType"
+msgid "Add Product attribute group"
+msgstr "Produkt Attribut Typ"
+
+#: .\management\templates\management\products\product-attributetypes-overview.html:52
+msgid "Group"
+msgstr ""
+
+#: .\management\templates\management\products\product-attributetypes-overview.html:93
+#, fuzzy
+#| msgid "Add new attribute type"
+msgid "Create attribute type group"
+msgstr "Neuen Attributtyp hinzufügen"
+
+#: .\management\templates\management\products\product-create-vue.html:21
+#, fuzzy
+#| msgid "Attributes"
+msgid "Edit Attributes"
+msgstr "Attribute"
+
+#: .\management\templates\management\products\product-create-vue.html:25
+#, fuzzy
+#| msgid "Create Product Attribute"
+msgid "Edit product attributes"
+msgstr "Produktattribut anlegen"
+
+#: .\management\templates\management\products\product-create-vue.html:35
 msgid "Create Product Attribute"
 msgstr "Produktattribut anlegen"
 
-#: .\management\templates\management\products\product-create-vue.html:50
-msgid "Attribute Type"
-msgstr "Attribut Typ"
-
-#: .\management\templates\management\products\product-create-vue.html:63
-msgid "Add new attribute type"
+#: .\management\templates\management\products\product-create-vue.html:45
+#, fuzzy
+#| msgid "Add new attribute type"
+msgid "Add new attribute type to list"
 msgstr "Neuen Attributtyp hinzufügen"
 
-#: .\management\templates\management\products\product-create-vue.html:74
-#: .\shop\models\products.py:165
-msgid "Attributes"
-msgstr "Attribute"
+#: .\management\templates\management\products\product-create-vue.html:57
+#, fuzzy
+#| msgid "Attribute Type"
+msgid "Select Attribute type"
+msgstr "Attribut Typ"
 
-#: .\management\templates\management\products\product-create-vue.html:90
-msgid "Add new attribute"
-msgstr "Neues Attribut hinzufügen"
+#: .\management\templates\management\products\product-create-vue.html:123
+#: .\management\templates\management\settings\settings-details.html:38
+#: .\management\templates\management\settings\settings-payment.html:54
+#: .\shop\templates\shop\account\account-settings.html:46
+#: .\shop\templates\shop\generic\generic-component-create-form.html:83
+#: .\shop\templates\shop\generic\generic-create.html:38
+#: .\shop\templates\shop\generic\generic-edit.html:38
+msgid "Save"
+msgstr "Speichern"
 
-#: .\management\templates\management\products\product-create-vue.html:111
+#: .\management\templates\management\products\product-create-vue.html:133
 msgid "Images"
 msgstr "Bilder"
 
-#: .\management\templates\management\products\product-create-vue.html:135
+#: .\management\templates\management\products\product-create-vue.html:157
 msgid "Upload"
 msgstr "Hochladen"
 
@@ -1948,15 +2014,6 @@ msgstr "Auswahl Subprodukt"
 #: .\management\templates\management\products\subitems-overview.html:107
 msgid "Select Items"
 msgstr "Item auswählen"
-
-#: .\management\templates\management\settings\settings-details.html:38
-#: .\management\templates\management\settings\settings-payment.html:54
-#: .\shop\templates\shop\account\account-settings.html:46
-#: .\shop\templates\shop\generic\generic-component-create-form.html:83
-#: .\shop\templates\shop\generic\generic-create.html:38
-#: .\shop\templates\shop\generic\generic-edit.html:38
-msgid "Save"
-msgstr "Speichern"
 
 #: .\management\templates\management\settings\settings-payment.html:13
 msgid "Payment Settings"
@@ -2208,36 +2265,54 @@ msgstr "Erfolgreich gesendet"
 msgid "Product deleted successfully"
 msgstr "Erfolgreich gesendet"
 
-#: .\management\views\products_views.py:85
-#: .\management\views\products_views.py:100
-#: .\management\views\products_views.py:115
-#: .\management\views\products_views.py:130
+#: .\management\views\products_views.py:93
+#, fuzzy
+#| msgid "HTML Cache cleared successfully"
+msgid "Attributtype created successfully"
+msgstr "HTML Cache wurde bereinigt"
+
+#: .\management\views\products_views.py:107
+#, fuzzy
+#| msgid "Sent successfully"
+msgid "Attributtype updated successfully"
+msgstr "Erfolgreich gesendet"
+
+#: .\management\views\products_views.py:119
+#, fuzzy
+#| msgid "Sent successfully"
+msgid "Attributtype deleted successfully"
+msgstr "Erfolgreich gesendet"
+
+#: .\management\views\products_views.py:135
+#: .\management\views\products_views.py:150
+#: .\management\views\products_views.py:165
+#: .\management\views\products_views.py:180
 #, fuzzy
 #| msgid "Sent successfully"
 msgid "Subitem updated successfully"
 msgstr "Erfolgreich gesendet"
 
-#: .\management\views\products_views.py:122
+#: .\management\views\products_views.py:172
 msgid "Create Selectsubitem"
 msgstr "Neues Auswahl Subprodukt anlegen"
 
-#: .\management\views\products_views.py:141
+#: .\management\views\products_views.py:191
 msgid "Create new select item"
 msgstr "Neues Auswahlsubprodukt Item anlegen"
 
-#: .\management\views\products_views.py:151
+#: .\management\views\products_views.py:201
 #, fuzzy
 #| msgid "Sent successfully"
 msgid "Selectitem updated successfully"
 msgstr "Erfolgreich gesendet"
 
-#: .\management\views\products_views.py:173
+#: .\management\views\products_views.py:223
 #, fuzzy
 #| msgid "Sent successfully"
 msgid "Select Item deleted successfully"
 msgstr "Erfolgreich gesendet"
 
-#: .\management\views\products_views.py:185
+#: .\management\views\products_views.py:235
 #, fuzzy
 #| msgid "Sent successfully"
 msgid "Subitem deleted successfully"
@@ -2704,19 +2779,19 @@ msgstr "(Digitale) Lieferung bearbeiten"
 msgid "Update shipment"
 msgstr "Lieferung aktuallisieren"
 
-#: .\shop\api\v1\serializers.py:121
+#: .\shop\api\v1\serializers.py:151
 msgid "Unsupported filetype, supported files are "
 msgstr "Dieser Dateityp wird nicht unterstützt. Folgende Typen sind möglich "
 
-#: .\shop\api\v1\serializers.py:155 .\shop\api\v1\serializers.py:358
+#: .\shop\api\v1\serializers.py:185 .\shop\api\v1\serializers.py:388
 msgid "This field is required"
 msgstr "Dieses Feld wird benötigt"
 
-#: .\shop\api\v1\serializers.py:281 .\shop\api\v1\serializers.py:284
+#: .\shop\api\v1\serializers.py:311 .\shop\api\v1\serializers.py:314
 msgid "Voucher code invalid"
 msgstr "Rabattcode nicht gültig"
 
-#: .\shop\api\v1\serializers.py:288
+#: .\shop\api\v1\serializers.py:318
 msgid "Voucher code not eligible"
 msgstr "Rabattcode nicht anwendbar"
 
@@ -2741,7 +2816,7 @@ msgstr ""
 msgid "Cache needs to be updated. Please go to cache management"
 msgstr "Cache muss neuerstellt werden. Bitte gehen Sie zu Cache Management"
 
-#: .\shop\filters\filters.py:51
+#: .\shop\filters\filters.py:57
 msgid "Search contacts"
 msgstr "Kunden durchsuchen"
 
@@ -2819,7 +2894,7 @@ msgid "Telephone"
 msgstr "Telefon"
 
 #: .\shop\models\accounts.py:65 .\shop\models\accounts.py:86
-#: .\shop\models\orders.py:135 .\shop\models\products.py:225
+#: .\shop\models\orders.py:135 .\shop\models\products.py:238
 #: .\shop\templates\shop\account\account-address-overview.html:47
 msgid "Contact"
 msgstr "Kontakt"
@@ -2963,7 +3038,7 @@ msgid "Special price"
 msgstr "Spezialpreis"
 
 #: .\shop\models\products.py:44
-#: .\shop\templates\shop\products\products-component-card.html:28
+#: .\shop\templates\shop\products\products-component-card.html:35
 #: .\shop\templates\shop\products\products-modal-priceonrequest.html:8
 #: .\shop\templates\shop\products\products-product-detail.html:115
 msgid "Price on request"
@@ -3005,7 +3080,6 @@ msgstr "Datei Subprodukt"
 msgid "FileSubItems"
 msgstr "Datei Subprodukt"
 
-# TODO korrekte übersetzung
 #: .\shop\models\products.py:93
 msgid "FileExtensionItem"
 msgstr "Dateierweiterung Subprodukt"
@@ -3054,39 +3128,63 @@ msgstr "Produkt Attribut Typ"
 msgid "ProductAttributeTypes"
 msgstr "Produkt Attribut Typen"
 
+#: .\shop\models\products.py:146
+#, fuzzy
+#| msgid "Attribute Type"
+msgid "Attribute type groups"
+msgstr "Attribut Typ"
+
+#: .\shop\models\products.py:149
+#, fuzzy
+#| msgid "ProductAttributeType"
+msgid "Product attribute group"
+msgstr "Produkt Attribut Typ"
+
 #: .\shop\models\products.py:150
+#, fuzzy
+#| msgid "ProductAttributeTypes"
+msgid "Product attribute groups"
+msgstr "Produkt Attribut Typen"
+
+#: .\shop\models\products.py:162
 msgid "ProductAttributeTypeInstance"
 msgstr "Produkt Attribut Typ Instanz"
 
-#: .\shop\models\products.py:151
+#: .\shop\models\products.py:163
 msgid "ProductAttributeTypeInstances"
 msgstr "Produkt Attribut Typ Instanzen"
 
-#: .\shop\models\products.py:159
+#: .\shop\models\products.py:171
 msgid "Maximum number of items per order"
 msgstr "Maximale Anzahl an Artikeln pro Bestellung"
 
-#: .\shop\models\products.py:164
+#: .\shop\models\products.py:176
 msgid "Assigned sub products"
 msgstr "Zugewiesene Subprodukte"
 
-#: .\shop\models\products.py:212
+#: .\shop\models\products.py:178
+#, fuzzy
+#| msgid "Attribute Type"
+msgid "Attribute types"
+msgstr "Attribut Typ"
+
+#: .\shop\models\products.py:225
 msgid "Product picture"
 msgstr "Produktbild"
 
-#: .\shop\models\products.py:216
+#: .\shop\models\products.py:229
 msgid "ProductImage"
 msgstr "Produktbild"
 
-#: .\shop\models\products.py:217
+#: .\shop\models\products.py:230
 msgid "ProductImages"
 msgstr "Produktbilder"
 
-#: .\shop\models\products.py:236
+#: .\shop\models\products.py:249
 msgid "Individual offer"
 msgstr "Individualauftrag"
 
-#: .\shop\models\products.py:237
+#: .\shop\models\products.py:250
 msgid "Individual offers"
 msgstr "Individualaufträge"
 
@@ -3180,7 +3278,7 @@ msgid "You need to select an item to continue"
 msgstr "Sie müssen ein Item auswählen um fortzufahren"
 
 #: .\shop\templates\shop\mail\mail-newindividualofferrequest.html:9
-#: .\shop\views\mixins.py:27 .\shop\views\product_views.py:113
+#: .\shop\views\mixins.py:27 .\shop\views\product_views.py:110
 msgid "New individual offer request"
 msgstr "Neue Indivuelle Preisanfrage"
 
@@ -3192,37 +3290,38 @@ msgstr "Von"
 msgid "Shopping-Filters"
 msgstr "Einkaufsmöglichkeiten"
 
-#: .\shop\templates\shop\products\products-component-card.html:41
+#: .\shop\templates\shop\products\products-component-card.html:55
 msgid "Sale"
 msgstr "Im Angebot"
 
-#: .\shop\templates\shop\products\products-component-card.html:57
+#: .\shop\templates\shop\products\products-component-card.html:68
 #, fuzzy, python-format
 #| msgid "Save up to %(percent)s %% with: %(id)s"
 msgid ""
 "\n"
-"                                    Save up to %(percent)s %% with: %(id)s"
+"                                        Save up to %(percent)s %% with: "
+"%(id)s"
 msgstr "Sparen Sie bis zu %(percent)s %% mit: %(id)s"
 
-#: .\shop\templates\shop\products\products-component-card.html:60
+#: .\shop\templates\shop\products\products-component-card.html:71
 #, fuzzy, python-format
 #| msgid "Save up to %(amount)s € with: %(id)s"
 msgid ""
 "\n"
-"                                    Save up to %(amount)s € with: %(id)s"
+"                                        Save up to %(amount)s € with: %(id)s"
 msgstr "Sparen Sie bis zu %(amount)s € mit: %(id)s"
 
-#: .\shop\templates\shop\products\products-component-card.html:90
+#: .\shop\templates\shop\products\products-component-card.html:108
 #: .\shop\templates\shop\products\products-product-detail.html:160
 msgid "Request offer"
 msgstr "Anfragen"
 
-#: .\shop\templates\shop\products\products-component-card.html:93
+#: .\shop\templates\shop\products\products-component-card.html:111
 #: .\shop\templates\shop\products\products-product-detail.html:164
 msgid "Add to cart"
 msgstr "In den Warenkorb"
 
-#: .\shop\templates\shop\products\products-component-card.html:97
+#: .\shop\templates\shop\products\products-component-card.html:115
 #: .\shop\templates\shop\products\products-product-detail.html:167
 msgid "Not in stock"
 msgstr "Nicht lieferbar"
@@ -3302,11 +3401,11 @@ msgstr "Zurück zu den Produkten"
 msgid "Request an individual offer"
 msgstr "Produkt anfragen"
 
-#: .\shop\templates\shop\products\products-product-overview.html:140
+#: .\shop\templates\shop\products\products-product-overview.html:131
 msgid "items"
 msgstr "Artikel"
 
-#: .\shop\templates\shop\products\products-product-overview.html:143
+#: .\shop\templates\shop\products\products-product-overview.html:134
 msgid "Sorry, we are out of stock in this category!"
 msgstr "Entschuldigung, aber das Lager ist für diese Kategorie leer!"
 
@@ -3510,7 +3609,7 @@ msgstr "Weiteres Produkt hinzufügen"
 msgid "Select an item to edit"
 msgstr "Wählen Sie ein Produkt zur Bearbeitung aus"
 
-#: .\shop\views\product_views.py:140
+#: .\shop\views\product_views.py:137
 msgid "Thank you for your request, we'll contact you soon"
 msgstr "Vielen Dank für Ihre Anfrage, wir werden Sie bald kontaktieren"
 
@@ -3546,6 +3645,9 @@ msgstr "Passwortbestätigung"
 #: .\utils\forms.py:85
 msgid "Repeat password"
 msgstr "Passwort wiederholen"
+
+#~ msgid "Add new attribute"
+#~ msgstr "Neues Attribut hinzufügen"
 
 #~ msgid "Paid"
 #~ msgstr "Bezahlt"

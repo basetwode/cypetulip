@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.template.defaultfilters import lower
 from django.urls import reverse, reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView, DetailView
 
 from payment.forms.main import LegalForm, PaymentFormFactory, get_all_payment_forms_as_dict

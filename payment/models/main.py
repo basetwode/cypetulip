@@ -2,7 +2,7 @@ import datetime
 
 from django.core.validators import MaxValueValidator
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from shop.models.accounts import Contact
 from shop.models.orders import OrderDetail

@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import re_path
 
 __author__ = ''
 
@@ -7,5 +7,5 @@ from accounting.views.main import AccountingView
 app_name = "accounting"
 
 urlpatterns = [
-    url(r'^$', AccountingView.as_view(), name="index"),
+    re_path(r'^$', AccountingView.as_view(), name="index"),
 ]

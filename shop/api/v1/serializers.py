@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
@@ -9,7 +9,7 @@ from shop.models.orders import OrderItem, CheckBoxOrderItem, NumberOrderItem, \
 from shop.models.products import Product, ProductCategory, ProductAttributeType, ProductAttributeTypeInstance, \
     ProductSubItem, \
     ProductImage, FileSubItem, SelectItem, SelectSubItem, CheckBoxSubItem, NumberSubItem, FileExtensionItem, \
-    IndividualOffer
+    IndividualOffer, ProductAttributeGroup
 
 
 class FileSubItemSerializer(serializers.ModelSerializer):
@@ -73,7 +73,6 @@ class FullProductSerializer(BasicProductSerializer):
 
 
 class ProductSubItemSerializer(serializers.ModelSerializer):
-    product = BasicProductSerializer()
     numbersubitem = NumberSubItemSerializer()
     checkboxsubitem = CheckBoxSubItemSerializer()
     filesubitem = FileSubItemSerializer()
@@ -88,6 +87,37 @@ class ProductSubItemSerializer(serializers.ModelSerializer):
 
     def get_valid(self, object):
         return True
+
+
+class BasicProductSerializer(serializers.ModelSerializer):
+    product_picture = serializers.SerializerMethodField('get_image')
+
+    class Meta:
+        model = Product
+        fields = ['stock', 'assigned_sub_products', 'max_items_per_order', 'product_picture', 'is_public']
+        depth = 4
+
+    def get_image(self, product):
+        return ProductImage.objects.filter(product=product).first().product_picture.url \
+            if ProductImage.objects.filter(product=product).count() > 0 else None
+
+
+class ProductCategorySerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = ProductCategory
+        fields = '__all__'
+
+
+class FullProductSerializer(serializers.ModelSerializer):
+    category = ProductCategorySerializer
+    is_public = serializers.BooleanField(write_only=True)
+
+    class Meta:
+        model = Product
+        fields = '__all__'
+        depth = 4
 
 
 class BasicOrderItemSerializer(serializers.ModelSerializer):
@@ -197,7 +227,7 @@ class FullOrderDetailSerializer(OrderDetailSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     price = serializers.ReadOnlyField()
-    product = ProductSubItemSerializer()
+    product = FullProductSerializer()
     randID = SerializerMethodField(source='get_rand_id')
     errors = SerializerMethodField()
     valid = SerializerMethodField()
@@ -297,19 +327,19 @@ class ProductAttributeTypeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ProductAttributeGroupSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = ProductAttributeGroup
+        fields = '__all__'
+
+
 class ProductAttributeTypeInstanceSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
 
     class Meta:
         model = ProductAttributeTypeInstance
-        fields = '__all__'
-
-
-class ProductCategorySerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField()
-
-    class Meta:
-        model = ProductCategory
         fields = '__all__'
 
 

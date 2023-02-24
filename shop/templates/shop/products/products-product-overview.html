@@ -2,13 +2,9 @@
 {% load static %}
 {% load recurse %}
 {% load i18n %}
-{% load bootstrap5 %}
+{% load django_bootstrap5 %}
 {% load fb_versions %}
 {% load get_type %}
-
-{% block head %}
-    <title>{% trans 'Products' %} {% if selected_category %} - {{ selected_category }}{% endif %} - {{ title }}</title>
-{% endblock %}
 
 {% block body %}
 
@@ -81,9 +77,6 @@
                 </div>
             {% else %}
                 <div class="d-block d-sm-none ">
-                    {% if selected_category %}
-                        <span><a href="{% url 'shop:products' selected_category.mother_category.path %}"> <i
-                                class="fa fa-arrow-left" style="font-size: 1.4rem"></i></a></span><br>{% endif %}
                     <div class="scrolling-wrapper-flexbox">
                         {% if not selected_category %}
                             {% for category in categories %}
@@ -118,8 +111,6 @@
             <div class="products-list card-group mt-3 mt-md-0">
                 <div class="row w-100">
                     <div class="col-10 ps-4">
-                        <h1>{% if selected_category %} {{ selected_category }}{% else %}
-                            {% trans 'Products' %}{% endif %}</h1>
                     </div>
                     <div class="col-2">
                         <div class="attributes d-block d-sm-none categories-list">

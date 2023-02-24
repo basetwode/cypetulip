@@ -40,7 +40,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = (
-    'bootstrap5',
+    'django_bootstrap5',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -264,14 +264,14 @@ BOOTSTRAP5 = {
     'success_css_class': 'has-success',
     # Renderers (only set these if you have studied the source and understand the inner workings)
     'formset_renderers': {
-        'default': 'bootstrap5.renderers.FormsetRenderer',
+        'default': 'django_bootstrap5.renderers.FormsetRenderer',
     },
     'form_renderers': {
-        'default': 'bootstrap5.renderers.FormRenderer',
+        'default': 'django_bootstrap5.renderers.FormRenderer',
     },
     'field_renderers': {
-        'default': 'bootstrap5.renderers.FieldRenderer',
-        'inline': 'bootstrap5.renderers.InlineFieldRenderer',
+        'default': 'django_bootstrap5.renderers.FieldRenderer',
+        'inline': 'django_bootstrap5.renderers.InlineFieldRenderer',
     },
 }
 

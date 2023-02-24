@@ -4,9 +4,9 @@ from django.contrib import messages
 from django.contrib.auth.views import PasswordChangeView
 from django.core import serializers
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView, DetailView, TemplateView
 from django_filters.views import FilterView
 
@@ -14,10 +14,10 @@ from billing.utils import calculate_sum
 from permissions.error_handler import raise_401
 from permissions.views.mixins import PermissionPostGetRequiredMixin, LoginRequiredMixin, PermissionOwnsObjectMixin
 from shop.filters.filters import OrderDetailFilter
+from shop.forms.account_forms import CompanyForm, ContactForm
+from shop.models.accounts import Company, Contact, Address
 from shop.models.orders import OrderDetail, OrderItem
 from shop.models.products import Product
-from shop.models.accounts import Company, Contact, Address
-from shop.forms.account_forms import CompanyForm, ContactForm
 from shop.utils import get_orderitems_once_only
 from shop.utils import json_response
 from utils.mixins import PaginatedFilterViews, APIMixin

@@ -4,15 +4,12 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
-from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_headers
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import View, TemplateView, FormView
 
 from cms.forms.forms import ContactForm, CSSSettingForm
 from cms.models.main import Page, Section
-from home.settings import STATIC_ROOT, CACHE_MIDDLEWARE_SECONDS
+from home.settings import STATIC_ROOT
 from management.models.main import MailSetting, LegalSetting, CacheSetting
 from permissions.error_handler import raise_404
 # Create your views here.

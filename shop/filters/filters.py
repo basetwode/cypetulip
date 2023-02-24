@@ -1,13 +1,13 @@
 import django_filters
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from cms.models.main import Section, Page
 from management.models.main import Header, Footer
 from shipping.models.main import Package, Shipment
 from shop.models.accounts import Contact
 from shop.models.orders import OrderDetail
-from shop.models.products import ProductCategory, ProductSubItem, FileSubItem, Product
+from shop.models.products import ProductCategory, ProductSubItem, FileSubItem, Product, ProductAttributeType
 
 
 class OrderDetailFilter(django_filters.FilterSet):
@@ -33,6 +33,12 @@ class ProductFilter(django_filters.FilterSet):
     class Meta:
         model = Product
         fields = ['category', 'attributes']
+
+
+class ProductAttributeTypesFilter(django_filters.FilterSet):
+    class Meta:
+        model = ProductAttributeType
+        fields = []
 
 
 class ProductSubItemFilter(django_filters.FilterSet):

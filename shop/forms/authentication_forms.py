@@ -4,7 +4,7 @@ from django.core.mail import EmailMultiAlternatives, get_connection
 from django.forms import ModelForm, BooleanField
 from django.template import loader
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from home import settings
 from management.models.main import MailSetting

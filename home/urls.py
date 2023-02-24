@@ -9,13 +9,12 @@ Class-based views
     1. Add an import:  from other_app.views import home
     2. Add a URL to urlpatterns:  path('', home.as_view(), name='home')
 Including another URLconf
-    1. Import the include() function: from django.urls import include, path
+    1. Import the include() function: from django.urls import include, re_path, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.urls import path
+from django.urls import include, path, re_path
 from django.views.generic import RedirectView
 from drf_spectacular.views import SpectacularSwaggerView, SpectacularRedocView, SpectacularAPIView
 
@@ -42,34 +41,34 @@ from django.core.files.storage import default_storage
 site.storage = default_storage
 
 urlpatterns = [
-    url(r'^api-auth/', include('rest_framework.urls')),
+    re_path(r'^api-auth/', include('rest_framework.urls')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-    url(r'^admin/filebrowser/', site.urls),
-    url(r'^$', RedirectView.as_view(url='/cms/home/')),
-    url(r'^admin/', admin.site.urls),
-    url(r'^management/', include(admin_urls.urlpatterns)),
-    url(r'^media/', include(media_urls.urlpatterns)),
-    url(r'^cms/', include(cms_urls.urlpatterns)),
-    url(r'^shop/', include(shop_urls, namespace='shop')),
-    url(r'^permissions/', include(perm_urls, namespace='permissions')),
-    url(r'^billing/', include(billing_urls.urlpatterns)),
-    url(r'^payment/', include(payment_urls, namespace='payment')),
-    url(r'^accounting/', include(accounting_urls, namespace='accounting')),
-    url(r'^shipping/', include(shipping_urls, namespace='shipping')),
-    url(r'^rma/', include(rma_urls, namespace='rma')),
+    re_path(r'^admin/filebrowser/', site.urls),
+    re_path(r'^$', RedirectView.as_view(url='/cms/home/')),
+    re_path(r'^admin/', admin.site.urls),
+    re_path(r'^management/', include(admin_urls.urlpatterns)),
+    re_path(r'^media/', include(media_urls.urlpatterns)),
+    re_path(r'^cms/', include(cms_urls.urlpatterns)),
+    re_path(r'^shop/', include(shop_urls, namespace='shop')),
+    re_path(r'^permissions/', include(perm_urls, namespace='permissions')),
+    re_path(r'^billing/', include(billing_urls.urlpatterns)),
+    re_path(r'^payment/', include(payment_urls, namespace='payment')),
+    re_path(r'^accounting/', include(accounting_urls, namespace='accounting')),
+    re_path(r'^shipping/', include(shipping_urls, namespace='shipping')),
+    re_path(r'^rma/', include(rma_urls, namespace='rma')),
 
-    url(r'^password_reset/$', PasswordResetViewSmtp.as_view(), name='password_reset'),
-    url(r'^password_reset/done/$', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    url(r'^reset/(?P<uidb64>[\S0-9_.-\\s\- ]*)/(?P<token>[\S0-9_.-\\s\- ]*)/$',
-        auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    url(r'^reset/done/$', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
-    url(r'^password_change/$', auth_views.PasswordChangeView.as_view(), name='password_change'),
-    url(r'^password_change/done/$', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
-    url(r'^login/$', LoginAuthenticationView.as_view(), name='login'),
+    re_path(r'^password_reset/$', PasswordResetViewSmtp.as_view(), name='password_reset'),
+    re_path(r'^password_reset/done/$', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    re_path(r'^reset/(?P<uidb64>[\S0-9_.-\\s\- ]*)/(?P<token>[\S0-9_.-\\s\- ]*)/$',
+            auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    re_path(r'^reset/done/$', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    re_path(r'^password_change/$', auth_views.PasswordChangeView.as_view(), name='password_change'),
+    re_path(r'^password_change/done/$', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
+    re_path(r'^login/$', LoginAuthenticationView.as_view(), name='login'),
 ]
 
 # if settings.DEBUG:
 #     settings.INSTALLED_APPS += ('django_uwsgi',)
-#     urlpatterns += url(r'^admin/uwsgi/',include('django_uwsgi.urls'))
+#     urlpatterns += re_path(r'^admin/uwsgi/',include('django_uwsgi.urls'))

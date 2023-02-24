@@ -1,0 +1,50 @@
+{% extends 'cms/base-mgmt.html' %}
+{% load static %}
+{% load recurse %}
+{% load django_bootstrap5 %}
+
+{% load i18n %}
+{% block head %}
+  <title>Products</title>
+  <script src="{% static 'autocomplete.js' %}"></script>
+  <script src="{% static 'jquery/js/jquery-ui.min.js' %}"></script>
+  <link href="{% static 'management.css' %}" rel="stylesheet">
+  {{ form.media }}
+{% endblock %}
+
+{% block body %}
+  <div class="row">
+    <div class="col-md-3 mt-2 mt-md-0">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="h-bold">{% trans "Menu" %}</h4>
+        </div>
+        <div class="card-body">
+
+          <hr>
+          <a href="{% url 'management_index' %}"
+             class="btn btn-fw btn-primary">{% trans 'Go back to management' %}</a>
+          <a href="{% url 'attribute_types_overview' %}"
+             class="btn btn-fw btn-primary">{% trans 'Go back to Attributes' %}</a>
+        </div>
+
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-9 mt-2 mt-md-0">
+      <form method="post" enctype="multipart/form-data">{% csrf_token %}
+
+        <div class="card">
+          <div class="card-header">
+            <input class="btn btn-primary" type="submit" value="Save">
+          </div>
+          <div class="card-body">
+            {% block form %}
+              {% bootstrap_form form exclude=excluded_fields form_group_class="m-1" layout='horizontal' %}
+            {% endblock %}
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
