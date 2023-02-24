@@ -2,7 +2,7 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   push:
     branches:
@@ -16,11 +16,10 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: mirror-repository
   # You may pin to the exact commit or the version.
-  # uses: spyoungtech/mirror-action@b313a53232e77d8f7d8fcdb00f90b94100767be1
-        uses: spyoungtech/mirror-action@v0.4.3
+        uses: spyoungtech/mirror-action@v0.6.0
         with:
           # The remote repository e.g. https://github.com/octocat/foo.git or git@github.com:octocat/foo.git
           REMOTE: ${{ secrets.URL }}
@@ -32,4 +31,3 @@ jobs:
           GIT_SSH_NO_VERIFY_HOST: true
           # Push all refs instead of just the current branch
           PUSH_ALL_REFS: true # optional, default is true
- 
