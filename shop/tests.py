@@ -1,13 +1,12 @@
 from decimal import Decimal, ROUND_HALF_UP
 
 from django.test import TestCase
-
 # Create your tests here.
 from rest_framework.test import APIClient
 
 from payment.models.main import Payment, PaymentDetail, PaymentMethod
 from shop.models.accounts import Contact, Company
-from shop.models.orders import OrderDetail, OrderItem, OrderState, PercentageDiscount, FixedAmountDiscount
+from shop.models.orders import OrderDetail, OrderItem, OrderState, PercentageDiscount
 from shop.models.products import Product, ProductSubItem, ProductCategory
 
 
@@ -53,7 +52,7 @@ class OrderUnitTest(OrderTestBase):
         self.product1 = Product.objects.get(name="product1")
         self.product2 = Product.objects.get(name="product_specialprice")
         self.product3 = Product.objects.get(name="product_with_subproducts")
-        self.order = OrderDetail.objects.create()
+        self.order = OrderDetail.objects.create(id=1)
         self.order_item1 = OrderItem.objects.create(order_detail=self.order, product=self.product1, count=2)
         self.order_item2 = OrderItem.objects.create(order_detail=self.order, product=self.product2, count=1)
         self.order_item3 = OrderItem.objects.create(order_detail=self.order, product=self.product3, count=1)

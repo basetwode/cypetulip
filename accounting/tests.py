@@ -78,6 +78,10 @@ class AccountingViewTest(TestCase):
         self.assertEqual(context.get('counted_open_orders'), 1)
         self.assertEqual(context.get('counted_open_payments'), 0)
         self.assertEqual(context.get('counted_open_shipments'), 1)
-        self.assertQuerysetEqual(context.get('last_orders'),
-                                 map(repr, OrderDetail.objects.all().order_by('-date_added')[:5]))
+        self.assertQuerysetEqual(context.get('last_orders'),OrderDetail.objects.all().order_by('-date_added')[:5])
         self.assertEqual(context.get('open_order_state_id'), 1)
+
+    def _check_test_client_response(self, response, attribute, method_name):
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(attribute, response.context_data)
+        self.assertEqual(getattr(response.context_data[attribute], method_name)(), 1)
