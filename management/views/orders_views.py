@@ -115,6 +115,17 @@ class OrderChangeStateView(View):
         _order = OrderDetail.objects.get(uuid=uuid)
         _next_state = OrderState.objects.get(id=request.POST['id'])
         _order.state = _next_state
+        if (_next_state == OrderState.objects.get(is_paid_state=True)):
+            _order.is_paid = True
+            _payment_details = None
+            _payment = None
+            try:
+                _payment_details = PaymentDetail.objects.get(order_detail=_order)
+                _payment = Payment.objects.get(details=_payment_details)
+                _payment.is_paid = True
+                _payment.save()
+            except:
+                pass
         try:
             _order.save()
             return redirect(request.META.get('HTTP_REFERER'))
@@ -242,12 +253,12 @@ class OrderCancelView(UpdateView):
     slug_field = 'uuid'
     fields = []
 
-    def get_success_re_path(self):
+    def get_success_url(self):
         messages.success(self.request, _("Order canceled!"))
         return reverse_lazy('management_order_detail_view', kwargs={'uuid': self.object.uuid})
 
     def form_valid(self, form):
-        resp = super(OrderCancelView, self).form_valid(form)
+        resp = super().form_valid(form)
         self.object.state = OrderState.objects.get(initial=True).cancel_order_state
         self.object.save()
         return resp

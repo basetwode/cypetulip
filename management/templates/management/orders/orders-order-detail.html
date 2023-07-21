@@ -358,11 +358,13 @@
                         {% csrf_token %}
                         <button type="submit"
                                 {% if order_detail.state == order_detail.state.cancel_order_state %}disabled{% endif %}
+                                {% if order_detail.state.is_sent_state%}disabled{% endif %}
                                 class="btn btn-fw btn-secondary">{% trans 'Cancel order' %}</button>
                     </form>
                     <form action="{% url 'order_accept_view' order_detail.uuid %}" method="post">
                         {% csrf_token %}
                         <button type="submit"
+                                {% if order_detail.state == order_detail.state.cancel_order_state %}disabled{% endif %}
                                 class="btn btn-fw btn-secondary">{% trans 'Send Invoice' %}</button>
                         {% if not order_detail.bill_sent %}
                             <small>{% trans 'Invoice has not been sent yet' %}</small>
@@ -371,11 +373,14 @@
                     <form action="{% url 'order_pay_view' order_detail.uuid %}" method="post">
                         {% csrf_token %}
                         <button type="submit"
+                                {% if order_detail.state == order_detail.state.cancel_order_state %}disabled{% endif %}
                                 class="btn btn-fw btn-secondary">
                             {% if payment.is_paid %}{% trans 'Mark unpaid' %}
                             {% else %}{% trans 'Mark paid' %}{% endif %}</button>
                     </form>
                     <button href="#" class="btn btn-fw btn-secondary" data-bs-toggle="modal"
+                            {% if order_detail.state == order_detail.state.cancel_order_state %}disabled{% endif %}
+                            {% if order_detail.state.is_sent_state%}disabled{% endif %}
                             {% if order_detail.is_send %}{% endif %}
                             data-bs-target="#create-modal">{% trans 'Ship' %}</button>
                     {% include 'shipping/shipment/shipment-create.html' with uuid=order_detail.uuid %}

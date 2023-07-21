@@ -1,4 +1,3 @@
-import math
 import uuid
 from datetime import datetime
 from functools import reduce
@@ -13,7 +12,6 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 
-from billing.utils import calculate_sum_order, calculate_sum
 from mediaserver.upload import invoice_files_upload_handler, fs, order_files_upload_handler
 from shop.models.accounts import Company, Contact, Address
 from shop.models.products import Product, ProductCategory, IndividualOffer, ProductSubItem, SelectItem
@@ -285,10 +283,10 @@ class OrderDetail(models.Model):
         return self.total_discounted_wt() - self.total_discounted()
 
     def total_discount(self):
-        return round(self.total() - self.total_discounted(), 2)
+        return round(self.total() - self.total_discounted())
 
     def total_discount_wt(self):
-        return round(self.total_wt() - self.total_discounted_wt(), 2)
+        return round(self.total_wt() - self.total_discounted_wt())
 
     def discount_str(self):
         return f"{int(self.discount_percentage * 100)} %" if self.discount_percentage else f"{self.discount_amount} €"
