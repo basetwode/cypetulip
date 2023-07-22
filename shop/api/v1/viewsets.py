@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.permissions import DjangoModelPermissions, IsAdminUser
 from rest_framework.response import Response
 
+from payment.models.main import Payment, PaymentDetail
 from shop.api.v1.serializers import AddressSerializer, BasicContactSerializer, OrderShipmentSerializer, \
     VoucherSerializer, BasicOrderItemSerializer, BasicFileOrderItemSerializer, \
     BasicSelectOrderItemSerializer, \
@@ -80,7 +81,12 @@ class OrderDetailViewSet(viewsets.ModelViewSet):
         return OrderDetailSerializer
 
     def get_queryset(self):
-        queryset = super(OrderDetailViewSet, self).get_queryset()
+        is_paid = self.request.query_params.get('isPaid', None)
+        paid_payments = Payment.objects.filter(is_paid=is_paid)
+        # Filtere die Zahlungsdetails, die in den bezahlten Zahlungen enthalten sind
+        paid_payment_details = PaymentDetail.objects.filter(payment__in=paid_payments)
+        # Erhalte eine Liste von OrderDetails, die in den bezahlten Zahlungsdetails enthalten sind
+        queryset = OrderDetail.objects.filter(paymentdetail__in=paid_payment_details)
         request = self.request
         uuid = self.request.query_params.get('uuid', None)
         if request.user.is_authenticated and request.user.is_staff:

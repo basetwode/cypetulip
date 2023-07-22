@@ -34,7 +34,7 @@ class AccountingView(LoginRequiredMixin, PaginatedFilterViews, FilterView, Multi
         counted_open_shipments = OrderDetail.objects.filter(state__is_paid_state=True).count()
         counted_open_payments = Payment.objects.filter(is_paid=False).count()
 
-        stock_list = Product.objects.filter(stock__lt=10).filter(stock__gte=0).order_by('stock')
+        stock_list = Product.objects.all().order_by('stock')
         stock_paginator = Paginator(stock_list, 10)
         stock_page_number = self.request.GET.get('stock-page')
         stock_page_obj = stock_paginator.get_page(stock_page_number)

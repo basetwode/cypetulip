@@ -103,9 +103,10 @@
                 <div id="chartApp" class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <span>{% trans 'Select a year to show data' %}</span><br/>
-                            <div class="col-12 col-md-6">
-                                <input type="text" id="yearpicker" class="yearpicker form-control" value="">
+                            <span>{% trans 'All orders with billing date not paid' %}</span><br/>
+                            <div class="col-12 col-lg-6">
+                                <input class="col-6" type="text" id="yearpicker" class="yearpicker form-control" value="">
+                                <label class="col-offset-6 pl-3" for="yearpicker">{% trans 'Select a year' %}</label>
                             </div>
                         </div>
                         <div class="card-body">
@@ -123,13 +124,40 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 mt-3 mt-md-0">
-                    <div class="card">
-                        <div class="card-header">{% trans 'Stock' %}</div>
-                        <div class="card-body">
-                            <ul class="list-group list-group-flush">
-                                {% for product in stock %}
-                                    <li class="list-group-item
+              <div id="chartAppPaid" class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <span>{% trans 'All paid orders' %}</span><br/>
+                    <div class="col-12 col-lg-6">
+                      <input class="col-6" type="text" id="yearpicker-paid-data" class="yearpicker form-control" value="">
+                      <label class="col-6" for="yearpicker-paid-data">{% trans 'Select a year' %}</label>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="row mx-auto">
+                      <div v-show="loadingPaidCanvasData" id="canvas-spinner" class="spinner-border mx-auto"
+                           role="status">
+                      </div>
+                    </div>
+                    <div v-show="!loadingPaidCanvasData" class="chart-container">
+                      <canvas id="amountPaidPerMonthChart"></canvas>
+                    </div>
+                    <div v-show="!loadingPaidCanvasData" class="chart-container">
+                      <canvas id="ordersPaidPerMonthChart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-6 mt-3 mt-md-0">
+                <div class="card">
+                  <div class="card-header">{% trans 'Stock' %}</div>
+                  <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                      {% for product in stock %}
+                        <li class="list-group-item
                                           {% if product.stock < 5 %}
                                           list-group-item-warning
                                           {% endif %}
@@ -137,26 +165,26 @@
                                           list-group-item-danger
                                           {% endif %}
                                     ">
-                                        <span>{{ product.name }}</span>
-                                        <span class="float-end text-bold badge rounded-pill bg-info">{{ product.stock }}</span>
-                                    </li>
-                                {% endfor %}
-                                {% if not stock %}
-                                    {% trans 'No products' %}
-                                {% endif %}
+                          <span>{{ product.name }}</span>
+                          <span class="float-end text-bold badge rounded-pill bg-info">{{ product.stock }}</span>
+                        </li>
+                      {% endfor %}
+                      {% if not stock %}
+                        {% trans 'No products' %}
+                      {% endif %}
 
-                            </ul>
-                            <div class="pt-3 pagination text-xs-center justify-content-center"
-                                 style="align-content: center; text-align: center">
-                                {% bootstrap_pagination stock parameter_name="stock-page" pages_to_show="5" %}
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            {% trans 'Red: Stock is empty' %}<br/>
-                            {% trans 'Orange: Stock is under 5 items' %}
-                        </div>
+                    </ul>
+                    <div class="pt-3 pagination text-xs-center justify-content-center"
+                         style="align-content: center; text-align: center">
+                      {% bootstrap_pagination stock parameter_name="stock-page" pages_to_show="5" %}
                     </div>
+                  </div>
+                  <div class="card-footer">
+                    {% trans 'Red: Stock is empty' %}<br/>
+                    {% trans 'Orange: Stock is under 5 items' %}
+                  </div>
                 </div>
+              </div>
             </div>
         </div>
     </div>
@@ -183,7 +211,7 @@
                     if (year) {
                         const vm = this;
                         vm.loadingCanvasData = true;
-                        return axios.get(`/shop/api/v1/orderdetails/?orderYear=${year}`)
+                        return axios.get(`/shop/api/v1/orderdetails/?orderYear=${year}&isPaid=False`)
                             .then(response => {
                                 vm.ordersPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
                                 vm.amountPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -243,6 +271,100 @@
                 labels: labels(),
                 datasets: [{
                     label: "{% trans 'Orders per Month' %}",
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    borderWidth: 1,
+                    backgroundColor: 'rgb(255, 238, 186)'
+                }],
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: 0,
+                            stepSize: 1
+                        }
+                    }]
+                }
+            }
+        });
+
+    </script>
+    <script>
+        const appPaidData = Vue.createApp({
+
+            delimiters: ['[[', ']]'],
+            el: '#chartAppPaid',
+            components: {},
+            data() {
+                return {
+                    ordersPaidPerMonth: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    amountPaidPerMonth: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    csrfmiddlewaretoken: csrfmiddlewaretoken,
+                    loadingCanvasData: false
+                }
+            },
+            mounted() {
+                axios.all([this.loadPaidData()])
+            },
+            methods: {
+                loadPaidData: function (year) {
+                    if (year) {
+                        const vm = this;
+                        vm.loadingCanvasData = true;
+                        return axios.get(`/shop/api/v1/orderdetails/?orderYear=${year}&isPaid=True`)
+                            .then(response => {
+                                vm.ordersPaidPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                                vm.amountPaidPerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                                response.data.forEach(entry => {
+                                    const date = new Date(entry.date_bill);
+                                    const month = date.getMonth();
+                                    vm.ordersPaidPerMonth[month] = vm.ordersPaidPerMonth[month] + 1;
+                                    vm.amountPaidPerMonth[month] = vm.amountPaidPerMonth[month] + entry.total_wt;
+                                })
+                                ordersPaidPerMonthChart.data.datasets.forEach((dataset) => {
+                                    dataset.data = vm.ordersPaidPerMonth;
+                                });
+                                amountPaidPerMonthChart.data.datasets.forEach((dataset) => {
+                                    dataset.data = vm.amountPaidPerMonth;
+                                });
+                                ordersPaidPerMonthChart.update();
+                                amountPaidPerMonthChart.update();
+                                vm.loadingCanvasData = false;
+                            });
+                    }
+
+                },
+            }
+        });
+        const vmPaidData = appPaidData.mount('#chartAppPaid')
+        $('#yearpicker-paid-data').yearpicker({
+            onChange: function (value) {
+                vmPaidData.loadPaidData(value);
+            }
+
+        })
+
+        const amountPaidPerMonthChartElement = document.getElementById('amountPaidPerMonthChart');
+        const amountPaidPerMonthChart = new Chart(amountPaidPerMonthChartElement, {
+            type: 'bar',
+            data: {
+                labels: labels(),
+                datasets: [{
+                    label: "{% trans 'Amount paid per month' %}",
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    borderWidth: 1,
+                    backgroundColor: 'rgb(255, 238, 186)'
+                }]
+            },
+            options: {}
+        });
+        const ordersPaidPerMonthChartElement = document.getElementById('ordersPaidPerMonthChart');
+        const ordersPaidPerMonthChart = new Chart(ordersPaidPerMonthChartElement, {
+            type: 'bar',
+            data: {
+                labels: labels(),
+                datasets: [{
+                    label: "{% trans 'Orders paid per month' %}",
                     data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     borderWidth: 1,
                     backgroundColor: 'rgb(255, 238, 186)'
