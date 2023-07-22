@@ -51,7 +51,6 @@ INSTALLED_APPS = (
     'rest_framework',
     'drf_spectacular',
     'installer',
-    'shop.apps.WebappConfig',
     'management',
     'billing',
     'payment',
@@ -69,6 +68,7 @@ INSTALLED_APPS = (
     'captcha',
     'cookiebanner',
     'compressor',
+    'shop.apps.WebappConfig',
 )
 
 MIDDLEWARE = (

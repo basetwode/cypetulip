@@ -1,5 +1,5 @@
-from django.apps import apps
 from django.apps import AppConfig
+from django.apps import apps
 
 
 class WebappConfig(AppConfig):
@@ -101,4 +101,4 @@ class WebappConfig(AppConfig):
             staff_group.permissions.set(permissions_list)
             staff_group.save()
         except Exception as error:
-            print("DB not migrated" + error)
+            print("DB not migrated")
