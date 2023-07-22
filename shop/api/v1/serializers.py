@@ -51,49 +51,6 @@ class BasicProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['stock', 'assigned_sub_products', 'max_items_per_order', 'product_picture']
-        depth = 4
-
-    def get_image(self, object):
-        return ProductImage.objects.filter(product=object).first().product_picture.url \
-            if ProductImage.objects.filter(product=object).count() > 0 else None
-
-    def get_fields(self):
-        fields = super(BasicProductSerializer, self).get_fields()
-        fields['assigned_sub_products'] = ProductSubItemSerializer(many=True)
-        return fields
-
-
-class FullProductSerializer(BasicProductSerializer):
-    is_public = serializers.BooleanField(write_only=True)
-
-    class Meta:
-        model = Product
-        fields = '__all__'
-
-
-class ProductSubItemSerializer(serializers.ModelSerializer):
-    numbersubitem = NumberSubItemSerializer()
-    checkboxsubitem = CheckBoxSubItemSerializer()
-    filesubitem = FileSubItemSerializer()
-    selectsubitem = SelectSubItemSerializer()
-    bprice_wt = serializers.FloatField(required=False)
-    valid = SerializerMethodField()
-
-    class Meta:
-        model = ProductSubItem
-        fields = '__all__'
-        depth = 4
-
-    def get_valid(self, object):
-        return True
-
-
-class BasicProductSerializer(serializers.ModelSerializer):
-    product_picture = serializers.SerializerMethodField('get_image')
-
-    class Meta:
-        model = Product
         fields = ['stock', 'assigned_sub_products', 'max_items_per_order', 'product_picture', 'is_public']
         depth = 4
 
@@ -117,7 +74,25 @@ class FullProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+        depth = 2
+
+
+class ProductSubItemSerializer(serializers.ModelSerializer):
+    numbersubitem = NumberSubItemSerializer()
+    checkboxsubitem = CheckBoxSubItemSerializer()
+    filesubitem = FileSubItemSerializer()
+    selectsubitem = SelectSubItemSerializer()
+    bprice_wt = serializers.FloatField(required=False)
+    valid = SerializerMethodField()
+    product = FullProductSerializer()
+
+    class Meta(FullProductSerializer.Meta):
+        model = ProductSubItem
+        fields = '__all__'
         depth = 4
+
+    def get_valid(self, object):
+        return True
 
 
 class BasicOrderItemSerializer(serializers.ModelSerializer):
@@ -227,7 +202,7 @@ class FullOrderDetailSerializer(OrderDetailSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     price = serializers.ReadOnlyField()
-    product = FullProductSerializer()
+    product = ProductSubItemSerializer()
     randID = SerializerMethodField(source='get_rand_id')
     errors = SerializerMethodField()
     valid = SerializerMethodField()
@@ -235,7 +210,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItem
-        fields = ['product', 'price_discounted', 'price_wt', 'count', 'id', 'fileorderitem', 'valid', 'applied_discount',
+        fields = ['product', 'price_discounted', 'price_wt', 'count', 'id', 'fileorderitem', 'valid',
+                  'applied_discount',
                   'allowable', 'price', 'price_admin',
                   'price_discounted', 'price_discounted_wt', 'total_wt', 'period_of_performance_start',
                   'period_of_performance_end', 'is_conveyed',
@@ -283,7 +259,6 @@ class BasicContactSerializer(serializers.ModelSerializer):
 
 
 class AddressSerializer(serializers.ModelSerializer):
-
     get_name = serializers.ReadOnlyField()
 
     def create(self, request):
