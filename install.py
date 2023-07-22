@@ -86,6 +86,7 @@ def install():
     legal = LegalSetting.objects.create(company_name=name)
     cache = CacheSetting.objects.create(css_js_cache_enabled=False)
     shopsetting = ShopSetting.objects.create(google_recaptcha_privatekey="",google_recaptcha_publickey="")
+
     OrderState.objects.create(initial=True,name="Open")
 
     Contact.objects.create_superuser(company=company, username="admin", password="admin", is_superuser=True, is_staff=True)

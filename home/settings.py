@@ -51,7 +51,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'drf_spectacular',
     'installer',
-    'shop',
+    'shop.apps.WebappConfig',
     'management',
     'billing',
     'payment',

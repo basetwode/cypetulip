@@ -4,15 +4,16 @@ from django.apps import AppConfig
 
 class WebappConfig(AppConfig):
     name = 'permissions'
-
+    api = {}
 
     def ready(self):
+        print("Loading permissions appconfig")
         try:
             from django.contrib.auth.models import Permission, Group
             from django.contrib.contenttypes.models import ContentType
 
-            content_type = ContentType.objects.get(app_label='shop', model='order')
-            content_type_mgmt = ContentType.objects.get(app_label='management', model='shopsetting')
+            content_type, _ = ContentType.objects.get_or_create(app_label='shop', model='order')
+            content_type_mgmt, _ = ContentType.objects.get_or_create(app_label='management', model='shopsetting')
             print(content_type)
             permission = Permission.objects.get_or_create(
                 codename='view_orders',
@@ -100,4 +101,4 @@ class WebappConfig(AppConfig):
             staff_group.permissions.set(permissions_list)
             staff_group.save()
         except Exception as error:
-            print("DB not migrated")
+            print("DB not migrated" + error)

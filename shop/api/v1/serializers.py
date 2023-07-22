@@ -67,9 +67,10 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FullProductSerializer(serializers.ModelSerializer):
+class FullProductSerializer(BasicProductSerializer):
     category = ProductCategorySerializer
     is_public = serializers.BooleanField(write_only=True)
+    product_picture = serializers.SerializerMethodField('get_image')
 
     class Meta:
         model = Product

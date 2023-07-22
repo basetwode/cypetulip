@@ -2,7 +2,9 @@ from decimal import Decimal, ROUND_HALF_UP
 
 from django.test import TestCase
 # Create your tests here.
-from rest_framework.test import APIClient
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient, APITestCase
 
 from payment.models.main import Payment, PaymentDetail, PaymentMethod
 from shop.models.accounts import Contact, Company
@@ -149,10 +151,18 @@ class OrderUnitTest(OrderTestBase):
         self.assertEqual(self.order.total_wt(), self.get_decimal_rounded(306.63), "Order total equals 306.63")
 
 
-class OrderRESTApiTest(OrderTestBase):
+class OrderRESTApiTest(APITestCase):
 
     def setUp(self):
         super(OrderRESTApiTest, self).setUp()
         self.client = APIClient()
+
+    def test_asd(self):
+        url = reverse('account-list')
+        data = {'name': 'DabApps'}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Account.objects.count(), 1)
+        self.assertEqual(Account.objects.get().name, 'DabApps')
 
 # todo: view tests

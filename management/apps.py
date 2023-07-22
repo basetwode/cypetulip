@@ -5,8 +5,10 @@ from django.apps import AppConfig
 
 class ManagementConfig(AppConfig):
     name = 'management'
+    api = {}
 
     def ready(self):
+        print("Loading management appconfig")
         try:
             from management.models import CacheSetting, LegalSetting
             cache_settings, _ = CacheSetting.objects.get_or_create()

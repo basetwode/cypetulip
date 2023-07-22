@@ -2,11 +2,13 @@ from rest_framework import routers
 
 from rma.api.v1.viewsets import ReturnMerchandiseAuthorizationConfigViewSet, \
     ReturnMerchandiseAuthorizationShipperViewSet, ReturnMerchandiseAuthorizationStateViewSet, \
-    ReturnMerchandiseAuthorizationViewSet, ReturnMerchandiseAuthorizationItemViewSet
+    ReturnMerchandiseAuthorizationViewSet, \
+    ReturnMerchandiseAuthorizationOrderItemSetN, ReturnMerchandiseAuthorizationOrderItemSet
 
 router = routers.DefaultRouter()
-router.register(r'rma', ReturnMerchandiseAuthorizationViewSet)
-router.register(r'rma/items', ReturnMerchandiseAuthorizationItemViewSet)
-router.register(r'rma/config', ReturnMerchandiseAuthorizationConfigViewSet)
-router.register(r'rma/shippers', ReturnMerchandiseAuthorizationShipperViewSet)
-router.register(r'rma/states', ReturnMerchandiseAuthorizationStateViewSet)
+router.register(r'', ReturnMerchandiseAuthorizationViewSet)
+router.register(r'items/', ReturnMerchandiseAuthorizationOrderItemSetN)
+
+router.register(r'config', ReturnMerchandiseAuthorizationConfigViewSet)
+router.register(r'shippers', ReturnMerchandiseAuthorizationShipperViewSet)
+router.register(r'states', ReturnMerchandiseAuthorizationStateViewSet)

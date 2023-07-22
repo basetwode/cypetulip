@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from rma.models.main import ReturnMerchandiseAuthorizationConfig, ReturnMerchandiseAuthorizationShipper, \
     ReturnMerchandiseAuthorizationState, ReturnMerchandiseAuthorization, ReturnMerchandiseAuthorizationItem
+from shop.models.orders import OrderItem
 
 
 class ReturnMerchandiseAuthorizationConfigSerializer(serializers.ModelSerializer):
@@ -43,3 +44,15 @@ class ReturnMerchandiseAuthorizationItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReturnMerchandiseAuthorizationItem
         fields = '__all__'
+
+
+class ReturnMerchandiseAuthorizationOrderItemSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = OrderItem
+        fields = ['id', 'product', 'count', 'price_wt', 'is_conveyed', 'get_shipment']
+        lookup_field = 'order_detail__uuid'
+        extra_kwargs = {
+            'url': {'lookup_field': 'slug'}
+        }

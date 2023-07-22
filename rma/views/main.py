@@ -4,7 +4,7 @@ from shop.models.orders import OrderDetail
 from utils.views import CreateUpdateView
 
 
-class RMAInitView(LoginRequiredMixin, CreateUpdateView):
+class RMAInitView(LoginRequiredMixin, PermissionOwnsObjectMixin, CreateUpdateView):
     template_name = 'rma/account/account-rma-create.html'
     model = ReturnMerchandiseAuthorization
     slug_url_kwarg = 'uuid'

@@ -3,8 +3,11 @@ from django.apps import AppConfig
 
 class ShippingConfig(AppConfig):
     name = 'shipping'
+    api = {}
 
     def ready(self):
+
+        print("Loading shipping appconfig")
         try:
             from shipping.models.main import Region
             from shipping.models.main import Country, Continent, Shipper

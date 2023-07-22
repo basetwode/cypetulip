@@ -1,3 +1,6 @@
+from django.apps import apps
+from django.apps import AppConfig
+
 from utils.apps import BaseConfig
 
 
@@ -5,12 +8,13 @@ class WebappConfig(BaseConfig):
     name = 'shop'
 
     def ready(self):
+        print("Loading shop appconfig")
         try:
 
             from shop.models.accounts import Contact
             from shop.models.accounts import Company
             admin_company, created = Company.objects.get_or_create(name="Admin", street="Admin",
-                                                         number="Admin",zipcode="Admin",city="Admin")
+                                                                   number="Admin", zipcode="Admin", city="Admin")
             admin_contact, created = Contact.objects.get_or_create(username="admin", company=admin_company)
             if created:
                 admin_contact.set_password("admin")
@@ -21,12 +25,12 @@ class WebappConfig(BaseConfig):
             from shop.models.orders import OrderState
             from management.models.main import LegalSetting
             legal_settings = LegalSetting.objects.all()
-            if legal_settings.count() ==0:
+            if legal_settings.count() == 0:
                 ls = LegalSetting(company_name="Shop", street="")
                 ls.save()
             from management.models.main import CacheSetting
             cache_settings = CacheSetting.objects.all()
-            if cache_settings.count() ==0:
+            if cache_settings.count() == 0:
                 cs = CacheSetting(css_js_cache_enabled=False, cache_clear_required=False)
                 cs.save()
             init_state = OrderState.objects.filter(initial=True)

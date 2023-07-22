@@ -5,8 +5,10 @@ from django.apps import AppConfig
 
 class CmsConfig(AppConfig):
     name = 'cms'
+    api = {}
 
     def ready(self):
+        print("Loading cms appconfig")
         try:
             from cms.models.main import Page, PREDEFINED_PAGES
 

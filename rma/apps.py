@@ -7,6 +7,8 @@ class RMAConfig(AppConfig):
     api = view_api
 
     def ready(self):
+
+        print("Loading rma appconfig")
         try:
             from rma.models.main import ReturnMerchandiseAuthorizationConfig, ReturnMerchandiseAuthorizationShipper, \
                 ReturnMerchandiseAuthorizationState

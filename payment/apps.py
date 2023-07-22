@@ -9,8 +9,11 @@ class PaymentConfig(AppConfig):
     name = 'payment'
     paypal_environment = None
     paypal_client = None
+    api = {}
 
     def ready(self):
+
+        print("Loading payment appconfig")
         try:
 
             from payment.models.main import PaymentProvider
