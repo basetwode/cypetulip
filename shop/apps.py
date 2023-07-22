@@ -13,14 +13,15 @@ class WebappConfig(BaseConfig):
 
             from shop.models.accounts import Contact
             from shop.models.accounts import Company
-            admin_company, created = Company.objects.get_or_create(name="Admin", street="Admin",
-                                                                   number="Admin", zipcode="Admin", city="Admin")
-            admin_contact, created = Contact.objects.get_or_create(username="admin", company=admin_company)
-            if created:
-                admin_contact.set_password("admin")
-                admin_contact.is_superuser = True
-                admin_contact.is_staff = True
-                admin_contact.save()
+            if Contact.objects.filter(username="admin").count() == 0:
+                admin_company, created = Company.objects.get_or_create(name="Admin", street="Admin",
+                                                                       number="Admin", zipcode="Admin", city="Admin")
+                admin_contact, created = Contact.objects.get_or_create(username="admin", company=admin_company)
+                if created:
+                    admin_contact.set_password("admin")
+                    admin_contact.is_superuser = True
+                    admin_contact.is_staff = True
+                    admin_contact.save()
 
             from shop.models.orders import OrderState
             from management.models.main import LegalSetting
