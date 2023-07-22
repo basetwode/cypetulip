@@ -60,7 +60,7 @@ class CreatePackageShipment(PermissionPostGetRequiredMixin, NotifyCustomerCreate
     order_object = None
 
     def get_success_url(self):
-        return reverse('management_order_detail_view', kwargs={'order': self.kwargs['order']})
+        return reverse('management_order_detail_view', kwargs={'uuid': self.kwargs['order']})
 
     def form_valid(self, form):
         order: OrderDetail = self.get_order()

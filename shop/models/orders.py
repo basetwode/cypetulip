@@ -153,12 +153,12 @@ class OrderDetail(models.Model):
     def create_new_order(request):
         if request.user.is_authenticated:
             company = request.user.contact.company
-            order_detail = OrderDetail(company=company,
-                                       contact=request.user.contact)
+            order_detail = OrderDetail.objects.create(company=company,
+                                                      contact=request.user.contact)
             order_detail.save()
             return order_detail
         else:
-            order_detail = OrderDetail(session=request.session.session_key)
+            order_detail = OrderDetail.objects.create(session=request.session.session_key)
             order_detail.save()
             return order_detail
 
@@ -220,19 +220,19 @@ class OrderDetail(models.Model):
              update_fields=None):
         if not self.uuid:
             self.uuid = uuid.uuid4()
-        if self.__was_canceled():
+        if self.__was_canceled() and self.id:
             self.increase_stocks()
             self.is_cancelled = True
-        elif self.__was_uncancelled():
+        elif self.__was_uncancelled() and self.id:
             self.decrease_stocks()
             self.is_cancelled = False
-        if not self.state and self.orderitem_set.count() == 0:
+        if self.id and not self.state and self.orderitem_set.count() == 0 :
             # empty cart
             self.remove_voucher()
         if not self.company and self.contact:
             self.company = self.contact.company
             self.save()
-        if not self.state:
+        if self.id and not self.state:
             # Updates prices (eg. product price or tax) if order has not been sent yet
             for order_item in self.orderitem_set.all():
                 order_item.save()
@@ -448,6 +448,9 @@ class OrderItem(models.Model):
 
     def is_conveyed(self):
         return self.shipment_set.exists()
+
+    def get_shipment(self):
+        return self.shipment_set.last()
 
 
 class FileOrderItem(OrderItem):

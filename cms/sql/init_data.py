@@ -1,4 +1,5 @@
 from cms.models import *
+from cms.models.main import Page, Section
 from home.settings import VERSION
 
 __author__ = ''
@@ -8,7 +9,6 @@ def populate_db():
     pages = Page.objects.all()
     if pages.count() == 0:
         create_home_site()
-        create_css()
     else:
         print('Database already populated')
 
@@ -29,6 +29,4 @@ def register_site(page_name, link):
     page.save()
 
 
-def create_css():
-    css = CSSSetting(main_color='0c0c0c', second_color='0c0c0c')
-    css.save()
+
